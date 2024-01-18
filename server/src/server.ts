@@ -8,6 +8,8 @@ import { setupSiteRoutes } from './site/setupSiteRoutes';
 import { setupApiRoutes } from './api/setupApiRoutes';
 import { setupErrorHandlers } from './utils/errorHandlers';
 
+console.log("Server env: ", process.env.ENV);
+
 const APP_PORT = '3399';
 
 const app = express();

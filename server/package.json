@@ -6,7 +6,7 @@
   "scripts": {
     "build": "esbuild src/server.ts --bundle --platform=node --packages=external --outfile=dist/server/server.cjs",
     "start": "node ./dist/server/server.cjs",
-    "dev": "npm run build && concurrently \"tsc -w\" \"nodemon -w ./dist/server ./dist/server/server.cjs\""
+    "dev": "npm run build && concurrently \"npm run build -- --watch\" \"nodemon -w ./dist/server ./dist/server/server.cjs\""
   },
   "dependencies": {
     "compression": "1.7.4",
