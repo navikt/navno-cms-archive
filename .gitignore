@@ -25,3 +25,5 @@ dist-ssr
 /server/src/_ssr-dist/
 
 .env
+.env.development
+.env.prod-local

@@ -6,9 +6,10 @@
   "scripts": {
     "build": "esbuild src/server.ts --bundle --platform=node --packages=external --outfile=dist/server/server.cjs",
     "start": "node ./dist/server/server.cjs",
-    "dev": "npm run build && concurrently \"npm run build -- --watch\" \"nodemon -w ./dist/server ./dist/server/server.cjs\""
+    "dev": "npm run build && concurrently \"npm run build -- --watch\" \"nodemon -w ./dist/server -w ../.env ./dist/server/server.cjs\""
   },
   "dependencies": {
+    "@opensearch-project/opensearch": "2.5.0",
     "compression": "1.7.4",
     "dotenv": "16.3.1",
     "express": "4.18.2",

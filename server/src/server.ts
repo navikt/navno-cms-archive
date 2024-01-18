@@ -8,9 +8,10 @@ import { setupSiteRoutes } from './site/setupSiteRoutes';
 import { setupApiRoutes } from './api/setupApiRoutes';
 import { setupErrorHandlers } from './utils/errorHandlers';
 
-console.log("Server env: ", process.env.ENV);
 
-const APP_PORT = '3399';
+const { APP_PORT, APP_BASEPATH, APP_ORIGIN } = process.env;
+
+console.log(`Serving on ${APP_ORIGIN}${APP_BASEPATH} with port ${APP_PORT}`);
 
 const app = express();
 
@@ -19,7 +20,7 @@ app.use(compression(), express.json());
 const siteRouter = express.Router();
 const apiRouter = express.Router();
 
-app.use('/', siteRouter);
+app.use(APP_BASEPATH, siteRouter);
 
 siteRouter.use('/api', apiRouter);
 

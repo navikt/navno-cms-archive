@@ -10,8 +10,8 @@
     "build:server": "npm run build --workspace server",
     "analyze-bundle": "ANALYZE=true npm run build:client",
     "start": "npm run start --workspace server",
-    "start-local": "cp .env.prod .env && npm run start --workspace server",
-    "dev": "cp .env.dev .env && npm run dev --workspace server"
+    "start-local": "cp .env.prod-local .env && npm run start --workspace server",
+    "dev": "cp .env.development .env && npm run dev --workspace server"
   },
   "workspaces": [
     "server"
