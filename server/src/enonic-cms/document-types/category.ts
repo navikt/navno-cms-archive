@@ -1,13 +1,10 @@
-type ContentRefData = {
+import { CmsCategoryRef } from './_common';
+
+type CmsContentRefData = {
     key: string,
     name: string,
     displayName: string,
     timestamp?: string,
-}
-
-type CategoryRefData = {
-    key: string,
-    name: string,
 }
 
 export type CmsCategoryDocument = {
@@ -19,6 +16,6 @@ export type CmsCategoryDocument = {
     contentTypeKey?: string,
     superKey?: string,
 
-    categories?: CategoryRefData[],
-    contents?: ContentRefData[]
+    categories: CmsCategoryRef[],
+    contents: CmsContentRefData[]
 }

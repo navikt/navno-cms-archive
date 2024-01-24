@@ -6,7 +6,7 @@ type ConstructorProps = {
     openSearchClient: CmsArchiveDbClient;
 }
 
-export class EnonicCmsCategories {
+export class CmsCategories {
     private readonly index: string;
     private readonly client: CmsArchiveDbClient;
 

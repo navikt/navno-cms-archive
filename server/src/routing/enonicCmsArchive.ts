@@ -1,16 +1,21 @@
 import { Express } from 'express';
-import { EnonicCmsArchiveSite } from '../enonic-cms/EnonicCmsArchiveSite';
+import { CmsArchiveSite } from '../enonic-cms/CmsArchiveSite';
+import { CmsArchiveDbClient } from '../opensearch/CmsArchiveDbClient';
 
 export const setupEnonicCmsArchiveSites = (expressApp: Express) => {
-    new EnonicCmsArchiveSite({
+    const archiveClient = new CmsArchiveDbClient()
+
+    new CmsArchiveSite({
         basePath: '/sbs',
         indexPrefix: 'cmssbs',
         expressApp,
+        dbClient: archiveClient
     });
 
-    new EnonicCmsArchiveSite({
+    new CmsArchiveSite({
         basePath: '/fss',
         indexPrefix: 'cmsfss',
         expressApp,
+        dbClient: archiveClient
     });
 };
