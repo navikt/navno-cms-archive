@@ -1,13 +1,9 @@
 import { ErrorRequestHandler, Express, RequestHandler } from 'express';
 
-const createNotFoundHandler = async (): Promise<RequestHandler> => {
-    return (req, res, _) => {
+export const setupErrorHandlers = (expressApp: Express) => {
+    const notFoundHandler: RequestHandler = (req, res, _) => {
         res.status(404).send('Not found');
     };
-};
-
-export const setupErrorHandlers = async (expressApp: Express) => {
-    const notFoundHandler = await createNotFoundHandler();
 
     const serverErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
         const { path } = req;

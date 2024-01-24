@@ -4,34 +4,33 @@ dotenv.config({ path: '../.env' });
 
 import express from 'express';
 import compression from 'compression';
-import { setupSiteRoutes } from './site/setupSiteRoutes';
-import { setupApiRoutes } from './api/setupApiRoutes';
-import { setupErrorHandlers } from './utils/errorHandlers';
-
+import { setupErrorHandlers } from './routing/errorHandlers';
+import { validateEnv } from './utils/validateEnv';
+import { setupInternalRoutes } from './routing/internal';
+import { setupEnonicCmsArchiveSites } from './routing/enonicCmsArchive';
 
 const { APP_PORT, APP_BASEPATH, APP_ORIGIN } = process.env;
 
-console.log(`Serving on ${APP_ORIGIN}${APP_BASEPATH} with port ${APP_PORT}`);
+console.log(`Initializing server on ${APP_ORIGIN}${APP_BASEPATH} with port ${APP_PORT}`);
 
-const app = express();
+validateEnv()
+    .then(() => {
+        const app = express().use(
+            compression(),
+            express.json(),
+        );
 
-app.use(compression(), express.json());
+        setupInternalRoutes(app);
+        setupEnonicCmsArchiveSites(app);
+        setupErrorHandlers(app);
 
-const siteRouter = express.Router();
-const apiRouter = express.Router();
-
-app.use(APP_BASEPATH, siteRouter);
-
-siteRouter.use('/api', apiRouter);
-
-setupApiRoutes(apiRouter)
-    .then(() => setupSiteRoutes(siteRouter))
-    .then(() => setupErrorHandlers(app))
+        return app;
+    })
     .catch((e) => {
         console.error(`Error occured while initializing server! - ${e}`);
         throw e;
     })
-    .then(() => {
+    .then((app) => {
         const server = app.listen(APP_PORT, () => {
             console.log(`Server starting on port ${APP_PORT}`);
         });

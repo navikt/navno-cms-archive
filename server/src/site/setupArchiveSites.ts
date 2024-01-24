@@ -8,7 +8,7 @@ const assetsDir = path.resolve(process.cwd(), 'dist', 'client', 'assets');
 
 const isProd = process.env.NODE_ENV !== 'development';
 
-export const setupSiteRoutes = async (router: Router) => {
+export const setupArchiveSites = async (router: Router) => {
     let render: HtmlRenderer;
 
     if (isProd) {
