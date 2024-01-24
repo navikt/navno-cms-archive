@@ -7,21 +7,21 @@ import compression from 'compression';
 import { setupErrorHandlers } from './routing/errorHandlers';
 import { validateEnv } from './utils/validateEnv';
 import { setupInternalRoutes } from './routing/internal';
-import { setupEnonicCmsArchiveSites } from './routing/enonicCmsArchive';
+import { setupCmsArchiveSites } from './routing/site';
 
 const { APP_PORT, APP_BASEPATH, APP_ORIGIN } = process.env;
 
 console.log(`Initializing server on ${APP_ORIGIN}${APP_BASEPATH} with port ${APP_PORT}`);
 
 validateEnv()
-    .then(() => {
+    .then(async () => {
         const app = express().use(
             compression(),
             express.json(),
         );
 
         setupInternalRoutes(app);
-        setupEnonicCmsArchiveSites(app);
+        await setupCmsArchiveSites(app);
         setupErrorHandlers(app);
 
         return app;

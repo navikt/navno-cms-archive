@@ -7,8 +7,6 @@ export default defineConfig(({mode}) => {
     process.env = { ...process.env, ...loadEnv(mode, process.cwd(), '') };
     process.env.NODE_ENV = process.env.NODE_ENV || 'production';
 
-    console.log("config env: ", process.env.ENV);
-
     return {
         plugins: [
             react(),

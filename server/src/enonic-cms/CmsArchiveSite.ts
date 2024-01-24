@@ -1,38 +1,44 @@
 import { CmsArchiveDbClient } from '../opensearch/CmsArchiveDbClient';
-import express, { Express } from 'express';
+import express, { Express, Router } from 'express';
 import { CmsArchiveService } from './CmsArchiveService';
 import { parseQueryParamsList } from '../utils/queryParams';
 import mime from 'mime';
+import { HtmlRenderer } from '../site/ssr/htmlRenderer';
 
 type Props = {
     basePath: string
     indexPrefix: string,
     expressApp: Express,
-    dbClient: CmsArchiveDbClient
+    dbClient: CmsArchiveDbClient,
+    htmlRenderer: HtmlRenderer
 }
 
 export class CmsArchiveSite {
     private readonly basePath: string;
     private readonly cmsArchiveService: CmsArchiveService;
 
-    constructor({ basePath, indexPrefix, expressApp, dbClient }: Props) {
+    constructor({ basePath, indexPrefix, expressApp, dbClient, htmlRenderer }: Props) {
         this.basePath = basePath;
         this.cmsArchiveService = new CmsArchiveService({ client: dbClient, indexPrefix });
 
-        this.setupApiRoutes(expressApp);
+        const siteRouter = express.Router();
+        const apiRouter = express.Router();
+
+        expressApp.use(this.basePath, siteRouter);
+        expressApp.use(`${this.basePath}/api`, apiRouter);
+
+        this.setupApiRoutes(apiRouter);
+        this.setupSiteRoutes(siteRouter, htmlRenderer);
     }
 
-    private setupApiRoutes(expressApp: Express) {
-        const router = express.Router();
-        expressApp.use(`${this.basePath}/api`, router);
-
+    private setupApiRoutes(router: Router) {
         router.get('/root-categories', async (req, res) => {
             const rootCategories = await this.cmsArchiveService.getRootCategories();
             return res.send(rootCategories);
         });
 
-        router.get('/categories', async (req, res) => {
-            const keys = parseQueryParamsList(req.query.keys);
+        router.get('/categories/:keys', async (req, res) => {
+            const keys = parseQueryParamsList(req.params.keys);
             if (!keys) {
                 return res.status(400).send('Required parameter "keys" is not valid');
             }
@@ -82,16 +88,20 @@ export class CmsArchiveSite {
                 return res.status(404).send(`Binary with key ${binaryKey} not found`);
             }
 
-            const contentType = mime.lookup(binary.filename) || "application/octet-stream";
+            const contentType = mime.lookup(binary.filename) || 'application/octet-stream';
 
             return res
                 .setHeader('Content-Dispositon', `attachment; filename="${binary.filename}"`)
                 .setHeader('Content-Type', contentType)
                 .send(Buffer.from(binary.data, 'base64'));
         });
+    }
 
-        router.use('*', (req, res) => {
-            return res.send(`Hello world from ${this.basePath}`);
+    private async setupSiteRoutes(router: Router, htmlRenderer: HtmlRenderer) {
+        router.get('/', async (req, res) => {
+            const html = await htmlRenderer(req.url)
+
+            return res.send(html);
         });
     }
 }

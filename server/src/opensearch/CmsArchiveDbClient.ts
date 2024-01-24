@@ -11,7 +11,7 @@ const logException = (e: unknown) => {
     if (e instanceof OpenSearchClientError) {
         console.log(`OpenSearch error: ${e.message}`);
     } else {
-        console.log(`Unknown opensearch error: ${e}`);
+        console.log(`Unknown error: ${e}`);
     }
 };
 

@@ -10,14 +10,12 @@ type ConstructorProps = {
 
 export class CmsArchiveService {
     private readonly client: CmsArchiveDbClient;
-
     private readonly categoriesIndex: string;
     private readonly contentsIndex: string;
     private readonly binariesIndex: string;
 
     constructor({ client, indexPrefix }: ConstructorProps) {
         this.client = client;
-
         this.categoriesIndex = `${indexPrefix}_categories`;
         this.contentsIndex = `${indexPrefix}_content`;
         this.binariesIndex = `${indexPrefix}_binaries`;
