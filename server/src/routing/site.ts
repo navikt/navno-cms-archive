@@ -8,16 +8,22 @@ export const setupCmsArchiveSites = async (expressApp: Express) => {
     const htmlRenderer = await initAndGetRenderer(expressApp);
 
     new CmsArchiveSite({
-        basePath: '/sbs',
-        indexPrefix: 'cmssbs',
+        config: {
+            name: 'Selvbetjeningssonen',
+            basePath: '/sbs',
+            indexPrefix: 'cmssbs',
+        },
         expressApp,
         dbClient: archiveClient,
         htmlRenderer,
     });
 
     new CmsArchiveSite({
-        basePath: '/fss',
-        indexPrefix: 'cmsfss',
+        config: {
+            name: 'Fagsystemsonen',
+            basePath: '/fss',
+            indexPrefix: 'cmsfss',
+        },
         expressApp,
         dbClient: archiveClient,
         htmlRenderer,

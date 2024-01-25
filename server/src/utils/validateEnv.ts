@@ -11,7 +11,7 @@ const EXPECTED_KEYS: Array<keyof NodeJS.ProcessEnv> = [
 ];
 
 export const validateEnv = async () => {
-    const isValid = EXPECTED_KEYS.every(key => {
+    const isValid = EXPECTED_KEYS.every((key) => {
         if (process.env[key]) {
             return true;
         }

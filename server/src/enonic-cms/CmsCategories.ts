@@ -4,7 +4,7 @@ import { CmsArchiveDbClient } from '../opensearch/CmsArchiveDbClient';
 type ConstructorProps = {
     index: string;
     openSearchClient: CmsArchiveDbClient;
-}
+};
 
 export class CmsCategories {
     private readonly index: string;
@@ -37,11 +37,11 @@ export class CmsCategories {
                     },
                 },
             },
-        })
-            // .then(res => res.statusCode === 200 ? res.body.hits.hits : null)
-            // .catch((e) => {
-            //     return null
-            // });
+        });
+        // .then(res => res.statusCode === 200 ? res.body.hits.hits : null)
+        // .catch((e) => {
+        //     return null
+        // });
 
         // console.log(rootCategoriesResult?.map((hit: any) => hit._source));
     }

@@ -11,14 +11,13 @@ import { setupCmsArchiveSites } from './routing/site';
 
 const { APP_PORT, APP_BASEPATH, APP_ORIGIN } = process.env;
 
-console.log(`Initializing server on ${APP_ORIGIN}${APP_BASEPATH} with port ${APP_PORT}`);
+console.log(
+    `Initializing server on ${APP_ORIGIN}${APP_BASEPATH} with port ${APP_PORT}`
+);
 
 validateEnv()
     .then(async () => {
-        const app = express().use(
-            compression(),
-            express.json(),
-        );
+        const app = express().use(compression(), express.json());
 
         setupInternalRoutes(app);
         await setupCmsArchiveSites(app);

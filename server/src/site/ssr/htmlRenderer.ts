@@ -3,7 +3,10 @@ import { ViteDevServer } from 'vite';
 import { render } from '../../_ssr-dist/main-server';
 import { AppContext } from '../../../../common/types/appContext';
 
-export type HtmlRenderer = (url: string, context: AppContext) => Promise<string>;
+export type HtmlRenderer = (
+    url: string,
+    context: AppContext
+) => Promise<string>;
 
 const processTemplate = (
     templateHtml: string,
@@ -12,7 +15,7 @@ const processTemplate = (
 ) => {
     return templateHtml
         .replace('<!--ssr-app-html-->', appHtml)
-        .replace('"ssr-app-context"', JSON.stringify(appContext));;
+        .replace('"ssr-app-context"', JSON.stringify(appContext));
 };
 
 export const prodRender: HtmlRenderer = async (url, context) => {
@@ -39,24 +42,24 @@ const devErrorHtml = (e: Error) => {
 
 export const devRender =
     (vite: ViteDevServer): HtmlRenderer =>
-        async (url, context) => {
-            const template = buildHtmlTemplate();
-            const html = await vite.transformIndexHtml(url, template);
+    async (url, context) => {
+        const template = buildHtmlTemplate();
+        const html = await vite.transformIndexHtml(url, template);
 
-            try {
-                const { render } = await vite.ssrLoadModule('/src/main-server.tsx');
-                const appHtml = render(url, context);
+        try {
+            const { render } = await vite.ssrLoadModule('/src/main-server.tsx');
+            const appHtml = render(url, context);
 
-                return processTemplate(html, appHtml, context);
-            } catch (e: unknown) {
-                if (e instanceof Error) {
-                    vite.ssrFixStacktrace(e);
-                    console.error(`Dev render error: ${e} \n ${e.stack}`);
-                    return processTemplate(html, devErrorHtml(e), context);
-                } else {
-                    const msg = `Unknown error: ${e}`;
-                    console.error(msg);
-                    return msg;
-                }
+            return processTemplate(html, appHtml, context);
+        } catch (e: unknown) {
+            if (e instanceof Error) {
+                vite.ssrFixStacktrace(e);
+                console.error(`Dev render error: ${e} \n ${e.stack}`);
+                return processTemplate(html, devErrorHtml(e), context);
+            } else {
+                const msg = `Unknown error: ${e}`;
+                console.error(msg);
+                return msg;
             }
-        };
+        }
+    };

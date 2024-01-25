@@ -1,4 +1,5 @@
 import './global.css';
+
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { App } from './App.tsx';
@@ -10,7 +11,7 @@ const parseAppContext = (): AppContext => {
         return contextElement ? JSON.parse(contextElement.innerText) : {};
     } catch (e) {
         console.error(`Failed to parse app context - ${e}`);
-        return { rootCategories: [] };
+        return { rootCategories: [], cmsName: "Failed to parse context!" };
     }
 };
 
