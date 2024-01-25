@@ -129,6 +129,7 @@ export class CmsArchiveSite {
             const html = await htmlRenderer(req.url, {
                 rootCategories,
                 cmsName: this.config.name,
+                basePath: this.config.basePath,
             });
 
             return res.send(html);

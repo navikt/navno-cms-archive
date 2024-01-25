@@ -9,10 +9,8 @@ type Props = {
 
 export const AppHeader = ({ cmsName }: Props) => {
     return (
-        <div className={style.appHeader}>
-            <Heading size={'xlarge'} level={'1'}>
-                {cmsName}
-            </Heading>
-        </div>
+        <Heading size={'xlarge'} level={'1'}>
+            {`Arkiv - ${cmsName}`}
+        </Heading>
     );
 };

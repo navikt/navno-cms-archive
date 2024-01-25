@@ -1,7 +1,7 @@
 import { buildHtmlTemplate } from './templateBuilder';
 import { ViteDevServer } from 'vite';
 import { render } from '../../_ssr-dist/main-server';
-import { AppContext } from '../../../../common/types/appContext';
+import { AppContext } from '../../../../common/appContext';
 
 export type HtmlRenderer = (
     url: string,

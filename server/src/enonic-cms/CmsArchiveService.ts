@@ -1,7 +1,7 @@
-import { CmsCategoryDocument } from '../../../common/types/cms-documents/category';
-import { CmsContentDocument } from '../../../common/types/cms-documents/content';
+import { CmsCategoryDocument } from '../../../common/cms-documents/category';
+import { CmsContentDocument } from '../../../common/cms-documents/content';
 import { CmsArchiveDbClient } from '../opensearch/CmsArchiveDbClient';
-import { CmsBinaryDocument } from '../../../common/types/cms-documents/binary';
+import { CmsBinaryDocument } from '../../../common/cms-documents/binary';
 
 type ConstructorProps = {
     client: CmsArchiveDbClient;
@@ -25,6 +25,7 @@ export class CmsArchiveService {
         return this.client.search<CmsCategoryDocument>({
             index: this.categoriesIndex,
             _source_excludes: ['xmlAsString'],
+            size: 100,
             body: {
                 query: {
                     bool: {

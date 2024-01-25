@@ -1,4 +1,4 @@
-import { CmsCategoryDocument } from '../../../common/types/cms-documents/category';
+import { CmsCategoryDocument } from '../../../common/cms-documents/category';
 import { CmsArchiveDbClient } from '../opensearch/CmsArchiveDbClient';
 
 type ConstructorProps = {

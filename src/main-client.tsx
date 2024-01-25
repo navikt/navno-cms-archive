@@ -3,7 +3,7 @@ import './global.css';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { App } from './App.tsx';
-import { AppContext, appErrorContext } from '../common/types/appContext.ts';
+import { AppContext, appErrorContext } from '../common/appContext.ts';
 
 const parseAppContext = (): AppContext => {
     try {

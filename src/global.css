@@ -1,1 +1,9 @@
 @import '@navikt/ds-css/dist/index.css';
+
+html {
+    height: 100%;
+}
+
+body {
+    min-height: 100%;
+}
