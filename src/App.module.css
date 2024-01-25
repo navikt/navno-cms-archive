@@ -4,3 +4,11 @@
     margin: 0 auto;
     padding: 0.5rem 2rem;
 }
+
+.mainRow {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 300px 1fr;
+
+    margin-top: 2rem;
+}

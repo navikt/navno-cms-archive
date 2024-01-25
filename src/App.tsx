@@ -7,8 +7,8 @@ import { AppLeftMenu } from './app-left-menu/AppLeftMenu.tsx';
 import { AppMainContent } from './app-main-content/AppMainContent.tsx';
 
 type Props = {
-    context: AppContext
-}
+    context: AppContext;
+};
 
 export const App = ({ context }: Props) => {
     const { cmsName, rootCategories } = context;
@@ -16,8 +16,10 @@ export const App = ({ context }: Props) => {
     return (
         <div className={style.appRoot}>
             <AppHeader cmsName={cmsName} />
-            <AppLeftMenu rootCategories={rootCategories} />
-            <AppMainContent />
+            <div className={style.mainRow}>
+                <AppLeftMenu rootCategories={rootCategories} />
+                <AppMainContent />
+            </div>
         </div>
     );
 };

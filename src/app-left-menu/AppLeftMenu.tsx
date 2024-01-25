@@ -7,7 +7,11 @@ type Props = {
 };
 
 export const AppLeftMenu = ({ rootCategories }: Props) => {
-    return rootCategories.map((category) => {
-        return <BodyLong key={category.key}>{category.title}</BodyLong>;
-    });
+    return (
+        <div>
+            {rootCategories.map((category) => {
+                return <BodyLong key={category.key}>{category.title}</BodyLong>;
+            })}
+        </div>
+    );
 };
