@@ -99,7 +99,9 @@ export class CmsArchiveSite {
 
     private async setupSiteRoutes(router: Router, htmlRenderer: HtmlRenderer) {
         router.get('/', async (req, res) => {
-            const html = await htmlRenderer(req.url)
+            const rootCategories = await this.cmsArchiveService.getRootCategories() || [];
+
+            const html = await htmlRenderer(req.url, { rootCategories });
 
             return res.send(html);
         });

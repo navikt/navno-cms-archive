@@ -1,4 +1,4 @@
-import { CmsCategoryRef, CmsUser } from './_common';
+import { CmsCategoryRef, CmsUser } from './_common.ts';
 
 type ContentVersionReference = {
     key: string,

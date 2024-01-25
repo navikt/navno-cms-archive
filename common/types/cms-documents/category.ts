@@ -1,4 +1,4 @@
-import { CmsCategoryRef } from './_common';
+import { CmsCategoryRef } from './_common.ts';
 
 type CmsContentRefData = {
     key: string,
@@ -8,14 +8,14 @@ type CmsContentRefData = {
 }
 
 export type CmsCategoryDocument = {
-    xmlAsstring: string,
-
     key: string,
     title: string,
+
+    categories: CmsCategoryRef[],
+    contents: CmsContentRefData[]
 
     contentTypeKey?: string,
     superKey?: string,
 
-    categories: CmsCategoryRef[],
-    contents: CmsContentRefData[]
+    xmlAsstring?: string,
 }

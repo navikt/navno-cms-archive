@@ -1,16 +1,19 @@
 import React from 'react';
-import { Alert } from '@navikt/ds-react';
+import { Alert, BodyLong } from '@navikt/ds-react';
+import { AppContext } from '../common/types/appContext.ts';
+
+import style from './App.module.css';
 
 type Props = {
-    context: any
+    context: AppContext
 }
 
 export const App = ({ context }: Props) => {
-    console.log('Context:', context);
-
     return (
-        <div>
-            <Alert variant={"success"}>{"Great success!"}</Alert>
+        <div className={style.appRoot}>
+            {context.rootCategories.map(category => {
+                return <BodyLong>{category.title}</BodyLong>;
+            })}
         </div>
     );
 };
