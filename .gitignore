@@ -27,3 +27,4 @@ dist-ssr
 .env
 .env.development
 .env.prod-local
+cms-assets

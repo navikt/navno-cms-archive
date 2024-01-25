@@ -8,6 +8,7 @@ import { setupErrorHandlers } from './routing/errorHandlers';
 import { validateEnv } from './utils/validateEnv';
 import { setupInternalRoutes } from './routing/internal';
 import { setupCmsArchiveSites } from './routing/site';
+import { setupCmsAssetsRouting } from './routing/cms-assets';
 
 const { APP_PORT, APP_BASEPATH, APP_ORIGIN } = process.env;
 
@@ -21,6 +22,7 @@ validateEnv()
 
         setupInternalRoutes(app);
         await setupCmsArchiveSites(app);
+        setupCmsAssetsRouting(app);
         setupErrorHandlers(app);
 
         return app;

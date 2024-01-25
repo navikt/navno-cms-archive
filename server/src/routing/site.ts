@@ -1,5 +1,5 @@
 import { Express } from 'express';
-import { CmsArchiveSite } from '../enonic-cms/CmsArchiveSite';
+import { CmsArchiveSite } from '../cms/CmsArchiveSite';
 import { CmsArchiveDbClient } from '../opensearch/CmsArchiveDbClient';
 import { initAndGetRenderer } from '../site/ssr/initRenderer';
 
