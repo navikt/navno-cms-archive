@@ -7,7 +7,7 @@ const assetsDir = path.resolve(process.cwd(), 'dist', 'client', 'assets');
 
 export const initAndGetRenderer = async (expressApp: Express): Promise<HtmlRenderer> => {
     if (process.env.NODE_ENV === 'development') {
-        console.log('Configuring site endpoints for development mode');
+        console.log('Configuring site renderer for development mode');
 
         const vite = await createServer({
             server: { middlewareMode: true },
@@ -22,7 +22,7 @@ export const initAndGetRenderer = async (expressApp: Express): Promise<HtmlRende
     }
 
     console.log(
-        `Configuring site endpoints for production mode - Using assets dir ${assetsDir}`,
+        `Configuring site renderer for production mode - Using assets dir ${assetsDir}`,
     );
 
     expressApp.use(
