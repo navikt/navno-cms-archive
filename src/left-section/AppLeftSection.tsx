@@ -2,13 +2,13 @@ import React from 'react';
 import { CmsCategoryDocument } from '../../common/cms-documents/category.ts';
 import { BodyLong } from '@navikt/ds-react';
 
-import style from './AppLeftMenu.module.css';
+import style from './AppLeftSection.module.css';
 
 type Props = {
     rootCategories: CmsCategoryDocument[];
 };
 
-export const AppLeftMenu = ({ rootCategories }: Props) => {
+export const AppLeftSection = ({ rootCategories }: Props) => {
     return (
         <div className={style.leftMenu}>
             {rootCategories.map((category) => {

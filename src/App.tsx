@@ -1,8 +1,8 @@
 import React from 'react';
 import { AppContext } from '../common/appContext.ts';
-import { AppHeader } from './app-header/AppHeader.tsx';
-import { AppLeftMenu } from './app-left-menu/AppLeftMenu.tsx';
-import { AppMainContent } from './app-main-content/AppMainContent.tsx';
+import { AppTopSection } from './top-section/AppTopSection.tsx';
+import { AppLeftSection } from './left-section/AppLeftSection.tsx';
+import { AppMainSection } from './main-section/AppMainSection.tsx';
 
 import style from './App.module.css';
 
@@ -15,15 +15,9 @@ export const App = ({ context }: Props) => {
 
     return (
         <div className={style.root}>
-            <div className={style.header}>
-                <AppHeader cmsName={cmsName} />
-            </div>
-            <div className={style.left}>
-                <AppLeftMenu rootCategories={rootCategories} />
-            </div>
-            <div className={style.main}>
-                <AppMainContent />
-            </div>
+            <AppTopSection cmsName={cmsName} />
+            <AppLeftSection rootCategories={rootCategories} />
+            <AppMainSection />
         </div>
     );
 };

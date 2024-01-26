@@ -1,0 +1,4 @@
+.top {
+    grid-area: top;
+    background-color: var(--a-blue-200)
+}

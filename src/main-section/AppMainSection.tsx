@@ -3,9 +3,9 @@ import { Button, TextField } from '@navikt/ds-react';
 import { CmsContentDocument } from '../../common/cms-documents/content.ts';
 import { ContentView } from './content-view/ContentView.tsx';
 
-import style from './AppMainContent.module.css';
+import style from './AppMainSection.module.css';
 
-export const AppMainContent = () => {
+export const AppMainSection = () => {
     const [content, setContent] = useState<CmsContentDocument | null>(null);
     const versionInputRef = useRef<HTMLInputElement>(null);
 

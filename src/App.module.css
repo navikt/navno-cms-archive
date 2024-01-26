@@ -10,20 +10,6 @@
     grid-template-rows: auto 1fr;
     grid-template-columns: 300px 1fr;
     grid-template-areas:
-            "header header"
+            "top top"
             "left main";
-}
-
-.header {
-    grid-area: header;
-    background-color: var(--a-blue-200)
-}
-
-.left {
-    grid-area: left;
-}
-
-.main {
-    grid-area: main;
-    height: 100%;
 }
