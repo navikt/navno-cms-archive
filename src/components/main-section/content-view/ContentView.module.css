@@ -1,0 +1,8 @@
+.toggle {
+    margin: 0.75rem 0;
+}
+
+.disabled {
+    color: var(--a-gray-400);
+    cursor: not-allowed;
+}

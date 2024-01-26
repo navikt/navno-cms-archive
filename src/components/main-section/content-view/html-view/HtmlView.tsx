@@ -13,16 +13,6 @@ export const HtmlView = ({ html, hidden }: Props) => {
         <iframe
             srcDoc={html}
             className={classNames(style.html, hidden && style.hidden)}
-            onLoad={(event) => {
-                const target = event.target as HTMLIFrameElement;
-                if (!target?.contentWindow) {
-                    return;
-                }
-
-                target.style.height =
-                    target.contentWindow.document.documentElement.scrollHeight +
-                    'px';
-            }}
         />
     ) : null;
 };

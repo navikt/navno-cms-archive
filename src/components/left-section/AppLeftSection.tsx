@@ -1,5 +1,5 @@
 import React from 'react';
-import { CmsCategoryDocument } from '../../common/cms-documents/category.ts';
+import { CmsCategoryDocument } from '../../../common/cms-documents/category.ts';
 import { BodyLong } from '@navikt/ds-react';
 
 import style from './AppLeftSection.module.css';
