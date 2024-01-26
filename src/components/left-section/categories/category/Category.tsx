@@ -11,6 +11,8 @@ import useSWRImmutable from 'swr/immutable';
 import { fetchCategories } from '../../../../utils/fetch/fetchCategories.ts';
 import { CategoriesList } from '../CategoriesList.tsx';
 import { classNames } from '../../../../utils/classNames.ts';
+import { useAppState } from '../../../../state/useAppState.tsx';
+import { fetchContent } from '../../../../utils/fetch/fetchContent.ts';
 
 type Props = {
     category: CmsCategoryDocument;
@@ -26,18 +28,39 @@ export const Category = ({ category }: Props) => {
         fetchCategories('http://localhost:3399/sbs')
     );
 
+    const label = `${title}${contents.length > 0 ? ` (${contents.length})` : ''}`;
+
+    const { setSelectedContent } = useAppState();
+
     return (
         <TreeItem
             ContentComponent={CustomContent}
             key={key}
             nodeId={key}
-            label={title}
+            label={label}
         >
             {isLoading ? (
                 <Loader size={'xsmall'} />
             ) : data ? (
                 <CategoriesList categories={data} />
             ) : null}
+            {contents.map((content) => (
+                <TreeItem
+                    key={content.key}
+                    nodeId={content.key}
+                    label={content.displayName}
+                    onClick={(e) => {
+                        e.preventDefault();
+                        fetchContent('http://localhost:3399/sbs')(
+                            content.key
+                        ).then((res) => {
+                            if (res) {
+                                setSelectedContent(res);
+                            }
+                        });
+                    }}
+                />
+            ))}
         </TreeItem>
     );
 };
