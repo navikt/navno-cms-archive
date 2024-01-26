@@ -3,6 +3,7 @@ import { CmsContentDocument } from '../../../common/cms-documents/content';
 import { CmsArchiveDbClient } from '../opensearch/CmsArchiveDbClient';
 import { CmsBinaryDocument } from '../../../common/cms-documents/binary';
 import { CmsArchiveSiteConfig } from './CmsArchiveSite';
+import { sortCategories } from '../utils/sort';
 
 type ConstructorProps = {
     client: CmsArchiveDbClient;
@@ -29,34 +30,38 @@ export class CmsArchiveService {
     }
 
     public getRootCategories(): Promise<CmsCategoryDocument[] | null> {
-        return this.client.search<CmsCategoryDocument>({
-            index: this.categoriesIndex,
-            _source_excludes: ['xmlAsString'],
-            size: 100,
-            body: {
-                query: {
-                    bool: {
-                        must_not: {
-                            exists: {
-                                field: 'superKey',
+        return this.client
+            .search<CmsCategoryDocument>({
+                index: this.categoriesIndex,
+                _source_excludes: ['xmlAsString'],
+                size: 100,
+                body: {
+                    query: {
+                        bool: {
+                            must_not: {
+                                exists: {
+                                    field: 'superKey',
+                                },
                             },
                         },
                     },
                 },
-            },
-        });
+            })
+            .then(sortCategories);
     }
 
     public async getCategories(
         categoryKeys: string[]
     ): Promise<CmsCategoryDocument[] | null> {
-        return this.client.getDocuments<CmsCategoryDocument>({
-            index: this.categoriesIndex,
-            _source_excludes: ['xmlAsString'],
-            body: {
-                ids: categoryKeys,
-            },
-        });
+        return this.client
+            .getDocuments<CmsCategoryDocument>({
+                index: this.categoriesIndex,
+                _source_excludes: ['xmlAsString'],
+                body: {
+                    ids: categoryKeys,
+                },
+            })
+            .then(sortCategories);
     }
 
     public async getContent(

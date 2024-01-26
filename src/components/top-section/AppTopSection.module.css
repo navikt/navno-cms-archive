@@ -1,4 +1,4 @@
 .top {
     grid-area: top;
-    background-color: var(--a-blue-200)
+    border-bottom: var(--a-border-divider) solid 2px;
 }
