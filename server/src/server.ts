@@ -22,7 +22,7 @@ validateEnv()
 
         setupInternalRoutes(app);
         await setupCmsArchiveSites(app);
-        setupCmsAssetsRouting(app);
+        // setupCmsAssetsRouting(app);
         setupErrorHandlers(app);
 
         return app;

@@ -1,9 +1,11 @@
 import { CmsArchiveDbClient } from '../opensearch/CmsArchiveDbClient';
-import express, { Express, Router } from 'express';
+import express, { Express, Response, Router } from 'express';
 import { CmsArchiveService } from './CmsArchiveService';
 import { parseQueryParamsList } from '../utils/queryParams';
 import mime from 'mime';
 import { HtmlRenderer } from '../site/ssr/htmlRenderer';
+import path from 'path';
+import { CmsBinaryDocument } from '../../../common/cms-documents/binary';
 
 type CmsArchiveSiteConfig = {
     name: string;
@@ -37,6 +39,7 @@ export class CmsArchiveSite {
 
         this.setupApiRoutes(apiRouter);
         this.setupSiteRoutes(siteRouter, htmlRenderer);
+        this.setupFileRoutes(siteRouter);
     }
 
     private setupApiRoutes(router: Router) {
@@ -108,16 +111,11 @@ export class CmsArchiveSite {
                     .send(`Binary with key ${binaryKey} not found`);
             }
 
-            const contentType =
-                mime.lookup(binary.filename) || 'application/octet-stream';
-
-            return res
-                .setHeader(
-                    'Content-Dispositon',
-                    `attachment; filename="${binary.filename}"`
-                )
-                .setHeader('Content-Type', contentType)
-                .send(Buffer.from(binary.data, 'base64'));
+            return this.fileResponse(
+                binary,
+                `attachment; filename="${binary.filename}"`,
+                res
+            );
         });
     }
 
@@ -134,5 +132,86 @@ export class CmsArchiveSite {
 
             return res.send(html);
         });
+    }
+
+    private async setupFileRoutes(router: Router) {
+        const assetsRoot = path.join(
+            process.cwd(),
+            '..',
+            'cms-assets',
+            this.config.basePath
+        );
+
+        router.use('/_public', (req, res, next) => {
+            return express.static(assetsRoot)(req, res, next);
+        });
+
+        router.use(
+            '/*/_image/:contentKey.:extension',
+            async (req, res, next) => {
+                const content = await this.cmsArchiveService.getContent(
+                    req.params.contentKey
+                );
+                if (!content) {
+                    return next();
+                }
+
+                const binaryKey = content.binaries?.slice(-1)?.[0].key;
+                if (!binaryKey) {
+                    return next();
+                }
+
+                const binary =
+                    await this.cmsArchiveService.getBinary(binaryKey);
+                if (!binary) {
+                    return next();
+                }
+
+                return this.fileResponse(binary, 'inline', res);
+            }
+        );
+
+        router.use(
+            '/*/_image/:contentKey/label/:label.:extension',
+            async (req, res, next) => {
+                const content = await this.cmsArchiveService.getContent(
+                    req.params.contentKey
+                );
+                if (!content) {
+                    return next();
+                }
+
+                const binaryKey = content.binaries?.find((binary) =>
+                    binary.filename.endsWith(
+                        `${req.params.label}.${req.params.extension}`
+                    )
+                )?.key;
+                if (!binaryKey) {
+                    return next();
+                }
+
+                const binary =
+                    await this.cmsArchiveService.getBinary(binaryKey);
+                if (!binary) {
+                    return next();
+                }
+
+                return this.fileResponse(binary, 'inline', res);
+            }
+        );
+    }
+
+    private fileResponse(
+        binary: CmsBinaryDocument,
+        contentDisposition: string,
+        res: Response
+    ) {
+        const contentType =
+            mime.lookup(binary.filename) || 'application/octet-stream';
+
+        return res
+            .setHeader('Content-Dispositon', contentDisposition)
+            .setHeader('Content-Type', contentType)
+            .send(Buffer.from(binary.data, 'base64'));
     }
 }

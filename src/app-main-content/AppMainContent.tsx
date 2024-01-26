@@ -1,47 +1,45 @@
 import React, { useRef, useState } from 'react';
 import { Button, TextField } from '@navikt/ds-react';
+import { CmsContentDocument } from '../../common/cms-documents/content.ts';
+import { ContentView } from './content-view/ContentView.tsx';
 
 import style from './AppMainContent.module.css';
-import { CmsContentDocument } from '../../common/cms-documents/content.ts';
 
 export const AppMainContent = () => {
-    const [content, setContent] = useState<string | null>(null);
-    const inputRef = useRef<HTMLInputElement | null>(null);
+    const [content, setContent] = useState<CmsContentDocument | null>(null);
+    const versionInputRef = useRef<HTMLInputElement>(null);
 
     return (
         <div className={style.mainContent}>
-            <TextField
-                label={'Skriv inn en contentKey'}
-                type={'text'}
-                size={'small'}
-                htmlSize={10}
-                ref={inputRef}
-            />
-            <Button
-                size={'small'}
-                onClick={(event) => {
-                    const value = inputRef.current?.value;
-                    fetch(`http://localhost:3399/sbs/api/content/${value}`)
-                        .then((res) => {
-                            if (res.ok) {
-                                return res.json();
-                            }
+            <div className={style.buttons}>
+                <TextField
+                    label={'Skriv inn en versionKey'}
+                    type={'text'}
+                    size={'small'}
+                    htmlSize={15}
+                    ref={versionInputRef}
+                />
+                <Button
+                    size={'small'}
+                    onClick={(event) => {
+                        const value = versionInputRef.current?.value;
+                        fetch(`http://localhost:3399/sbs/api/version/${value}`)
+                            .then((res) => {
+                                if (res.ok) {
+                                    return res.json();
+                                }
 
-                            return res.text();
-                        })
-                        .then((json: CmsContentDocument) => {
-                            if (!json.html) {
-                                setContent('Ingen html');
-                                return;
-                            }
-
-                            setContent(json.html.replace(/(\r\n|\r|\n)/, ''));
-                        });
-                }}
-            >
-                {'Hent'}
-            </Button>
-            {content && <iframe srcDoc={content} className={style.htmlFrame} />}
+                                return null;
+                            })
+                            .then((json: CmsContentDocument) => {
+                                setContent(json);
+                            });
+                    }}
+                >
+                    {'Hent'}
+                </Button>
+            </div>
+            {content && <ContentView content={content} />}
         </div>
     );
 };
