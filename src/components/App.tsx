@@ -11,12 +11,12 @@ type Props = {
 };
 
 export const App = ({ context }: Props) => {
-    const { cmsName, rootCategories } = context;
+    const { cmsName } = context;
 
     return (
         <div className={style.root}>
             <AppTopSection cmsName={cmsName} />
-            <AppLeftSection rootCategories={rootCategories} />
+            <AppLeftSection context={context} />
             <AppMainSection />
         </div>
     );
