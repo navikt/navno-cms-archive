@@ -7,13 +7,13 @@ import { HtmlRenderer } from '../site/ssr/htmlRenderer';
 import path from 'path';
 import { CmsBinaryDocument } from '../../../common/cms-documents/binary';
 
-type CmsArchiveSiteConfig = {
+export type CmsArchiveSiteConfig = {
     name: string;
     basePath: string;
     indexPrefix: string;
 };
 
-type Props = {
+type ContructorProps = {
     config: CmsArchiveSiteConfig;
     expressApp: Express;
     dbClient: CmsArchiveDbClient;
@@ -24,11 +24,16 @@ export class CmsArchiveSite {
     private readonly config: CmsArchiveSiteConfig;
     private readonly cmsArchiveService: CmsArchiveService;
 
-    constructor({ config, expressApp, dbClient, htmlRenderer }: Props) {
+    constructor({
+        config,
+        expressApp,
+        dbClient,
+        htmlRenderer,
+    }: ContructorProps) {
         this.config = config;
         this.cmsArchiveService = new CmsArchiveService({
             client: dbClient,
-            indexPrefix: config.indexPrefix,
+            siteConfig: config,
         });
 
         const siteRouter = express.Router();

@@ -2,20 +2,27 @@ import { CmsCategoryDocument } from '../../../common/cms-documents/category';
 import { CmsContentDocument } from '../../../common/cms-documents/content';
 import { CmsArchiveDbClient } from '../opensearch/CmsArchiveDbClient';
 import { CmsBinaryDocument } from '../../../common/cms-documents/binary';
+import { CmsArchiveSiteConfig } from './CmsArchiveSite';
 
 type ConstructorProps = {
     client: CmsArchiveDbClient;
-    indexPrefix: string;
+    siteConfig: CmsArchiveSiteConfig;
 };
 
 export class CmsArchiveService {
     private readonly client: CmsArchiveDbClient;
+    private readonly siteConfig: CmsArchiveSiteConfig;
+
     private readonly categoriesIndex: string;
     private readonly contentsIndex: string;
     private readonly binariesIndex: string;
 
-    constructor({ client, indexPrefix }: ConstructorProps) {
+    constructor({ client, siteConfig }: ConstructorProps) {
+        const { indexPrefix } = siteConfig;
+
         this.client = client;
+        this.siteConfig = siteConfig;
+
         this.categoriesIndex = `${indexPrefix}_categories`;
         this.contentsIndex = `${indexPrefix}_content`;
         this.binariesIndex = `${indexPrefix}_binaries`;
@@ -92,16 +99,18 @@ export class CmsArchiveService {
             return null;
         }
 
-        return result[0];
+        return this.fixHtml(result[0]);
     }
 
     public async getContentVersion(
         versionKey: string
     ): Promise<CmsContentDocument | null> {
-        return this.client.getDocument<CmsContentDocument>({
+        const result = await this.client.getDocument<CmsContentDocument>({
             index: this.contentsIndex,
             id: versionKey,
         });
+
+        return this.fixHtml(result);
     }
 
     public async getBinary(
@@ -111,5 +120,18 @@ export class CmsArchiveService {
             index: this.binariesIndex,
             id: binaryKey,
         });
+    }
+
+    private fixHtml(content: CmsContentDocument | null) {
+        if (content?.html) {
+            const { basePath } = this.siteConfig;
+
+            content.html = content?.html
+                .replace(/(\r\n|\r|\n)/, '')
+                .replace(/src="\/(\d)+\//g, `src="${basePath}/`)
+                .replace(/href="\/(\d)+\//g, `href="${basePath}/`);
+        }
+
+        return content;
     }
 }
