@@ -2,9 +2,7 @@
     grid-area: main;
     display: flex;
     flex-direction: column;
-    height: 100%;
-
-    background-color: var(--a-orange-50);
+    overflow-y: hidden;
 }
 
 .buttons {

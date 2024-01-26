@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Button, TextField } from '@navikt/ds-react';
-import { CmsContentDocument } from '../../common/cms-documents/content.ts';
+import { CmsContentDocument } from '../../../common/cms-documents/content.ts';
 import { ContentView } from './content-view/ContentView.tsx';
 
 import style from './AppMainSection.module.css';

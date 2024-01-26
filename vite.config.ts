@@ -19,7 +19,8 @@ export default defineConfig(({ mode }) => {
             noExternal: [
                 '@navikt/ds-react',
                 '@navikt/aksel-icons',
-                /@radix-ui\/.*/
+                /@radix-ui\/.*/,
+                'react-xml-viewer',
             ],
         },
     };

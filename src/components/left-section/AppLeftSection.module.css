@@ -1,6 +1,5 @@
 .leftMenu {
     grid-area: left;
-
-    background-color: var(--a-green-100);
     height: 100%;
+    background-color: var(--a-green-100);
 }

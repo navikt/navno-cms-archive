@@ -1,5 +1,5 @@
 import React from 'react';
-import { AppContext } from '../common/appContext.ts';
+import { AppContext } from '../../common/appContext.ts';
 import { AppTopSection } from './top-section/AppTopSection.tsx';
 import { AppLeftSection } from './left-section/AppLeftSection.tsx';
 import { AppMainSection } from './main-section/AppMainSection.tsx';
