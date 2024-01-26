@@ -19,7 +19,7 @@ export const ContentView = ({ content }: Props) => {
 
     const [viewState, setViewState] = useState<ViewState>(initialState);
 
-    const { setSelectedContent } = useAppState();
+    const { setSelectedContent, appContext } = useAppState();
 
     useEffect(() => {
         if (!html) {
@@ -57,7 +57,7 @@ export const ContentView = ({ content }: Props) => {
                 <Select
                     label={'Velg versjon'}
                     onChange={(e) => {
-                        fetchContentVersion('http://localhost:3399/sbs')(
+                        fetchContentVersion(appContext.basePath)(
                             e.target.value
                         ).then((res) => {
                             if (res) {

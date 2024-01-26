@@ -20,17 +20,16 @@ type Props = {
 
 export const Category = ({ category }: Props) => {
     const { key, title, categories, contents } = category;
+    const { setSelectedContent, appContext } = useAppState();
 
     const childKeys = categories.map((category) => category.key);
 
     const { data, isLoading } = useSWRImmutable(
         childKeys,
-        fetchCategories('http://localhost:3399/sbs')
+        fetchCategories(appContext.basePath)
     );
 
     const label = `${title}${contents.length > 0 ? ` (${contents.length})` : ''}`;
-
-    const { setSelectedContent } = useAppState();
 
     return (
         <TreeItem
@@ -51,13 +50,13 @@ export const Category = ({ category }: Props) => {
                     label={content.displayName}
                     onClick={(e) => {
                         e.preventDefault();
-                        fetchContent('http://localhost:3399/sbs')(
-                            content.key
-                        ).then((res) => {
-                            if (res) {
-                                setSelectedContent(res);
+                        fetchContent(appContext.basePath)(content.key).then(
+                            (res) => {
+                                if (res) {
+                                    setSelectedContent(res);
+                                }
                             }
-                        });
+                        );
                     }}
                 />
             ))}
