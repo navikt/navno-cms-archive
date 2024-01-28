@@ -1,6 +1,9 @@
 name: Build and deploy to nais
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - master
 
 jobs:
   build-and-deploy:

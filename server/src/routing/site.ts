@@ -28,4 +28,8 @@ export const setupCmsArchiveSites = async (expressApp: Express) => {
         dbClient: archiveClient,
         htmlRenderer,
     });
+
+    expressApp.get('/', (req, res) => {
+        return res.redirect('/sbs');
+    });
 };
