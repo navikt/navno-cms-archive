@@ -6,6 +6,7 @@ import { HtmlView } from './html-view/HtmlView.tsx';
 import { classNames } from '../../../utils/classNames.ts';
 import { FilesView } from './files-view/FilesView.tsx';
 import { VersionSelector } from './version-selector/VersionSelector.tsx';
+import { useAppState } from '../../../state/useAppState.tsx';
 
 import style from './ContentView.module.css';
 
@@ -26,6 +27,8 @@ const getDefaultViewState = ({ html, binaries }: CmsContentDocument) => {
 export const ContentView = ({ content }: Props) => {
     const { html, xmlAsString, binaries } = content;
 
+    const { appContext } = useAppState();
+
     const [viewState, setViewState] = useState<ViewState>(
         getDefaultViewState(content)
     );
@@ -33,6 +36,16 @@ export const ContentView = ({ content }: Props) => {
     const filesCount = !binaries || binaries.length === 0 ? 0 : binaries.length;
 
     useEffect(() => {
+        if (!content) {
+            return;
+        }
+
+        // TODO: implement actual navigation state
+        window.history.replaceState(
+            {},
+            '',
+            `${window.location.origin}${appContext.basePath}/${content.contentKey}`
+        );
         setViewState(getDefaultViewState(content));
     }, [content]);
 

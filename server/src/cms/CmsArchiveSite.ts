@@ -106,15 +106,18 @@ export class CmsArchiveSite {
     }
 
     private async setupSiteRoutes(router: Router, htmlRenderer: HtmlRenderer) {
-        router.get('/', async (req, res) => {
+        router.get('/:contentKey?', async (req, res) => {
             const rootCategories =
                 (await this.cmsArchiveService.getRootCategories()) || [];
 
-            const html = await htmlRenderer(req.url, {
+            const appContext = {
                 rootCategories,
+                selectedContentKey: req.params.contentKey,
                 cmsName: this.config.name,
                 basePath: this.config.basePath,
-            });
+            };
+
+            const html = await htmlRenderer(req.url, appContext);
 
             return res.send(html);
         });

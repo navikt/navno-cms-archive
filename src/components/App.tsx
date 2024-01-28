@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AppContext } from '../../common/appContext.ts';
 import { AppTopSection } from './top-section/AppTopSection.tsx';
 import { AppLeftSection } from './left-section/AppLeftSection.tsx';
 import { AppMainSection } from './main-section/AppMainSection.tsx';
 import { useAppState } from '../state/useAppState.tsx';
 import { CmsContentDocument } from '../../common/cms-documents/content.ts';
+import { fetchContent } from '../utils/fetch/fetchContent.ts';
 
 import style from './App.module.css';
 
@@ -17,9 +18,21 @@ export const App = ({ context }: Props) => {
         CmsContentDocument | undefined
     >();
 
-    const { cmsName } = context;
+    const { cmsName, selectedContentKey, basePath } = context;
 
     const { AppStateProvider } = useAppState();
+
+    useEffect(() => {
+        if (!selectedContentKey) {
+            return;
+        }
+
+        fetchContent(basePath)(selectedContentKey).then((res) => {
+            if (res) {
+                setSelectedContent(res);
+            }
+        });
+    }, [basePath, selectedContentKey]);
 
     return (
         <AppStateProvider
