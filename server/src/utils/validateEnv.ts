@@ -2,7 +2,6 @@ import * as process from 'process';
 
 const EXPECTED_KEYS: Array<keyof NodeJS.ProcessEnv> = [
     'NODE_ENV',
-    'APP_ORIGIN',
     'APP_PORT',
     'APP_BASEPATH',
     'OPEN_SEARCH_URI',
