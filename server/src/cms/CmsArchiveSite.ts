@@ -117,7 +117,8 @@ export class CmsArchiveSite {
             }
 
             return this.fileResponse(
-                binary,
+                binary.filename,
+                binary.data,
                 `attachment; filename="${binary.filename}"`,
                 res
             );
@@ -140,15 +141,13 @@ export class CmsArchiveSite {
     }
 
     private async setupFileRoutes(router: Router) {
-        const assetsRoot = path.join(
-            process.cwd(),
-            '..',
-            'cms-assets',
-            this.config.basePath
-        );
+        router.use('/_public', async (req, res, next) => {
+            const file = await this.cmsArchiveService.getStaticAsset(req.path);
+            if (!file) {
+                return next();
+            }
 
-        router.use('/_public', (req, res, next) => {
-            return express.static(assetsRoot)(req, res, next);
+            return this.fileResponse(file.filename, file.data, 'inline', res);
         });
 
         router.use(
@@ -172,7 +171,12 @@ export class CmsArchiveSite {
                     return next();
                 }
 
-                return this.fileResponse(binary, 'inline', res);
+                return this.fileResponse(
+                    binary.filename,
+                    binary.data,
+                    'inline',
+                    res
+                );
             }
         );
 
@@ -201,22 +205,27 @@ export class CmsArchiveSite {
                     return next();
                 }
 
-                return this.fileResponse(binary, 'inline', res);
+                return this.fileResponse(
+                    binary.filename,
+                    binary.data,
+                    'inline',
+                    res
+                );
             }
         );
     }
 
     private fileResponse(
-        binary: CmsBinaryDocument,
+        filename: string,
+        data: string,
         contentDisposition: string,
         res: Response
     ) {
-        const contentType =
-            mime.lookup(binary.filename) || 'application/octet-stream';
+        const contentType = mime.lookup(filename) || 'application/octet-stream';
 
         return res
             .setHeader('Content-Dispositon', contentDisposition)
             .setHeader('Content-Type', contentType)
-            .send(Buffer.from(binary.data, 'base64'));
+            .send(Buffer.from(data, 'base64'));
     }
 }

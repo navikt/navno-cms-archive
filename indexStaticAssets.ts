@@ -6,6 +6,7 @@ import { Client } from '@opensearch-project/opensearch';
 import type { Client as ClientTypeNew } from '@opensearch-project/opensearch/api/new';
 import path from 'path';
 import fs from 'fs';
+import { randomUUID } from 'node:crypto';
 
 type AssetDocument = {
     path: string;
@@ -120,7 +121,7 @@ const indexFile = async (
     return client
         .index({
             index: indexName,
-            id: filePath,
+            id: randomUUID({ disableEntropyCache: true }),
             body: assetDocument,
         })
         .then((res) => {
@@ -130,7 +131,7 @@ const indexFile = async (
         });
 };
 
-const instance: CmsInstance = 'fss';
+const instance: CmsInstance = 'sbs';
 
 createIndex(instance).then((indexName: string) => {
     const baseDir = path.join(process.cwd(), 'cms-assets', instance);

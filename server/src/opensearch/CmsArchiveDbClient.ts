@@ -12,7 +12,7 @@ const { OpenSearchClientError } = errors;
 
 const logException = (e: unknown) => {
     if (e instanceof OpenSearchClientError) {
-        console.log(`OpenSearch error: ${e.message}`);
+        console.log(`OpenSearch error: ${e.message} - ${e.stack}`);
     } else {
         console.log(`Unknown error: ${e}`);
     }
@@ -70,6 +70,7 @@ export class CmsArchiveDbClient {
     public async getDocument<Document>(
         params: GetRequest
     ): Promise<Document | null> {
+        console.log(`Trying`, params);
         return this.openSearchClient
             .get<Document>(params)
             .then((result) => {

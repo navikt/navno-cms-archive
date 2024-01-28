@@ -4,6 +4,7 @@ import { CmsArchiveDbClient } from '../opensearch/CmsArchiveDbClient';
 import { CmsBinaryDocument } from '../../../common/cms-documents/binary';
 import { CmsArchiveSiteConfig } from './CmsArchiveSite';
 import { sortCategories } from '../utils/sort';
+import { AssetDocument } from '../opensearch/types';
 
 type ConstructorProps = {
     client: CmsArchiveDbClient;
@@ -17,6 +18,7 @@ export class CmsArchiveService {
     private readonly categoriesIndex: string;
     private readonly contentsIndex: string;
     private readonly binariesIndex: string;
+    private readonly staticAssetsIndex: string;
 
     constructor({ client, siteConfig }: ConstructorProps) {
         const { indexPrefix } = siteConfig;
@@ -27,6 +29,7 @@ export class CmsArchiveService {
         this.categoriesIndex = `${indexPrefix}_categories`;
         this.contentsIndex = `${indexPrefix}_content`;
         this.binariesIndex = `${indexPrefix}_binaries`;
+        this.staticAssetsIndex = `${indexPrefix}_assets`;
     }
 
     public getRootCategories(): Promise<CmsCategoryDocument[] | null> {
@@ -125,6 +128,33 @@ export class CmsArchiveService {
             index: this.binariesIndex,
             id: binaryKey,
         });
+    }
+
+    public async getStaticAsset(
+        filePath: string
+    ): Promise<AssetDocument | null> {
+        const withoutLeadingSlash = filePath.replace(/^\//, '');
+
+        const result = await this.client.search<AssetDocument>({
+            index: this.staticAssetsIndex,
+            body: {
+                query: {
+                    term: {
+                        path: withoutLeadingSlash,
+                    },
+                },
+            },
+        });
+
+        if (!result || result.length === 0) {
+            return null;
+        }
+
+        if (result?.length > 1) {
+            console.error(`Found multiple files with path ${filePath}!`);
+        }
+
+        return result[0];
     }
 
     private fixHtml(content: CmsContentDocument | null) {
