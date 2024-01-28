@@ -17,10 +17,12 @@ export default defineConfig(({ mode }) => {
         ssr: {
             // Externalizing certain libraries seems to crash SSR in dev mode due to invalid imports
             noExternal: [
-                '@navikt/ds-react',
+                '@babel/runtime',
                 '@navikt/aksel-icons',
+                '@navikt/ds-react',
                 /@radix-ui\/.*/,
                 'react-xml-viewer',
+                'swr',
             ],
         },
     };

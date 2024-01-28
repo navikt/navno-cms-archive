@@ -22,8 +22,7 @@
   },
   "include": [
     "src",
-    "common",
-    "indexStaticAssets.ts"
+    "common"
   ],
   "references": [
     {

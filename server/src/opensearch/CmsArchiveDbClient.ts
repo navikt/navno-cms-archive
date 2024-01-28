@@ -48,8 +48,6 @@ export class CmsArchiveDbClient {
                     return null;
                 }
 
-                console.log('Search result: ', result.body.hits.total);
-
                 return result.body.hits.hits.reduce<Document[]>(
                     (acc, { _source }) => {
                         if (_source) {
