@@ -4,15 +4,15 @@ import { classNames } from '../../../../utils/classNames.ts';
 import style from './HtmlView.module.css';
 
 type Props = {
-    html?: string;
-    hidden?: boolean;
+    html: string;
+    hidden: boolean;
 };
 
 export const HtmlView = ({ html, hidden }: Props) => {
-    return html ? (
+    return (
         <iframe
             srcDoc={html}
             className={classNames(style.html, hidden && style.hidden)}
         />
-    ) : null;
+    );
 };

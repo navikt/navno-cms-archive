@@ -4,8 +4,6 @@ import { CmsArchiveService } from './CmsArchiveService';
 import { parseQueryParamsList } from '../utils/queryParams';
 import mime from 'mime';
 import { HtmlRenderer } from '../site/ssr/htmlRenderer';
-import path from 'path';
-import { CmsBinaryDocument } from '../../../common/cms-documents/binary';
 
 export type CmsArchiveSiteConfig = {
     name: string;
@@ -105,24 +103,6 @@ export class CmsArchiveSite {
 
             return res.send(binary);
         });
-
-        router.get('/binary/file/:binaryKey', async (req, res) => {
-            const { binaryKey } = req.params;
-
-            const binary = await this.cmsArchiveService.getBinary(binaryKey);
-            if (!binary) {
-                return res
-                    .status(404)
-                    .send(`Binary with key ${binaryKey} not found`);
-            }
-
-            return this.fileResponse(
-                binary.filename,
-                binary.data,
-                `attachment; filename="${binary.filename}"`,
-                res
-            );
-        });
     }
 
     private async setupSiteRoutes(router: Router, htmlRenderer: HtmlRenderer) {
@@ -141,6 +121,24 @@ export class CmsArchiveSite {
     }
 
     private async setupFileRoutes(router: Router) {
+        router.get('/binary/file/:binaryKey', async (req, res) => {
+            const { binaryKey } = req.params;
+
+            const binary = await this.cmsArchiveService.getBinary(binaryKey);
+            if (!binary) {
+                return res
+                    .status(404)
+                    .send(`Binary with key ${binaryKey} not found`);
+            }
+
+            return this.fileResponse(
+                binary.filename,
+                binary.data,
+                `attachment; filename="${binary.filename}"`,
+                res
+            );
+        });
+
         router.use('/_public', async (req, res, next) => {
             const file = await this.cmsArchiveService.getStaticAsset(req.path);
             if (!file) {

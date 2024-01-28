@@ -2,10 +2,10 @@ import { CmsCategoryRef, CmsUser } from './_common.ts';
 
 type ContentVersionReference = {
     key: string;
+    timestamp: string;
+    title: string;
     statusKey?: string;
     status?: string;
-    timestamp?: string;
-    title?: string;
     comment?: string;
     modifier?: CmsUser;
 };
@@ -58,7 +58,7 @@ export type CmsContentDocument = {
     name: string;
     displayName: string;
 
-    versions?: Array<ContentVersionReference>;
+    versions: Array<ContentVersionReference>;
     locations?: Array<ContentLocation>;
     category?: CmsCategoryRef;
     binaries?: Array<ContentBinaryReference>;

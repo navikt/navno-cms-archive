@@ -3,7 +3,7 @@ import { CmsContentDocument } from '../../../common/cms-documents/content';
 import { CmsArchiveDbClient } from '../opensearch/CmsArchiveDbClient';
 import { CmsBinaryDocument } from '../../../common/cms-documents/binary';
 import { CmsArchiveSiteConfig } from './CmsArchiveSite';
-import { sortCategories } from '../utils/sort';
+import { sortCategories, sortVersions } from '../utils/sort';
 import { AssetDocument } from '../opensearch/types';
 
 type ConstructorProps = {
@@ -107,7 +107,7 @@ export class CmsArchiveService {
             return null;
         }
 
-        return this.fixHtml(result[0]);
+        return this.fixContent(result[0]);
     }
 
     public async getContentVersion(
@@ -118,7 +118,7 @@ export class CmsArchiveService {
             id: versionKey,
         });
 
-        return this.fixHtml(result);
+        return this.fixContent(result);
     }
 
     public async getBinary(
@@ -157,11 +157,17 @@ export class CmsArchiveService {
         return result[0];
     }
 
-    private fixHtml(content: CmsContentDocument | null) {
-        if (content?.html) {
+    private fixContent(content: CmsContentDocument | null) {
+        if (!content) {
+            return null;
+        }
+
+        sortVersions(content);
+
+        if (content.html) {
             const { basePath } = this.siteConfig;
 
-            content.html = content?.html
+            content.html = content.html
                 .replace(/(\r\n|\r|\n)/, '')
                 .replace(/src="\/(\d)+\//g, `src="${basePath}/`)
                 .replace(/href="\/(\d)+\//g, `href="${basePath}/`);

@@ -68,7 +68,6 @@ export class CmsArchiveDbClient {
     public async getDocument<Document>(
         params: GetRequest
     ): Promise<Document | null> {
-        console.log(`Trying`, params);
         return this.openSearchClient
             .get<Document>(params)
             .then((result) => {
