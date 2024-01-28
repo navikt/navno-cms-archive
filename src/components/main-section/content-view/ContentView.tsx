@@ -56,6 +56,7 @@ export const ContentView = ({ content }: Props) => {
                 </ToggleGroup>
                 <Select
                     label={'Velg versjon'}
+                    defaultValue={content.versionKey}
                     onChange={(e) => {
                         fetchContentVersion(appContext.basePath)(
                             e.target.value

@@ -4,9 +4,9 @@ import { AppTopSection } from './top-section/AppTopSection.tsx';
 import { AppLeftSection } from './left-section/AppLeftSection.tsx';
 import { AppMainSection } from './main-section/AppMainSection.tsx';
 import { useAppState } from '../state/useAppState.tsx';
+import { CmsContentDocument } from '../../common/cms-documents/content.ts';
 
 import style from './App.module.css';
-import { CmsContentDocument } from '../../common/cms-documents/content.ts';
 
 type Props = {
     context: AppContext;

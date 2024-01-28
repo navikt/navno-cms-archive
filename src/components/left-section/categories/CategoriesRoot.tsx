@@ -1,7 +1,7 @@
 import React from 'react';
 import { CmsCategoryDocument } from '../../../../common/cms-documents/category.ts';
 import { ChevronDownIcon, ChevronRightIcon } from '@navikt/aksel-icons';
-import { TreeItem, TreeView } from '@mui/x-tree-view';
+import { TreeView } from '@mui/x-tree-view';
 import { CategoriesList } from './CategoriesList.tsx';
 
 type Props = {
