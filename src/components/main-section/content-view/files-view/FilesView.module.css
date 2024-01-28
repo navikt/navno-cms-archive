@@ -1,3 +1,11 @@
+.files {
+    display: flex;
+    flex-direction: column;
+    > * {
+        padding: 0.125rem;
+    }
+}
+
 .hidden {
     display: none;
 }

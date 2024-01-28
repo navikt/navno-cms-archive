@@ -15,7 +15,7 @@ export const FilesView = ({ binaries, hidden }: Props) => {
     const { appContext } = useAppState();
 
     return (
-        <div className={classNames(hidden && style.hidden)}>
+        <div className={classNames(style.files, hidden && style.hidden)}>
             {binaries.map((binary) => (
                 <Link
                     key={binary.key}
