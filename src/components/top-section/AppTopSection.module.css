@@ -1,4 +1,7 @@
 .top {
     grid-area: top;
     border-bottom: var(--a-border-divider) solid 2px;
+
+    display: flex;
+    justify-content: space-between;
 }
