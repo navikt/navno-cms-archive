@@ -1,7 +1,9 @@
 .top {
     grid-area: top;
-    border-bottom: var(--a-border-divider) solid 2px;
 
     display: flex;
     justify-content: space-between;
+
+    border-bottom: var(--a-border-divider) solid 2px;
+    padding-bottom: 0.375rem;
 }
