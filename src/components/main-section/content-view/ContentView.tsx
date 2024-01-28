@@ -44,7 +44,7 @@ export const ContentView = ({ content }: Props) => {
         window.history.replaceState(
             {},
             '',
-            `${window.location.origin}${appContext.basePath}/${content.contentKey}`
+            `${window.location.origin}${appContext.basePath}/${content.versionKey}`
         );
         setViewState(getDefaultViewState(content));
     }, [content]);

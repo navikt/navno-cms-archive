@@ -5,7 +5,10 @@ import { AppLeftSection } from './left-section/AppLeftSection.tsx';
 import { AppMainSection } from './main-section/AppMainSection.tsx';
 import { useAppState } from '../state/useAppState.tsx';
 import { CmsContentDocument } from '../../common/cms-documents/content.ts';
-import { fetchContent } from '../utils/fetch/fetchContent.ts';
+import {
+    fetchContent,
+    fetchContentVersion,
+} from '../utils/fetch/fetchContent.ts';
 
 import style from './App.module.css';
 
@@ -18,21 +21,21 @@ export const App = ({ context }: Props) => {
         CmsContentDocument | undefined
     >();
 
-    const { cmsName, selectedContentKey, basePath } = context;
+    const { cmsName, selectedVersionKey, basePath } = context;
 
     const { AppStateProvider } = useAppState();
 
     useEffect(() => {
-        if (!selectedContentKey) {
+        if (!selectedVersionKey) {
             return;
         }
 
-        fetchContent(basePath)(selectedContentKey).then((res) => {
+        fetchContentVersion(basePath)(selectedVersionKey).then((res) => {
             if (res) {
                 setSelectedContent(res);
             }
         });
-    }, [basePath, selectedContentKey]);
+    }, [basePath, selectedVersionKey]);
 
     return (
         <AppStateProvider

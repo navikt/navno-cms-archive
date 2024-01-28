@@ -4,7 +4,7 @@ export type AppContext = {
     cmsName: string;
     basePath: string;
     rootCategories: CmsCategoryDocument[];
-    selectedContentKey?: string;
+    selectedVersionKey?: string;
 };
 
 export const appErrorContext: AppContext = {

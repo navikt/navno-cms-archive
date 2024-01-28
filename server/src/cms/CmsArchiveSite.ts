@@ -106,13 +106,13 @@ export class CmsArchiveSite {
     }
 
     private async setupSiteRoutes(router: Router, htmlRenderer: HtmlRenderer) {
-        router.get('/:contentKey?', async (req, res) => {
+        router.get('/:versionKey?', async (req, res) => {
             const rootCategories =
                 (await this.cmsArchiveService.getRootCategories()) || [];
 
             const appContext = {
                 rootCategories,
-                selectedContentKey: req.params.contentKey,
+                selectedVersionKey: req.params.versionKey,
                 cmsName: this.config.name,
                 basePath: this.config.basePath,
             };
