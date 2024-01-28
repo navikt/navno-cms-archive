@@ -1,11 +1,6 @@
 name: Build and deploy to nais
 on:
-  workflow_call:
-    secrets:
-      READER_TOKEN:
-        required: true
-      NAIS_WORKLOAD_IDENTITY_PROVIDER:
-        required: true
+  workflow_dispatch:
 
 jobs:
   build-and-deploy:
@@ -14,7 +9,6 @@ jobs:
     permissions:
       contents: "read"
       id-token: "write"
-    environment: ${{ inputs.env }}
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
