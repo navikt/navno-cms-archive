@@ -6,8 +6,10 @@
     padding: 0 0.25rem;
 }
 
-.buttons {
+.header {
     display: flex;
-    flex-direction: row;
-    align-items: flex-end;
+    align-items: center;
+    svg {
+        margin-right: 0.5rem;
+    }
 }
