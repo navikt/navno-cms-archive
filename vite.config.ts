@@ -15,7 +15,7 @@ export default defineConfig(({ mode }) => {
                 : []),
         ],
         ssr: {
-            // Externalizing certain libraries seems to crash SSR in dev mode due to invalid imports
+            // Externalizing certain libraries seems to cause crashes due to invalid imports in the SSR bundle
             noExternal: [
                 '@babel/runtime',
                 '@navikt/aksel-icons',
