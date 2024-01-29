@@ -59,9 +59,9 @@ export type CmsContentDocument = {
     displayName: string;
 
     versions: Array<ContentVersionReference>;
-    locations?: Array<ContentLocation>;
-    category?: CmsCategoryRef;
-    binaries?: Array<ContentBinaryReference>;
+    locations: Array<ContentLocation>;
+    category: CmsCategoryRef;
+    binaries: Array<ContentBinaryReference>;
 
     meta: ContentMetaData;
 };

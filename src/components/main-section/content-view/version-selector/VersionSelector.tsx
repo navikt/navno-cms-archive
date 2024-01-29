@@ -4,7 +4,7 @@ import { fetchContentVersion } from '../../../../utils/fetch/fetchContent.ts';
 import { CmsContentDocument } from '../../../../../common/cms-documents/content.ts';
 import { useAppState } from '../../../../state/useAppState.tsx';
 
-const TITLE_MAX_LENGTH = 75;
+const TITLE_MAX_LENGTH = 100;
 
 type Props = {
     content: CmsContentDocument;
@@ -18,6 +18,7 @@ export const VersionSelector = ({ content }: Props) => {
             label={'Velg versjon'}
             hideLabel={true}
             defaultValue={content.versionKey}
+            size={'small'}
             onChange={(e) => {
                 fetchContentVersion(appContext.basePath)(e.target.value).then(
                     (res) => {
