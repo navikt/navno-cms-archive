@@ -1,6 +1,6 @@
 import React from 'react';
 import { CmsCategoryDocument } from '../../../../../common/cms-documents/category.ts';
-import { Loader } from '@navikt/ds-react';
+import { Loader, Tooltip } from '@navikt/ds-react';
 import { TreeItem } from '@mui/x-tree-view';
 import useSWRImmutable from 'swr/immutable';
 import { fetchCategories } from '../../../../utils/fetch/fetchCategories.ts';
@@ -37,7 +37,16 @@ export const Category = ({ category }: Props) => {
         <TreeItem
             key={key}
             nodeId={key}
-            label={label}
+            label={
+                <Tooltip
+                    content={key}
+                    placement={'left'}
+                    delay={500}
+                    offset={40}
+                >
+                    <div>{label}</div>
+                </Tooltip>
+            }
             className={style.item}
             disabled={isEmpty}
             icon={isEmpty ? <CircleSlashIcon /> : undefined}
