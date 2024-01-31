@@ -68,6 +68,37 @@ export class CmsArchiveService {
             .then(transformCategoriesResponse);
     }
 
+    public async getContentsForCategory(
+        categoryKey: string,
+        from: number = 0,
+        size: number = 25
+    ): Promise<CmsContentDocument[] | null> {
+        return this.client.search<CmsContentDocument>({
+            index: this.contentsIndex,
+            from,
+            size,
+            _source_excludes: ['xmlAsString', 'html'],
+            body: {
+                query: {
+                    bool: {
+                        must: [
+                            {
+                                term: {
+                                    isCurrentVersion: true,
+                                },
+                            },
+                            {
+                                term: {
+                                    'category.key': categoryKey,
+                                },
+                            },
+                        ],
+                    },
+                },
+            },
+        });
+    }
+
     public async getContent(
         contentKey: string
     ): Promise<CmsContentDocument | null> {

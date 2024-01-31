@@ -1,4 +1,4 @@
-import { fetchJson } from './fetchJson';
+import { fetchJson } from '../fetchJson';
 import { CmsContentDocument } from '../../../common/cms-documents/content';
 
 export const fetchContent =

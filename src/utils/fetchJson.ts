@@ -1,6 +1,6 @@
-export const fetchJson = <ResponseType = any>(
+export const fetchJson = <ResponseType>(
     url: string,
-    config?: Record<string, any>,
+    config?: Record<string, unknown>,
     retries = 0
 ): Promise<ResponseType | null> =>
     fetch(url, config)

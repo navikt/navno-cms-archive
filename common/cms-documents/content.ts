@@ -65,3 +65,5 @@ export type CmsContentDocument = {
 
     meta: ContentMetaData;
 };
+
+// export type Cms

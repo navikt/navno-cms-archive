@@ -103,6 +103,27 @@ export class CmsArchiveSite {
 
             return res.send(binary);
         });
+
+        const numberOrUndefined = (value: unknown): number | undefined => {
+            return Number(value) || undefined;
+        };
+
+        router.get(
+            '/contentForCategory/:categoryKey',
+            async (req, res, next) => {
+                const contents =
+                    await this.cmsArchiveService.getContentsForCategory(
+                        req.params.categoryKey,
+                        numberOrUndefined(req.query.from),
+                        numberOrUndefined(req.query.size)
+                    );
+                if (!contents) {
+                    return next();
+                }
+
+                return res.send(contents);
+            }
+        );
     }
 
     private async setupSiteRoutes(router: Router, htmlRenderer: HtmlRenderer) {
