@@ -52,7 +52,7 @@ export const ContentsMenu = ({ parentCategory }: Props) => {
             <div className={style.contentList}>
                 {isLoading ? (
                     <ContentLoader
-                        size={'3xlarge'}
+                        size={'xlarge'}
                         text={'Laster innhold...'}
                         direction={'column'}
                     />

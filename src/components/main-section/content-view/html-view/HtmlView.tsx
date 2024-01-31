@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import { classNames } from '../../../../utils/classNames';
 
 import style from './HtmlView.module.css';
@@ -11,15 +11,12 @@ type Props = {
 export const HtmlView = ({ html, hidden }: Props) => {
     const ref = useRef<HTMLIFrameElement>(null);
 
-    useEffect(() => {
-        disableLinksAndEventListeners(ref.current);
-    }, [html]);
-
     return (
         <iframe
             srcDoc={html}
             className={classNames(style.html, hidden && style.hidden)}
             ref={ref}
+            onLoad={(e) => disableLinksAndEventListeners(e.currentTarget)}
         />
     );
 };

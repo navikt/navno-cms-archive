@@ -30,7 +30,7 @@ export const VersionSelector = ({ content }: Props) => {
         >
             {content.versions?.map((version) => (
                 <option value={version.key} key={version.key}>
-                    {`${new Date(version.timestamp || '').toLocaleString('no')} - ${pruneTitle(content.displayName)} [${version.key}]`}
+                    {`${new Date(version.timestamp).toLocaleString('no')} - ${pruneTitle(content.displayName)} [${version.key}]`}
                 </option>
             ))}
         </Select>
