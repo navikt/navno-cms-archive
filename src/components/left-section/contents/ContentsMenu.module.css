@@ -7,7 +7,24 @@
     min-height: 100%;
 }
 
-.header {
+.topRow {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0.25rem 0;
+}
+
+.search {
+    width: 100%;
+    margin-left: 1rem;
+}
+
+.notFound {
+    width: 100%;
+    margin-top: 0.5rem;
+}
+
+.title {
     margin-top: 0.5rem;
 }
 
@@ -17,8 +34,20 @@
     margin-top: 0.25rem;
 }
 
-.paginator {
+.bottomSection {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem 0;
+    width: 100%;
     margin-top: auto;
     align-self: center;
-    padding: 1rem 0;
+
+    & > :not(:last-child) {
+        margin-bottom: 0.5rem;
+    }
+}
+
+.paginator {
+    margin-top: 1rem;
+    align-self: center;
 }

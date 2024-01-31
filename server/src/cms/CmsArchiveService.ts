@@ -1,11 +1,16 @@
 import { CmsCategoryListItem } from '../../../common/cms-documents/category';
-import { CmsContentDocument, CmsContentListItem } from '../../../common/cms-documents/content';
+import {
+    CategoryContentsResponse,
+    CmsContentDocument,
+    CmsContentListItem,
+} from '../../../common/cms-documents/content';
 import { CmsArchiveDbClient } from '../opensearch/CmsArchiveDbClient';
 import { CmsBinaryDocument } from '../../../common/cms-documents/binary';
 import { CmsArchiveSiteConfig } from './CmsArchiveSite';
 import { sortVersions } from '../utils/sort';
 import { AssetDocument, CmsCategoryDocument } from '../opensearch/types';
 import { transformToCategoriesList } from './utils/transformToCategoriesList';
+import { QueryDslQueryContainer } from '@opensearch-project/opensearch/api/types';
 
 type ConstructorProps = {
     client: CmsArchiveDbClient;
@@ -51,7 +56,7 @@ export class CmsArchiveService {
                     },
                 },
             })
-            .then(transformToCategoriesList);
+            .then((result) => (result ? transformToCategoriesList(result.hits) : result));
     }
 
     public async getCategories(categoryKeys: string[]): Promise<CmsCategoryListItem[] | null> {
@@ -69,8 +74,32 @@ export class CmsArchiveService {
     public async getContentsForCategory(
         categoryKey: string,
         from: number = 0,
-        size: number = 50
-    ): Promise<CmsContentListItem[] | null> {
+        size: number = 50,
+        query?: string
+    ): Promise<CategoryContentsResponse | null> {
+        const must: QueryDslQueryContainer[] = [
+            {
+                term: {
+                    isCurrentVersion: true,
+                },
+            },
+            {
+                term: {
+                    'category.key': categoryKey,
+                },
+            },
+        ];
+
+        if (query) {
+            must.push({
+                multi_match: {
+                    query,
+                    fields: ['displayName^10', 'xmlAsString'],
+                    type: 'phrase_prefix',
+                },
+            });
+        }
+
         return this.client.search<CmsContentListItem>({
             index: this.contentsIndex,
             from,
@@ -82,20 +111,10 @@ export class CmsArchiveService {
                 },
                 query: {
                     bool: {
-                        must: [
-                            {
-                                term: {
-                                    isCurrentVersion: true,
-                                },
-                            },
-                            {
-                                term: {
-                                    'category.key': categoryKey,
-                                },
-                            },
-                        ],
+                        must,
                     },
                 },
+                track_total_hits: true,
             },
         });
     }
@@ -127,16 +146,16 @@ export class CmsArchiveService {
             },
         });
 
-        if (!result || result.length === 0) {
+        if (!result || result.hits.length === 0) {
             return null;
         }
 
-        if (result.length > 1) {
+        if (result.hits.length > 1) {
             console.error(`Multiple contents found with contentKey ${contentKey}`);
             return null;
         }
 
-        return this.fixContent(result[0]);
+        return this.fixContent(result.hits[0]);
     }
 
     public async getContentVersion(versionKey: string): Promise<CmsContentDocument | null> {
@@ -169,15 +188,15 @@ export class CmsArchiveService {
             },
         });
 
-        if (!result || result.length === 0) {
+        if (!result || result.hits.length === 0) {
             return null;
         }
 
-        if (result?.length > 1) {
+        if (result.hits.length > 1) {
             console.error(`Found multiple files with path ${filePath}!`);
         }
 
-        return result[0];
+        return result.hits[0];
     }
 
     private fixContent(content: CmsContentDocument | null) {

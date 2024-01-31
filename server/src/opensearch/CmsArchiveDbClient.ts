@@ -1,12 +1,13 @@
 import { Client, errors } from '@opensearch-project/opensearch';
-import {
-    GetRequest,
-    MgetRequest,
-    SearchRequest,
-} from '@opensearch-project/opensearch/api/types';
+import { GetRequest, MgetRequest, SearchRequest } from '@opensearch-project/opensearch/api/types';
 // The more thorough type definition for the client are officially "not finished" as of v2.5
 // but are good enough for our use
 import type { Client as ClientTypeNew } from '@opensearch-project/opensearch/api/new';
+
+type SearchHit<Document> = {
+    hits: Document[];
+    total: number;
+};
 
 const { OpenSearchClientError } = errors;
 
@@ -22,8 +23,7 @@ export class CmsArchiveDbClient {
     private readonly openSearchClient: ClientTypeNew;
 
     constructor() {
-        const { OPEN_SEARCH_URI, OPEN_SEARCH_USERNAME, OPEN_SEARCH_PASSWORD } =
-            process.env;
+        const { OPEN_SEARCH_URI, OPEN_SEARCH_USERNAME, OPEN_SEARCH_PASSWORD } = process.env;
 
         this.openSearchClient = new Client({
             node: OPEN_SEARCH_URI,
@@ -34,30 +34,29 @@ export class CmsArchiveDbClient {
         }) as unknown as ClientTypeNew;
     }
 
-    public async search<Document>(
-        params: SearchRequest
-    ): Promise<Document[] | null> {
+    public async search<Document>(params: SearchRequest): Promise<SearchHit<Document> | null> {
         return this.openSearchClient
             .search<Document>(params)
             .then((result) => {
                 if (result.statusCode !== 200) {
-                    console.error(
-                        `Error response from search: ${result.statusCode}`,
-                        result
-                    );
+                    console.error(`Error response from search: ${result.statusCode}`, result);
                     return null;
                 }
 
-                return result.body.hits.hits.reduce<Document[]>(
-                    (acc, { _source }) => {
-                        if (_source) {
-                            acc.push(_source);
-                        }
+                const hits = result.body.hits.hits.reduce<Document[]>((acc, { _source }) => {
+                    if (_source) {
+                        acc.push(_source);
+                    }
 
-                        return acc;
-                    },
-                    []
-                );
+                    return acc;
+                }, []);
+
+                const total = result.body.hits.total;
+
+                return {
+                    hits,
+                    total: typeof total === 'number' ? total : total.value,
+                };
             })
             .catch((e: unknown) => {
                 logException(e);
@@ -65,17 +64,12 @@ export class CmsArchiveDbClient {
             });
     }
 
-    public async getDocument<Document>(
-        params: GetRequest
-    ): Promise<Document | null> {
+    public async getDocument<Document>(params: GetRequest): Promise<Document | null> {
         return this.openSearchClient
             .get<Document>(params)
             .then((result) => {
                 if (result.statusCode !== 200) {
-                    console.error(
-                        `Error response from get document: ${result.statusCode}`,
-                        result
-                    );
+                    console.error(`Error response from get document: ${result.statusCode}`, result);
                     return null;
                 }
 
@@ -87,30 +81,22 @@ export class CmsArchiveDbClient {
             });
     }
 
-    public async getDocuments<Document>(
-        params: MgetRequest
-    ): Promise<Document[] | null> {
+    public async getDocuments<Document>(params: MgetRequest): Promise<Document[] | null> {
         return this.openSearchClient
             .mget<Document>(params)
             .then((result) => {
                 if (result.statusCode !== 200) {
-                    console.error(
-                        `Error response from get document: ${result.statusCode}`,
-                        result
-                    );
+                    console.error(`Error response from get document: ${result.statusCode}`, result);
                     return null;
                 }
 
-                return result.body.docs.reduce<Document[]>(
-                    (acc, { _source }) => {
-                        if (_source) {
-                            acc.push(_source);
-                        }
+                return result.body.docs.reduce<Document[]>((acc, { _source }) => {
+                    if (_source) {
+                        acc.push(_source);
+                    }
 
-                        return acc;
-                    },
-                    []
-                );
+                    return acc;
+                }, []);
             })
             .catch((e: unknown) => {
                 logException(e);

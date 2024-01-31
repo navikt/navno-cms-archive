@@ -80,11 +80,13 @@ export class CmsArchiveSite {
 
         router.get('/contentForCategory/:categoryKey', async (req, res) => {
             const { categoryKey } = req.params;
+            const { from, size, query } = req.query;
 
             const contentList = await this.cmsArchiveService.getContentsForCategory(
                 categoryKey,
-                parseNumberParam(req.query.from),
-                parseNumberParam(req.query.size)
+                parseNumberParam(from),
+                parseNumberParam(size),
+                query as string
             );
             if (!contentList) {
                 return res

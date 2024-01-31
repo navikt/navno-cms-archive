@@ -1,13 +1,10 @@
 import useSWRImmutable from 'swr/immutable';
-import { useApiFetch } from './useApiFetch';
+import { FetchCategoryContentsParams, useApiFetch } from './useApiFetch';
 
-export const useFetchCategoryContents = (categoryKey: string, from: number, size: number) => {
+export const useFetchCategoryContents = (params: FetchCategoryContentsParams) => {
     const { fetchCategoryContents } = useApiFetch();
 
-    const { isLoading, data, error } = useSWRImmutable(
-        { categoryKey, from, size },
-        fetchCategoryContents
-    );
+    const { isLoading, data, error } = useSWRImmutable(params, fetchCategoryContents);
 
-    return { isLoading, contents: data, error };
+    return { isLoading, result: data, error };
 };

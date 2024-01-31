@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { CmsCategoryListItem } from '../../../../common/cms-documents/category';
-import { Alert, Button, Heading, Pagination, Tooltip } from '@navikt/ds-react';
+import { Alert, Button, Heading, Pagination, TextField, Tooltip } from '@navikt/ds-react';
 import { ArrowLeftIcon } from '@navikt/aksel-icons';
 import { useAppState } from '../../../state/useAppState';
 import { ContentLink } from './content-link/ContentLink';
@@ -20,15 +20,22 @@ export const ContentsMenu = ({ parentCategory }: Props) => {
     const { key: parentKey, title: parentTitle, contentCount } = parentCategory;
 
     const [pageNumber, setPageNumber] = useState<number>(1);
+    const [query, setQuery] = useState<string | undefined>(undefined);
 
     const { setContentSelectorOpen } = useAppState();
-    const { contents, isLoading } = useFetchCategoryContents(
-        parentCategory.key,
-        (pageNumber - 1) * CONTENTS_PER_PAGE,
-        CONTENTS_PER_PAGE
-    );
+    const { result, isLoading } = useFetchCategoryContents({
+        categoryKey: parentCategory.key,
+        from: (pageNumber - 1) * CONTENTS_PER_PAGE,
+        size: CONTENTS_PER_PAGE,
+        query,
+    });
 
-    const numPages = Math.ceil(Math.min(contentCount, MAX_CONTENTS) / CONTENTS_PER_PAGE);
+    const hits = result?.hits || [];
+
+    const currentCount = result?.total ?? contentCount;
+    const numPages = Math.ceil(Math.min(currentCount, MAX_CONTENTS) / CONTENTS_PER_PAGE);
+
+    console.log(currentCount);
 
     useEffect(() => {
         setPageNumber(1);
@@ -36,19 +43,37 @@ export const ContentsMenu = ({ parentCategory }: Props) => {
 
     return (
         <div className={style.wrapper}>
-            <Button
-                onClick={() => setContentSelectorOpen(false)}
-                variant={'tertiary'}
-                size={'xsmall'}
-                icon={<ArrowLeftIcon />}
-            >
-                {'Tilbake'}
-            </Button>
+            <div className={style.topRow}>
+                <Button
+                    onClick={() => setContentSelectorOpen(false)}
+                    variant={'tertiary'}
+                    size={'xsmall'}
+                    icon={<ArrowLeftIcon />}
+                >
+                    {'Tilbake'}
+                </Button>
+                <TextField
+                    label={'Søk i dette innholdet'}
+                    hideLabel={true}
+                    onChange={(e) => setQuery(e.target.value || undefined)}
+                    size={'small'}
+                    placeholder={'Søk i dette innholdet (minst 3 tegn)'}
+                    className={style.search}
+                />
+            </div>
             <Tooltip content={`Kategori-nøkkel: ${parentKey}`} placement={'left'} delay={1000}>
-                <Heading level={'2'} size={'xsmall'} className={style.header}>
+                <Heading level={'2'} size={'xsmall'} className={style.title}>
                     {parentTitle}
                 </Heading>
             </Tooltip>
+            {query && !isLoading && hits.length === 0 && (
+                <Alert
+                    variant={'info'}
+                    className={style.notFound}
+                    size={'small'}
+                    inline={true}
+                >{`Ingen treff for "${query}" i denne kategorien`}</Alert>
+            )}
             <div className={style.contentList}>
                 {isLoading ? (
                     <ContentLoader
@@ -56,9 +81,9 @@ export const ContentsMenu = ({ parentCategory }: Props) => {
                         text={'Laster innhold...'}
                         direction={'column'}
                     />
-                ) : contents ? (
+                ) : hits ? (
                     <>
-                        {contents.map((content) => (
+                        {hits.map((content) => (
                             <ContentLink content={content} key={content.contentKey} />
                         ))}
                     </>
@@ -68,23 +93,25 @@ export const ContentsMenu = ({ parentCategory }: Props) => {
                     </Alert>
                 )}
             </div>
-            {numPages > 1 && (
-                <>
-                    <Pagination
-                        page={pageNumber}
-                        onPageChange={setPageNumber}
-                        count={numPages}
-                        size={'xsmall'}
-                        className={style.paginator}
-                    />
-                    {contentCount > MAX_CONTENTS && (
-                        <Alert
-                            variant={'warning'}
-                            size={'small'}
-                        >{`Kan ikke vise flere enn ${MAX_CONTENTS} innholdselementer (fant ${contentCount}). Bruk søkefeltet for å filtrer antall treff.`}</Alert>
-                    )}
-                </>
-            )}
+            <div className={style.bottomSection}>
+                {numPages > 1 && (
+                    <>
+                        <Pagination
+                            page={pageNumber}
+                            onPageChange={setPageNumber}
+                            count={numPages}
+                            size={'xsmall'}
+                            className={style.paginator}
+                        />
+                        {currentCount > MAX_CONTENTS && (
+                            <Alert
+                                variant={'warning'}
+                                size={'small'}
+                            >{`Kan ikke vise flere enn ${MAX_CONTENTS} innholdselementer (fant ${currentCount}). Bruk søkefeltet for å filtrer antall elementer.`}</Alert>
+                        )}
+                    </>
+                )}
+            </div>
         </div>
     );
 };

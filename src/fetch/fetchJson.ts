@@ -1,7 +1,7 @@
 export const fetchJson = <ResponseType>(
     url: string,
     config?: Record<string, unknown>,
-    retries = 0
+    retries = 1
 ): Promise<ResponseType | null> =>
     fetch(url, config)
         .then((res) => {
