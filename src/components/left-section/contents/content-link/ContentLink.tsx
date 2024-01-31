@@ -42,7 +42,9 @@ export const ContentLink = ({ content }: Props) => {
             ) : (
                 <ArrowRightIcon className={style.icon} />
             )}
-            <BodyShort size={'small'}>{content.displayName}</BodyShort>
+            <BodyShort
+                size={'small'}
+            >{`${content.displayName}${isLoading ? ' (laster...)' : ''}`}</BodyShort>
         </Link>
     );
 };
