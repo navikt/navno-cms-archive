@@ -1,4 +1,6 @@
-.leftMenu {
+@value transitionDuration: 250ms;
+
+.leftSection {
     display: flex;
     position: relative;
     grid-area: left;
@@ -10,9 +12,17 @@
     border-left: solid 4px var(--a-gray-600);
 }
 
-.contentsMenuWrapper {
+.categoriesMenu {
+    transition: visibility linear transitionDuration;
+
+    &.hidden {
+        visibility: hidden;
+        overflow: hidden;
+    }
+}
+
+.contentsMenu {
     position: absolute;
-    background-color: var(--a-white);
     opacity: 0;
     visibility: hidden;
     width: 100%;
@@ -21,7 +31,7 @@
 
     transition-property: right, visibility, opacity;
     transition-timing-function: ease-in;
-    transition-duration: 250ms;
+    transition-duration: transitionDuration;
 
     &.open {
         right: 0;

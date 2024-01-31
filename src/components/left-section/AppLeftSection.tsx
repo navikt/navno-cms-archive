@@ -11,17 +11,12 @@ export const AppLeftSection = () => {
     const { rootCategories } = appContext;
 
     return (
-        <div className={style.leftMenu}>
-            <CategoriesMenu rootCategories={rootCategories} />
-            <div
-                className={classNames(
-                    style.contentsMenuWrapper,
-                    contentSelectorOpen && style.open
-                )}
-            >
-                {selectedCategory && (
-                    <ContentsMenu parentCategory={selectedCategory} />
-                )}
+        <div className={style.leftSection}>
+            <div className={classNames(style.categoriesMenu, contentSelectorOpen && style.hidden)}>
+                <CategoriesMenu rootCategories={rootCategories} />
+            </div>
+            <div className={classNames(style.contentsMenu, contentSelectorOpen && style.open)}>
+                {selectedCategory && <ContentsMenu parentCategory={selectedCategory} />}
             </div>
         </div>
     );

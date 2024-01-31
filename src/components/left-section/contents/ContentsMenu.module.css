@@ -1,5 +1,7 @@
 .wrapper {
- padding: 0 0.5rem;
+    padding: 0 0.5rem;
+    background-color: var(--a-white);
+    min-height: 100%;
 }
 
 .header {
@@ -8,6 +10,8 @@
     align-items: center;
 }
 
-.close {
-
+.contentList {
+    display: flex;
+    flex-direction: column;
+    margin-top: 1rem;
 }

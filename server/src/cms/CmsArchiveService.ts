@@ -54,9 +54,7 @@ export class CmsArchiveService {
             .then(transformCategoriesResponse);
     }
 
-    public async getCategories(
-        categoryKeys: string[]
-    ): Promise<CmsCategory[] | null> {
+    public async getCategories(categoryKeys: string[]): Promise<CmsCategory[] | null> {
         return this.client
             .getDocuments<CmsCategoryDocument>({
                 index: this.categoriesIndex,
@@ -71,7 +69,7 @@ export class CmsArchiveService {
     public async getContentsForCategory(
         categoryKey: string,
         from: number = 0,
-        size: number = 25
+        size: number = 50
     ): Promise<CmsContentDocument[] | null> {
         return this.client.search<CmsContentDocument>({
             index: this.contentsIndex,
@@ -99,9 +97,7 @@ export class CmsArchiveService {
         });
     }
 
-    public async getContent(
-        contentKey: string
-    ): Promise<CmsContentDocument | null> {
+    public async getContent(contentKey: string): Promise<CmsContentDocument | null> {
         const result = await this.client.search<CmsContentDocument>({
             index: this.contentsIndex,
             body: {
@@ -133,18 +129,14 @@ export class CmsArchiveService {
         }
 
         if (result.length > 1) {
-            console.error(
-                `Multiple contents found with contentKey ${contentKey}`
-            );
+            console.error(`Multiple contents found with contentKey ${contentKey}`);
             return null;
         }
 
         return this.fixContent(result[0]);
     }
 
-    public async getContentVersion(
-        versionKey: string
-    ): Promise<CmsContentDocument | null> {
+    public async getContentVersion(versionKey: string): Promise<CmsContentDocument | null> {
         const result = await this.client.getDocument<CmsContentDocument>({
             index: this.contentsIndex,
             id: versionKey,
@@ -153,18 +145,14 @@ export class CmsArchiveService {
         return this.fixContent(result);
     }
 
-    public async getBinary(
-        binaryKey: string
-    ): Promise<CmsBinaryDocument | null> {
+    public async getBinary(binaryKey: string): Promise<CmsBinaryDocument | null> {
         return this.client.getDocument<CmsBinaryDocument>({
             index: this.binariesIndex,
             id: binaryKey,
         });
     }
 
-    public async getStaticAsset(
-        filePath: string
-    ): Promise<AssetDocument | null> {
+    public async getStaticAsset(filePath: string): Promise<AssetDocument | null> {
         const withoutLeadingSlash = filePath.replace(/^\//, '');
 
         const result = await this.client.search<AssetDocument>({
@@ -201,8 +189,7 @@ export class CmsArchiveService {
 
             content.html = content.html
                 .replace(/(\r\n|\r|\n)/, '')
-                .replace(/src="\/(\d)+\//g, `src="${basePath}/`)
-                .replace(/href="\/(\d)+\//g, `href="${basePath}/`);
+                .replace(/="\/(\d)+\//g, `="${basePath}/`);
         }
 
         return content;

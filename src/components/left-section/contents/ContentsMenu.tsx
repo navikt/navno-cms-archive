@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { CmsCategory } from '../../../../common/cms-documents/category';
-import { Button, Heading, Link } from '@navikt/ds-react';
+import { Button, Heading } from '@navikt/ds-react';
 import { ArrowLeftIcon } from '@navikt/aksel-icons';
 import { useAppState } from '../../../state/useAppState';
 import { useApiFetch } from '../../../state/useApiFetch';
 import { CmsContentDocument } from '../../../../common/cms-documents/content';
+import { ContentLink } from './content-link/ContentLink';
 
 import style from './ContentsMenu.module.css';
 
@@ -13,8 +14,8 @@ type Props = {
 };
 
 export const ContentsMenu = ({ parentCategory }: Props) => {
-    const { setContentSelectorOpen, setSelectedContent } = useAppState();
-    const { fetchCategoryContents, fetchContent } = useApiFetch();
+    const { setContentSelectorOpen } = useAppState();
+    const { fetchCategoryContents } = useApiFetch();
 
     const { key: parentKey, title: parentTitle } = parentCategory;
 
@@ -22,7 +23,7 @@ export const ContentsMenu = ({ parentCategory }: Props) => {
 
     useEffect(() => {
         fetchCategoryContents(parentKey).then(setContents);
-    }, [fetchCategoryContents, parentKey]);
+    }, [parentKey]);
 
     return (
         <div className={style.wrapper}>
@@ -37,22 +38,9 @@ export const ContentsMenu = ({ parentCategory }: Props) => {
                 </Button>
                 <Heading level={'2'} size={'xsmall'}>{`${parentTitle} (${parentKey})`}</Heading>
             </div>
-            <div>
+            <div className={style.contentList}>
                 {contents?.map((content) => (
-                    <Link
-                        key={content.contentKey}
-                        href={''}
-                        onClick={(e) => {
-                            e.preventDefault();
-                            fetchContent(content.contentKey).then((res) => {
-                                if (res) {
-                                    setSelectedContent(res);
-                                }
-                            });
-                        }}
-                    >
-                        {content.displayName}
-                    </Link>
+                    <ContentLink content={content} key={content.contentKey} />
                 ))}
             </div>
         </div>
