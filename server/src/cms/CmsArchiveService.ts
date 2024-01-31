@@ -75,7 +75,7 @@ export class CmsArchiveService {
             index: this.contentsIndex,
             from,
             size,
-            _source_includes: ['categoryKey', 'versionKey', 'displayName'],
+            _source_includes: ['contentKey', 'versionKey', 'displayName'],
             body: {
                 query: {
                     bool: {

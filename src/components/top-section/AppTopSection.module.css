@@ -1,9 +1,19 @@
-.top {
+.topSection {
     grid-area: top;
 
     display: flex;
     justify-content: space-between;
+    align-items: center;
 
     border-bottom: var(--a-border-divider) solid 2px;
     padding-bottom: 0.375rem;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    margin-right: 1rem;
 }
