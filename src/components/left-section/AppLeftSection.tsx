@@ -1,19 +1,41 @@
-import React from 'react';
-import { AppContext } from '../../../common/appContext.ts';
-import { CategoriesRoot } from './categories/CategoriesRoot.tsx';
+import React, { useEffect, useState } from 'react';
+import { CategoriesMenu } from './categories/CategoriesMenu';
+import { ContentsMenu } from './contents/ContentsMenu';
+import { useAppState } from '../../state/useAppState';
+import { classNames } from '../../utils/classNames';
 
 import style from './AppLeftSection.module.css';
 
-type Props = {
-    context: AppContext;
-};
+export const AppLeftSection = () => {
+    const [contentSelectorOpen, setContentSelectorOpen] = useState(false);
 
-export const AppLeftSection = ({ context }: Props) => {
-    const { rootCategories } = context;
+    const { selectedCategory, setSelectedCategory, appContext } = useAppState();
+    const { rootCategories } = appContext;
+
+    useEffect(() => {
+        if (selectedCategory) {
+            setContentSelectorOpen(true);
+        } else {
+            setContentSelectorOpen(false);
+        }
+    }, [selectedCategory]);
 
     return (
         <div className={style.leftMenu}>
-            <CategoriesRoot rootCategories={rootCategories} />
+            <CategoriesMenu rootCategories={rootCategories} />
+            <div
+                className={classNames(
+                    style.contentsMenuWrapper,
+                    contentSelectorOpen && style.open
+                )}
+            >
+                {selectedCategory && (
+                    <ContentsMenu
+                        parentCategory={selectedCategory}
+                        close={() => setSelectedCategory(null)}
+                    />
+                )}
+            </div>
         </div>
     );
 };

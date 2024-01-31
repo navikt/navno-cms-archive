@@ -1,5 +1,5 @@
-import { fetchJson } from './fetchJson.ts';
-import { CmsCategoryDocument } from '../../../common/cms-documents/category.ts';
+import { fetchJson } from './fetchJson';
+import { CmsCategoryDocument } from '../../../common/cms-documents/category';
 
 export const fetchCategories =
     (basePath: string) =>

@@ -1,8 +1,8 @@
 import React from 'react';
 import { ToggleGroup, Tooltip, TooltipProps } from '@navikt/ds-react';
 import style from '../content-view/ContentView.module.css';
-import { classNames } from '../../../utils/classNames.ts';
-import { CmsContentDocument } from '../../../../common/cms-documents/content.ts';
+import { classNames } from '../../../utils/classNames';
+import { CmsContentDocument } from '../../../../common/cms-documents/content';
 
 export type ViewState = 'html' | 'xml' | 'files';
 

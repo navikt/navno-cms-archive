@@ -1,7 +1,7 @@
 import React from 'react';
 import XMLViewer from 'react-xml-viewer';
 import { Alert } from '@navikt/ds-react';
-import { classNames } from '../../../../utils/classNames.ts';
+import { classNames } from '../../../../utils/classNames';
 
 import style from './XmlView.module.css';
 

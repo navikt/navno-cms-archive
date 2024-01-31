@@ -1,4 +1,4 @@
-import { CmsCategoryDocument } from './cms-documents/category.ts';
+import { CmsCategoryDocument } from './cms-documents/category';
 
 export type AppContext = {
     cmsName: string;

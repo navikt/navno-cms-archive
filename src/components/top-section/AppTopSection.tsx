@@ -1,6 +1,6 @@
 import React from 'react';
 import { Heading, Select } from '@navikt/ds-react';
-import { useAppState } from '../../state/useAppState.tsx';
+import { useAppState } from '../../state/useAppState';
 
 import style from './AppTopSection.module.css';
 

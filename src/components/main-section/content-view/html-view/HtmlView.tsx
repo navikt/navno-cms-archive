@@ -1,5 +1,5 @@
 import React from 'react';
-import { classNames } from '../../../../utils/classNames.ts';
+import { classNames } from '../../../../utils/classNames';
 
 import style from './HtmlView.module.css';
 

@@ -1,6 +1,6 @@
 import React from 'react';
-import { CmsCategoryDocument } from '../../../../common/cms-documents/category.ts';
-import { Category } from './category/Category.tsx';
+import { CmsCategoryDocument } from '../../../../common/cms-documents/category';
+import { Category } from './category/Category';
 
 type Props = {
     categories: CmsCategoryDocument[];

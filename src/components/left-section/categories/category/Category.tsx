@@ -1,12 +1,11 @@
 import React from 'react';
-import { CmsCategoryDocument } from '../../../../../common/cms-documents/category.ts';
+import { CmsCategoryDocument } from '../../../../../common/cms-documents/category';
 import { Loader, Tooltip } from '@navikt/ds-react';
 import { TreeItem } from '@mui/x-tree-view';
 import useSWRImmutable from 'swr/immutable';
-import { fetchCategories } from '../../../../utils/fetch/fetchCategories.ts';
-import { CategoriesList } from '../CategoriesList.tsx';
-import { useAppState } from '../../../../state/useAppState.tsx';
-import { fetchContent } from '../../../../utils/fetch/fetchContent.ts';
+import { fetchCategories } from '../../../../utils/fetch/fetchCategories';
+import { CategoriesList } from '../CategoriesList';
+import { useAppState } from '../../../../state/useAppState';
 import { CircleSlashIcon, FileTextIcon } from '@navikt/aksel-icons';
 
 import style from './Category.module.css';
@@ -17,7 +16,7 @@ type Props = {
 
 export const Category = ({ category }: Props) => {
     const { key, title, categories, contents } = category;
-    const { setSelectedContent, appContext } = useAppState();
+    const { appContext, setSelectedCategory } = useAppState();
 
     const childKeys = categories.map((category) => category.key);
 
@@ -26,12 +25,14 @@ export const Category = ({ category }: Props) => {
         fetchCategories(appContext.basePath)
     );
 
+    const hasContent = contents.length > 0;
+
     const isEmpty =
         !isLoading &&
-        (!childCategories || childCategories.length === 0) &&
-        contents.length === 0;
+        !hasContent &&
+        (!childCategories || childCategories.length === 0);
 
-    const label = `${title}${contents.length > 0 ? ` (${contents.length})` : isEmpty ? ' (tom)' : ''}`;
+    const label = `${title}${isEmpty ? ' (tom)' : ''}`;
 
     return (
         <TreeItem
@@ -56,24 +57,17 @@ export const Category = ({ category }: Props) => {
             ) : childCategories ? (
                 <CategoriesList categories={childCategories} />
             ) : null}
-            {contents.map((content) => (
+            {hasContent && (
                 <TreeItem
-                    key={content.key}
-                    nodeId={content.key}
-                    label={content.displayName}
+                    nodeId={'contents'}
                     icon={<FileTextIcon />}
+                    label={`Vis innhold (${contents.length})`}
                     onClick={(e) => {
                         e.preventDefault();
-                        fetchContent(appContext.basePath)(content.key).then(
-                            (res) => {
-                                if (res) {
-                                    setSelectedContent(res);
-                                }
-                            }
-                        );
+                        setSelectedCategory(category);
                     }}
                 />
-            ))}
+            )}
         </TreeItem>
     );
 };

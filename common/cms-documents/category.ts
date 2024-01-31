@@ -1,21 +1,21 @@
-import { CmsCategoryRef } from './_common.ts';
+import { CmsCategoryRef } from './_common';
 
 type CmsContentRefData = {
-    key: string,
-    name: string,
-    displayName: string,
-    timestamp?: string,
-}
+    key: string;
+    name: string;
+    displayName: string;
+    timestamp?: string;
+};
 
 export type CmsCategoryDocument = {
-    key: string,
-    title: string,
+    key: string;
+    title: string;
 
-    categories: CmsCategoryRef[],
-    contents: CmsContentRefData[]
+    categories: CmsCategoryRef[];
+    contents: CmsContentRefData[];
 
-    contentTypeKey?: string,
-    superKey?: string,
+    contentTypeKey?: string;
+    superKey?: string;
 
-    xmlAsstring?: string,
-}
+    xmlAsstring?: string;
+};

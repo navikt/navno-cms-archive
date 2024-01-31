@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { CmsContentDocument } from '../../../../common/cms-documents/content.ts';
-import { XmlView } from './xml-view/XmlView.tsx';
-import { HtmlView } from './html-view/HtmlView.tsx';
-import { FilesView } from './files-view/FilesView.tsx';
-import { VersionSelector } from './version-selector/VersionSelector.tsx';
-import { useAppState } from '../../../state/useAppState.tsx';
-import { ViewSelector, ViewState } from '../view-selector/ViewSelector.tsx';
+import { CmsContentDocument } from '../../../../common/cms-documents/content';
+import { XmlView } from './xml-view/XmlView';
+import { HtmlView } from './html-view/HtmlView';
+import { FilesView } from './files-view/FilesView';
+import { VersionSelector } from './version-selector/VersionSelector';
+import { useAppState } from '../../../state/useAppState';
+import { ViewSelector, ViewState } from '../view-selector/ViewSelector';
 
 import style from './ContentView.module.css';
 

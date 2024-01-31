@@ -1,0 +1,13 @@
+.wrapper {
+ padding: 0 0.5rem;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.close {
+
+}

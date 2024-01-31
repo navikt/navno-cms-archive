@@ -2,8 +2,8 @@ import './global.css';
 
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { App } from './components/App.tsx';
-import { AppContext, appErrorContext } from '../common/appContext.ts';
+import { App } from './components/App';
+import { AppContext, appErrorContext } from '../common/appContext';
 
 const parseAppContext = (): AppContext => {
     try {

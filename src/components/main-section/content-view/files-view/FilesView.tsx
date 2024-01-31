@@ -1,8 +1,8 @@
 import React from 'react';
-import { CmsContentDocument } from '../../../../../common/cms-documents/content.ts';
+import { CmsContentDocument } from '../../../../../common/cms-documents/content';
 import { Link } from '@navikt/ds-react';
-import { useAppState } from '../../../../state/useAppState.tsx';
-import { classNames } from '../../../../utils/classNames.ts';
+import { useAppState } from '../../../../state/useAppState';
+import { classNames } from '../../../../utils/classNames';
 
 import style from './FilesView.module.css';
 

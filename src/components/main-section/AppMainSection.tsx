@@ -1,6 +1,6 @@
 import React from 'react';
-import { ContentView } from './content-view/ContentView.tsx';
-import { useAppState } from '../../state/useAppState.tsx';
+import { ContentView } from './content-view/ContentView';
+import { useAppState } from '../../state/useAppState';
 import { Heading } from '@navikt/ds-react';
 import { ArrowLeftIcon } from '@navikt/aksel-icons';
 

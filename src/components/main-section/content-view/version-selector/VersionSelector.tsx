@@ -1,8 +1,8 @@
 import React from 'react';
 import { Select } from '@navikt/ds-react';
-import { fetchContentVersion } from '../../../../utils/fetch/fetchContent.ts';
-import { CmsContentDocument } from '../../../../../common/cms-documents/content.ts';
-import { useAppState } from '../../../../state/useAppState.tsx';
+import { fetchContentVersion } from '../../../../utils/fetch/fetchContent';
+import { CmsContentDocument } from '../../../../../common/cms-documents/content';
+import { useAppState } from '../../../../state/useAppState';
 
 const TITLE_MAX_LENGTH = 100;
 
