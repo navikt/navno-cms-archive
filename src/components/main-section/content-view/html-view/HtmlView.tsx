@@ -12,13 +12,7 @@ export const HtmlView = ({ html, hidden }: Props) => {
     const ref = useRef<HTMLIFrameElement>(null);
 
     useEffect(() => {
-        const element = ref.current;
-        if (!element) {
-            console.error('Iframe element not found!');
-            return;
-        }
-
-        element.querySelectorAll('a').forEach((a) => (a.onclick = (e) => e.preventDefault()));
+        disableLinksAndEventListeners(ref.current);
     }, [html]);
 
     return (
@@ -28,4 +22,23 @@ export const HtmlView = ({ html, hidden }: Props) => {
             ref={ref}
         />
     );
+};
+
+const disableLinksAndEventListeners = (iframeElement: HTMLIFrameElement | null) => {
+    const document = iframeElement?.contentDocument;
+    if (!document) {
+        console.error('Iframe document not found!');
+        return;
+    }
+
+    // eslint-disable-next-line no-self-assign
+    document.body.innerHTML = document.body.innerHTML;
+
+    document.querySelectorAll('a, button').forEach((a) => {
+        a.addEventListener('click', (e) => {
+            console.log('Clickin');
+            e.stopPropagation();
+            e.preventDefault();
+        });
+    });
 };
