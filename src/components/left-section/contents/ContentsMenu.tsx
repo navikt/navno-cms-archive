@@ -20,7 +20,7 @@ export const ContentsMenu = ({ parentCategory }: Props) => {
     const { key: parentKey, title: parentTitle, contentCount } = parentCategory;
 
     const [pageNumber, setPageNumber] = useState<number>(1);
-    const [query, setQuery] = useState<string | undefined>(undefined);
+    const [query, setQuery] = useState<string>('');
 
     const { setContentSelectorOpen } = useAppState();
     const { result, isLoading } = useFetchCategoryContents({
@@ -53,11 +53,11 @@ export const ContentsMenu = ({ parentCategory }: Props) => {
                     {'Tilbake'}
                 </Button>
                 <TextField
-                    label={'Søk i dette innholdet'}
+                    label={'Søk i denne kategorien'}
                     hideLabel={true}
-                    onChange={(e) => setQuery(e.target.value || undefined)}
+                    onChange={(e) => setQuery(e.target.value)}
                     size={'small'}
-                    placeholder={'Søk i dette innholdet (minst 3 tegn)'}
+                    placeholder={'Søk i denne kategorien'}
                     className={style.search}
                 />
             </div>
