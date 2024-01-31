@@ -19,6 +19,6 @@ const parseAppContext = (): AppContext => {
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
-        <App context={parseAppContext()} />
+        <App appContext={parseAppContext()} />
     </React.StrictMode>
 );

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { CategoriesMenu } from './categories/CategoriesMenu';
 import { ContentsMenu } from './contents/ContentsMenu';
 import { useAppState } from '../../state/useAppState';
@@ -7,18 +7,8 @@ import { classNames } from '../../utils/classNames';
 import style from './AppLeftSection.module.css';
 
 export const AppLeftSection = () => {
-    const [contentSelectorOpen, setContentSelectorOpen] = useState(false);
-
-    const { selectedCategory, setSelectedCategory, appContext } = useAppState();
+    const { selectedCategory, appContext, contentSelectorOpen } = useAppState();
     const { rootCategories } = appContext;
-
-    useEffect(() => {
-        if (selectedCategory) {
-            setContentSelectorOpen(true);
-        } else {
-            setContentSelectorOpen(false);
-        }
-    }, [selectedCategory]);
 
     return (
         <div className={style.leftMenu}>
@@ -30,10 +20,7 @@ export const AppLeftSection = () => {
                 )}
             >
                 {selectedCategory && (
-                    <ContentsMenu
-                        parentCategory={selectedCategory}
-                        close={() => setSelectedCategory(null)}
-                    />
+                    <ContentsMenu parentCategory={selectedCategory} />
                 )}
             </div>
         </div>

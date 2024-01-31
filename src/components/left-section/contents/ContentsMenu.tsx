@@ -1,21 +1,23 @@
 import React from 'react';
-import { CmsCategoryDocument } from '../../../../common/cms-documents/category';
+import { CmsCategory } from '../../../../common/cms-documents/category';
 import { Button, Heading } from '@navikt/ds-react';
+import { ArrowLeftIcon } from '@navikt/aksel-icons';
+import { useAppState } from '../../../state/useAppState';
 
 import style from './ContentsMenu.module.css';
-import { ArrowLeftIcon } from '@navikt/aksel-icons';
 
 type Props = {
-    parentCategory: CmsCategoryDocument;
-    close: () => void;
+    parentCategory: CmsCategory;
 };
 
-export const ContentsMenu = ({ parentCategory, close }: Props) => {
+export const ContentsMenu = ({ parentCategory }: Props) => {
+    const { setContentSelectorOpen } = useAppState();
+
     return (
         <div className={style.wrapper}>
             <div className={style.header}>
                 <Button
-                    onClick={close}
+                    onClick={() => setContentSelectorOpen(false)}
                     variant={'tertiary'}
                     size={'xsmall'}
                     icon={<ArrowLeftIcon />}

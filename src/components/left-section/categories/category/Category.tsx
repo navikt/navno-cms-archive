@@ -1,5 +1,5 @@
 import React from 'react';
-import { CmsCategoryDocument } from '../../../../../common/cms-documents/category';
+import { CmsCategory } from '../../../../../common/cms-documents/category';
 import { Loader, Tooltip } from '@navikt/ds-react';
 import { TreeItem } from '@mui/x-tree-view';
 import useSWRImmutable from 'swr/immutable';
@@ -11,12 +11,13 @@ import { CircleSlashIcon, FileTextIcon } from '@navikt/aksel-icons';
 import style from './Category.module.css';
 
 type Props = {
-    category: CmsCategoryDocument;
+    category: CmsCategory;
 };
 
 export const Category = ({ category }: Props) => {
-    const { key, title, categories, contents } = category;
-    const { appContext, setSelectedCategory } = useAppState();
+    const { key, title, categories, contentCount } = category;
+    const { appContext, setSelectedCategory, setContentSelectorOpen } =
+        useAppState();
 
     const childKeys = categories.map((category) => category.key);
 
@@ -25,7 +26,7 @@ export const Category = ({ category }: Props) => {
         fetchCategories(appContext.basePath)
     );
 
-    const hasContent = contents.length > 0;
+    const hasContent = contentCount > 0;
 
     const isEmpty =
         !isLoading &&
@@ -61,10 +62,11 @@ export const Category = ({ category }: Props) => {
                 <TreeItem
                     nodeId={'contents'}
                     icon={<FileTextIcon />}
-                    label={`Vis innhold (${contents.length})`}
+                    label={`Vis innhold (${contentCount})`}
                     onClick={(e) => {
                         e.preventDefault();
                         setSelectedCategory(category);
+                        setContentSelectorOpen(true);
                     }}
                 />
             )}

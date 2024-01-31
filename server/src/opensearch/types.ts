@@ -1,3 +1,5 @@
+import { CmsCategoryRef } from '../../../common/cms-documents/_common';
+
 export type AssetDocument = {
     path: string;
     dirname: string;
@@ -5,4 +7,24 @@ export type AssetDocument = {
     filesize: number;
     modifiedTime: string;
     data: string;
+};
+
+type CmsContentRefData = {
+    key: string;
+    name: string;
+    displayName: string;
+    timestamp?: string;
+};
+
+export type CmsCategoryDocument = {
+    key: string;
+    title: string;
+
+    categories: CmsCategoryRef[];
+    contents: CmsContentRefData[];
+
+    contentTypeKey?: string;
+    superKey?: string;
+
+    xmlAsString: string;
 };

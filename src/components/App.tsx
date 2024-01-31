@@ -6,23 +6,25 @@ import { AppMainSection } from './main-section/AppMainSection';
 import { useAppState } from '../state/useAppState';
 import { CmsContentDocument } from '../../common/cms-documents/content';
 import { fetchContentVersion } from '../utils/fetch/fetchContent';
-import { CmsCategoryDocument } from '../../common/cms-documents/category';
+import { CmsCategory } from '../../common/cms-documents/category';
 
 import style from './App.module.css';
 
 type Props = {
-    context: AppContext;
+    appContext: AppContext;
 };
 
-export const App = ({ context }: Props) => {
+export const App = ({ appContext }: Props) => {
     const [selectedContent, setSelectedContent] =
         useState<CmsContentDocument | null>(null);
     const [selectedCategory, setSelectedCategory] =
-        useState<CmsCategoryDocument | null>(null);
+        useState<CmsCategory | null>(null);
+    const [contentSelectorOpen, setContentSelectorOpen] =
+        useState<boolean>(false);
 
     const { AppStateProvider } = useAppState();
 
-    const { cmsName, selectedVersionKey, basePath } = context;
+    const { cmsName, selectedVersionKey, basePath } = appContext;
 
     useEffect(() => {
         if (!selectedVersionKey) {
@@ -39,11 +41,13 @@ export const App = ({ context }: Props) => {
     return (
         <AppStateProvider
             value={{
-                appContext: context,
+                appContext,
                 selectedContent,
                 setSelectedContent,
                 selectedCategory,
                 setSelectedCategory,
+                contentSelectorOpen,
+                setContentSelectorOpen,
             }}
         >
             <div className={style.root}>

@@ -1,10 +1,11 @@
-import { CmsCategoryDocument } from '../../../common/cms-documents/category';
+import { CmsCategory } from '../../../common/cms-documents/category';
 import { CmsContentDocument } from '../../../common/cms-documents/content';
 import { CmsArchiveDbClient } from '../opensearch/CmsArchiveDbClient';
 import { CmsBinaryDocument } from '../../../common/cms-documents/binary';
 import { CmsArchiveSiteConfig } from './CmsArchiveSite';
-import { sortCategories, sortVersions } from '../utils/sort';
-import { AssetDocument } from '../opensearch/types';
+import { sortVersions } from '../utils/sort';
+import { AssetDocument, CmsCategoryDocument } from '../opensearch/types';
+import { transformCategoriesResponse } from './utils/transformCategoriesResponse';
 
 type ConstructorProps = {
     client: CmsArchiveDbClient;
@@ -32,7 +33,7 @@ export class CmsArchiveService {
         this.staticAssetsIndex = `${indexPrefix}_assets`;
     }
 
-    public getRootCategories(): Promise<CmsCategoryDocument[] | null> {
+    public async getRootCategories(): Promise<CmsCategory[] | null> {
         return this.client
             .search<CmsCategoryDocument>({
                 index: this.categoriesIndex,
@@ -50,12 +51,12 @@ export class CmsArchiveService {
                     },
                 },
             })
-            .then(sortCategories);
+            .then(transformCategoriesResponse);
     }
 
     public async getCategories(
         categoryKeys: string[]
-    ): Promise<CmsCategoryDocument[] | null> {
+    ): Promise<CmsCategory[] | null> {
         return this.client
             .getDocuments<CmsCategoryDocument>({
                 index: this.categoriesIndex,
@@ -64,7 +65,7 @@ export class CmsArchiveService {
                     ids: categoryKeys,
                 },
             })
-            .then(sortCategories);
+            .then(transformCategoriesResponse);
     }
 
     public async getContent(

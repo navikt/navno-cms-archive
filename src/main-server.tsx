@@ -4,5 +4,5 @@ import { App } from './components/App';
 import { AppContext } from '../common/appContext';
 
 export const render = (url: string, context: AppContext) => {
-    return renderToString(<App context={context} />);
+    return renderToString(<App appContext={context} />);
 };

@@ -1,9 +1,9 @@
-import { CmsCategoryDocument } from './cms-documents/category';
+import { CmsCategory } from './cms-documents/category';
 
 export type AppContext = {
     cmsName: string;
     basePath: string;
-    rootCategories: CmsCategoryDocument[];
+    rootCategories: CmsCategory[];
     selectedVersionKey?: string;
 };
 

@@ -17,5 +17,13 @@ export type CmsCategoryDocument = {
     contentTypeKey?: string;
     superKey?: string;
 
-    xmlAsstring?: string;
+    xmlAsString: string;
+};
+
+export type CmsCategory = Pick<
+    CmsCategoryDocument,
+    'key' | 'title' | 'categories'
+> & {
+    contentCount: number;
+    path: string;
 };

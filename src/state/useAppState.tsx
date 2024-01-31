@@ -1,22 +1,27 @@
 import { createContext, useContext } from 'react';
 import { AppContext, appErrorContext } from '../../common/appContext';
 import { CmsContentDocument } from '../../common/cms-documents/content';
-import { CmsCategoryDocument } from '../../common/cms-documents/category';
+import { CmsCategory } from '../../common/cms-documents/category';
 
 type AppState = {
     appContext: AppContext;
     selectedContent: CmsContentDocument | null;
-    selectedCategory: CmsCategoryDocument | null;
     setSelectedContent: (content: CmsContentDocument | null) => void;
-    setSelectedCategory: (content: CmsCategoryDocument | null) => void;
+    selectedCategory: CmsCategory | null;
+    setSelectedCategory: (content: CmsCategory | null) => void;
+    contentSelectorOpen: boolean;
+    setContentSelectorOpen: (isOpen: boolean) => void;
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 const AppStateContext = createContext<AppState>({
     appContext: appErrorContext,
     selectedContent: null,
     setSelectedContent: () => ({}),
     selectedCategory: null,
     setSelectedCategory: () => ({}),
+    contentSelectorOpen: false,
+    setContentSelectorOpen: () => ({}),
 });
 
 export const useAppState = () => {
@@ -26,6 +31,8 @@ export const useAppState = () => {
         setSelectedContent,
         selectedCategory,
         setSelectedCategory,
+        contentSelectorOpen,
+        setContentSelectorOpen,
     } = useContext(AppStateContext);
 
     return {
@@ -35,5 +42,7 @@ export const useAppState = () => {
         setSelectedContent,
         selectedCategory,
         setSelectedCategory,
+        contentSelectorOpen,
+        setContentSelectorOpen,
     };
 };
