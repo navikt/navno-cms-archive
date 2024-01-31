@@ -1,14 +1,14 @@
 import { createContext, useContext } from 'react';
 import { AppContext, appErrorContext } from '../../common/appContext';
 import { CmsContentDocument } from '../../common/cms-documents/content';
-import { CmsCategory } from '../../common/cms-documents/category';
+import { CmsCategoryListItem } from '../../common/cms-documents/category';
 
 type AppState = {
     appContext: AppContext;
     selectedContent: CmsContentDocument | null;
     setSelectedContent: (content: CmsContentDocument | null) => void;
-    selectedCategory: CmsCategory | null;
-    setSelectedCategory: (content: CmsCategory | null) => void;
+    selectedCategory: CmsCategoryListItem | null;
+    setSelectedCategory: (content: CmsCategoryListItem | null) => void;
     contentSelectorOpen: boolean;
     setContentSelectorOpen: (isOpen: boolean) => void;
 };

@@ -66,4 +66,7 @@ export type CmsContentDocument = {
     meta: ContentMetaData;
 };
 
-// export type Cms
+export type CmsContentListItem = Pick<
+    CmsContentDocument,
+    'contentKey' | 'versionKey' | 'displayName'
+>;

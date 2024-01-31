@@ -1,11 +1,11 @@
-import { CmsCategory } from '../../../common/cms-documents/category';
-import { CmsContentDocument } from '../../../common/cms-documents/content';
+import { CmsCategoryListItem } from '../../../common/cms-documents/category';
+import { CmsContentDocument, CmsContentListItem } from '../../../common/cms-documents/content';
 import { CmsArchiveDbClient } from '../opensearch/CmsArchiveDbClient';
 import { CmsBinaryDocument } from '../../../common/cms-documents/binary';
 import { CmsArchiveSiteConfig } from './CmsArchiveSite';
 import { sortVersions } from '../utils/sort';
 import { AssetDocument, CmsCategoryDocument } from '../opensearch/types';
-import { transformCategoriesResponse } from './utils/transformCategoriesResponse';
+import { transformToCategoriesList } from './utils/transformToCategoriesList';
 
 type ConstructorProps = {
     client: CmsArchiveDbClient;
@@ -33,7 +33,7 @@ export class CmsArchiveService {
         this.staticAssetsIndex = `${indexPrefix}_assets`;
     }
 
-    public async getRootCategories(): Promise<CmsCategory[] | null> {
+    public async getRootCategories(): Promise<CmsCategoryListItem[] | null> {
         return this.client
             .search<CmsCategoryDocument>({
                 index: this.categoriesIndex,
@@ -51,10 +51,10 @@ export class CmsArchiveService {
                     },
                 },
             })
-            .then(transformCategoriesResponse);
+            .then(transformToCategoriesList);
     }
 
-    public async getCategories(categoryKeys: string[]): Promise<CmsCategory[] | null> {
+    public async getCategories(categoryKeys: string[]): Promise<CmsCategoryListItem[] | null> {
         return this.client
             .getDocuments<CmsCategoryDocument>({
                 index: this.categoriesIndex,
@@ -63,19 +63,19 @@ export class CmsArchiveService {
                     ids: categoryKeys,
                 },
             })
-            .then(transformCategoriesResponse);
+            .then(transformToCategoriesList);
     }
 
     public async getContentsForCategory(
         categoryKey: string,
         from: number = 0,
         size: number = 50
-    ): Promise<CmsContentDocument[] | null> {
-        return this.client.search<CmsContentDocument>({
+    ): Promise<CmsContentListItem[] | null> {
+        return this.client.search<CmsContentListItem>({
             index: this.contentsIndex,
             from,
             size,
-            _source_excludes: ['xmlAsString', 'html'],
+            _source_includes: ['categoryKey', 'versionKey', 'displayName'],
             body: {
                 query: {
                     bool: {

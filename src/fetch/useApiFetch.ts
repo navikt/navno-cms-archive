@@ -1,7 +1,7 @@
 import { useAppState } from '../state/useAppState';
 import { fetchJson } from './fetchJson';
-import { CmsContentDocument } from '../../common/cms-documents/content';
-import { CmsCategory } from '../../common/cms-documents/category';
+import { CmsContentDocument, CmsContentListItem } from '../../common/cms-documents/content';
+import { CmsCategoryListItem } from '../../common/cms-documents/category';
 import { useCallback } from 'react';
 
 const fetchContent = (basePath: string) => async (contentKey: string) =>
@@ -12,13 +12,25 @@ const fetchContentVersion = (basePath: string) => async (versionKey: string) =>
 
 const fetchCategories =
     (basePath: string) =>
-    async (categoryKeys: string[]): Promise<CmsCategory[] | null> =>
+    async (categoryKeys: string[]): Promise<CmsCategoryListItem[] | null> =>
         categoryKeys.length > 0
-            ? fetchJson<CmsCategory[]>(`${basePath}/api/categories/${categoryKeys.join(',')}`)
+            ? fetchJson<CmsCategoryListItem[]>(
+                  `${basePath}/api/categories/${categoryKeys.join(',')}`
+              )
             : [];
 
-const fetchCategoryContents = (basePath: string) => async (categoryKey: string) =>
-    fetchJson<CmsContentDocument[]>(`${basePath}/api/contentForCategory/${categoryKey}`);
+type FetchCategoryContentsParams = {
+    categoryKey: string;
+    from: number;
+    size: number;
+};
+
+const fetchCategoryContents =
+    (basePath: string) =>
+    async ({ categoryKey, from, size }: FetchCategoryContentsParams) =>
+        fetchJson<CmsContentListItem[]>(
+            `${basePath}/api/contentForCategory/${categoryKey}?from=${from}&size=${size}`
+        );
 
 export const useApiFetch = () => {
     const { appContext } = useAppState();

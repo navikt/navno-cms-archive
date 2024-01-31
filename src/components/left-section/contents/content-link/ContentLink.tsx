@@ -1,5 +1,5 @@
 import React from 'react';
-import { CmsContentDocument } from '../../../../../common/cms-documents/content';
+import { CmsContentListItem } from '../../../../../common/cms-documents/content';
 import { BodyShort, Link } from '@navikt/ds-react';
 import { useApiFetch } from '../../../../fetch/useApiFetch';
 import { useAppState } from '../../../../state/useAppState';
@@ -8,7 +8,7 @@ import { ArrowRightIcon } from '@navikt/aksel-icons';
 import style from './ContentLink.module.css';
 
 type Props = {
-    content: CmsContentDocument;
+    content: CmsContentListItem;
 };
 
 export const ContentLink = ({ content }: Props) => {

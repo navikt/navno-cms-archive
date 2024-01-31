@@ -5,7 +5,7 @@ import { AppLeftSection } from './left-section/AppLeftSection';
 import { AppMainSection } from './main-section/AppMainSection';
 import { useAppState } from '../state/useAppState';
 import { CmsContentDocument } from '../../common/cms-documents/content';
-import { CmsCategory } from '../../common/cms-documents/category';
+import { CmsCategoryListItem } from '../../common/cms-documents/category';
 
 import style from './App.module.css';
 
@@ -14,12 +14,9 @@ type Props = {
 };
 
 export const App = ({ appContext }: Props) => {
-    const [selectedContent, setSelectedContent] =
-        useState<CmsContentDocument | null>(null);
-    const [selectedCategory, setSelectedCategory] =
-        useState<CmsCategory | null>(null);
-    const [contentSelectorOpen, setContentSelectorOpen] =
-        useState<boolean>(false);
+    const [selectedContent, setSelectedContent] = useState<CmsContentDocument | null>(null);
+    const [selectedCategory, setSelectedCategory] = useState<CmsCategoryListItem | null>(null);
+    const [contentSelectorOpen, setContentSelectorOpen] = useState<boolean>(false);
 
     const { AppStateProvider } = useAppState();
 

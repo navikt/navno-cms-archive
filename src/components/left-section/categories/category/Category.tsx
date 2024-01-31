@@ -1,17 +1,17 @@
 import React from 'react';
-import { CmsCategory } from '../../../../../common/cms-documents/category';
+import { CmsCategoryListItem } from '../../../../../common/cms-documents/category';
 import { Tooltip } from '@navikt/ds-react';
 import { TreeItem } from '@mui/x-tree-view';
 import { CategoriesList } from '../CategoriesList';
 import { useAppState } from '../../../../state/useAppState';
-import { CircleSlashIcon, FileTextIcon } from '@navikt/aksel-icons';
+import { ArrowForwardIcon, CircleSlashIcon } from '@navikt/aksel-icons';
 import { useFetchCategories } from '../../../../fetch/useFetchCategories';
 import { ContentLoader } from '../../../common/loader/ContentLoader';
 
 import style from './Category.module.css';
 
 type Props = {
-    category: CmsCategory;
+    category: CmsCategoryListItem;
 };
 
 export const Category = ({ category }: Props) => {
@@ -29,7 +29,7 @@ export const Category = ({ category }: Props) => {
             key={key}
             nodeId={key}
             label={
-                <Tooltip content={key} placement={'left'} delay={500} offset={40}>
+                <Tooltip content={`Nøkkel: ${key}`} placement={'left'} delay={1000}>
                     <div>{`${title}${isEmpty ? ' (tom)' : ''}`}</div>
                 </Tooltip>
             }
@@ -38,15 +38,19 @@ export const Category = ({ category }: Props) => {
             icon={isEmpty ? <CircleSlashIcon /> : undefined}
         >
             {isLoading ? (
-                <ContentLoader size={'xsmall'} text={'Laster underkategorier...'} />
+                <ContentLoader
+                    size={'xsmall'}
+                    text={'Laster underkategorier...'}
+                    direction={'row'}
+                />
             ) : childCategories ? (
                 <CategoriesList categories={childCategories} />
             ) : null}
             {hasContent && (
                 <TreeItem
-                    nodeId={'contents'}
-                    icon={<FileTextIcon />}
-                    label={`Vis innhold (${contentCount})`}
+                    nodeId={`contents-${key}`}
+                    icon={<ArrowForwardIcon />}
+                    label={`Åpne innholdsvelger (${contentCount})`}
                     onClick={(e) => {
                         e.preventDefault();
                         setSelectedCategory(category);
