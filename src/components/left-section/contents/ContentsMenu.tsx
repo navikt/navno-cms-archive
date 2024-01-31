@@ -35,10 +35,9 @@ export const ContentsMenu = ({ parentCategory }: Props) => {
     const currentCount = result?.total ?? contentCount;
     const numPages = Math.ceil(Math.min(currentCount, MAX_CONTENTS) / CONTENTS_PER_PAGE);
 
-    console.log(currentCount);
-
     useEffect(() => {
         setPageNumber(1);
+        setQuery('');
     }, [parentKey]);
 
     return (
@@ -55,6 +54,7 @@ export const ContentsMenu = ({ parentCategory }: Props) => {
                 <TextField
                     label={'Søk i denne kategorien'}
                     hideLabel={true}
+                    value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     size={'small'}
                     placeholder={'Søk i denne kategorien'}
