@@ -107,7 +107,7 @@ export const ContentsMenu = ({ parentCategory }: Props) => {
                             <Alert
                                 variant={'warning'}
                                 size={'small'}
-                            >{`Kan ikke vise flere enn ${MAX_CONTENTS} innholdselementer (fant ${currentCount}). Bruk søkefeltet for å filtrer antall elementer.`}</Alert>
+                            >{`Kan ikke vise flere enn ${MAX_CONTENTS} innholdselementer (fant ${currentCount}). Bruk søkefeltet for å filtrere antall elementer.`}</Alert>
                         )}
                     </>
                 )}
