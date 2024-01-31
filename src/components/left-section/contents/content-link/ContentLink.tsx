@@ -1,7 +1,7 @@
 import React from 'react';
 import { CmsContentDocument } from '../../../../../common/cms-documents/content';
 import { BodyShort, Link } from '@navikt/ds-react';
-import { useApiFetch } from '../../../../state/useApiFetch';
+import { useApiFetch } from '../../../../fetch/useApiFetch';
 import { useAppState } from '../../../../state/useAppState';
 import { ArrowRightIcon } from '@navikt/aksel-icons';
 

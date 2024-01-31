@@ -34,9 +34,8 @@ const disableLinksAndEventListeners = (iframeElement: HTMLIFrameElement | null) 
     // eslint-disable-next-line no-self-assign
     document.body.innerHTML = document.body.innerHTML;
 
-    document.querySelectorAll('a, button').forEach((a) => {
-        a.addEventListener('click', (e) => {
-            console.log('Clickin');
+    document.querySelectorAll('a, button').forEach((element) => {
+        element.addEventListener('click', (e) => {
             e.stopPropagation();
             e.preventDefault();
         });

@@ -1,7 +1,8 @@
-import { useAppState } from './useAppState';
-import { fetchJson } from '../utils/fetchJson';
+import { useAppState } from '../state/useAppState';
+import { fetchJson } from './fetchJson';
 import { CmsContentDocument } from '../../common/cms-documents/content';
 import { CmsCategory } from '../../common/cms-documents/category';
+import { useCallback } from 'react';
 
 const fetchContent = (basePath: string) => async (contentKey: string) =>
     fetchJson<CmsContentDocument>(`${basePath}/api/content/${contentKey}`);
@@ -24,9 +25,13 @@ export const useApiFetch = () => {
     const { basePath } = appContext;
 
     return {
-        fetchCategoryContents: fetchCategoryContents(basePath),
-        fetchContent: fetchContent(basePath),
-        fetchContentVersion: fetchContentVersion(basePath),
-        fetchCategories: fetchCategories(basePath),
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        fetchCategoryContents: useCallback(fetchCategoryContents(basePath), [basePath]),
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        fetchContent: useCallback(fetchContent(basePath), [basePath]),
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        fetchContentVersion: useCallback(fetchContentVersion(basePath), [basePath]),
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        fetchCategories: useCallback(fetchCategories(basePath), [basePath]),
     };
 };

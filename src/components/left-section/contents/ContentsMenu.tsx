@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { CmsCategory } from '../../../../common/cms-documents/category';
 import { Button, Heading } from '@navikt/ds-react';
 import { ArrowLeftIcon } from '@navikt/aksel-icons';
 import { useAppState } from '../../../state/useAppState';
-import { useApiFetch } from '../../../state/useApiFetch';
-import { CmsContentDocument } from '../../../../common/cms-documents/content';
 import { ContentLink } from './content-link/ContentLink';
+import { useFetchCategoryContents } from '../../../fetch/useFetchCategoryContents';
+import { ContentLoader } from '../../common/loader/ContentLoader';
 
 import style from './ContentsMenu.module.css';
 
@@ -14,16 +14,10 @@ type Props = {
 };
 
 export const ContentsMenu = ({ parentCategory }: Props) => {
-    const { setContentSelectorOpen } = useAppState();
-    const { fetchCategoryContents } = useApiFetch();
-
     const { key: parentKey, title: parentTitle } = parentCategory;
 
-    const [contents, setContents] = useState<CmsContentDocument[] | null>(null);
-
-    useEffect(() => {
-        fetchCategoryContents(parentKey).then(setContents);
-    }, [parentKey]);
+    const { setContentSelectorOpen } = useAppState();
+    const { contents, isLoading } = useFetchCategoryContents(parentCategory.key);
 
     return (
         <div className={style.wrapper}>
@@ -39,9 +33,13 @@ export const ContentsMenu = ({ parentCategory }: Props) => {
                 <Heading level={'2'} size={'xsmall'}>{`${parentTitle} (${parentKey})`}</Heading>
             </div>
             <div className={style.contentList}>
-                {contents?.map((content) => (
-                    <ContentLink content={content} key={content.contentKey} />
-                ))}
+                {isLoading ? (
+                    <ContentLoader size={'3xlarge'} text={'Laster innhold...'} />
+                ) : (
+                    contents?.map((content) => (
+                        <ContentLink content={content} key={content.contentKey} />
+                    ))
+                )}
             </div>
         </div>
     );

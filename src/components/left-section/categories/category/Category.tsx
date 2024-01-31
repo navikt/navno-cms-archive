@@ -1,12 +1,12 @@
 import React from 'react';
 import { CmsCategory } from '../../../../../common/cms-documents/category';
-import { Loader, Tooltip } from '@navikt/ds-react';
+import { Tooltip } from '@navikt/ds-react';
 import { TreeItem } from '@mui/x-tree-view';
-import useSWRImmutable from 'swr/immutable';
 import { CategoriesList } from '../CategoriesList';
 import { useAppState } from '../../../../state/useAppState';
 import { CircleSlashIcon, FileTextIcon } from '@navikt/aksel-icons';
-import { useApiFetch } from '../../../../state/useApiFetch';
+import { useFetchCategories } from '../../../../fetch/useFetchCategories';
+import { ContentLoader } from '../../../common/loader/ContentLoader';
 
 import style from './Category.module.css';
 
@@ -15,19 +15,14 @@ type Props = {
 };
 
 export const Category = ({ category }: Props) => {
-    const { setSelectedCategory, setContentSelectorOpen } = useAppState();
-    const { fetchCategories } = useApiFetch();
-
     const { key, title, categories, contentCount } = category;
-
     const childKeys = categories.map((category) => category.key);
 
-    const { data: childCategories, isLoading } = useSWRImmutable(childKeys, fetchCategories);
+    const { setSelectedCategory, setContentSelectorOpen } = useAppState();
+    const { isLoading, categories: childCategories } = useFetchCategories(childKeys);
 
     const hasContent = contentCount > 0;
     const isEmpty = !isLoading && !hasContent && (!childCategories || childCategories.length === 0);
-
-    const label = `${title}${isEmpty ? ' (tom)' : ''}`;
 
     return (
         <TreeItem
@@ -35,7 +30,7 @@ export const Category = ({ category }: Props) => {
             nodeId={key}
             label={
                 <Tooltip content={key} placement={'left'} delay={500} offset={40}>
-                    <div>{label}</div>
+                    <div>{`${title}${isEmpty ? ' (tom)' : ''}`}</div>
                 </Tooltip>
             }
             className={style.item}
@@ -43,7 +38,7 @@ export const Category = ({ category }: Props) => {
             icon={isEmpty ? <CircleSlashIcon /> : undefined}
         >
             {isLoading ? (
-                <Loader size={'xsmall'} />
+                <ContentLoader size={'xsmall'} text={'Laster underkategorier...'} />
             ) : childCategories ? (
                 <CategoriesList categories={childCategories} />
             ) : null}

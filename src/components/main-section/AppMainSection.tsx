@@ -3,7 +3,7 @@ import { ContentView } from './content-view/ContentView';
 import { useAppState } from '../../state/useAppState';
 import { Heading } from '@navikt/ds-react';
 import { ArrowLeftIcon } from '@navikt/aksel-icons';
-import { useApiFetch } from '../../state/useApiFetch';
+import { useApiFetch } from '../../fetch/useApiFetch';
 
 import style from './AppMainSection.module.css';
 
@@ -14,7 +14,7 @@ export const AppMainSection = () => {
     const { selectedVersionKey } = appContext;
 
     useEffect(() => {
-        if (!selectedVersionKey) {
+        if (!selectedVersionKey || selectedContent) {
             return;
         }
 
@@ -23,7 +23,7 @@ export const AppMainSection = () => {
                 setSelectedContent(res);
             }
         });
-    }, [selectedVersionKey]);
+    }, [fetchContentVersion, selectedContent, selectedVersionKey, setSelectedContent]);
 
     return (
         <div className={style.mainContent}>
