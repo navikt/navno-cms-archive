@@ -7,8 +7,15 @@ import { useAppState } from '../../../../state/useAppState';
 import { ArrowForwardIcon, CircleSlashIcon } from '@navikt/aksel-icons';
 import { useFetchCategories } from '../../../../fetch/useFetchCategories';
 import { ContentLoader } from '../../../common/loader/ContentLoader';
+import { TreeItemClasses } from '@mui/x-tree-view/TreeItem/treeItemClasses';
 
 import style from './Category.module.css';
+
+const classesOverride: Partial<TreeItemClasses> = {
+    content: style.content,
+    label: style.label,
+    disabled: style.disabled,
+};
 
 type Props = {
     category: CmsCategoryListItem;
@@ -33,9 +40,9 @@ export const Category = ({ category }: Props) => {
                     <div>{`${title}${isEmpty ? ' (tom)' : ''}`}</div>
                 </Tooltip>
             }
-            className={style.item}
             disabled={isEmpty}
             icon={isEmpty ? <CircleSlashIcon /> : undefined}
+            classes={classesOverride}
         >
             {isLoading ? (
                 <ContentLoader
@@ -51,6 +58,7 @@ export const Category = ({ category }: Props) => {
                     nodeId={`contents-${key}`}
                     icon={<ArrowForwardIcon />}
                     label={`Åpne innholdsvelger (${contentCount})`}
+                    classes={classesOverride}
                     onClick={(e) => {
                         e.preventDefault();
                         setSelectedCategory(category);

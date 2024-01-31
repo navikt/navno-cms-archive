@@ -5,7 +5,7 @@
     position: relative;
     grid-area: left;
     height: 100%;
-    background-color: var(--a-blue-50);
+    /*background-color: var(--a-blue-50);*/
     overflow-y: scroll;
     overflow-x: hidden;
     scrollbar-width: thin;
@@ -13,6 +13,7 @@
 }
 
 .categoriesMenu {
+    width: 100%;
     transition: visibility linear transitionDuration;
 
     &.hidden {

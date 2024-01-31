@@ -1,5 +1,13 @@
-.item {
-    :global(.MuiTreeItem-content) {
-        align-items: flex-start;
+.content {
+    align-items: flex-start;
+
+    &:not(.disabled):hover {
+        & > .label {
+            text-decoration: underline;
+        }
     }
+}
+
+.disabled {
+    cursor: default;
 }
