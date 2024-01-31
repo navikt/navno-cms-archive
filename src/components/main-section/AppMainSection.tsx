@@ -1,13 +1,29 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ContentView } from './content-view/ContentView';
 import { useAppState } from '../../state/useAppState';
 import { Heading } from '@navikt/ds-react';
 import { ArrowLeftIcon } from '@navikt/aksel-icons';
+import { useApiFetch } from '../../state/useApiFetch';
 
 import style from './AppMainSection.module.css';
 
 export const AppMainSection = () => {
-    const { selectedContent } = useAppState();
+    const { selectedContent, setSelectedContent, appContext } = useAppState();
+    const { fetchContentVersion } = useApiFetch();
+
+    const { selectedVersionKey } = appContext;
+
+    useEffect(() => {
+        if (!selectedVersionKey) {
+            return;
+        }
+
+        fetchContentVersion(selectedVersionKey).then((res) => {
+            if (res) {
+                setSelectedContent(res);
+            }
+        });
+    }, [selectedVersionKey]);
 
     return (
         <div className={style.mainContent}>

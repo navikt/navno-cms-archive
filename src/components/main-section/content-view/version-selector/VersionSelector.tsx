@@ -1,8 +1,8 @@
 import React from 'react';
 import { Select } from '@navikt/ds-react';
-import { fetchContentVersion } from '../../../../utils/fetch/fetchContent';
 import { CmsContentDocument } from '../../../../../common/cms-documents/content';
 import { useAppState } from '../../../../state/useAppState';
+import { useApiFetch } from '../../../../state/useApiFetch';
 
 const TITLE_MAX_LENGTH = 100;
 
@@ -11,7 +11,8 @@ type Props = {
 };
 
 export const VersionSelector = ({ content }: Props) => {
-    const { appContext, setSelectedContent } = useAppState();
+    const { setSelectedContent } = useAppState();
+    const { fetchContentVersion } = useApiFetch();
 
     return (
         <Select
@@ -20,13 +21,11 @@ export const VersionSelector = ({ content }: Props) => {
             defaultValue={content.versionKey}
             size={'small'}
             onChange={(e) => {
-                fetchContentVersion(appContext.basePath)(e.target.value).then(
-                    (res) => {
-                        if (res) {
-                            setSelectedContent(res);
-                        }
+                fetchContentVersion(e.target.value).then((res) => {
+                    if (res) {
+                        setSelectedContent(res);
                     }
-                );
+                });
             }}
         >
             {content.versions?.map((version) => (

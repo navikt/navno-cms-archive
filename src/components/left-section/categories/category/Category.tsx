@@ -3,10 +3,10 @@ import { CmsCategory } from '../../../../../common/cms-documents/category';
 import { Loader, Tooltip } from '@navikt/ds-react';
 import { TreeItem } from '@mui/x-tree-view';
 import useSWRImmutable from 'swr/immutable';
-import { fetchCategories } from '../../../../utils/fetch/fetchCategories';
 import { CategoriesList } from '../CategoriesList';
 import { useAppState } from '../../../../state/useAppState';
 import { CircleSlashIcon, FileTextIcon } from '@navikt/aksel-icons';
+import { useApiFetch } from '../../../../state/useApiFetch';
 
 import style from './Category.module.css';
 
@@ -15,23 +15,17 @@ type Props = {
 };
 
 export const Category = ({ category }: Props) => {
+    const { setSelectedCategory, setContentSelectorOpen } = useAppState();
+    const { fetchCategories } = useApiFetch();
+
     const { key, title, categories, contentCount } = category;
-    const { appContext, setSelectedCategory, setContentSelectorOpen } =
-        useAppState();
 
     const childKeys = categories.map((category) => category.key);
 
-    const { data: childCategories, isLoading } = useSWRImmutable(
-        childKeys,
-        fetchCategories(appContext.basePath)
-    );
+    const { data: childCategories, isLoading } = useSWRImmutable(childKeys, fetchCategories);
 
     const hasContent = contentCount > 0;
-
-    const isEmpty =
-        !isLoading &&
-        !hasContent &&
-        (!childCategories || childCategories.length === 0);
+    const isEmpty = !isLoading && !hasContent && (!childCategories || childCategories.length === 0);
 
     const label = `${title}${isEmpty ? ' (tom)' : ''}`;
 
@@ -40,12 +34,7 @@ export const Category = ({ category }: Props) => {
             key={key}
             nodeId={key}
             label={
-                <Tooltip
-                    content={key}
-                    placement={'left'}
-                    delay={500}
-                    offset={40}
-                >
+                <Tooltip content={key} placement={'left'} delay={500} offset={40}>
                     <div>{label}</div>
                 </Tooltip>
             }

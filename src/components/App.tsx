@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { AppContext } from '../../common/appContext';
 import { AppTopSection } from './top-section/AppTopSection';
 import { AppLeftSection } from './left-section/AppLeftSection';
 import { AppMainSection } from './main-section/AppMainSection';
 import { useAppState } from '../state/useAppState';
 import { CmsContentDocument } from '../../common/cms-documents/content';
-import { fetchContentVersion } from '../utils/fetch/fetchContent';
 import { CmsCategory } from '../../common/cms-documents/category';
 
 import style from './App.module.css';
@@ -24,19 +23,7 @@ export const App = ({ appContext }: Props) => {
 
     const { AppStateProvider } = useAppState();
 
-    const { cmsName, selectedVersionKey, basePath } = appContext;
-
-    useEffect(() => {
-        if (!selectedVersionKey) {
-            return;
-        }
-
-        fetchContentVersion(basePath)(selectedVersionKey).then((res) => {
-            if (res) {
-                setSelectedContent(res);
-            }
-        });
-    }, [basePath, selectedVersionKey]);
+    const { cmsName } = appContext;
 
     return (
         <AppStateProvider
