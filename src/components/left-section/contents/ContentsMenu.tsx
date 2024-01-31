@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { CmsCategoryListItem } from '../../../../common/cms-documents/category';
-import { Alert, Button, Heading, Tooltip } from '@navikt/ds-react';
+import { Alert, Button, Heading, Pagination, Tooltip } from '@navikt/ds-react';
 import { ArrowLeftIcon } from '@navikt/aksel-icons';
 import { useAppState } from '../../../state/useAppState';
 import { ContentLink } from './content-link/ContentLink';
@@ -10,20 +10,29 @@ import { ContentLoader } from '../../common/loader/ContentLoader';
 import style from './ContentsMenu.module.css';
 
 const CONTENTS_PER_PAGE = 40;
+const MAX_CONTENTS = 10000;
 
 type Props = {
     parentCategory: CmsCategoryListItem;
 };
 
 export const ContentsMenu = ({ parentCategory }: Props) => {
-    const { key: parentKey, title: parentTitle } = parentCategory;
+    const { key: parentKey, title: parentTitle, contentCount } = parentCategory;
+
+    const [pageNumber, setPageNumber] = useState<number>(1);
 
     const { setContentSelectorOpen } = useAppState();
     const { contents, isLoading } = useFetchCategoryContents(
         parentCategory.key,
-        0,
+        (pageNumber - 1) * CONTENTS_PER_PAGE,
         CONTENTS_PER_PAGE
     );
+
+    const numPages = Math.ceil(Math.min(contentCount, MAX_CONTENTS) / CONTENTS_PER_PAGE);
+
+    useEffect(() => {
+        setPageNumber(1);
+    }, [parentKey]);
 
     return (
         <div className={style.wrapper}>
@@ -48,15 +57,34 @@ export const ContentsMenu = ({ parentCategory }: Props) => {
                         direction={'column'}
                     />
                 ) : contents ? (
-                    contents.map((content) => (
-                        <ContentLink content={content} key={content.contentKey} />
-                    ))
+                    <>
+                        {contents.map((content) => (
+                            <ContentLink content={content} key={content.contentKey} />
+                        ))}
+                    </>
                 ) : (
                     <Alert variant={'error'} inline={true}>
                         {'Feil: Kunne ikke laste innhold for denne kategorien'}
                     </Alert>
                 )}
             </div>
+            {numPages > 1 && (
+                <>
+                    <Pagination
+                        page={pageNumber}
+                        onPageChange={setPageNumber}
+                        count={numPages}
+                        size={'xsmall'}
+                        className={style.paginator}
+                    />
+                    {contentCount > MAX_CONTENTS && (
+                        <Alert
+                            variant={'warning'}
+                            size={'small'}
+                        >{`Kan ikke vise flere enn ${MAX_CONTENTS} innholdselementer (fant ${contentCount}). Bruk søkefeltet for å filtrer antall treff.`}</Alert>
+                    )}
+                </>
+            )}
         </div>
     );
 };

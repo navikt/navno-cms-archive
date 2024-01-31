@@ -77,6 +77,9 @@ export class CmsArchiveService {
             size,
             _source_includes: ['contentKey', 'versionKey', 'displayName'],
             body: {
+                sort: {
+                    name: 'asc',
+                },
                 query: {
                     bool: {
                         must: [

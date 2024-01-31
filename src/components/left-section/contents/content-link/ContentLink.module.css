@@ -2,8 +2,19 @@
     display: inline-flex;
     align-items: flex-start;
     padding: 0.125rem 0;
+    text-underline-offset: 0.1875rem;
+    text-decoration: none;
+
+    &:hover,
+    &:focus {
+        text-decoration: underline;
+    }
 }
 
 .selected {
     background-color: var(--a-surface-selected);
+}
+
+.icon {
+    width: 1rem;
 }

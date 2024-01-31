@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { CmsContentListItem } from '../../../../../common/cms-documents/content';
-import { BodyShort, Link } from '@navikt/ds-react';
+import { BodyShort, Link, Loader } from '@navikt/ds-react';
 import { useApiFetch } from '../../../../fetch/useApiFetch';
 import { useAppState } from '../../../../state/useAppState';
 import { ArrowRightIcon } from '@navikt/aksel-icons';
@@ -16,6 +16,8 @@ export const ContentLink = ({ content }: Props) => {
     const { setSelectedContent, selectedContent, appContext } = useAppState();
     const { fetchContent } = useApiFetch();
 
+    const [isLoading, setIsLoading] = useState(false);
+
     const isSelected = selectedContent?.contentKey === content.contentKey;
 
     return (
@@ -25,14 +27,21 @@ export const ContentLink = ({ content }: Props) => {
             className={classNames(style.link, isSelected && style.selected)}
             onClick={(e) => {
                 e.preventDefault();
-                fetchContent(content.contentKey).then((res) => {
-                    if (res) {
-                        setSelectedContent(res);
-                    }
-                });
+                setIsLoading(true);
+                fetchContent(content.contentKey)
+                    .then((res) => {
+                        if (res) {
+                            setSelectedContent(res);
+                        }
+                    })
+                    .finally(() => setIsLoading(false));
             }}
         >
-            <ArrowRightIcon />
+            {isLoading ? (
+                <Loader size={'xsmall'} className={style.icon} />
+            ) : (
+                <ArrowRightIcon className={style.icon} />
+            )}
             <BodyShort size={'small'}>{content.displayName}</BodyShort>
         </Link>
     );

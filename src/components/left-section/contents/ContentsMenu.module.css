@@ -1,4 +1,7 @@
 .wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
     padding: 0 0.5rem;
     background-color: var(--a-white);
     min-height: 100%;
@@ -12,4 +15,10 @@
     display: flex;
     flex-direction: column;
     margin-top: 0.25rem;
+}
+
+.paginator {
+    margin-top: auto;
+    align-self: center;
+    padding: 1rem 0;
 }
