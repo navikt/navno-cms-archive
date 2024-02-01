@@ -13,6 +13,7 @@ import { AssetDocument, CmsCategoryDocument } from '../opensearch/types';
 import { transformToCategoriesList } from './utils/transformToCategoriesList';
 import { QueryDslQueryContainer } from '@opensearch-project/opensearch/api/types';
 import { CmsCategoryRef } from '../../../common/cms-documents/_common';
+import { ContentSearchResult } from '../../../common/contentSearchResult';
 
 type ConstructorProps = {
     client: CmsArchiveDbClient;
@@ -127,6 +128,69 @@ export class CmsArchiveService {
                 track_total_hits: true,
             },
         });
+    }
+
+    public async contentSearchSimple(
+        query: string,
+        from: number = 0,
+        size: number = 50
+    ): Promise<ContentSearchResult> {
+        const result = await this.client.search<CmsContentDocument>({
+            index: this.contentsIndex,
+            from,
+            size,
+            _source_excludes: ['xmlAsString', 'html', 'versions'],
+            body: {
+                sort: {
+                    _score: {
+                        order: 'desc',
+                    },
+                },
+                query: {
+                    bool: {
+                        must: [
+                            {
+                                term: {
+                                    isCurrentVersion: {
+                                        value: true,
+                                    },
+                                },
+                            },
+                            {
+                                multi_match: {
+                                    query,
+                                    fields: ['displayName^10', 'xmlAsString'],
+                                    type: 'phrase_prefix',
+                                },
+                            },
+                        ],
+                    },
+                },
+            },
+        });
+
+        if (!result) {
+            return {
+                query,
+                total: 0,
+                error: 'Søket feilet, prøv igjen',
+                hits: [],
+            };
+        }
+
+        return {
+            query,
+            total: result.total,
+            hits: await Promise.all(
+                result.hits.map(async (hit) => ({
+                    contentKey: hit.contentKey,
+                    versionKey: hit.versionKey,
+                    displayName: hit.displayName,
+                    score: hit._score || 0,
+                    path: await this.resolveCategoriesPath(hit.category.key),
+                }))
+            ),
+        };
     }
 
     public async getContent(contentKey: string): Promise<CmsContent | null> {

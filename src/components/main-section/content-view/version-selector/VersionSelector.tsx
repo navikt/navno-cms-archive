@@ -17,7 +17,7 @@ export const VersionSelector = ({ content }: Props) => {
 
     return (
         <Select
-            label={'Velg versjon'}
+            label={'Versjoner'}
             defaultValue={content.versionKey}
             size={'small'}
             error={error}

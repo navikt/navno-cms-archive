@@ -96,6 +96,17 @@ export class CmsArchiveSite {
 
             return res.send(contentList);
         });
+
+        router.get('/search/simple', async (req, res) => {
+            const { query } = req.query;
+            if (!query) {
+                return res.status(400).send('Parameter "query" is required');
+            }
+
+            const result = await this.cmsArchiveService.contentSearchSimple(query as string);
+
+            return res.send(result);
+        });
     }
 
     private async setupSiteRoutes(router: Router, htmlRenderer: HtmlRenderer) {

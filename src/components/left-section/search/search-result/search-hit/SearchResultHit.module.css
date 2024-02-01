@@ -1,0 +1,18 @@
+.hit {
+    display: flex;
+    flex-direction: column;
+    padding: 0.125rem;
+    background-color: var(--a-deepblue-50);
+    border-radius: var(--a-border-radius-medium);
+
+    &:not(:last-child) {
+        margin-bottom: 0.25rem;
+    }
+}
+
+.path {
+    font-size: var(--a-font-size-small);
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}

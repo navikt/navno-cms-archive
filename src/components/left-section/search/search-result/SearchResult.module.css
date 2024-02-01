@@ -1,0 +1,12 @@
+.result {
+    width: 100%;
+    height: 100%;
+    padding: 0 0.5rem;
+    background-color: var(--a-white);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.25rem;
+}

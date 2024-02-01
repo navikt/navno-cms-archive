@@ -4,8 +4,10 @@ import { GetRequest, MgetRequest, SearchRequest } from '@opensearch-project/open
 // but are good enough for our use
 import type { Client as ClientTypeNew } from '@opensearch-project/opensearch/api/new';
 
+type DocumentWithScore<Document> = Document & { _score?: number };
+
 type SearchHit<Document> = {
-    hits: Document[];
+    hits: Array<DocumentWithScore<Document>>;
     total: number;
 };
 
@@ -43,13 +45,17 @@ export class CmsArchiveDbClient {
                     return null;
                 }
 
-                const hits = result.body.hits.hits.reduce<Document[]>((acc, { _source }) => {
-                    if (_source) {
-                        acc.push(_source);
-                    }
+                const hits = result.body.hits.hits.reduce<DocumentWithScore<Document>[]>(
+                    (acc, hit) => {
+                        const { _source, _score } = hit;
+                        if (_source) {
+                            acc.push({ ..._source, _score });
+                        }
 
-                    return acc;
-                }, []);
+                        return acc;
+                    },
+                    []
+                );
 
                 const total = result.body.hits.total;
 

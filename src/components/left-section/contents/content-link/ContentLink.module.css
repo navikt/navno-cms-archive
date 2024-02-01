@@ -14,7 +14,3 @@
 .selected {
     background-color: var(--a-surface-selected);
 }
-
-.icon {
-    width: 1rem;
-}

@@ -3,7 +3,6 @@ import { CmsContentListItem } from '../../../../../common/cms-documents/content'
 import { BodyShort, Link, Loader } from '@navikt/ds-react';
 import { useApiFetch } from '../../../../fetch/useApiFetch';
 import { useAppState } from '../../../../state/useAppState';
-import { ArrowRightIcon } from '@navikt/aksel-icons';
 import { classNames } from '../../../../utils/classNames';
 
 import style from './ContentLink.module.css';
@@ -37,12 +36,8 @@ export const ContentLink = ({ content }: Props) => {
                     .finally(() => setIsLoading(false));
             }}
         >
-            {isLoading ? (
-                <Loader size={'xsmall'} className={style.icon} />
-            ) : (
-                <ArrowRightIcon className={style.icon} />
-            )}
             <BodyShort size={'small'}>{content.displayName}</BodyShort>
+            {isLoading && <Loader size={'xsmall'} />}
         </Link>
     );
 };

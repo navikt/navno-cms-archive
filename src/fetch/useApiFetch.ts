@@ -3,6 +3,7 @@ import { fetchJson } from './fetchJson';
 import { CategoryContentsResponse, CmsContent } from '../../common/cms-documents/content';
 import { CmsCategoryListItem } from '../../common/cms-documents/category';
 import { useCallback } from 'react';
+import { ContentSearchResult } from '../../common/contentSearchResult';
 
 const fetchContent = (basePath: string) => async (contentKey: string) =>
     fetchJson<CmsContent>(`${basePath}/api/content/${contentKey}`);
@@ -33,6 +34,9 @@ const fetchCategoryContents =
             `${basePath}/api/contentForCategory/${categoryKey}?from=${from}&size=${size}&query=${query?.length > 2 ? query : ''}`
         );
 
+const fetchSearchSimple = (basePath: string) => async (query: string) =>
+    fetchJson<ContentSearchResult>(`${basePath}/api/search/simple?query=${query}`);
+
 export const useApiFetch = () => {
     const { appContext } = useAppState();
     const { basePath } = appContext;
@@ -46,5 +50,7 @@ export const useApiFetch = () => {
         fetchContentVersion: useCallback(fetchContentVersion(basePath), [basePath]),
         // eslint-disable-next-line react-hooks/exhaustive-deps
         fetchCategories: useCallback(fetchCategories(basePath), [basePath]),
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        fetchSearchSimple: useCallback(fetchSearchSimple(basePath), [basePath]),
     };
 };

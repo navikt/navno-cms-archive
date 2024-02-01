@@ -15,5 +15,9 @@
 }
 
 .header {
+    margin-bottom: 0.25rem;
+}
+
+.left {
     margin-bottom: 0.5rem;
 }

@@ -1,7 +1,7 @@
 import React from 'react';
-import { Heading, Select } from '@navikt/ds-react';
-import { useAppState } from '../../state/useAppState';
+import { Heading } from '@navikt/ds-react';
 import NavLogo from '../../assets/nav-logo-black.svg';
+import { ArchiveSelector } from './archive-selector/ArchiveSelector';
 
 import style from './AppTopSection.module.css';
 
@@ -10,8 +10,6 @@ type Props = {
 };
 
 export const AppTopSection = ({ cmsName }: Props) => {
-    const { appContext } = useAppState();
-
     return (
         <div className={style.topSection}>
             <div className={style.header}>
@@ -20,17 +18,7 @@ export const AppTopSection = ({ cmsName }: Props) => {
                     {`Arkiv - ${cmsName}`}
                 </Heading>
             </div>
-            <Select
-                label={'Velg arkiv'}
-                defaultValue={appContext.basePath}
-                size={'small'}
-                onChange={(e) => {
-                    window.location.assign(e.target.value);
-                }}
-            >
-                <option value={'/sbs'}>{'Selvbetjeningssonen'}</option>
-                <option value={'/fss'}>{'Fagsystemsonen'}</option>
-            </Select>
+            <ArchiveSelector />
         </div>
     );
 };

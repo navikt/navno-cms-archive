@@ -1,0 +1,12 @@
+.search {
+    display: flex;
+    flex-direction: column;
+    padding: 0 0.5rem 1rem 0.5rem;
+}
+
+.labels {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.25rem;
+}
