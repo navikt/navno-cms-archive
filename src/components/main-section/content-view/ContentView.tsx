@@ -28,7 +28,7 @@ export const ContentView = ({ content }: Props) => {
                 {buildCategoriesPath(content.path)}
             </BodyShort>
             <div className={style.top}>
-                <div>
+                <div className={style.topLeft}>
                     <Heading size={'medium'} level={'2'} className={style.header}>
                         {content.displayName}
                     </Heading>

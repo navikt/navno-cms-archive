@@ -10,6 +10,10 @@
     align-items: flex-end;
 }
 
+.topLeft {
+    margin-right: 0.5rem;
+}
+
 .header {
     margin-bottom: 0.5rem;
 }
