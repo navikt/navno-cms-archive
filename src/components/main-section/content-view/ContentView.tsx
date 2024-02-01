@@ -4,7 +4,6 @@ import { XmlView } from './xml-view/XmlView';
 import { HtmlView } from './html-view/HtmlView';
 import { FilesView } from './files-view/FilesView';
 import { VersionSelector } from './version-selector/VersionSelector';
-import { useAppState } from '../../../state/useAppState';
 import { ViewSelector, ViewState } from '../view-selector/ViewSelector';
 
 import style from './ContentView.module.css';
@@ -14,39 +13,22 @@ type Props = { content: CmsContentDocument };
 export const ContentView = ({ content }: Props) => {
     const { html, xmlAsString } = content;
 
-    const { appContext } = useAppState();
-
-    const [viewState, setViewState] = useState<ViewState>(
-        getDefaultViewState(content)
-    );
+    const [viewState, setViewState] = useState<ViewState>(getDefaultViewState(content));
 
     useEffect(() => {
-        // TODO: implement actual navigation state
-        window.history.replaceState(
-            {},
-            '',
-            `${window.location.origin}${appContext.basePath}/${content.versionKey}`
-        );
         setViewState(getDefaultViewState(content));
-    }, [content, appContext]);
+    }, [content]);
 
     return (
         <>
             <div className={style.topRow}>
-                <ViewSelector
-                    content={content}
-                    viewState={viewState}
-                    setViewState={setViewState}
-                />
+                <ViewSelector content={content} viewState={viewState} setViewState={setViewState} />
                 <VersionSelector content={content} />
             </div>
             <XmlView xml={xmlAsString} hidden={viewState !== 'xml'} />
             {html && <HtmlView html={html} hidden={viewState !== 'html'} />}
             {content.binaries && (
-                <FilesView
-                    binaries={content.binaries}
-                    hidden={viewState !== 'files'}
-                />
+                <FilesView binaries={content.binaries} hidden={viewState !== 'files'} />
             )}
         </>
     );

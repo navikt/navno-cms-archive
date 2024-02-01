@@ -7,7 +7,7 @@ import { ContentLink } from './content-link/ContentLink';
 import { useFetchCategoryContents } from '../../../fetch/useFetchCategoryContents';
 import { ContentLoader } from '../../common/loader/ContentLoader';
 
-import style from './ContentsMenu.module.css';
+import style from './ContentMenu.module.css';
 
 const CONTENTS_PER_PAGE = 40;
 const MAX_CONTENTS = 10000;
@@ -16,7 +16,7 @@ type Props = {
     parentCategory: CmsCategoryListItem;
 };
 
-export const ContentsMenu = ({ parentCategory }: Props) => {
+export const ContentMenu = ({ parentCategory }: Props) => {
     const { key: parentKey, title: parentTitle, contentCount } = parentCategory;
 
     const [pageNumber, setPageNumber] = useState<number>(1);

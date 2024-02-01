@@ -1,6 +1,6 @@
 import React from 'react';
 import { CategoriesMenu } from './categories/CategoriesMenu';
-import { ContentsMenu } from './contents/ContentsMenu';
+import { ContentMenu } from './contents/ContentMenu';
 import { useAppState } from '../../state/useAppState';
 import { classNames } from '../../utils/classNames';
 
@@ -16,7 +16,7 @@ export const AppLeftSection = () => {
                 <CategoriesMenu rootCategories={rootCategories} />
             </div>
             <div className={classNames(style.contentsMenu, contentSelectorOpen && style.open)}>
-                {selectedCategory && <ContentsMenu parentCategory={selectedCategory} />}
+                {selectedCategory && <ContentMenu parentCategory={selectedCategory} />}
             </div>
         </div>
     );

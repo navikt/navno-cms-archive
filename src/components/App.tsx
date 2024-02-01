@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { AppContext } from '../../common/appContext';
 import { AppTopSection } from './top-section/AppTopSection';
 import { AppLeftSection } from './left-section/AppLeftSection';
@@ -14,13 +14,40 @@ type Props = {
 };
 
 export const App = ({ appContext }: Props) => {
-    const [selectedContent, setSelectedContent] = useState<CmsContentDocument | null>(null);
+    const [selectedContent, _setSelectedContent] = useState<CmsContentDocument | null>(null);
     const [selectedCategory, setSelectedCategory] = useState<CmsCategoryListItem | null>(null);
     const [contentSelectorOpen, setContentSelectorOpen] = useState<boolean>(false);
 
     const { AppStateProvider } = useAppState();
 
     const { cmsName } = appContext;
+
+    const setSelectedContent = useCallback(
+        (content: CmsContentDocument | null, toHistory: boolean = true) => {
+            _setSelectedContent(content);
+            if (toHistory) {
+                window.history.pushState(
+                    { ...window.history.state, content },
+                    '',
+                    `${appContext.basePath}/${content ? content.versionKey : ''}`
+                );
+            }
+        },
+        [appContext]
+    );
+
+    useEffect(() => {
+        const onPopState = (e: PopStateEvent) => {
+            const contentFromState = e.state?.content;
+            if (contentFromState !== undefined) {
+                setSelectedContent(contentFromState, false);
+                return;
+            }
+        };
+
+        window.addEventListener('popstate', onPopState);
+        return () => window.removeEventListener('popstate', onPopState);
+    }, [setSelectedContent]);
 
     return (
         <AppStateProvider

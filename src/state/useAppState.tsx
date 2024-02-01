@@ -6,7 +6,7 @@ import { CmsCategoryListItem } from '../../common/cms-documents/category';
 type AppState = {
     appContext: AppContext;
     selectedContent: CmsContentDocument | null;
-    setSelectedContent: (content: CmsContentDocument | null) => void;
+    setSelectedContent: (content: CmsContentDocument | null, toHistory?: boolean) => void;
     selectedCategory: CmsCategoryListItem | null;
     setSelectedCategory: (content: CmsCategoryListItem | null) => void;
     contentSelectorOpen: boolean;
