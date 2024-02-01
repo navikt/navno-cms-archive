@@ -38,11 +38,7 @@ export const App = ({ appContext }: Props) => {
 
     useEffect(() => {
         const onPopState = (e: PopStateEvent) => {
-            const contentFromState = e.state?.content;
-            if (contentFromState !== undefined) {
-                setSelectedContent(contentFromState, false);
-                return;
-            }
+            setSelectedContent(e.state?.content || null, false);
         };
 
         window.addEventListener('popstate', onPopState);
