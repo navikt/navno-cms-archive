@@ -5,11 +5,14 @@
     position: relative;
     grid-area: left;
     height: 100%;
-    /*background-color: var(--a-blue-50);*/
-    overflow-y: scroll;
-    overflow-x: hidden;
-    scrollbar-width: thin;
+    overflow: hidden;
     border-left: solid 4px var(--a-gray-600);
+
+    & > * {
+        overflow-y: scroll;
+        overflow-x: hidden;
+        scrollbar-width: thin;
+    }
 }
 
 .categoriesMenu {
@@ -18,7 +21,6 @@
 
     &.hidden {
         visibility: hidden;
-        overflow: hidden;
     }
 }
 
