@@ -4,7 +4,7 @@ import { AppTopSection } from './top-section/AppTopSection';
 import { AppLeftSection } from './left-section/AppLeftSection';
 import { AppMainSection } from './main-section/AppMainSection';
 import { useAppState } from '../state/useAppState';
-import { CmsContentDocument } from '../../common/cms-documents/content';
+import { CmsContent } from '../../common/cms-documents/content';
 import { CmsCategoryListItem } from '../../common/cms-documents/category';
 
 import style from './App.module.css';
@@ -14,7 +14,7 @@ type Props = {
 };
 
 export const App = ({ appContext }: Props) => {
-    const [selectedContent, _setSelectedContent] = useState<CmsContentDocument | null>(null);
+    const [selectedContent, _setSelectedContent] = useState<CmsContent | null>(null);
     const [selectedCategory, setSelectedCategory] = useState<CmsCategoryListItem | null>(null);
     const [contentSelectorOpen, setContentSelectorOpen] = useState<boolean>(false);
 
@@ -23,7 +23,7 @@ export const App = ({ appContext }: Props) => {
     const { cmsName } = appContext;
 
     const setSelectedContent = useCallback(
-        (content: CmsContentDocument | null, toHistory: boolean = true) => {
+        (content: CmsContent | null, toHistory: boolean = true) => {
             _setSelectedContent(content);
             if (toHistory) {
                 window.history.pushState(

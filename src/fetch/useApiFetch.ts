@@ -1,14 +1,14 @@
 import { useAppState } from '../state/useAppState';
 import { fetchJson } from './fetchJson';
-import { CategoryContentsResponse, CmsContentDocument } from '../../common/cms-documents/content';
+import { CategoryContentsResponse, CmsContent } from '../../common/cms-documents/content';
 import { CmsCategoryListItem } from '../../common/cms-documents/category';
 import { useCallback } from 'react';
 
 const fetchContent = (basePath: string) => async (contentKey: string) =>
-    fetchJson<CmsContentDocument>(`${basePath}/api/content/${contentKey}`);
+    fetchJson<CmsContent>(`${basePath}/api/content/${contentKey}`);
 
 const fetchContentVersion = (basePath: string) => async (versionKey: string) =>
-    fetchJson<CmsContentDocument>(`${basePath}/api/version/${versionKey}`);
+    fetchJson<CmsContent>(`${basePath}/api/version/${versionKey}`);
 
 const fetchCategories =
     (basePath: string) =>

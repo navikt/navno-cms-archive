@@ -1,18 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { CmsContentDocument } from '../../../../common/cms-documents/content';
+import { CmsContent } from '../../../../common/cms-documents/content';
 import { XmlView } from './xml-view/XmlView';
 import { HtmlView } from './html-view/HtmlView';
 import { FilesView } from './files-view/FilesView';
-import { VersionSelector } from './version-selector/VersionSelector';
 import { ViewSelector, ViewState } from '../view-selector/ViewSelector';
+import { VersionSelector } from './version-selector/VersionSelector';
+import { BodyShort, Heading } from '@navikt/ds-react';
+import { buildCategoriesPath } from '../../../utils/buildCategoriesPath';
 
 import style from './ContentView.module.css';
 
-type Props = { content: CmsContentDocument };
+type Props = {
+    content: CmsContent;
+};
 
 export const ContentView = ({ content }: Props) => {
     const { html, xmlAsString } = content;
-
     const [viewState, setViewState] = useState<ViewState>(getDefaultViewState(content));
 
     useEffect(() => {
@@ -21,8 +24,20 @@ export const ContentView = ({ content }: Props) => {
 
     return (
         <>
-            <div className={style.topRow}>
-                <ViewSelector content={content} viewState={viewState} setViewState={setViewState} />
+            <BodyShort size={'small'} className={style.path}>
+                {buildCategoriesPath(content.path)}
+            </BodyShort>
+            <div className={style.top}>
+                <div>
+                    <Heading size={'medium'} level={'2'} className={style.header}>
+                        {content.displayName}
+                    </Heading>
+                    <ViewSelector
+                        content={content}
+                        viewState={viewState}
+                        setViewState={setViewState}
+                    />
+                </div>
                 <VersionSelector content={content} />
             </div>
             <XmlView xml={xmlAsString} hidden={viewState !== 'xml'} />
@@ -34,7 +49,13 @@ export const ContentView = ({ content }: Props) => {
     );
 };
 
-const getDefaultViewState = ({ html, binaries }: CmsContentDocument) => {
+const getDefaultViewState = (content: CmsContent | null): ViewState => {
+    if (!content) {
+        return 'none';
+    }
+
+    const { html, binaries } = content;
+
     if (html) {
         return 'html';
     } else if (binaries && binaries.length > 0) {

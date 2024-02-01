@@ -1,13 +1,14 @@
 import React from 'react';
 import { ToggleGroup, Tooltip, TooltipProps } from '@navikt/ds-react';
-import style from '../content-view/ContentView.module.css';
 import { classNames } from '../../../utils/classNames';
-import { CmsContentDocument } from '../../../../common/cms-documents/content';
+import { CmsContent } from '../../../../common/cms-documents/content';
 
-export type ViewState = 'html' | 'xml' | 'files';
+import style from './ViewSelector.module.css';
+
+export type ViewState = 'html' | 'xml' | 'files' | 'none';
 
 type Props = {
-    content: CmsContentDocument;
+    content: CmsContent;
     viewState: ViewState;
     setViewState: (viewState: ViewState) => void;
 };
@@ -20,15 +21,12 @@ export const ViewSelector = ({ content, viewState, setViewState }: Props) => {
     return (
         <ToggleGroup
             value={viewState}
-            className={style.toggle}
             size={'small'}
             onChange={(e) => {
                 setViewState(e as ViewState);
             }}
         >
-            <WithTooltip
-                tooltip={!html ? 'Innholdet har ingen nettside' : undefined}
-            >
+            <WithTooltip tooltip={!html ? 'Innholdet har ingen nettside' : undefined}>
                 <ToggleGroup.Item
                     value={'html'}
                     className={classNames(!html && style.disabled)}
@@ -41,11 +39,7 @@ export const ViewSelector = ({ content, viewState, setViewState }: Props) => {
                     {'Vis nettside'}
                 </ToggleGroup.Item>
             </WithTooltip>
-            <WithTooltip
-                tooltip={
-                    filesCount === 0 ? 'Innholdet har ingen filer' : undefined
-                }
-            >
+            <WithTooltip tooltip={filesCount === 0 ? 'Innholdet har ingen filer' : undefined}>
                 <ToggleGroup.Item
                     value={'files'}
                     className={classNames(filesCount === 0 && style.disabled)}

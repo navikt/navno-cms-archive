@@ -1,15 +1,15 @@
-.toggle {
-
+.path {
+    color: var(--a-gray-600);
+    margin-bottom: 0.25rem;
 }
 
-.disabled {
-    color: var(--a-gray-400);
-    cursor: not-allowed;
-}
-
-.topRow {
-    margin: 0.75rem 0;
+.top {
     display: flex;
     justify-content: space-between;
+    margin-bottom: 0.5rem;
     align-items: flex-end;
+}
+
+.header {
+    margin-bottom: 0.5rem;
 }

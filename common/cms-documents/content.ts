@@ -66,6 +66,8 @@ export type CmsContentDocument = {
     meta: ContentMetaData;
 };
 
+export type CmsContent = CmsContentDocument & { path: CmsCategoryRef[] };
+
 export type CmsContentListItem = Pick<
     CmsContentDocument,
     'contentKey' | 'versionKey' | 'displayName'

@@ -6,10 +6,11 @@ module.exports = {
         'plugin:react/recommended',
         'plugin:@typescript-eslint/recommended',
         'plugin:react-hooks/recommended',
+        'plugin:css-modules/recommended',
     ],
     ignorePatterns: ['dist', '.eslintrc.cjs'],
     parser: '@typescript-eslint/parser',
-    plugins: ['@typescript-eslint', 'react', 'react-refresh'],
+    plugins: ['@typescript-eslint', 'react', 'react-refresh', 'css-modules'],
     rules: {
         'react-refresh/only-export-components': [
             'warn',
@@ -22,7 +23,7 @@ module.exports = {
             },
         ],
         '@typescript-eslint/no-explicit-any': [
-            'warn'
-        ]
+            'warn',
+        ],
     },
 };

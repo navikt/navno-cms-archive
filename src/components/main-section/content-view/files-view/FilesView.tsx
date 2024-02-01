@@ -1,5 +1,5 @@
 import React from 'react';
-import { CmsContentDocument } from '../../../../../common/cms-documents/content';
+import { CmsContent } from '../../../../../common/cms-documents/content';
 import { Link } from '@navikt/ds-react';
 import { useAppState } from '../../../../state/useAppState';
 import { classNames } from '../../../../utils/classNames';
@@ -7,7 +7,7 @@ import { classNames } from '../../../../utils/classNames';
 import style from './FilesView.module.css';
 
 type Props = {
-    binaries: NonNullable<CmsContentDocument['binaries']>;
+    binaries: NonNullable<CmsContent['binaries']>;
     hidden: boolean;
 };
 

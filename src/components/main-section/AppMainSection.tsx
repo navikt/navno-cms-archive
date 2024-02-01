@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ContentView } from './content-view/ContentView';
 import { useAppState } from '../../state/useAppState';
 import { Heading } from '@navikt/ds-react';
@@ -27,17 +27,14 @@ export const AppMainSection = () => {
 
     return (
         <div className={style.mainContent}>
-            <Heading size={'medium'} level={'2'} className={style.header}>
-                {selectedContent ? (
-                    selectedContent.displayName
-                ) : (
-                    <>
-                        <ArrowLeftIcon />
-                        {'Velg et innhold'}
-                    </>
-                )}
-            </Heading>
-            {selectedContent && <ContentView content={selectedContent} />}
+            {selectedContent ? (
+                <ContentView content={selectedContent} />
+            ) : (
+                <Heading size={'medium'} level={'2'} className={style.header}>
+                    <ArrowLeftIcon />
+                    {'Velg et innhold'}
+                </Heading>
+            )}
         </div>
     );
 };
