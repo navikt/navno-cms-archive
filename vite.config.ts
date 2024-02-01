@@ -21,6 +21,7 @@ export default defineConfig(({ mode }) => {
                 '@navikt/aksel-icons',
                 '@navikt/ds-react',
                 /@radix-ui\/.*/,
+                'lodash',
                 'react-xml-viewer',
                 'swr',
             ],

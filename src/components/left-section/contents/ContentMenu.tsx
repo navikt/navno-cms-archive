@@ -53,19 +53,17 @@ export const ContentMenu = ({ parentCategory }: Props) => {
                 </Button>
                 <TextField
                     label={'Søk i denne kategorien'}
+                    placeholder={'Søk i denne kategorien'}
                     hideLabel={true}
+                    size={'small'}
+                    className={style.search}
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
-                    size={'small'}
-                    placeholder={'Søk i denne kategorien'}
-                    className={style.search}
                 />
             </div>
-            <Tooltip content={`Kategori-nøkkel: ${parentKey}`} placement={'left'} delay={1000}>
-                <Heading level={'2'} size={'xsmall'} className={style.title}>
-                    {parentTitle}
-                </Heading>
-            </Tooltip>
+            <Heading level={'2'} size={'xsmall'} className={style.title}>
+                {parentTitle}
+            </Heading>
             {query && !isLoading && hits.length === 0 && (
                 <Alert
                     variant={'info'}

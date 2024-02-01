@@ -96,17 +96,6 @@ export class CmsArchiveSite {
 
             return res.send(contentList);
         });
-
-        router.get('/binary/document/:binaryKey', async (req, res) => {
-            const { binaryKey } = req.params;
-
-            const binary = await this.cmsArchiveService.getBinary(binaryKey);
-            if (!binary) {
-                return res.status(404).send(`Binary with key ${binaryKey} not found`);
-            }
-
-            return res.send(binary);
-        });
     }
 
     private async setupSiteRoutes(router: Router, htmlRenderer: HtmlRenderer) {
