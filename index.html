@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="no">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <link
         rel='preload'
@@ -9,12 +9,17 @@
         type='font/woff2'
         crossorigin
     />
+    <link
+        rel='icon'
+        href='/favicon.svg'
+        type='image/svg+xml'
+    />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>NAV CMS-arkiv</title>
-  </head>
-  <body>
-    <div id="root"><!--ssr-app-html--></div>
-    <script type="module" src="/src/main-client.tsx"></script>
-    <script type='application/json' id='app-context'>"ssr-app-context"</script>
-  </body>
+</head>
+<body>
+<div id="root"><!--ssr-app-html--></div>
+<script type="module" src="/src/main-client.tsx"></script>
+<script type='application/json' id='app-context'>"ssr-app-context"</script>
+</body>
 </html>
