@@ -1,16 +1,8 @@
 .topSection {
     grid-area: top;
-
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
 }
 
-.header {
+.header span {
     display: flex;
     align-items: center;
-}
-
-.logo {
-    margin-right: 1rem;
 }

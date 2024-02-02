@@ -6,6 +6,7 @@ import { classNames } from '../../utils/classNames';
 import { SearchInput } from './search/SearchInput';
 import { SearchResult } from './search/search-result/SearchResult';
 import { ContentSearchResult } from '../../../common/contentSearchResult';
+import { Alert, BodyLong, Heading } from '@navikt/ds-react';
 
 import style from './AppLeftSection.module.css';
 
@@ -28,7 +29,20 @@ export const AppLeftSection = () => {
                     contentSelectorOpen && style.hidden
                 )}
             >
-                <SearchInput setSearchResult={setSearchResult} />
+                {rootCategories.length === 0 ? (
+                    <Alert variant={'error'}>
+                        <Heading size={'xsmall'} level={'2'}>
+                            {'Noe gikk galt!'}
+                        </Heading>
+                        <BodyLong size={'small'}>
+                            {
+                                'Kunne ikke laste innhold fra arkivet. Prøv igjen (F5), eller kontakt brukerstøtte dersom problemet vedvarer.'
+                            }
+                        </BodyLong>
+                    </Alert>
+                ) : (
+                    <SearchInput setSearchResult={setSearchResult} />
+                )}
                 <div className={style.categoriesAndSearchResult}>
                     <div
                         className={classNames(

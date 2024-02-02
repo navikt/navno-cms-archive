@@ -1,6 +1,6 @@
 import React from 'react';
-import { Heading } from '@navikt/ds-react';
-import NavLogo from '../../assets/nav-logo-black.svg';
+import { InternalHeader, Spacer } from '@navikt/ds-react';
+import NavLogo from '../../assets/nav-logo-white.svg';
 import { ArchiveSelector } from './archive-selector/ArchiveSelector';
 
 import style from './AppTopSection.module.css';
@@ -12,13 +12,15 @@ type Props = {
 export const AppTopSection = ({ cmsName }: Props) => {
     return (
         <div className={style.topSection}>
-            <div className={style.header}>
-                <img src={NavLogo} alt={''} className={style.logo} />
-                <Heading size={'large'} level={'1'}>
-                    {`Arkiv - ${cmsName}`}
-                </Heading>
-            </div>
-            <ArchiveSelector />
+            <InternalHeader className={style.header}>
+                <InternalHeader.Title>
+                    <img src={NavLogo} alt={''} />
+                </InternalHeader.Title>
+                <InternalHeader.Title>{`CMS-arkiv`}</InternalHeader.Title>
+                <InternalHeader.Title>{cmsName}</InternalHeader.Title>
+                <Spacer />
+                <ArchiveSelector />
+            </InternalHeader>
         </div>
     );
 };

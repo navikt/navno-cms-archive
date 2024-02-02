@@ -3,6 +3,7 @@ import { Button, Label, Search } from '@navikt/ds-react';
 import { ContentSearchResult } from '../../../../common/contentSearchResult';
 import { useApiFetch } from '../../../fetch/useApiFetch';
 import { classNames } from '../../../utils/classNames';
+import { ChevronDownIcon } from '@navikt/aksel-icons';
 
 import style from './SearchInput.module.css';
 
@@ -26,7 +27,8 @@ export const SearchInput = ({ setSearchResult, className }: Props) => {
                     variant={'tertiary'}
                     onClick={() => setAdvancedSearchOpen(true)}
                 >
-                    {'Avansert søk (coming soon!)'}
+                    {'Tilpass søket (coming soon!)'}
+                    <ChevronDownIcon />
                 </Button>
             </div>
             <form

@@ -9,7 +9,13 @@
 .left {
     display: flex;
     align-items: center;
+
     svg {
         margin-right: 0.5rem;
     }
+}
+
+.header {
+    display: flex;
+    align-items: center;
 }

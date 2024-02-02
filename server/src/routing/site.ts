@@ -9,7 +9,7 @@ export const setupCmsArchiveSites = async (expressApp: Express) => {
 
     new CmsArchiveSite({
         config: {
-            name: 'Selvbetjeningssonen CMS',
+            name: 'Selvbetjeningssonen',
             basePath: '/sbs',
             indexPrefix: 'cmssbs',
         },
@@ -20,7 +20,7 @@ export const setupCmsArchiveSites = async (expressApp: Express) => {
 
     new CmsArchiveSite({
         config: {
-            name: 'Fagsystemsonen CMS',
+            name: 'Fagsystemsonen',
             basePath: '/fss',
             indexPrefix: 'cmsfss',
         },
