@@ -1,8 +1,21 @@
 .container {
+    position: relative;
+    overflow: hidden;
+}
+
+.xmlContainer {
     font-size: 0.75rem;
-    overflow-y: auto;
+    overflow-y: scroll;
+    height: 100%;
+    scrollbar-width: thin;
 }
 
 .hidden {
     display: none;
+}
+
+.toggle {
+    position: absolute;
+    right: 1.5rem;
+    bottom: 0.5rem;
 }

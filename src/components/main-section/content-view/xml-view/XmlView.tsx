@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import XMLViewer from 'react-xml-viewer';
-import { Alert } from '@navikt/ds-react';
+import { Alert, Switch, Tooltip } from '@navikt/ds-react';
 import { classNames } from '../../../../utils/classNames';
 
 import style from './XmlView.module.css';
@@ -11,17 +11,31 @@ type Props = {
 };
 
 export const XmlView = ({ xml, hidden = false }: Props) => {
+    const [collapsible, setCollapsible] = useState(false);
+
     return (
         <div className={classNames(style.container, hidden && style.hidden)}>
-            <XMLViewer
-                xml={xml}
-                collapsible={true}
-                invalidXml={
-                    <Alert variant={'error'}>
-                        {'Feil: fant ingen XML for dette innholdet!'}
-                    </Alert>
-                }
-            />
+            <Tooltip content={'Toggle ekspanderbare elementer'}>
+                <Switch
+                    size={'small'}
+                    checked={collapsible}
+                    position={'right'}
+                    hideLabel={true}
+                    onClick={() => setCollapsible(!collapsible)}
+                    className={style.toggle}
+                >
+                    {'Expand/collapse'}
+                </Switch>
+            </Tooltip>
+            <div className={style.xmlContainer}>
+                <XMLViewer
+                    xml={xml}
+                    collapsible={collapsible}
+                    invalidXml={
+                        <Alert variant={'error'}>{'Parsing av XML for innholdet feilet!'}</Alert>
+                    }
+                />
+            </div>
         </div>
     );
 };
