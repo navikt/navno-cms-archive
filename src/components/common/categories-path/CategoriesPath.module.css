@@ -1,0 +1,7 @@
+.path {
+    color: var(--a-gray-600);
+}
+
+.small {
+    font-size: var(--a-font-size-small);
+}

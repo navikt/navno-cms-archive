@@ -1,4 +1,4 @@
-import { CmsCategoryRef } from './_common';
+import { CmsCategoryPath, CmsCategoryRef } from './_common';
 
 type CmsContentRefData = {
     key: string;
@@ -22,5 +22,5 @@ export type CmsCategoryDocument = {
 
 export type CmsCategoryListItem = Pick<CmsCategoryDocument, 'key' | 'title' | 'categories'> & {
     contentCount: number;
-    path: CmsCategoryRef[];
+    path: CmsCategoryPath;
 };

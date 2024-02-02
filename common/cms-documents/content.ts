@@ -1,4 +1,4 @@
-import { CmsCategoryRef, CmsUser } from './_common';
+import { CmsCategoryPath, CmsCategoryRef, CmsUser } from './_common';
 
 type ContentVersionReference = {
     key: string;
@@ -66,7 +66,7 @@ export type CmsContentDocument = {
     meta: ContentMetaData;
 };
 
-export type CmsContent = CmsContentDocument & { path: CmsCategoryRef[] };
+export type CmsContent = CmsContentDocument & { path: CmsCategoryPath };
 
 export type CmsContentListItem = Pick<
     CmsContentDocument,

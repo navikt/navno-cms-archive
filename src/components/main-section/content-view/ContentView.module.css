@@ -1,5 +1,4 @@
 .path {
-    color: var(--a-gray-600);
     margin-bottom: 0.25rem;
 }
 
@@ -16,8 +15,4 @@
 
 .header {
     margin-bottom: 0.25rem;
-}
-
-.left {
-    margin-bottom: 0.5rem;
 }

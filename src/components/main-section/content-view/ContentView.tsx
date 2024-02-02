@@ -5,8 +5,8 @@ import { HtmlView } from './html-view/HtmlView';
 import { FilesView } from './files-view/FilesView';
 import { ViewSelector, ViewState } from '../view-selector/ViewSelector';
 import { VersionSelector } from './version-selector/VersionSelector';
-import { BodyShort, Heading } from '@navikt/ds-react';
-import { buildCategoriesPath } from '../../../utils/buildCategoriesPath';
+import { Heading } from '@navikt/ds-react';
+import { CategoriesPath } from '../../common/categories-path/CategoriesPath';
 
 import style from './ContentView.module.css';
 
@@ -24,9 +24,7 @@ export const ContentView = ({ content }: Props) => {
 
     return (
         <>
-            <BodyShort size={'small'} className={style.path}>
-                {buildCategoriesPath(content.path)}
-            </BodyShort>
+            <CategoriesPath path={content.path} className={style.path} />
             <div className={style.top}>
                 <div className={style.topLeft}>
                     <Heading size={'medium'} level={'2'} className={style.header}>

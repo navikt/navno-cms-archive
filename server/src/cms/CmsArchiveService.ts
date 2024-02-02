@@ -130,7 +130,7 @@ export class CmsArchiveService {
         });
     }
 
-    public async contentSearchSimple(
+    public async contentSearch(
         query: string,
         from: number = 0,
         size: number = 50

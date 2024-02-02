@@ -103,7 +103,7 @@ export class CmsArchiveSite {
                 return res.status(400).send('Parameter "query" is required');
             }
 
-            const result = await this.cmsArchiveService.contentSearchSimple(query as string);
+            const result = await this.cmsArchiveService.contentSearch(query as string);
 
             return res.send(result);
         });

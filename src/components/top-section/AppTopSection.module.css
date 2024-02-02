@@ -1,8 +1,8 @@
-.topSection {
+.header {
     grid-area: top;
-}
 
-.header span {
-    display: flex;
-    align-items: center;
+    span {
+        display: flex;
+        align-items: center;
+    }
 }
