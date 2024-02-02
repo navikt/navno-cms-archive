@@ -1,6 +1,6 @@
 import React from 'react';
 import { classNames } from '../../../../utils/classNames';
-import { ContentSearchResult } from '../../../../../common/contentSearchResult';
+import { ContentSearchResult } from '../../../../../common/contentSearch';
 import { Button, Heading } from '@navikt/ds-react';
 import { SearchResultHit } from './search-hit/SearchResultHit';
 import { ContentLoader } from '../../../common/loader/ContentLoader';
@@ -23,7 +23,7 @@ export const SearchResult = ({ result, close }: Props) => {
                     <Heading
                         size={'small'}
                         level={'2'}
-                    >{`Treff for "${result.query}" (${result.total})`}</Heading>
+                    >{`Treff for "${result.params.query}" (${result.total})`}</Heading>
                     <Button size={'xsmall'} variant={'tertiary'} onClick={close}>
                         {'Lukk'}
                     </Button>

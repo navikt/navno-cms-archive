@@ -13,7 +13,7 @@ const transformToListItem = async (
         title,
         categories,
         contentCount: contents.length,
-        path: superKey ? await archiveService.resolveCategoriesPath(superKey) : [],
+        path: superKey ? await archiveService.resolveCategoryPath(superKey) : [],
     };
 };
 

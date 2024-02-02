@@ -21,7 +21,7 @@ const logException = (e: unknown) => {
     }
 };
 
-export class CmsArchiveDbClient {
+export class CmsArchiveOpenSearchClient {
     private readonly openSearchClient: ClientTypeNew;
 
     constructor() {

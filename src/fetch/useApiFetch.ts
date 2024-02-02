@@ -1,9 +1,9 @@
 import { useAppState } from '../state/useAppState';
 import { fetchJson } from './fetchJson';
-import { CategoryContentsResponse, CmsContent } from '../../common/cms-documents/content';
+import { CmsContent } from '../../common/cms-documents/content';
 import { CmsCategoryListItem } from '../../common/cms-documents/category';
 import { useCallback } from 'react';
-import { ContentSearchResult } from '../../common/contentSearchResult';
+import { ContentSearchResult } from '../../common/contentSearch';
 
 const fetchContent = (basePath: string) => async (contentKey: string) =>
     fetchJson<CmsContent>(`${basePath}/api/content/${contentKey}`);
@@ -30,12 +30,12 @@ export type FetchCategoryContentsParams = {
 const fetchCategoryContents =
     (basePath: string) =>
     async ({ categoryKey, from, size, query = '' }: FetchCategoryContentsParams) =>
-        fetchJson<CategoryContentsResponse>(
-            `${basePath}/api/contentForCategory/${categoryKey}?from=${from}&size=${size}&query=${query?.length > 2 ? query : ''}`
+        fetchJson<ContentSearchResult>(
+            `${basePath}/api/search?sort=name&from=${from}&size=${size}&query=${query?.length > 2 ? query : ''}&categoryKey=${categoryKey}`
         );
 
 const fetchSearchSimple = (basePath: string) => async (query: string) =>
-    fetchJson<ContentSearchResult>(`${basePath}/api/search/simple?query=${query}`);
+    fetchJson<ContentSearchResult>(`${basePath}/api/search?query=${query}`);
 
 export const useApiFetch = () => {
     const { appContext } = useAppState();

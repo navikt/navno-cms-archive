@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Button, Label, Search } from '@navikt/ds-react';
-import { ContentSearchResult } from '../../../../common/contentSearchResult';
+import { ContentSearchResult } from '../../../../common/contentSearch';
 import { useApiFetch } from '../../../fetch/useApiFetch';
 import { classNames } from '../../../utils/classNames';
 import { ChevronDownIcon } from '@navikt/aksel-icons';
@@ -42,7 +42,12 @@ export const SearchInput = ({ setSearchResult, className }: Props) => {
                         return;
                     }
 
-                    setSearchResult({ hits: [], query: queryInput, total: 0, status: 'loading' });
+                    setSearchResult({
+                        hits: [],
+                        params: { query: queryInput, from: 0, size: 0 },
+                        total: 0,
+                        status: 'loading',
+                    });
 
                     fetchSearchSimple(queryInput).then((result) => {
                         setSearchResult(result);

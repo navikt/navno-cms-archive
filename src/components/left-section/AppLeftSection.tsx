@@ -5,7 +5,7 @@ import { useAppState } from '../../state/useAppState';
 import { classNames } from '../../utils/classNames';
 import { SearchInput } from './search/SearchInput';
 import { SearchResult } from './search/search-result/SearchResult';
-import { ContentSearchResult } from '../../../common/contentSearchResult';
+import { ContentSearchResult } from '../../../common/contentSearch';
 import { Alert, BodyLong, Heading } from '@navikt/ds-react';
 
 import style from './AppLeftSection.module.css';

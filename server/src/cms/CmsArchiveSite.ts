@@ -1,9 +1,10 @@
-import { CmsArchiveDbClient } from '../opensearch/CmsArchiveDbClient';
+import { CmsArchiveOpenSearchClient } from '../opensearch/CmsArchiveOpenSearchClient';
 import express, { Express, Response, Router } from 'express';
 import { CmsArchiveService } from './CmsArchiveService';
-import { parseNumberParam, parseQueryParamsList } from '../utils/queryParams';
+import { parseQueryParamsList } from '../utils/queryParams';
 import mime from 'mime';
 import { HtmlRenderer } from '../site/ssr/htmlRenderer';
+import { transformQueryToContentSearchParams } from '../opensearch/queries/contentSearch';
 
 export type CmsArchiveSiteConfig = {
     name: string;
@@ -14,7 +15,7 @@ export type CmsArchiveSiteConfig = {
 type ContructorProps = {
     config: CmsArchiveSiteConfig;
     expressApp: Express;
-    dbClient: CmsArchiveDbClient;
+    dbClient: CmsArchiveOpenSearchClient;
     htmlRenderer: HtmlRenderer;
 };
 
@@ -78,32 +79,13 @@ export class CmsArchiveSite {
             return res.send(contentVersion);
         });
 
-        router.get('/contentForCategory/:categoryKey', async (req, res) => {
-            const { categoryKey } = req.params;
-            const { from, size, query } = req.query;
-
-            const contentList = await this.cmsArchiveService.getContentsForCategory(
-                categoryKey,
-                parseNumberParam(from),
-                parseNumberParam(size),
-                query as string
-            );
-            if (!contentList) {
-                return res
-                    .status(404)
-                    .send(`Contents for category with key ${categoryKey} not found`);
+        router.get('/search', async (req, res) => {
+            const params = transformQueryToContentSearchParams(req);
+            if (!params) {
+                return res.status(400).send('Invalid parameters for search request');
             }
 
-            return res.send(contentList);
-        });
-
-        router.get('/search/simple', async (req, res) => {
-            const { query } = req.query;
-            if (!query) {
-                return res.status(400).send('Parameter "query" is required');
-            }
-
-            const result = await this.cmsArchiveService.contentSearch(query as string);
+            const result = await this.cmsArchiveService.contentSearch(params);
 
             return res.send(result);
         });

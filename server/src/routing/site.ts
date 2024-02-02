@@ -1,10 +1,10 @@
 import { Express } from 'express';
 import { CmsArchiveSite } from '../cms/CmsArchiveSite';
-import { CmsArchiveDbClient } from '../opensearch/CmsArchiveDbClient';
+import { CmsArchiveOpenSearchClient } from '../opensearch/CmsArchiveOpenSearchClient';
 import { initAndGetRenderer } from '../site/ssr/initRenderer';
 
 export const setupCmsArchiveSites = async (expressApp: Express) => {
-    const archiveClient = new CmsArchiveDbClient();
+    const archiveClient = new CmsArchiveOpenSearchClient();
     const htmlRenderer = await initAndGetRenderer(expressApp);
 
     new CmsArchiveSite({

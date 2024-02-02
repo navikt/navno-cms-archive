@@ -1,27 +1,22 @@
 import { CmsCategoryListItem } from '../../../common/cms-documents/category';
-import {
-    CategoryContentsResponse,
-    CmsContent,
-    CmsContentDocument,
-    CmsContentListItem,
-} from '../../../common/cms-documents/content';
-import { CmsArchiveDbClient } from '../opensearch/CmsArchiveDbClient';
+import { CmsContent, CmsContentDocument } from '../../../common/cms-documents/content';
+import { CmsArchiveOpenSearchClient } from '../opensearch/CmsArchiveOpenSearchClient';
 import { CmsBinaryDocument } from '../../../common/cms-documents/binary';
 import { CmsArchiveSiteConfig } from './CmsArchiveSite';
 import { sortVersions } from '../utils/sort';
 import { AssetDocument, CmsCategoryDocument } from '../opensearch/types';
 import { transformToCategoriesList } from './utils/transformToCategoriesList';
-import { QueryDslQueryContainer } from '@opensearch-project/opensearch/api/types';
-import { CmsCategoryRef } from '../../../common/cms-documents/_common';
-import { ContentSearchResult } from '../../../common/contentSearchResult';
+import { CmsCategoryPath } from '../../../common/cms-documents/_common';
+import { ContentSearchParams, ContentSearchResult } from '../../../common/contentSearch';
+import { buildContentSearchParams } from '../opensearch/queries/contentSearch';
 
 type ConstructorProps = {
-    client: CmsArchiveDbClient;
+    client: CmsArchiveOpenSearchClient;
     siteConfig: CmsArchiveSiteConfig;
 };
 
 export class CmsArchiveService {
-    private readonly client: CmsArchiveDbClient;
+    private readonly client: CmsArchiveOpenSearchClient;
     private readonly siteConfig: CmsArchiveSiteConfig;
 
     private readonly categoriesIndex: string;
@@ -82,114 +77,36 @@ export class CmsArchiveService {
             .then((res) => transformToCategoriesList(res, this));
     }
 
-    public async getContentsForCategory(
-        categoryKey: string,
-        from: number = 0,
-        size: number = 50,
-        query?: string
-    ): Promise<CategoryContentsResponse | null> {
-        const must: QueryDslQueryContainer[] = [
-            {
-                term: {
-                    isCurrentVersion: true,
-                },
-            },
-            {
-                term: {
-                    'category.key': categoryKey,
-                },
-            },
-        ];
-
-        if (query) {
-            must.push({
-                multi_match: {
-                    query,
-                    fields: ['displayName^10', 'xmlAsString'],
-                    type: 'phrase_prefix',
-                },
-            });
-        }
-
-        return this.client.search<CmsContentListItem>({
-            index: this.contentsIndex,
-            from,
-            size,
-            _source_includes: ['contentKey', 'versionKey', 'displayName'],
-            body: {
-                sort: {
-                    name: 'asc',
-                },
-                query: {
-                    bool: {
-                        must,
-                    },
-                },
-                track_total_hits: true,
-            },
-        });
-    }
-
-    public async contentSearch(
-        query: string,
-        from: number = 0,
-        size: number = 50
-    ): Promise<ContentSearchResult> {
+    public async contentSearch(params: ContentSearchParams): Promise<ContentSearchResult> {
         const result = await this.client.search<CmsContentDocument>({
+            ...buildContentSearchParams(params),
             index: this.contentsIndex,
-            from,
-            size,
-            _source_excludes: ['xmlAsString', 'html', 'versions'],
-            body: {
-                sort: {
-                    _score: {
-                        order: 'desc',
-                    },
-                },
-                query: {
-                    bool: {
-                        must: [
-                            {
-                                term: {
-                                    isCurrentVersion: {
-                                        value: true,
-                                    },
-                                },
-                            },
-                            {
-                                multi_match: {
-                                    query,
-                                    fields: ['displayName^10', 'xmlAsString'],
-                                    type: 'phrase_prefix',
-                                },
-                            },
-                        ],
-                    },
-                },
-            },
         });
 
         if (!result) {
             return {
-                query,
+                params,
                 total: 0,
-                error: 'Søket feilet, prøv igjen',
+                status: 'error',
                 hits: [],
             };
         }
 
+        const hits = await Promise.all(
+            result.hits.map(async (hit) => ({
+                contentKey: hit.contentKey,
+                versionKey: hit.versionKey,
+                displayName: hit.displayName,
+                score: hit._score || 0,
+                path: await this.resolveCategoryPath(hit.category.key),
+            }))
+        );
+
         return {
-            query,
+            params,
             total: result.total,
-            hits: await Promise.all(
-                result.hits.map(async (hit) => ({
-                    contentKey: hit.contentKey,
-                    versionKey: hit.versionKey,
-                    displayName: hit.displayName,
-                    score: hit._score || 0,
-                    path: await this.resolveCategoriesPath(hit.category.key),
-                }))
-            ),
+            status: 'success',
+            hits,
         };
     }
 
@@ -273,32 +190,7 @@ export class CmsArchiveService {
         return result.hits[0];
     }
 
-    private async fixContent(
-        contentDocument: CmsContentDocument | null
-    ): Promise<CmsContent | null> {
-        if (!contentDocument) {
-            return null;
-        }
-
-        return {
-            ...contentDocument,
-            versions: sortVersions(contentDocument),
-            html: this.fixHtml(contentDocument.html),
-            path: await this.resolveCategoriesPath(contentDocument.category.key),
-        };
-    }
-
-    private fixHtml(html?: string) {
-        if (!html) {
-            return html;
-        }
-
-        return html
-            .replace(/(\r\n|\r|\n)/, '')
-            .replace(/="\/(\d)+\//g, `="${this.siteConfig.basePath}/`);
-    }
-
-    async resolveCategoriesPath(categoryKey: string): Promise<CmsCategoryRef[]> {
+    async resolveCategoryPath(categoryKey: string): Promise<CmsCategoryPath> {
         const category = await this.getCategory(categoryKey);
         if (!category) {
             return [];
@@ -315,6 +207,31 @@ export class CmsArchiveService {
             return [item];
         }
 
-        return [...(await this.resolveCategoriesPath(superKey)), item];
+        return [...(await this.resolveCategoryPath(superKey)), item];
+    }
+
+    private async fixContent(
+        contentDocument: CmsContentDocument | null
+    ): Promise<CmsContent | null> {
+        if (!contentDocument) {
+            return null;
+        }
+
+        return {
+            ...contentDocument,
+            versions: sortVersions(contentDocument),
+            html: this.fixHtml(contentDocument.html),
+            path: await this.resolveCategoryPath(contentDocument.category.key),
+        };
+    }
+
+    private fixHtml(html?: string) {
+        if (!html) {
+            return html;
+        }
+
+        return html
+            .replace(/(\r\n|\r|\n)/, '')
+            .replace(/="\/(\d)+\//g, `="${this.siteConfig.basePath}/`);
     }
 }

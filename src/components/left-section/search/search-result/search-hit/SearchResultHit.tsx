@@ -1,5 +1,5 @@
 import React from 'react';
-import { ContentSearchHit } from '../../../../../../common/contentSearchResult';
+import { ContentSearchHit } from '../../../../../../common/contentSearch';
 import { ContentLink } from '../../../contents/content-link/ContentLink';
 import { CategoriesPath } from '../../../../common/categories-path/CategoriesPath';
 
