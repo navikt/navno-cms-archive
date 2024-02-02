@@ -42,6 +42,8 @@ export const SearchInput = ({ setSearchResult, className }: Props) => {
                         return;
                     }
 
+                    setSearchResult({ hits: [], query: queryInput, total: 0, status: 'loading' });
+
                     fetchSearchSimple(queryInput).then((result) => {
                         setSearchResult(result);
                     });

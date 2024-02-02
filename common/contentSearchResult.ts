@@ -9,5 +9,6 @@ export type ContentSearchResult = {
     query: string;
     total: number;
     error?: string;
+    status?: string;
     hits: ContentSearchHit[];
 };
