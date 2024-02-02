@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { CmsCategoryListItem } from '../../../../common/cms-documents/category';
-import { Alert, Button, Heading, Pagination, TextField, Tooltip } from '@navikt/ds-react';
+import { Alert, BodyShort, Button, Heading, Pagination, TextField } from '@navikt/ds-react';
 import { ArrowLeftIcon } from '@navikt/aksel-icons';
 import { useAppState } from '../../../state/useAppState';
 import { ContentLink } from './content-link/ContentLink';
@@ -8,6 +8,7 @@ import { useFetchCategoryContents } from '../../../fetch/useFetchCategoryContent
 import { ContentLoader } from '../../common/loader/ContentLoader';
 
 import style from './ContentMenu.module.css';
+import { buildCategoriesPath } from '../../../utils/buildCategoriesPath';
 
 const CONTENTS_PER_PAGE = 40;
 const MAX_CONTENTS = 10000;
@@ -17,7 +18,7 @@ type Props = {
 };
 
 export const ContentMenu = ({ parentCategory }: Props) => {
-    const { key: parentKey, title: parentTitle, contentCount } = parentCategory;
+    const { key: parentKey, title: parentTitle, contentCount, path } = parentCategory;
 
     const [pageNumber, setPageNumber] = useState<number>(1);
     const [query, setQuery] = useState<string>('');
@@ -61,6 +62,11 @@ export const ContentMenu = ({ parentCategory }: Props) => {
                     onChange={(e) => setQuery(e.target.value)}
                 />
             </div>
+            {path.length > 0 && (
+                <BodyShort size={'small'} className={style.path}>
+                    {buildCategoriesPath(path)}
+                </BodyShort>
+            )}
             <Heading level={'2'} size={'xsmall'} className={style.title}>
                 {parentTitle}
             </Heading>

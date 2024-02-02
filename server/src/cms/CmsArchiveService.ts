@@ -59,7 +59,7 @@ export class CmsArchiveService {
                     },
                 },
             })
-            .then((result) => (result ? transformToCategoriesList(result.hits) : result));
+            .then((result) => (result ? transformToCategoriesList(result.hits, this) : result));
     }
 
     public async getCategory(categoryKey: string): Promise<CmsCategoryDocument | null> {
@@ -79,7 +79,7 @@ export class CmsArchiveService {
                     ids: categoryKeys,
                 },
             })
-            .then(transformToCategoriesList);
+            .then((res) => transformToCategoriesList(res, this));
     }
 
     public async getContentsForCategory(
@@ -298,7 +298,7 @@ export class CmsArchiveService {
             .replace(/="\/(\d)+\//g, `="${this.siteConfig.basePath}/`);
     }
 
-    private async resolveCategoriesPath(categoryKey: string): Promise<CmsCategoryRef[]> {
+    async resolveCategoriesPath(categoryKey: string): Promise<CmsCategoryRef[]> {
         const category = await this.getCategory(categoryKey);
         if (!category) {
             return [];

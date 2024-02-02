@@ -24,8 +24,14 @@
     margin-top: 0.5rem;
 }
 
-.title {
+.path {
+    font-size: var(--a-font-size-small);
+    color: var(--a-gray-600);
     margin-top: 0.5rem;
+}
+
+.title {
+    margin-top: 0.25rem;
 }
 
 .contentList {

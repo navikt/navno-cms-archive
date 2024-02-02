@@ -1,24 +1,33 @@
 import { CmsCategoryListItem } from '../../../../common/cms-documents/category';
 import { CmsCategoryDocument } from '../../opensearch/types';
+import { CmsArchiveService } from '../CmsArchiveService';
 
-const transformToListItem = (category: CmsCategoryDocument): CmsCategoryListItem => {
-    const { key, title, categories, contents } = category;
+const transformToListItem = async (
+    category: CmsCategoryDocument,
+    archiveService: CmsArchiveService
+): Promise<CmsCategoryListItem> => {
+    const { key, title, categories, contents, superKey } = category;
 
     return {
         key,
         title,
         categories,
         contentCount: contents.length,
-        path: '',
+        path: superKey ? await archiveService.resolveCategoriesPath(superKey) : [],
     };
 };
 
-export const transformToCategoriesList = (
-    categories: CmsCategoryDocument[] | null
-): CmsCategoryListItem[] | null => {
+export const transformToCategoriesList = async (
+    categories: CmsCategoryDocument[] | null,
+    archiveService: CmsArchiveService
+): Promise<CmsCategoryListItem[] | null> => {
     if (!categories) {
         return null;
     }
 
-    return categories.map(transformToListItem).sort((a, b) => (a.title > b.title ? 1 : -1));
+    return Promise.all(
+        categories
+            .sort((a, b) => (a.title > b.title ? 1 : -1))
+            .map(async (category) => transformToListItem(category, archiveService))
+    );
 };

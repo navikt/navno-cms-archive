@@ -22,5 +22,5 @@ export type CmsCategoryDocument = {
 
 export type CmsCategoryListItem = Pick<CmsCategoryDocument, 'key' | 'title' | 'categories'> & {
     contentCount: number;
-    path: string;
+    path: CmsCategoryRef[];
 };
