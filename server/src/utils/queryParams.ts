@@ -13,21 +13,17 @@ export const parseNumberParam = (value: unknown): number | undefined => {
 export const parseToStringArray = (value: unknown): string[] | undefined => {
     try {
         if (typeof value !== 'string') {
-            console.log('Value is not a string');
             return undefined;
         }
 
         const parsed = JSON.parse(value);
 
         if (Array.isArray(parsed)) {
-            console.log('Parsed value is an array');
             return parsed.map((item) => item.toString());
         }
 
-        console.log(`Parsed value is something else: ${typeof parsed}`);
-        return [parsed];
+        return [parsed.toString()];
     } catch (e) {
-        console.error(`Error parsing value: ${e}`);
         return undefined;
     }
 };

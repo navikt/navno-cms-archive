@@ -29,7 +29,7 @@ export const CategoriesPath = ({ path, size = 'normal', tooltipPosition, classNa
     );
 
     return tooltipPosition ? (
-        <Tooltip content={pathString} placement={tooltipPosition}>
+        <Tooltip content={pathString} placement={tooltipPosition} maxChar={1000}>
             {PathComponent}
         </Tooltip>
     ) : (

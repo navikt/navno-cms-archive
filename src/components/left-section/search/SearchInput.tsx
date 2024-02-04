@@ -1,9 +1,9 @@
 import React, { useRef, useState } from 'react';
-import { Button, Label, Search } from '@navikt/ds-react';
-import { ContentSearchResult } from '../../../../common/contentSearch';
+import { Search } from '@navikt/ds-react';
+import { ContentSearchParams, ContentSearchResult } from '../../../../common/contentSearch';
 import { useApiFetch } from '../../../fetch/useApiFetch';
 import { classNames } from '../../../utils/classNames';
-import { ChevronDownIcon } from '@navikt/aksel-icons';
+import { SearchSettings } from './search-settings/SearchSettings';
 
 import style from './SearchInput.module.css';
 
@@ -14,42 +14,39 @@ type Props = {
 
 export const SearchInput = ({ setSearchResult, className }: Props) => {
     const inputRef = useRef<HTMLInputElement>(null);
-    const [advancedSearchOpen, setAdvancedSearchOpen] = useState(false);
+    const [searchParams, setSearchParams] = useState<ContentSearchParams>({
+        from: 0,
+        size: 50,
+        sort: 'score',
+        withChildCategories: true,
+    });
+
+    const setSearchParamsPartial = (params: Partial<ContentSearchParams>) => {
+        setSearchParams({ ...searchParams, ...params });
+    };
 
     const { fetchSearch } = useApiFetch();
 
     return (
         <div className={classNames(style.search, className)}>
-            <div className={style.labels}>
-                <Label size={'small'}>{'Søk'}</Label>
-                <Button
-                    size={'xsmall'}
-                    variant={'tertiary'}
-                    onClick={() => setAdvancedSearchOpen(true)}
-                >
-                    {'Tilpass søket (coming soon!)'}
-                    <ChevronDownIcon />
-                </Button>
-            </div>
+            <SearchSettings searchParams={searchParams} setSearchParams={setSearchParamsPartial} />
             <form
                 role={'search'}
                 onSubmit={(e) => {
                     e.preventDefault();
 
-                    const queryInput = inputRef.current?.value;
-                    if (!queryInput) {
-                        setSearchResult(null);
+                    if (!searchParams.query) {
                         return;
                     }
 
                     setSearchResult({
                         hits: [],
-                        params: { query: queryInput, from: 0, size: 0 },
+                        params: searchParams,
                         total: 0,
                         status: 'loading',
                     });
 
-                    fetchSearch({ query: queryInput, from: 0, size: 50 }).then((result) => {
+                    fetchSearch(searchParams).then((result) => {
                         setSearchResult(result);
                     });
                 }}
@@ -59,7 +56,7 @@ export const SearchInput = ({ setSearchResult, className }: Props) => {
                     hideLabel={true}
                     size={'small'}
                     ref={inputRef}
-                    onClear={() => setSearchResult(null)}
+                    onChange={(value) => setSearchParamsPartial({ query: value })}
                 />
             </form>
         </div>

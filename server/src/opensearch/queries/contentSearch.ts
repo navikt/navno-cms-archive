@@ -6,6 +6,7 @@ import {
 import { ContentSearchParams, ContentSearchSort } from '../../../../common/contentSearch';
 import { Request } from 'express';
 import { parseNumberParam, parseToStringArray } from '../../utils/queryParams';
+import { CmsArchiveCategoriesService } from '../../cms/CmsArchiveCategoriesService';
 
 const SIZE_DEFAULT = 50;
 
@@ -27,15 +28,14 @@ const sortParams: Record<ContentSearchSort, SearchSort> = {
 } as const;
 
 export const transformQueryToContentSearchParams = (req: Request): ContentSearchParams | null => {
-    const { query, fullQuery, size, sort, from, categoryKeys } = req.query as Record<
-        string,
-        string
-    >;
+    const { query, withContent, size, sort, from, categoryKeys, withChildCategories } =
+        req.query as Record<keyof ContentSearchParams, string>;
 
     return {
         query,
-        fullQuery: fullQuery === 'true',
+        withContent: withContent === 'true',
         categoryKeys: parseToStringArray(categoryKeys),
+        withChildCategories: withChildCategories === 'true',
         sort: isValidSort(sort) ? sort : 'score',
         from: parseNumberParam(from) ?? 0,
         size: parseNumberParam(size) ?? SIZE_DEFAULT,
@@ -45,9 +45,18 @@ export const transformQueryToContentSearchParams = (req: Request): ContentSearch
 const includedFields = ['contentKey', 'versionKey', 'displayName', 'category.key'];
 
 export const buildContentSearchParams = (
-    contentSearchParams: ContentSearchParams
+    contentSearchParams: ContentSearchParams,
+    categoriesService: CmsArchiveCategoriesService
 ): SearchRequest => {
-    const { query, from, size, sort = 'score', fullQuery, categoryKeys } = contentSearchParams;
+    const {
+        query,
+        from,
+        size,
+        sort = 'score',
+        withContent,
+        categoryKeys,
+        withChildCategories,
+    } = contentSearchParams;
 
     const must: QueryDslQueryContainer[] = [
         {
@@ -62,7 +71,7 @@ export const buildContentSearchParams = (
     if (query) {
         const fields = ['displayName^10'];
 
-        if (fullQuery) {
+        if (withContent) {
             fields.push('xmlAsString');
         }
 
@@ -76,9 +85,18 @@ export const buildContentSearchParams = (
     }
 
     if (categoryKeys) {
+        const categoryKeysFinal = [...categoryKeys];
+
+        if (withChildCategories) {
+            const childCategoryKeys = categoryKeys.flatMap((key) =>
+                categoriesService.getDescendantCategories(key)
+            );
+            categoryKeysFinal.push(...childCategoryKeys);
+        }
+
         must.push({
             terms: {
-                'category.key': categoryKeys,
+                'category.key': categoryKeysFinal,
             },
         });
     }

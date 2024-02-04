@@ -1,0 +1,62 @@
+.container {
+    width: 100%;
+}
+
+.labels {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.25rem;
+}
+
+.toggle > span {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.icon {
+    transition: transform 200ms ease-out;
+
+    &.open {
+        transform: rotateX(180deg);
+    }
+}
+
+.settings {
+    max-height: 0;
+    visibility: hidden;
+    overflow: hidden;
+
+    transition-duration: 250ms;
+    transition-timing-function: ease-out;
+    transition-property: visibility, max-height, padding, overflow;
+
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    background-color: var(--a-gray-200);
+    border-radius: var(--a-border-radius-medium);
+    margin-bottom: 0.25rem;
+    padding: 0 0.5rem;
+
+    &.open {
+        max-height: 500px;
+        visibility: visible;
+        padding: 0.5rem;
+        overflow: visible;
+    }
+}
+
+.searchFields {
+    display: flex;
+    align-items: center;
+}
+
+.categoriesSelector {
+    /*ul {*/
+    /*    gap: 0.25rem;*/
+    /*    font-size: 0.75rem;*/
+    /*}*/
+}

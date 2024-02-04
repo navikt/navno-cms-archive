@@ -44,17 +44,6 @@ export class CmsArchiveCategoriesService {
         return this.rootCategories;
     }
 
-    public getCategory(categoryKey: string): CmsCategoryListItem | undefined {
-        return this.categoriesMap.get(categoryKey);
-    }
-
-    public async getCategoryFull(categoryKey: string): Promise<CmsCategoryDocument | null> {
-        return this.client.getDocument<CmsCategoryDocument>({
-            index: this.categoriesIndex,
-            id: categoryKey,
-        });
-    }
-
     public getCategories(categoryKeys: string[]): CmsCategoryListItem[] {
         return categoryKeys.reduce<CmsCategoryListItem[]>((acc, key) => {
             const category = this.categoriesMap.get(key);
@@ -64,6 +53,20 @@ export class CmsArchiveCategoriesService {
 
             return acc;
         }, []);
+    }
+
+    public getDescendantCategories(categoryKey: string, keys: string[] = []): string[] {
+        const category = this.categoriesMap.get(categoryKey);
+        if (!category || category.categories.length === 0) {
+            return keys;
+        }
+
+        category.categories.forEach((child) => {
+            keys.push(child.key);
+            this.getDescendantCategories(child.key, keys);
+        });
+
+        return keys;
     }
 
     private populateCategoriesMap(categories: CmsCategoryListItem[]) {
@@ -113,7 +116,7 @@ export class CmsArchiveCategoriesService {
             .search<CmsCategoryDocument>({
                 index: this.categoriesIndex,
                 _source_excludes: ['xmlAsString'],
-                size: 10000,
+                size: 5000,
                 body: {
                     query: {
                         match_all: {},
@@ -121,9 +124,9 @@ export class CmsArchiveCategoriesService {
                 },
             })
             .then((result) => {
-                if (result && result.total > 10000) {
+                if (result && result.total > result.hits.length) {
                     console.error(
-                        `Found more than 10000 categories in ${this.categoriesIndex} - expected 3127 (sbs) or 3866 (fss)`
+                        `Found too many categories in ${this.categoriesIndex}! (${result.total}) - expected 3127 (sbs) or 3866 (fss)`
                     );
                 }
 

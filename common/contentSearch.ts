@@ -19,8 +19,9 @@ export type ContentSearchSort = 'score' | 'datetime' | 'name';
 export type ContentSearchParams = {
     from: number;
     size: number;
-    fullQuery?: boolean;
-    categoryKeys?: string[];
     query?: string;
     sort?: ContentSearchSort;
+    withContent?: boolean;
+    withChildCategories?: boolean;
+    categoryKeys?: string[];
 };

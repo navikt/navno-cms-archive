@@ -31,7 +31,7 @@ export class CmsArchiveContentService {
 
     public async contentSearch(params: ContentSearchParams): Promise<ContentSearchResult> {
         const result = await this.client.search<CmsContentDocument>({
-            ...buildContentSearchParams(params),
+            ...buildContentSearchParams(params, this.categoriesService),
             index: this.contentsIndex,
         });
 
