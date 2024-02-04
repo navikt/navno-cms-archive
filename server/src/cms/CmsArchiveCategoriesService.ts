@@ -40,19 +40,19 @@ export class CmsArchiveCategoriesService {
         );
     }
 
-    async getCategoryWithXml(categoryKey: string): Promise<CmsCategoryDocument | null> {
-        return this.client.getDocument<CmsCategoryDocument>({
-            index: this.index,
-            id: categoryKey,
-        });
-    }
-
     getRootCategories(): CmsCategoryListItem[] {
         return this.rootCategories;
     }
 
     getCategory(categoryKey: string): CmsCategoryListItem | undefined {
         return this.categoriesMap.get(categoryKey);
+    }
+
+    async getCategoryFull(categoryKey: string): Promise<CmsCategoryDocument | null> {
+        return this.client.getDocument<CmsCategoryDocument>({
+            index: this.index,
+            id: categoryKey,
+        });
     }
 
     getCategories(categoryKeys: string[]): CmsCategoryListItem[] {
@@ -81,7 +81,10 @@ export class CmsArchiveCategoriesService {
             if (category.superKey) {
                 category.path = this.resolveCategoryPath(category.superKey);
             }
+            category.categories.sort((a, b) => a.name.localeCompare(b.name));
         });
+
+        this.rootCategories.sort((a, b) => a.title.localeCompare(b.title));
     }
 
     resolveCategoryPath(categoryKey: string, path: CmsCategoryPath = []): CmsCategoryPath {
@@ -93,7 +96,7 @@ export class CmsArchiveCategoriesService {
 
         const { key, superKey, title } = category;
 
-        path.push({
+        path.unshift({
             key,
             name: title,
         });
