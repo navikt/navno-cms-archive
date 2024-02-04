@@ -16,7 +16,7 @@ export const SearchInput = ({ setSearchResult, className }: Props) => {
     const inputRef = useRef<HTMLInputElement>(null);
     const [advancedSearchOpen, setAdvancedSearchOpen] = useState(false);
 
-    const { fetchSearchSimple } = useApiFetch();
+    const { fetchSearch } = useApiFetch();
 
     return (
         <div className={classNames(style.search, className)}>
@@ -49,7 +49,7 @@ export const SearchInput = ({ setSearchResult, className }: Props) => {
                         status: 'loading',
                     });
 
-                    fetchSearchSimple(queryInput).then((result) => {
+                    fetchSearch({ query: queryInput, from: 0, size: 50 }).then((result) => {
                         setSearchResult(result);
                     });
                 }}

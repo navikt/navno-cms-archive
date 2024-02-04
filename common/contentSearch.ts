@@ -20,7 +20,7 @@ export type ContentSearchParams = {
     from: number;
     size: number;
     fullQuery?: boolean;
-    categoryKey?: string;
+    categoryKeys?: string[];
     query?: string;
     sort?: ContentSearchSort;
 };

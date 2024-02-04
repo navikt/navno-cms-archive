@@ -1,22 +1,27 @@
-export const fetchJson = <ResponseType>(
+export const fetchJson = async <ResponseType>(
     url: string,
-    config?: Record<string, unknown>,
+    params?: Record<string, any>,
     retries = 1
-): Promise<ResponseType | null> =>
-    fetch(url, config)
-        .then((res) => {
-            if (res.ok) {
-                return res.json();
-            }
+): Promise<ResponseType | null> => {
+    const paramsString = params
+        ? new URLSearchParams(params as Record<string, string>).toString()
+        : null;
+    const urlWithParams = paramsString ? `${url}?${paramsString}` : url;
 
-            throw new Error(`${res.status} - ${res.statusText}`);
-        })
-        .catch((e) => {
-            if (retries > 0) {
-                console.log(`Failed to fetch from ${url}, retrying`);
-                return fetchJson(url, config, retries - 1);
-            }
+    try {
+        const res = await fetch(urlWithParams);
+        if (res.ok) {
+            return res.json();
+        }
 
-            console.error(`Failed to fetch json from ${url} - ${e}`);
-            return null;
-        });
+        throw new Error(`${res.status} - ${res.statusText}`);
+    } catch (e) {
+        if (retries > 0) {
+            console.log(`Failed to fetch from ${urlWithParams}, retrying`);
+            return fetchJson(url, params, retries - 1);
+        }
+
+        console.error(`Failed to fetch json from ${url} - ${e}`);
+        return null;
+    }
+};

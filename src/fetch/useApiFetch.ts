@@ -3,7 +3,7 @@ import { fetchJson } from './fetchJson';
 import { CmsContent } from '../../common/cms-documents/content';
 import { CmsCategoryListItem } from '../../common/cms-documents/category';
 import { useCallback } from 'react';
-import { ContentSearchResult } from '../../common/contentSearch';
+import { ContentSearchParams, ContentSearchResult } from '../../common/contentSearch';
 
 const fetchContent = (basePath: string) => async (contentKey: string) =>
     fetchJson<CmsContent>(`${basePath}/api/content/${contentKey}`);
@@ -20,22 +20,8 @@ const fetchCategories =
               )
             : [];
 
-export type FetchCategoryContentsParams = {
-    categoryKey: string;
-    from: number;
-    size: number;
-    query?: string;
-};
-
-const fetchCategoryContents =
-    (basePath: string) =>
-    async ({ categoryKey, from, size, query = '' }: FetchCategoryContentsParams) =>
-        fetchJson<ContentSearchResult>(
-            `${basePath}/api/search?sort=name&from=${from}&size=${size}&query=${query?.length > 2 ? query : ''}&categoryKey=${categoryKey}`
-        );
-
-const fetchSearchSimple = (basePath: string) => async (query: string) =>
-    fetchJson<ContentSearchResult>(`${basePath}/api/search?query=${query}`);
+const fetchSearch = (basePath: string) => async (params: ContentSearchParams) =>
+    fetchJson<ContentSearchResult>(`${basePath}/api/search`, params);
 
 export const useApiFetch = () => {
     const { appContext } = useAppState();
@@ -43,14 +29,12 @@ export const useApiFetch = () => {
 
     return {
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        fetchCategoryContents: useCallback(fetchCategoryContents(basePath), [basePath]),
-        // eslint-disable-next-line react-hooks/exhaustive-deps
         fetchContent: useCallback(fetchContent(basePath), [basePath]),
         // eslint-disable-next-line react-hooks/exhaustive-deps
         fetchContentVersion: useCallback(fetchContentVersion(basePath), [basePath]),
         // eslint-disable-next-line react-hooks/exhaustive-deps
         fetchCategories: useCallback(fetchCategories(basePath), [basePath]),
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        fetchSearchSimple: useCallback(fetchSearchSimple(basePath), [basePath]),
+        fetchSearch: useCallback(fetchSearch(basePath), [basePath]),
     };
 };

@@ -5,7 +5,7 @@ import {
 } from '@opensearch-project/opensearch/api/types';
 import { ContentSearchParams, ContentSearchSort } from '../../../../common/contentSearch';
 import { Request } from 'express';
-import { parseNumberParam } from '../../utils/queryParams';
+import { parseNumberParam, parseToStringArray } from '../../utils/queryParams';
 
 const SIZE_DEFAULT = 50;
 
@@ -27,12 +27,15 @@ const sortParams: Record<ContentSearchSort, SearchSort> = {
 } as const;
 
 export const transformQueryToContentSearchParams = (req: Request): ContentSearchParams | null => {
-    const { query, fullQuery, size, sort, from, categoryKey } = req.query as Record<string, string>;
+    const { query, fullQuery, size, sort, from, categoryKeys } = req.query as Record<
+        string,
+        string
+    >;
 
     return {
         query,
         fullQuery: fullQuery === 'true',
-        categoryKey,
+        categoryKeys: parseToStringArray(categoryKeys),
         sort: isValidSort(sort) ? sort : 'score',
         from: parseNumberParam(from) ?? 0,
         size: parseNumberParam(size) ?? SIZE_DEFAULT,
@@ -44,7 +47,7 @@ const includedFields = ['contentKey', 'versionKey', 'displayName', 'category.key
 export const buildContentSearchParams = (
     contentSearchParams: ContentSearchParams
 ): SearchRequest => {
-    const { query, from, size, sort = 'score', fullQuery, categoryKey } = contentSearchParams;
+    const { query, from, size, sort = 'score', fullQuery, categoryKeys } = contentSearchParams;
 
     const must: QueryDslQueryContainer[] = [
         {
@@ -72,10 +75,10 @@ export const buildContentSearchParams = (
         });
     }
 
-    if (categoryKey) {
+    if (categoryKeys) {
         must.push({
-            term: {
-                'category.key': categoryKey,
+            terms: {
+                'category.key': categoryKeys,
             },
         });
     }
