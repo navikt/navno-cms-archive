@@ -10,7 +10,7 @@ import { CmsArchiveCategoriesService } from './CmsArchiveCategoriesService';
 
 type ConstructorProps = {
     client: CmsArchiveOpenSearchClient;
-    siteConfig: CmsArchiveSiteConfig;
+    config: CmsArchiveSiteConfig;
     categoriesService: CmsArchiveCategoriesService;
 };
 
@@ -23,11 +23,11 @@ export class CmsArchiveContentService {
     private readonly binariesIndex: string;
     private readonly staticAssetsIndex: string;
 
-    constructor({ client, siteConfig, categoriesService }: ConstructorProps) {
-        const { indexPrefix } = siteConfig;
+    constructor({ client, config, categoriesService }: ConstructorProps) {
+        const { indexPrefix } = config;
 
         this.client = client;
-        this.siteConfig = siteConfig;
+        this.siteConfig = config;
         this.categoriesService = categoriesService;
 
         this.contentsIndex = `${indexPrefix}_content`;

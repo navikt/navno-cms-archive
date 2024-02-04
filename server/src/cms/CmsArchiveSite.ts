@@ -17,8 +17,8 @@ export type CmsArchiveSiteConfig = {
 
 type ContructorProps = {
     config: CmsArchiveSiteConfig;
+    client: CmsArchiveOpenSearchClient;
     expressApp: Express;
-    dbClient: CmsArchiveOpenSearchClient;
     htmlRenderer: HtmlRenderer;
 };
 
@@ -28,21 +28,21 @@ export class CmsArchiveSite {
     private readonly cmsArchiveContentService: CmsArchiveContentService;
     private readonly cmsArchiveBinariesService: CmsArchiveBinariesService;
 
-    constructor({ config, expressApp, dbClient, htmlRenderer }: ContructorProps) {
+    constructor({ config, expressApp, client, htmlRenderer }: ContructorProps) {
         this.config = config;
 
         this.cmsArchiveCategoriesService = new CmsArchiveCategoriesService({
             config: config,
-            client: dbClient,
+            client: client,
         });
 
         this.cmsArchiveContentService = new CmsArchiveContentService({
-            client: dbClient,
-            siteConfig: config,
+            config: config,
+            client: client,
             categoriesService: this.cmsArchiveCategoriesService,
         });
 
-        this.cmsArchiveBinariesService = new CmsArchiveBinariesService({});
+        this.cmsArchiveBinariesService = new CmsArchiveBinariesService({ config, client });
 
         const siteRouter = express.Router();
         const apiRouter = express.Router();

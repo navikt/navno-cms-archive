@@ -24,7 +24,7 @@ export const setupCmsArchiveSites = async (expressApp: Express) => {
         return new CmsArchiveSite({
             config,
             expressApp,
-            dbClient: archiveClient,
+            client: archiveClient,
             htmlRenderer,
         });
     });
