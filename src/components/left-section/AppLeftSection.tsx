@@ -3,7 +3,7 @@ import { CategoriesMenu } from './categories/CategoriesMenu';
 import { ContentMenu } from './contents/ContentMenu';
 import { useAppState } from '../../state/useAppState';
 import { classNames } from '../../utils/classNames';
-import { SearchInput } from './search/SearchInput';
+import { SearchInput } from './search/search-input/SearchInput';
 import { SearchResult } from './search/search-result/SearchResult';
 import { ContentSearchResult } from '../../../common/contentSearch';
 import { Alert, BodyLong, Heading } from '@navikt/ds-react';

@@ -1,9 +1,11 @@
 import React, { useRef, useState } from 'react';
 import { Search } from '@navikt/ds-react';
-import { ContentSearchParams, ContentSearchResult } from '../../../../common/contentSearch';
-import { useApiFetch } from '../../../fetch/useApiFetch';
-import { classNames } from '../../../utils/classNames';
+import { ContentSearchParams, ContentSearchResult } from '../../../../../common/contentSearch';
+import { useApiFetch } from '../../../../fetch/useApiFetch';
+import { classNames } from '../../../../utils/classNames';
 import { SearchSettings } from './search-settings/SearchSettings';
+import { getInitialSearchParams, persistSearchParams } from './params-initial-state';
+import { useAppState } from '../../../../state/useAppState';
 
 import style from './SearchInput.module.css';
 
@@ -13,17 +15,18 @@ type Props = {
 };
 
 export const SearchInput = ({ setSearchResult, className }: Props) => {
+    const { appContext } = useAppState();
+    const { basePath } = appContext;
+
     const inputRef = useRef<HTMLInputElement>(null);
-    const [searchParams, setSearchParams] = useState<ContentSearchParams>({
-        from: 0,
-        size: 50,
-        sort: 'score',
-        type: 'titles',
-        withChildCategories: true,
-    });
+    const [searchParams, setSearchParams] = useState<ContentSearchParams>(
+        getInitialSearchParams(basePath)
+    );
 
     const setSearchParamsPartial = (params: Partial<ContentSearchParams>) => {
-        setSearchParams({ ...searchParams, ...params });
+        const newParams = { ...searchParams, ...params };
+        persistSearchParams(newParams, basePath);
+        setSearchParams(newParams);
     };
 
     const { fetchSearch } = useApiFetch();

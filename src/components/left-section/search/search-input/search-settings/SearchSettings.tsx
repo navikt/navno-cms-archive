@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Button, HelpText, Label, Radio, RadioGroup, UNSAFE_Combobox } from '@navikt/ds-react';
 import { ChevronDownIcon } from '@navikt/aksel-icons';
-import { ContentSearchParams } from '../../../../../common/contentSearch';
-import { classNames } from '../../../../utils/classNames';
-import { useAppState } from '../../../../state/useAppState';
-import { CmsCategoryListItem } from '../../../../../common/cms-documents/category';
+import { ContentSearchParams } from '../../../../../../common/contentSearch';
+import { classNames } from '../../../../../utils/classNames';
+import { useAppState } from '../../../../../state/useAppState';
+import { CmsCategoryListItem } from '../../../../../../common/cms-documents/category';
 
 import style from './SearchSettings.module.css';
 
@@ -43,7 +43,7 @@ export const SearchSettings = ({ searchParams, setSearchParams }: Props) => {
                 <RadioGroup
                     size={'small'}
                     legend={'Søk etter...'}
-                    value={type}
+                    value={type || 'titles'}
                     onChange={(value) => setSearchParams({ type: value })}
                 >
                     <Radio value={'titles'}>{'Tittel'}</Radio>
@@ -61,7 +61,7 @@ export const SearchSettings = ({ searchParams, setSearchParams }: Props) => {
                 <RadioGroup
                     size={'small'}
                     legend={'Sortering'}
-                    value={sort}
+                    value={sort || 'score'}
                     onChange={(value) => setSearchParams({ sort: value })}
                 >
                     <Radio value={'score'}>{'Beste treff'}</Radio>

@@ -24,6 +24,7 @@
     "@navikt/ds-css": "5.17.4",
     "@navikt/ds-react": "5.17.4",
     "csp-header": "5.2.1",
+    "js-cookie": "3.0.5",
     "lodash.debounce": "4.0.8",
     "react": "18.2.0",
     "react-dom": "18.2.0",
@@ -31,8 +32,9 @@
     "swr": "2.2.4"
   },
   "devDependencies": {
-    "@types/node": "20.11.9",
+    "@types/js-cookie": "3.0.6",
     "@types/lodash": "4.14.202",
+    "@types/node": "20.11.9",
     "@types/react": "18.2.48",
     "@types/react-dom": "18.2.18",
     "@typescript-eslint/eslint-plugin": "6.19.1",
