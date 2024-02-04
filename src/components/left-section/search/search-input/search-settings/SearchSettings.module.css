@@ -2,7 +2,7 @@
     width: 100%;
 }
 
-.labels {
+.topRow {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -49,6 +49,11 @@
     }
 }
 
+.radioGroups {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
 .searchFields {
     display: flex;
     align-items: center;
@@ -67,6 +72,6 @@
 .categoriesSelector {
     ul {
         gap: 0.25rem;
-        font-size: 0.75rem;
+        font-size: 0.875rem;
     }
 }

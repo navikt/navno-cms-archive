@@ -26,4 +26,5 @@ export type ContentSearchParams = {
     type?: ContentSearchType;
     withChildCategories?: boolean;
     categoryKeys?: string[];
+    isCustom?: boolean;
 };

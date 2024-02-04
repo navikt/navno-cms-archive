@@ -4,7 +4,7 @@ import { ContentSearchParams, ContentSearchResult } from '../../../../../common/
 import { useApiFetch } from '../../../../fetch/useApiFetch';
 import { classNames } from '../../../../utils/classNames';
 import { SearchSettings } from './search-settings/SearchSettings';
-import { getInitialSearchParams, persistSearchParams } from './params-initial-state';
+import { getInitialSearchParams, initialSearchParams } from './params-initial-state';
 import { useAppState } from '../../../../state/useAppState';
 
 import style from './SearchInput.module.css';
@@ -23,17 +23,15 @@ export const SearchInput = ({ setSearchResult, className }: Props) => {
         getInitialSearchParams(basePath)
     );
 
-    const setSearchParamsPartial = (params: Partial<ContentSearchParams>) => {
-        const newParams = { ...searchParams, ...params };
-        persistSearchParams(newParams, basePath);
-        setSearchParams(newParams);
-    };
-
     const { fetchSearch } = useApiFetch();
 
     return (
         <div className={classNames(style.search, className)}>
-            <SearchSettings searchParams={searchParams} setSearchParams={setSearchParamsPartial} />
+            <SearchSettings
+                searchParams={searchParams}
+                setSearchParams={setSearchParams}
+                reset={() => setSearchParams({ ...initialSearchParams, query: searchParams.query })}
+            />
             <form
                 role={'search'}
                 onSubmit={(e) => {
@@ -60,7 +58,7 @@ export const SearchInput = ({ setSearchResult, className }: Props) => {
                     hideLabel={true}
                     size={'small'}
                     ref={inputRef}
-                    onChange={(value) => setSearchParamsPartial({ query: value })}
+                    onChange={(value) => setSearchParams({ ...searchParams, query: value })}
                 />
             </form>
         </div>
