@@ -12,9 +12,8 @@
 
 .fullscreenButton {
     position: absolute;
-    top: 0.25rem;
-    left: 0.25rem;
-    background-color: var(--a-white);
+    bottom: 0.25rem;
+    right: 1.5rem;
 }
 
 .hidden {

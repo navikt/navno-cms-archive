@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import { classNames } from '../../../../utils/classNames';
 import { Button } from '@navikt/ds-react';
 import { useAppState } from '../../../../state/useAppState';
+import { ExpandIcon } from '@navikt/aksel-icons';
 
 import style from './HtmlView.module.css';
 
@@ -21,10 +22,11 @@ export const HtmlView = ({ html, versionKey, hidden }: Props) => {
         <div className={classNames(style.wrapper, hidden && style.hidden)}>
             <Button
                 size={'small'}
-                variant={'tertiary'}
+                variant={'primary'}
                 as={'a'}
                 href={fullscreenPath}
                 className={style.fullscreenButton}
+                icon={<ExpandIcon />}
                 onClick={(e) => {
                     e.preventDefault();
                     window.open(fullscreenPath, '_blank');
