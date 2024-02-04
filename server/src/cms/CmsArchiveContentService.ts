@@ -1,9 +1,7 @@
 import { CmsContent, CmsContentDocument } from '../../../common/cms-documents/content';
 import { CmsArchiveOpenSearchClient } from '../opensearch/CmsArchiveOpenSearchClient';
-import { CmsBinaryDocument } from '../../../common/cms-documents/binary';
 import { CmsArchiveSiteConfig } from './CmsArchiveSite';
 import { sortVersions } from '../utils/sort';
-import { AssetDocument } from '../opensearch/types';
 import { ContentSearchParams, ContentSearchResult } from '../../../common/contentSearch';
 import { buildContentSearchParams } from '../opensearch/queries/contentSearch';
 import { CmsArchiveCategoriesService } from './CmsArchiveCategoriesService';
@@ -16,23 +14,19 @@ type ConstructorProps = {
 
 export class CmsArchiveContentService {
     private readonly client: CmsArchiveOpenSearchClient;
-    private readonly siteConfig: CmsArchiveSiteConfig;
+    private readonly config: CmsArchiveSiteConfig;
     private readonly categoriesService: CmsArchiveCategoriesService;
 
     private readonly contentsIndex: string;
-    private readonly binariesIndex: string;
-    private readonly staticAssetsIndex: string;
 
     constructor({ client, config, categoriesService }: ConstructorProps) {
         const { indexPrefix } = config;
 
         this.client = client;
-        this.siteConfig = config;
+        this.config = config;
         this.categoriesService = categoriesService;
 
         this.contentsIndex = `${indexPrefix}_content`;
-        this.binariesIndex = `${indexPrefix}_binaries`;
-        this.staticAssetsIndex = `${indexPrefix}_assets`;
     }
 
     public async contentSearch(params: ContentSearchParams): Promise<ContentSearchResult> {
@@ -114,38 +108,6 @@ export class CmsArchiveContentService {
         return this.fixContent(result);
     }
 
-    public async getBinary(binaryKey: string): Promise<CmsBinaryDocument | null> {
-        return this.client.getDocument<CmsBinaryDocument>({
-            index: this.binariesIndex,
-            id: binaryKey,
-        });
-    }
-
-    public async getStaticAsset(filePath: string): Promise<AssetDocument | null> {
-        const withoutLeadingSlash = filePath.replace(/^\//, '');
-
-        const result = await this.client.search<AssetDocument>({
-            index: this.staticAssetsIndex,
-            body: {
-                query: {
-                    term: {
-                        path: withoutLeadingSlash,
-                    },
-                },
-            },
-        });
-
-        if (!result || result.hits.length === 0) {
-            return null;
-        }
-
-        if (result.hits.length > 1) {
-            console.error(`Found multiple files with path ${filePath}!`);
-        }
-
-        return result.hits[0];
-    }
-
     private fixContent(contentDocument: CmsContentDocument | null): CmsContent | null {
         if (!contentDocument) {
             return null;
@@ -166,6 +128,6 @@ export class CmsArchiveContentService {
 
         return html
             .replace(/(\r\n|\r|\n)/, '')
-            .replace(/="\/(\d)+\//g, `="${this.siteConfig.basePath}/`);
+            .replace(/="\/(\d)+\//g, `="${this.config.basePath}/`);
     }
 }

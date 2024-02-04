@@ -13,7 +13,7 @@ export class CmsArchiveCategoriesService {
     private readonly client: CmsArchiveOpenSearchClient;
     private readonly config: CmsArchiveSiteConfig;
 
-    private readonly index: string;
+    private readonly categoriesIndex: string;
 
     private readonly categoriesMap: Map<string, CmsCategoryListItem> = new Map();
     private readonly rootCategories: CmsCategoryListItem[] = [];
@@ -21,10 +21,10 @@ export class CmsArchiveCategoriesService {
     constructor({ client, config }: ConstructorProps) {
         this.client = client;
         this.config = config;
-        this.index = `${config.indexPrefix}_categories`;
+        this.categoriesIndex = `${config.indexPrefix}_categories`;
     }
 
-    async init() {
+    public async init() {
         const allCategories = await this.getAllCategories();
         if (!allCategories) {
             console.error(`Could not retrieve categories for ${this.config.name}`);
@@ -40,22 +40,22 @@ export class CmsArchiveCategoriesService {
         );
     }
 
-    getRootCategories(): CmsCategoryListItem[] {
+    public getRootCategories(): CmsCategoryListItem[] {
         return this.rootCategories;
     }
 
-    getCategory(categoryKey: string): CmsCategoryListItem | undefined {
+    public getCategory(categoryKey: string): CmsCategoryListItem | undefined {
         return this.categoriesMap.get(categoryKey);
     }
 
-    async getCategoryFull(categoryKey: string): Promise<CmsCategoryDocument | null> {
+    public async getCategoryFull(categoryKey: string): Promise<CmsCategoryDocument | null> {
         return this.client.getDocument<CmsCategoryDocument>({
-            index: this.index,
+            index: this.categoriesIndex,
             id: categoryKey,
         });
     }
 
-    getCategories(categoryKeys: string[]): CmsCategoryListItem[] {
+    public getCategories(categoryKeys: string[]): CmsCategoryListItem[] {
         return categoryKeys.reduce<CmsCategoryListItem[]>((acc, key) => {
             const category = this.categoriesMap.get(key);
             if (category) {
@@ -87,7 +87,7 @@ export class CmsArchiveCategoriesService {
         this.rootCategories.sort((a, b) => a.title.localeCompare(b.title));
     }
 
-    resolveCategoryPath(categoryKey: string, path: CmsCategoryPath = []): CmsCategoryPath {
+    public resolveCategoryPath(categoryKey: string, path: CmsCategoryPath = []): CmsCategoryPath {
         const category = this.categoriesMap.get(categoryKey);
         if (!category) {
             console.error(`No category found for key ${categoryKey}`);
@@ -111,7 +111,7 @@ export class CmsArchiveCategoriesService {
     private async getAllCategories(): Promise<CmsCategoryListItem[] | null> {
         return this.client
             .search<CmsCategoryDocument>({
-                index: this.index,
+                index: this.categoriesIndex,
                 _source_excludes: ['xmlAsString'],
                 size: 10000,
                 body: {
@@ -123,7 +123,7 @@ export class CmsArchiveCategoriesService {
             .then((result) => {
                 if (result && result.total > 10000) {
                     console.error(
-                        `Found more than 10000 categories in ${this.index} - expected 3127 (sbs) or 3866 (fss)`
+                        `Found more than 10000 categories in ${this.categoriesIndex} - expected 3127 (sbs) or 3866 (fss)`
                     );
                 }
 

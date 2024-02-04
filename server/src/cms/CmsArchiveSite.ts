@@ -65,34 +65,34 @@ export class CmsArchiveSite {
             return res.send(rootCategories);
         });
 
-        router.get('/categories/:keys', async (req, res) => {
+        router.get('/categories/:keys', (req, res) => {
             const keys = parseQueryParamsList(req.params.keys);
             if (!keys) {
                 return res.status(400).send('Required parameter "keys" is not valid');
             }
 
-            const category = await this.cmsArchiveCategoriesService.getCategories(keys);
+            const category = this.cmsArchiveCategoriesService.getCategories(keys);
             return res.send(category);
         });
 
-        router.get('/content/:contentKey', async (req, res) => {
+        router.get('/content/:contentKey', async (req, res, next) => {
             const { contentKey } = req.params;
 
             const content = await this.cmsArchiveContentService.getContent(contentKey);
             if (!content) {
-                return res.status(404).send(`Content with key ${contentKey} not found`);
+                return next();
             }
 
             return res.send(content);
         });
 
-        router.get('/version/:versionKey', async (req, res) => {
+        router.get('/version/:versionKey', async (req, res, next) => {
             const { versionKey } = req.params;
 
             const contentVersion =
                 await this.cmsArchiveContentService.getContentVersion(versionKey);
             if (!contentVersion) {
-                return res.status(404).send(`Content version with key ${versionKey} not found`);
+                return next();
             }
 
             return res.send(contentVersion);
@@ -126,12 +126,12 @@ export class CmsArchiveSite {
             return res.send(html);
         });
 
-        router.get('/html/:versionKey', cspMiddleware, async (req, res) => {
+        router.get('/html/:versionKey', cspMiddleware, async (req, res, next) => {
             const { versionKey } = req.params;
 
             const version = await this.cmsArchiveContentService.getContentVersion(versionKey);
             if (!version) {
-                return res.status(404).send(`Content with version key ${versionKey} not found`);
+                return next();
             }
 
             if (!version.html) {
@@ -145,12 +145,12 @@ export class CmsArchiveSite {
     }
 
     private setupFileRoutes(router: Router) {
-        router.get('/binary/file/:binaryKey', async (req, res) => {
+        router.get('/binary/file/:binaryKey', async (req, res, next) => {
             const { binaryKey } = req.params;
 
-            const binary = await this.cmsArchiveContentService.getBinary(binaryKey);
+            const binary = await this.cmsArchiveBinariesService.getBinary(binaryKey);
             if (!binary) {
-                return res.status(404).send(`Binary with key ${binaryKey} not found`);
+                return next();
             }
 
             return this.fileResponse(
@@ -162,7 +162,7 @@ export class CmsArchiveSite {
         });
 
         router.use('/_public', async (req, res, next) => {
-            const file = await this.cmsArchiveContentService.getStaticAsset(req.path);
+            const file = await this.cmsArchiveBinariesService.getStaticAsset(req.path);
             if (!file) {
                 return next();
             }
@@ -181,7 +181,7 @@ export class CmsArchiveSite {
                 return next();
             }
 
-            const binary = await this.cmsArchiveContentService.getBinary(binaryKey);
+            const binary = await this.cmsArchiveBinariesService.getBinary(binaryKey);
             if (!binary) {
                 return next();
             }
@@ -202,7 +202,7 @@ export class CmsArchiveSite {
                 return next();
             }
 
-            const binary = await this.cmsArchiveContentService.getBinary(binaryKey);
+            const binary = await this.cmsArchiveBinariesService.getBinary(binaryKey);
             if (!binary) {
                 return next();
             }
