@@ -33,8 +33,6 @@ export class CmsArchiveSite {
             client: dbClient,
         });
 
-        this.cmsArchiveCategoriesService.init();
-
         this.cmsArchiveService = new CmsArchiveContentService({
             client: dbClient,
             siteConfig: config,
@@ -50,6 +48,10 @@ export class CmsArchiveSite {
         this.setupApiRoutes(apiRouter);
         this.setupSiteRoutes(siteRouter, htmlRenderer);
         this.setupFileRoutes(siteRouter);
+    }
+
+    async init() {
+        this.cmsArchiveCategoriesService.init();
     }
 
     private setupApiRoutes(router: Router) {
