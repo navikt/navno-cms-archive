@@ -1,23 +1,44 @@
 import React, { useRef } from 'react';
 import { classNames } from '../../../../utils/classNames';
+import { Button } from '@navikt/ds-react';
+import { useAppState } from '../../../../state/useAppState';
 
 import style from './HtmlView.module.css';
 
 type Props = {
     html: string;
+    versionKey: string;
     hidden: boolean;
 };
 
-export const HtmlView = ({ html, hidden }: Props) => {
+export const HtmlView = ({ html, versionKey, hidden }: Props) => {
+    const { appContext } = useAppState();
     const ref = useRef<HTMLIFrameElement>(null);
 
+    const fullscreenPath = `${appContext.basePath}/html/${versionKey}`;
+
     return (
-        <iframe
-            srcDoc={html}
-            className={classNames(style.html, hidden && style.hidden)}
-            ref={ref}
-            onLoad={(e) => disableLinksAndEventListeners(e.currentTarget)}
-        />
+        <div className={classNames(style.wrapper, hidden && style.hidden)}>
+            <Button
+                size={'small'}
+                variant={'tertiary'}
+                as={'a'}
+                href={fullscreenPath}
+                className={style.fullscreenButton}
+                onClick={(e) => {
+                    e.preventDefault();
+                    window.open(fullscreenPath, '_blank');
+                }}
+            >
+                {'Åpne i fullskjerm'}
+            </Button>
+            <iframe
+                src={html}
+                className={classNames(style.htmlFrame)}
+                ref={ref}
+                onLoad={(e) => disableLinksAndEventListeners(e.currentTarget)}
+            />
+        </div>
     );
 };
 

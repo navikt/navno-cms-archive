@@ -15,7 +15,7 @@ type Props = {
 };
 
 export const ContentView = ({ content }: Props) => {
-    const { html, xmlAsString } = content;
+    const { html, xmlAsString, versionKey } = content;
     const [viewState, setViewState] = useState<ViewState>(getDefaultViewState(content));
 
     useEffect(() => {
@@ -39,7 +39,7 @@ export const ContentView = ({ content }: Props) => {
                 <VersionSelector content={content} />
             </div>
             <XmlView xml={xmlAsString} hidden={viewState !== 'xml'} />
-            {html && <HtmlView html={html} hidden={viewState !== 'html'} />}
+            {html && <HtmlView html={html} versionKey={versionKey} hidden={viewState !== 'html'} />}
             {content.binaries && (
                 <FilesView binaries={content.binaries} hidden={viewState !== 'files'} />
             )}
