@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Label, Radio, RadioGroup, UNSAFE_Combobox } from '@navikt/ds-react';
+import { Button, HelpText, Label, Radio, RadioGroup, UNSAFE_Combobox } from '@navikt/ds-react';
 import { ChevronDownIcon } from '@navikt/aksel-icons';
 import { ContentSearchParams } from '../../../../../common/contentSearch';
 import { classNames } from '../../../../utils/classNames';
@@ -18,7 +18,7 @@ export const SearchSettings = ({ searchParams, setSearchParams }: Props) => {
 
     const { appContext } = useAppState();
 
-    const { sort, categoryKeys, withContent } = searchParams;
+    const { sort, categoryKeys, type } = searchParams;
 
     const { titlesToKeys, keysToTitles } = createKeysTitlesMaps(appContext.rootCategories);
     const categoryKeysSelected = new Set<string>(categoryKeys);
@@ -42,11 +42,20 @@ export const SearchSettings = ({ searchParams, setSearchParams }: Props) => {
             <div className={classNames(style.settings, isOpen && style.open)}>
                 <RadioGroup
                     size={'small'}
-                    legend={'Søk i...'}
-                    value={withContent ? 'all' : 'titles'}
-                    onChange={(value) => setSearchParams({ withContent: value === 'all' })}
+                    legend={'Søk etter...'}
+                    value={type}
+                    onChange={(value) => setSearchParams({ type: value })}
                 >
-                    <Radio value={'titles'}>{'Kun innholdstitler'}</Radio>
+                    <Radio value={'titles'}>{'Tittel'}</Radio>
+                    <span className={style.withHelp}>
+                        <Radio value={'locations'}>{'URL'}</Radio>
+                        <HelpText wrapperClassName={style.help}>
+                            {'Prefix-søk på pathname. F.eks. vil '}
+                            <code>{'https://www.nav.no/no/person/arbeid'}</code>
+                            {' gi treff på alle sider med en path som starter med '}
+                            <code>{'/no/person/arbeid'}</code>
+                        </HelpText>
+                    </span>
                     <Radio value={'all'}>{'Alt innhold'}</Radio>
                 </RadioGroup>
                 <RadioGroup
@@ -60,7 +69,7 @@ export const SearchSettings = ({ searchParams, setSearchParams }: Props) => {
                     <Radio value={'datetime'}>{'Sist endret'}</Radio>
                 </RadioGroup>
                 <UNSAFE_Combobox
-                    label={'Velg hovedkategorier'}
+                    label={'Avgrens til valgte kategorier'}
                     size={'small'}
                     className={style.categoriesSelector}
                     clearButton={true}

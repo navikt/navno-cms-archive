@@ -4,6 +4,7 @@ const EXPECTED_KEYS: Array<keyof NodeJS.ProcessEnv> = [
     'NODE_ENV',
     'APP_PORT',
     'APP_BASEPATH',
+    'APP_ORIGIN',
     'OPEN_SEARCH_URI',
     'OPEN_SEARCH_USERNAME',
     'OPEN_SEARCH_PASSWORD',

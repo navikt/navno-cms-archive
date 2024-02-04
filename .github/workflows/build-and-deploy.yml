@@ -26,6 +26,7 @@ jobs:
           cat > .env <<EOF
           APP_PORT=3399
           APP_BASEPATH=/
+          APP_ORIGIN=https://cms-arkiv.intern.nav.no
           EOF
       - name: Install dependencies
         run: npm ci

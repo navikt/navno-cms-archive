@@ -18,6 +18,7 @@ export const SearchInput = ({ setSearchResult, className }: Props) => {
         from: 0,
         size: 50,
         sort: 'score',
+        type: 'titles',
         withChildCategories: true,
     });
 

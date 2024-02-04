@@ -16,12 +16,14 @@ export type ContentSearchResult = {
 
 export type ContentSearchSort = 'score' | 'datetime' | 'name';
 
+export type ContentSearchType = 'titles' | 'locations' | 'all';
+
 export type ContentSearchParams = {
     from: number;
     size: number;
     query?: string;
     sort?: ContentSearchSort;
-    withContent?: boolean;
+    type?: ContentSearchType;
     withChildCategories?: boolean;
     categoryKeys?: string[];
 };

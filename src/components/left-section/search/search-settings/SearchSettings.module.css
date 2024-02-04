@@ -54,9 +54,19 @@
     align-items: center;
 }
 
+.withHelp {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    :global(.navds-popover__content) {
+        font-size: var(--a-font-size-small);
+        line-height: var(--a-font-line-height-medium);
+    }
+}
+
 .categoriesSelector {
-    /*ul {*/
-    /*    gap: 0.25rem;*/
-    /*    font-size: 0.75rem;*/
-    /*}*/
+    ul {
+        gap: 0.25rem;
+        font-size: 0.75rem;
+    }
 }

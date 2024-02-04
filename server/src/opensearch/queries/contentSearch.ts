@@ -3,7 +3,11 @@ import {
     SearchRequest,
     SearchSort,
 } from '@opensearch-project/opensearch/api/types';
-import { ContentSearchParams, ContentSearchSort } from '../../../../common/contentSearch';
+import {
+    ContentSearchParams,
+    ContentSearchSort,
+    ContentSearchType,
+} from '../../../../common/contentSearch';
 import { Request } from 'express';
 import { parseNumberParam, parseToStringArray } from '../../utils/queryParams';
 import { CmsArchiveCategoriesService } from '../../cms/CmsArchiveCategoriesService';
@@ -11,9 +15,13 @@ import { CmsArchiveCategoriesService } from '../../cms/CmsArchiveCategoriesServi
 const SIZE_DEFAULT = 50;
 
 const sortParamsSet: ReadonlySet<ContentSearchSort> = new Set(['name', 'datetime', 'score']);
+const typeParamsSet: ReadonlySet<ContentSearchType> = new Set(['all', 'locations', 'titles']);
 
 const isValidSort = (sort: string): sort is ContentSearchSort =>
     sortParamsSet.has(sort as ContentSearchSort);
+
+const isValidType = (type: string): type is ContentSearchType =>
+    typeParamsSet.has(type as ContentSearchType);
 
 const sortParams: Record<ContentSearchSort, SearchSort> = {
     score: {
@@ -28,12 +36,12 @@ const sortParams: Record<ContentSearchSort, SearchSort> = {
 } as const;
 
 export const transformQueryToContentSearchParams = (req: Request): ContentSearchParams | null => {
-    const { query, withContent, size, sort, from, categoryKeys, withChildCategories } =
+    const { query, type, size, sort, from, categoryKeys, withChildCategories } =
         req.query as Record<keyof ContentSearchParams, string>;
 
     return {
         query,
-        withContent: withContent === 'true',
+        type: isValidType(type) ? type : undefined,
         categoryKeys: parseToStringArray(categoryKeys),
         withChildCategories: withChildCategories === 'true',
         sort: isValidSort(sort) ? sort : 'score',
@@ -53,7 +61,7 @@ export const buildContentSearchParams = (
         from,
         size,
         sort = 'score',
-        withContent,
+        type,
         categoryKeys,
         withChildCategories,
     } = contentSearchParams;
@@ -69,19 +77,33 @@ export const buildContentSearchParams = (
     ];
 
     if (query) {
-        const fields = ['displayName^10'];
+        if (type === 'locations') {
+            const { pathname } = new URL(query, process.env.APP_ORIGIN);
 
-        if (withContent) {
-            fields.push('xmlAsString');
+            must.push({
+                prefix: {
+                    'locations.menuItemPath': {
+                        value: decodeURIComponent(pathname),
+                        // @ts-expect-error (this is a valid field, not yet part of the library type def)
+                        case_insensitive: true,
+                    },
+                },
+            });
+        } else {
+            const fields = ['displayName^5'];
+
+            if (type === 'all') {
+                fields.push('xmlAsString');
+            }
+
+            must.push({
+                multi_match: {
+                    query,
+                    fields,
+                    type: 'phrase_prefix',
+                },
+            });
         }
-
-        must.push({
-            multi_match: {
-                query,
-                fields,
-                type: 'phrase_prefix',
-            },
-        });
     }
 
     if (categoryKeys) {
