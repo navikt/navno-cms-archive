@@ -7,6 +7,7 @@ import { HtmlRenderer } from '../site/ssr/htmlRenderer';
 import { transformQueryToContentSearchParams } from '../opensearch/queries/contentSearch';
 import { CmsArchiveCategoriesService } from './CmsArchiveCategoriesService';
 import { cspMiddleware } from '../routing/csp';
+import { CmsArchiveBinariesService } from './CmsArchiveBinariesService';
 
 export type CmsArchiveSiteConfig = {
     name: string;
@@ -23,8 +24,9 @@ type ContructorProps = {
 
 export class CmsArchiveSite {
     private readonly config: CmsArchiveSiteConfig;
-    private readonly cmsArchiveContentService: CmsArchiveContentService;
     private readonly cmsArchiveCategoriesService: CmsArchiveCategoriesService;
+    private readonly cmsArchiveContentService: CmsArchiveContentService;
+    private readonly cmsArchiveBinariesService: CmsArchiveBinariesService;
 
     constructor({ config, expressApp, dbClient, htmlRenderer }: ContructorProps) {
         this.config = config;
@@ -39,6 +41,8 @@ export class CmsArchiveSite {
             siteConfig: config,
             categoriesService: this.cmsArchiveCategoriesService,
         });
+
+        this.cmsArchiveBinariesService = new CmsArchiveBinariesService({});
 
         const siteRouter = express.Router();
         const apiRouter = express.Router();

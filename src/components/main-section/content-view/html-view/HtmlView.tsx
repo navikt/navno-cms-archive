@@ -12,9 +12,9 @@ type Props = {
 };
 
 export const HtmlView = ({ html, versionKey, hidden }: Props) => {
-    const { appContext } = useAppState();
     const ref = useRef<HTMLIFrameElement>(null);
 
+    const { appContext } = useAppState();
     const fullscreenPath = `${appContext.basePath}/html/${versionKey}`;
 
     return (
@@ -30,10 +30,10 @@ export const HtmlView = ({ html, versionKey, hidden }: Props) => {
                     window.open(fullscreenPath, '_blank');
                 }}
             >
-                {'Åpne i fullskjerm'}
+                {'Åpne i nytt vindu'}
             </Button>
             <iframe
-                src={html}
+                srcDoc={html}
                 className={classNames(style.htmlFrame)}
                 ref={ref}
                 onLoad={(e) => disableLinksAndEventListeners(e.currentTarget)}
