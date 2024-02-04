@@ -5,8 +5,9 @@
   "type": "module",
   "scripts": {
     "build": "esbuild src/server.ts --bundle --platform=node --packages=external --outfile=dist/server/server.cjs",
-    "start": "node ./dist/server/server.cjs",
-    "dev": "npm run build && concurrently \"npm run build -- --watch\" \"nodemon -w ./dist/server -w ../.env ./dist/server/server.cjs\""
+    "start": "node -r dotenv/config ./dist/server/server.cjs dotenv_config_path=../.env",
+    "nodemon-start": "nodemon -r dotenv/config -w ./dist/server -w ../.env ./dist/server/server.cjs dotenv_config_path=../.env",
+    "dev": "npm run build && concurrently \"npm run build -- --watch\" \"npm run nodemon-start\""
   },
   "dependencies": {
     "@opensearch-project/opensearch": "2.5.0",

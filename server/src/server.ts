@@ -1,7 +1,3 @@
-import dotenv from 'dotenv';
-
-dotenv.config({ path: '../.env' });
-
 import express from 'express';
 import compression from 'compression';
 import { setupErrorHandlers } from './routing/errorHandlers';

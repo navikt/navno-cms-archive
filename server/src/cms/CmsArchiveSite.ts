@@ -6,6 +6,7 @@ import mime from 'mime';
 import { HtmlRenderer } from '../site/ssr/htmlRenderer';
 import { transformQueryToContentSearchParams } from '../opensearch/queries/contentSearch';
 import { CmsArchiveCategoriesService } from './CmsArchiveCategoriesService';
+import { cspMiddleware } from '../routing/csp';
 
 export type CmsArchiveSiteConfig = {
     name: string;
@@ -106,7 +107,7 @@ export class CmsArchiveSite {
     }
 
     private setupSiteRoutes(router: Router, htmlRenderer: HtmlRenderer) {
-        router.get('/:versionKey?', async (req, res) => {
+        router.get('/:versionKey?', cspMiddleware, async (req, res) => {
             const rootCategories = this.cmsArchiveCategoriesService.getRootCategories();
 
             const appContext = {
@@ -121,7 +122,7 @@ export class CmsArchiveSite {
             return res.send(html);
         });
 
-        router.get('/html/:versionKey', async (req, res) => {
+        router.get('/html/:versionKey', cspMiddleware, async (req, res) => {
             const { versionKey } = req.params;
 
             const version = await this.cmsArchiveContentService.getContentVersion(versionKey);
