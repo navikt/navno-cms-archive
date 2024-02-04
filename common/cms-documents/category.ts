@@ -20,7 +20,10 @@ export type CmsCategoryDocument = {
     xmlAsString: string;
 };
 
-export type CmsCategoryListItem = Pick<CmsCategoryDocument, 'key' | 'title' | 'categories'> & {
+export type CmsCategoryListItem = Pick<
+    CmsCategoryDocument,
+    'key' | 'title' | 'categories' | 'superKey'
+> & {
     contentCount: number;
     path: CmsCategoryPath;
 };

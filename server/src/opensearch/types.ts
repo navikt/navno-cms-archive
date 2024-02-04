@@ -13,7 +13,7 @@ type CmsContentRefData = {
     key: string;
     name: string;
     displayName: string;
-    timestamp?: string;
+    timestamp: string;
 };
 
 export type CmsCategoryDocument = {

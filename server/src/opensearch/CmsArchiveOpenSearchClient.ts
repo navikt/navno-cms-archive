@@ -6,7 +6,7 @@ import type { Client as ClientTypeNew } from '@opensearch-project/opensearch/api
 
 type DocumentWithScore<Document> = Document & { _score?: number };
 
-type SearchHit<Document> = {
+export type SearchResult<Document> = {
     hits: Array<DocumentWithScore<Document>>;
     total: number;
 };
@@ -36,7 +36,7 @@ export class CmsArchiveOpenSearchClient {
         }) as unknown as ClientTypeNew;
     }
 
-    public async search<Document>(params: SearchRequest): Promise<SearchHit<Document> | null> {
+    public async search<Document>(params: SearchRequest): Promise<SearchResult<Document> | null> {
         return this.openSearchClient
             .search<Document>(params)
             .then((result) => {

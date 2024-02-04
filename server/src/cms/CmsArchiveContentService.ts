@@ -9,72 +9,33 @@ import { transformToCategoriesList } from './utils/transformToCategoriesList';
 import { CmsCategoryPath } from '../../../common/cms-documents/_common';
 import { ContentSearchParams, ContentSearchResult } from '../../../common/contentSearch';
 import { buildContentSearchParams } from '../opensearch/queries/contentSearch';
+import { CmsArchiveCategoriesService } from './CmsArchiveCategoriesService';
 
 type ConstructorProps = {
     client: CmsArchiveOpenSearchClient;
     siteConfig: CmsArchiveSiteConfig;
+    categoriesService: CmsArchiveCategoriesService;
 };
 
-export class CmsArchiveService {
+export class CmsArchiveContentService {
     private readonly client: CmsArchiveOpenSearchClient;
     private readonly siteConfig: CmsArchiveSiteConfig;
+    private readonly categoriesService: CmsArchiveCategoriesService;
 
-    private readonly categoriesIndex: string;
     private readonly contentsIndex: string;
     private readonly binariesIndex: string;
     private readonly staticAssetsIndex: string;
 
-    constructor({ client, siteConfig }: ConstructorProps) {
+    constructor({ client, siteConfig, categoriesService }: ConstructorProps) {
         const { indexPrefix } = siteConfig;
 
         this.client = client;
         this.siteConfig = siteConfig;
+        this.categoriesService = categoriesService;
 
-        this.categoriesIndex = `${indexPrefix}_categories`;
         this.contentsIndex = `${indexPrefix}_content`;
         this.binariesIndex = `${indexPrefix}_binaries`;
         this.staticAssetsIndex = `${indexPrefix}_assets`;
-    }
-
-    public async getRootCategories(): Promise<CmsCategoryListItem[] | null> {
-        return this.client
-            .search<CmsCategoryDocument>({
-                index: this.categoriesIndex,
-                _source_excludes: ['xmlAsString'],
-                size: 100,
-                body: {
-                    query: {
-                        bool: {
-                            must_not: {
-                                exists: {
-                                    field: 'superKey',
-                                },
-                            },
-                        },
-                    },
-                },
-            })
-            .then((result) => (result ? transformToCategoriesList(result.hits, this) : result));
-    }
-
-    public async getCategory(categoryKey: string): Promise<CmsCategoryDocument | null> {
-        return this.client.getDocument<CmsCategoryDocument>({
-            index: this.categoriesIndex,
-            _source_excludes: ['xmlAsString'],
-            id: categoryKey,
-        });
-    }
-
-    public async getCategories(categoryKeys: string[]): Promise<CmsCategoryListItem[] | null> {
-        return this.client
-            .getDocuments<CmsCategoryDocument>({
-                index: this.categoriesIndex,
-                _source_excludes: ['xmlAsString'],
-                body: {
-                    ids: categoryKeys,
-                },
-            })
-            .then((res) => transformToCategoriesList(res, this));
     }
 
     public async contentSearch(params: ContentSearchParams): Promise<ContentSearchResult> {
@@ -92,15 +53,13 @@ export class CmsArchiveService {
             };
         }
 
-        const hits = await Promise.all(
-            result.hits.map(async (hit) => ({
-                contentKey: hit.contentKey,
-                versionKey: hit.versionKey,
-                displayName: hit.displayName,
-                score: hit._score || 0,
-                path: await this.resolveCategoryPath(hit.category.key),
-            }))
-        );
+        const hits = result.hits.map((hit) => ({
+            contentKey: hit.contentKey,
+            versionKey: hit.versionKey,
+            displayName: hit.displayName,
+            score: hit._score || 0,
+            path: this.categoriesService.resolveCategoryPath(hit.category.key),
+        }));
 
         return {
             params,
@@ -190,29 +149,7 @@ export class CmsArchiveService {
         return result.hits[0];
     }
 
-    async resolveCategoryPath(categoryKey: string): Promise<CmsCategoryPath> {
-        const category = await this.getCategory(categoryKey);
-        if (!category) {
-            return [];
-        }
-
-        const { key, superKey, title } = category;
-
-        const item = {
-            key,
-            name: title,
-        };
-
-        if (!superKey) {
-            return [item];
-        }
-
-        return [...(await this.resolveCategoryPath(superKey)), item];
-    }
-
-    private async fixContent(
-        contentDocument: CmsContentDocument | null
-    ): Promise<CmsContent | null> {
+    private fixContent(contentDocument: CmsContentDocument | null): CmsContent | null {
         if (!contentDocument) {
             return null;
         }
@@ -221,7 +158,7 @@ export class CmsArchiveService {
             ...contentDocument,
             versions: sortVersions(contentDocument),
             html: this.fixHtml(contentDocument.html),
-            path: await this.resolveCategoryPath(contentDocument.category.key),
+            path: this.categoriesService.resolveCategoryPath(contentDocument.category.key),
         };
     }
 

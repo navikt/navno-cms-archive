@@ -1,10 +1,11 @@
 import { CmsArchiveOpenSearchClient } from '../opensearch/CmsArchiveOpenSearchClient';
 import express, { Express, Response, Router } from 'express';
-import { CmsArchiveService } from './CmsArchiveService';
+import { CmsArchiveContentService } from './CmsArchiveContentService';
 import { parseQueryParamsList } from '../utils/queryParams';
 import mime from 'mime';
 import { HtmlRenderer } from '../site/ssr/htmlRenderer';
 import { transformQueryToContentSearchParams } from '../opensearch/queries/contentSearch';
+import { CmsArchiveCategoriesService } from './CmsArchiveCategoriesService';
 
 export type CmsArchiveSiteConfig = {
     name: string;
@@ -21,13 +22,23 @@ type ContructorProps = {
 
 export class CmsArchiveSite {
     private readonly config: CmsArchiveSiteConfig;
-    private readonly cmsArchiveService: CmsArchiveService;
+    private readonly cmsArchiveService: CmsArchiveContentService;
+    private readonly cmsArchiveCategoriesService: CmsArchiveCategoriesService;
 
     constructor({ config, expressApp, dbClient, htmlRenderer }: ContructorProps) {
         this.config = config;
-        this.cmsArchiveService = new CmsArchiveService({
+
+        this.cmsArchiveCategoriesService = new CmsArchiveCategoriesService({
+            config: config,
+            client: dbClient,
+        });
+
+        this.cmsArchiveCategoriesService.init();
+
+        this.cmsArchiveService = new CmsArchiveContentService({
             client: dbClient,
             siteConfig: config,
+            categoriesService: this.cmsArchiveCategoriesService,
         });
 
         const siteRouter = express.Router();
@@ -42,8 +53,8 @@ export class CmsArchiveSite {
     }
 
     private setupApiRoutes(router: Router) {
-        router.get('/root-categories', async (req, res) => {
-            const rootCategories = await this.cmsArchiveService.getRootCategories();
+        router.get('/root-categories', (req, res) => {
+            const rootCategories = this.cmsArchiveCategoriesService.getRootCategories();
             return res.send(rootCategories);
         });
 
@@ -53,7 +64,7 @@ export class CmsArchiveSite {
                 return res.status(400).send('Required parameter "keys" is not valid');
             }
 
-            const category = await this.cmsArchiveService.getCategories(keys);
+            const category = await this.cmsArchiveCategoriesService.getCategories(keys);
             return res.send(category);
         });
 
@@ -91,9 +102,9 @@ export class CmsArchiveSite {
         });
     }
 
-    private async setupSiteRoutes(router: Router, htmlRenderer: HtmlRenderer) {
+    private setupSiteRoutes(router: Router, htmlRenderer: HtmlRenderer) {
         router.get('/:versionKey?', async (req, res) => {
-            const rootCategories = (await this.cmsArchiveService.getRootCategories()) || [];
+            const rootCategories = this.cmsArchiveCategoriesService.getRootCategories();
 
             const appContext = {
                 rootCategories,
@@ -108,7 +119,7 @@ export class CmsArchiveSite {
         });
     }
 
-    private async setupFileRoutes(router: Router) {
+    private setupFileRoutes(router: Router) {
         router.get('/binary/file/:binaryKey', async (req, res) => {
             const { binaryKey } = req.params;
 
