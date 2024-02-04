@@ -22,7 +22,7 @@ type ContructorProps = {
 
 export class CmsArchiveSite {
     private readonly config: CmsArchiveSiteConfig;
-    private readonly cmsArchiveService: CmsArchiveContentService;
+    private readonly cmsArchiveContentService: CmsArchiveContentService;
     private readonly cmsArchiveCategoriesService: CmsArchiveCategoriesService;
 
     constructor({ config, expressApp, dbClient, htmlRenderer }: ContructorProps) {
@@ -33,7 +33,7 @@ export class CmsArchiveSite {
             client: dbClient,
         });
 
-        this.cmsArchiveService = new CmsArchiveContentService({
+        this.cmsArchiveContentService = new CmsArchiveContentService({
             client: dbClient,
             siteConfig: config,
             categoriesService: this.cmsArchiveCategoriesService,
@@ -73,7 +73,7 @@ export class CmsArchiveSite {
         router.get('/content/:contentKey', async (req, res) => {
             const { contentKey } = req.params;
 
-            const content = await this.cmsArchiveService.getContent(contentKey);
+            const content = await this.cmsArchiveContentService.getContent(contentKey);
             if (!content) {
                 return res.status(404).send(`Content with key ${contentKey} not found`);
             }
@@ -84,7 +84,8 @@ export class CmsArchiveSite {
         router.get('/version/:versionKey', async (req, res) => {
             const { versionKey } = req.params;
 
-            const contentVersion = await this.cmsArchiveService.getContentVersion(versionKey);
+            const contentVersion =
+                await this.cmsArchiveContentService.getContentVersion(versionKey);
             if (!contentVersion) {
                 return res.status(404).send(`Content version with key ${versionKey} not found`);
             }
@@ -98,7 +99,7 @@ export class CmsArchiveSite {
                 return res.status(400).send('Invalid parameters for search request');
             }
 
-            const result = await this.cmsArchiveService.contentSearch(params);
+            const result = await this.cmsArchiveContentService.contentSearch(params);
 
             return res.send(result);
         });
@@ -119,13 +120,30 @@ export class CmsArchiveSite {
 
             return res.send(html);
         });
+
+        router.get('/html/:versionKey', async (req, res) => {
+            const { versionKey } = req.params;
+
+            const version = await this.cmsArchiveContentService.getContentVersion(versionKey);
+            if (!version) {
+                return res.status(404).send(`Content with version key ${versionKey} not found`);
+            }
+
+            if (!version.html) {
+                return res
+                    .status(406)
+                    .send(`Content with version key ${versionKey} does not have html content`);
+            }
+
+            return res.send(version.html);
+        });
     }
 
     private setupFileRoutes(router: Router) {
         router.get('/binary/file/:binaryKey', async (req, res) => {
             const { binaryKey } = req.params;
 
-            const binary = await this.cmsArchiveService.getBinary(binaryKey);
+            const binary = await this.cmsArchiveContentService.getBinary(binaryKey);
             if (!binary) {
                 return res.status(404).send(`Binary with key ${binaryKey} not found`);
             }
@@ -139,7 +157,7 @@ export class CmsArchiveSite {
         });
 
         router.use('/_public', async (req, res, next) => {
-            const file = await this.cmsArchiveService.getStaticAsset(req.path);
+            const file = await this.cmsArchiveContentService.getStaticAsset(req.path);
             if (!file) {
                 return next();
             }
@@ -148,7 +166,7 @@ export class CmsArchiveSite {
         });
 
         router.use('/*/_image/:contentKey.:extension', async (req, res, next) => {
-            const content = await this.cmsArchiveService.getContent(req.params.contentKey);
+            const content = await this.cmsArchiveContentService.getContent(req.params.contentKey);
             if (!content) {
                 return next();
             }
@@ -158,7 +176,7 @@ export class CmsArchiveSite {
                 return next();
             }
 
-            const binary = await this.cmsArchiveService.getBinary(binaryKey);
+            const binary = await this.cmsArchiveContentService.getBinary(binaryKey);
             if (!binary) {
                 return next();
             }
@@ -167,7 +185,7 @@ export class CmsArchiveSite {
         });
 
         router.use('/*/_image/:contentKey/label/:label.:extension', async (req, res, next) => {
-            const content = await this.cmsArchiveService.getContent(req.params.contentKey);
+            const content = await this.cmsArchiveContentService.getContent(req.params.contentKey);
             if (!content) {
                 return next();
             }
@@ -179,7 +197,7 @@ export class CmsArchiveSite {
                 return next();
             }
 
-            const binary = await this.cmsArchiveService.getBinary(binaryKey);
+            const binary = await this.cmsArchiveContentService.getBinary(binaryKey);
             if (!binary) {
                 return next();
             }

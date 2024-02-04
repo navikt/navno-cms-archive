@@ -1,12 +1,9 @@
-import { CmsCategoryListItem } from '../../../common/cms-documents/category';
 import { CmsContent, CmsContentDocument } from '../../../common/cms-documents/content';
 import { CmsArchiveOpenSearchClient } from '../opensearch/CmsArchiveOpenSearchClient';
 import { CmsBinaryDocument } from '../../../common/cms-documents/binary';
 import { CmsArchiveSiteConfig } from './CmsArchiveSite';
 import { sortVersions } from '../utils/sort';
-import { AssetDocument, CmsCategoryDocument } from '../opensearch/types';
-import { transformToCategoriesList } from './utils/transformToCategoriesList';
-import { CmsCategoryPath } from '../../../common/cms-documents/_common';
+import { AssetDocument } from '../opensearch/types';
 import { ContentSearchParams, ContentSearchResult } from '../../../common/contentSearch';
 import { buildContentSearchParams } from '../opensearch/queries/contentSearch';
 import { CmsArchiveCategoriesService } from './CmsArchiveCategoriesService';

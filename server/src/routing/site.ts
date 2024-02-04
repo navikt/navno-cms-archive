@@ -14,7 +14,7 @@ const archiveConfigs: CmsArchiveSiteConfig[] = [
         basePath: '/fss',
         indexPrefix: 'cmsfss',
     },
-];
+] as const;
 
 export const setupCmsArchiveSites = async (expressApp: Express) => {
     const archiveClient = new CmsArchiveOpenSearchClient();
