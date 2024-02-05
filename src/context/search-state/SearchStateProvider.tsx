@@ -20,7 +20,8 @@ export const SearchStateProvider = ({ children }: { children: React.ReactNode })
         setSearchParams(newParams);
     };
 
-    const resetSearchParams = () => setSearchParams(initialSearchParams);
+    const resetSearchSettings = () =>
+        setSearchParams({ ...initialSearchParams, query: searchParams.query });
 
     useEffect(() => {
         setSearchResultIsOpen(!!searchResult);
@@ -36,7 +37,7 @@ export const SearchStateProvider = ({ children }: { children: React.ReactNode })
                 searchResultIsOpen,
                 setSearchResultIsOpen,
                 updateSearchParams,
-                resetSearchParams,
+                resetSearchSettings,
             }}
         >
             {children}

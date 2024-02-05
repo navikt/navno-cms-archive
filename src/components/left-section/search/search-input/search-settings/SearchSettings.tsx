@@ -14,7 +14,7 @@ export const SearchSettings = () => {
     const { appContext } = useAppState();
     const { rootCategories } = appContext;
 
-    const { searchParams, updateSearchParams, resetSearchParams } = useSearchState();
+    const { searchParams, updateSearchParams, resetSearchSettings } = useSearchState();
     const { sort, categoryKeys, type, isCustom } = searchParams;
 
     const { titlesToKeys, keysToTitles } = createKeysTitlesMaps(rootCategories);
@@ -32,7 +32,7 @@ export const SearchSettings = () => {
                             size={'xsmall'}
                             variant={'tertiary'}
                             className={style.toggle}
-                            onClick={resetSearchParams}
+                            onClick={resetSearchSettings}
                         >
                             {'Nullstill'}
                             <XMarkIcon />

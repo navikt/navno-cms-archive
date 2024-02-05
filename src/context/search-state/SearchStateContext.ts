@@ -9,7 +9,7 @@ export type SearchState = {
     searchParams: ContentSearchParams;
     setSearchParams: (params: ContentSearchParams) => void;
     updateSearchParams: (params: Partial<ContentSearchParams>) => void;
-    resetSearchParams: () => void;
+    resetSearchSettings: () => void;
 };
 
 export const initialSearchParams: ContentSearchParams = {
@@ -26,5 +26,5 @@ export const SearchStateContext = createContext<SearchState>({
     searchParams: initialSearchParams,
     setSearchParams: () => ({}),
     updateSearchParams: () => ({}),
-    resetSearchParams: () => ({}),
+    resetSearchSettings: () => ({}),
 });
