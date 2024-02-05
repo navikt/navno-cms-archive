@@ -36,13 +36,15 @@ export const ContentMenu = ({ parentCategory }: Props) => {
     const currentCount = result?.total ?? contentCount;
     const numPages = Math.ceil(Math.min(currentCount, MAX_CONTENTS) / CONTENTS_PER_PAGE);
 
+    const headerText = `${parentTitle} (${currentCount !== contentCount ? `${currentCount} / ` : ''}${contentCount})`;
+
     useEffect(() => {
         setPageNumber(1);
         setQuery('');
     }, [parentKey]);
 
     return (
-        <div className={style.wrapper}>
+        <div className={style.outer}>
             <div className={style.topRow}>
                 <Button
                     onClick={() => setContentSelectorOpen(false)}
@@ -62,56 +64,55 @@ export const ContentMenu = ({ parentCategory }: Props) => {
                     onChange={(e) => setQuery(e.target.value)}
                 />
             </div>
-            <CategoriesPath path={path} size={'small'} className={style.path} />
-            <Heading level={'2'} size={'xsmall'} className={style.title}>
-                {parentTitle}
-            </Heading>
-            {query && !isLoading && hits.length === 0 && (
-                <Alert
-                    variant={'info'}
-                    className={style.notFound}
-                    size={'small'}
-                    inline={true}
-                >{`Ingen treff for "${query}" i denne kategorien`}</Alert>
-            )}
-            <div className={style.contentList}>
-                {isLoading ? (
-                    <ContentLoader
-                        size={'xlarge'}
-                        text={'Laster innhold...'}
-                        direction={'column'}
-                    />
-                ) : hits ? (
-                    <>
-                        {hits.map((content) => (
-                            <ContentLink content={content} key={content.contentKey} />
-                        ))}
-                    </>
-                ) : (
-                    <Alert variant={'error'} inline={true}>
-                        {'Feil: Kunne ikke laste innhold for denne kategorien'}
-                    </Alert>
+            <div className={style.mainRow}>
+                <CategoriesPath path={path} size={'small'} className={style.path} />
+                <Heading level={'2'} size={'xsmall'} className={style.title}>
+                    {headerText}
+                </Heading>
+                {query && !isLoading && hits.length === 0 && (
+                    <Alert
+                        variant={'info'}
+                        className={style.notFound}
+                        size={'small'}
+                        inline={true}
+                    >{`Ingen treff for "${query}" i denne kategorien`}</Alert>
                 )}
-            </div>
-            <div className={style.bottomSection}>
-                {numPages > 1 && (
-                    <>
-                        <Pagination
-                            page={pageNumber}
-                            onPageChange={setPageNumber}
-                            count={numPages}
-                            size={'xsmall'}
-                            className={style.paginator}
+                <div className={style.contentList}>
+                    {isLoading ? (
+                        <ContentLoader
+                            size={'xlarge'}
+                            text={'Laster innhold...'}
+                            direction={'column'}
                         />
-                        {currentCount > MAX_CONTENTS && (
-                            <Alert
-                                variant={'warning'}
-                                size={'small'}
-                            >{`Kan ikke vise flere enn ${MAX_CONTENTS} elementer (fant ${currentCount}). Bruk søkefeltet for å redusere antall elementer.`}</Alert>
-                        )}
-                    </>
+                    ) : hits ? (
+                        <>
+                            {hits.map((content) => (
+                                <ContentLink content={content} key={content.contentKey} />
+                            ))}
+                        </>
+                    ) : (
+                        <Alert variant={'error'} inline={true}>
+                            {'Feil: Kunne ikke laste innhold for denne kategorien'}
+                        </Alert>
+                    )}
+                </div>
+                {currentCount > MAX_CONTENTS && (
+                    <Alert
+                        variant={'warning'}
+                        size={'small'}
+                        className={style.maxContentAlert}
+                    >{`Kan ikke vise flere enn ${MAX_CONTENTS} elementer (fant ${currentCount}). Bruk søkefeltet for å redusere antall elementer.`}</Alert>
                 )}
             </div>
+            {numPages > 1 && (
+                <Pagination
+                    page={pageNumber}
+                    onPageChange={setPageNumber}
+                    count={numPages}
+                    size={'xsmall'}
+                    className={style.paginator}
+                />
+            )}
         </div>
     );
 };

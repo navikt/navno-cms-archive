@@ -4,6 +4,7 @@
     padding: 0.125rem 0;
     text-underline-offset: 0.1875rem;
     text-decoration: none;
+    word-break: break-word;
 
     &:hover,
     &:focus {

@@ -1,5 +1,6 @@
 import useSWRImmutable from 'swr/immutable';
 import { useApiFetch } from './useApiFetch';
+import { ContentSearchParams } from '../../common/contentSearch';
 
 type FetchCategoryContentsParams = {
     categoryKey: string;
@@ -16,11 +17,12 @@ export const useFetchCategoryContents = ({
 }: FetchCategoryContentsParams) => {
     const { fetchSearch } = useApiFetch();
 
-    const params = {
+    const params: ContentSearchParams = {
         from,
         size,
         query,
         categoryKeys: [categoryKey],
+        type: 'all',
     };
 
     const { isLoading, data, error } = useSWRImmutable(params, fetchSearch);
