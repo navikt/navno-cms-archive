@@ -5,7 +5,7 @@ export type ContentSearchHit = Pick<
     'contentKey' | 'versionKey' | 'displayName' | 'path'
 > & { score: number };
 
-export type ContentSearchStatus = 'loading' | 'error' | 'success';
+export type ContentSearchStatus = 'loading' | 'error' | 'success' | 'empty';
 
 export type ContentSearchResult = {
     total: number;

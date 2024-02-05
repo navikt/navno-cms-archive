@@ -1,6 +1,6 @@
 import React from 'react';
 import { classNames } from '../../../../utils/classNames';
-import { Button, Heading } from '@navikt/ds-react';
+import { Alert, Button, Heading } from '@navikt/ds-react';
 import { SearchResultHit } from './search-hit/SearchResultHit';
 import { ContentLoader } from '../../../common/loader/ContentLoader';
 import { useSearchState } from '../../../../context/search-state/useSearchState';
@@ -8,29 +8,40 @@ import { useSearchState } from '../../../../context/search-state/useSearchState'
 import style from './SearchResult.module.css';
 
 export const SearchResult = () => {
-    const { searchResult, setSearchResult } = useSearchState();
+    const { searchResult, setSearchResultIsOpen } = useSearchState();
+    const { hits, total, status, params } = searchResult;
 
     return (
         <div className={classNames(style.result)}>
-            {searchResult?.status === 'loading' && (
+            {status === 'loading' ? (
                 <ContentLoader size={'3xlarge'} text={'Laster søketreff...'} />
-            )}
-            {searchResult && searchResult.status !== 'loading' && (
-                <div className={style.header}>
-                    <Heading
-                        size={'small'}
-                        level={'2'}
-                    >{`Treff for "${searchResult.params.query}" (${searchResult.total})`}</Heading>
-                    <Button
-                        size={'xsmall'}
-                        variant={'tertiary'}
-                        onClick={() => setSearchResult(null)}
-                    >
-                        {'Lukk'}
-                    </Button>
-                </div>
-            )}
-            {searchResult?.hits.map((hit) => <SearchResultHit hit={hit} key={hit.versionKey} />)}
+            ) : status === 'error' ? (
+                <Alert variant={'error'}>
+                    {
+                        'Feil: søket kunne ikke utføres. Prøv igjen, eller kontakt brukerstøtte dersom problemet vedvarer.'
+                    }
+                </Alert>
+            ) : status === 'success' ? (
+                <>
+                    <div className={style.header}>
+                        <Heading
+                            size={'small'}
+                            level={'2'}
+                        >{`Treff for "${params.query}" (${total})`}</Heading>
+                        <Button
+                            size={'xsmall'}
+                            variant={'tertiary'}
+                            onClick={() => setSearchResultIsOpen(false)}
+                        >
+                            {'Lukk'}
+                        </Button>
+                    </div>
+                    {hits.map((hit) => (
+                        <SearchResultHit hit={hit} key={hit.versionKey} />
+                    ))}
+                    )
+                </>
+            ) : null}
         </div>
     );
 };

@@ -2,14 +2,15 @@ import { createContext } from 'react';
 import { ContentSearchParams, ContentSearchResult } from '../../../common/contentSearch';
 
 export type SearchState = {
-    searchResult: ContentSearchResult | null;
-    setSearchResult: (result: ContentSearchResult | null) => void;
+    searchResult: ContentSearchResult;
+    setSearchResult: (result: ContentSearchResult) => void;
     searchResultIsOpen: boolean;
     setSearchResultIsOpen: (isOpen: boolean) => void;
     searchParams: ContentSearchParams;
     setSearchParams: (params: ContentSearchParams) => void;
     updateSearchParams: (params: Partial<ContentSearchParams>) => void;
     resetSearchSettings: () => void;
+    runSearch: (params: ContentSearchParams) => void;
 };
 
 export const initialSearchParams: ContentSearchParams = {
@@ -18,8 +19,15 @@ export const initialSearchParams: ContentSearchParams = {
     withChildCategories: true,
 } as const;
 
+export const emptySearchResult: ContentSearchResult = {
+    total: 0,
+    hits: [],
+    status: 'empty',
+    params: initialSearchParams,
+} as const;
+
 export const SearchStateContext = createContext<SearchState>({
-    searchResult: null,
+    searchResult: emptySearchResult,
     setSearchResult: () => ({}),
     searchResultIsOpen: false,
     setSearchResultIsOpen: () => ({}),
@@ -27,4 +35,5 @@ export const SearchStateContext = createContext<SearchState>({
     setSearchParams: () => ({}),
     updateSearchParams: () => ({}),
     resetSearchSettings: () => ({}),
+    runSearch: () => ({}),
 });

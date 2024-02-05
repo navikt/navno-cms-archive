@@ -1,15 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { initialSearchParams, SearchState, SearchStateContext } from './SearchStateContext';
-import { ContentSearchParams } from '../../../common/contentSearch';
+import { emptySearchResult, initialSearchParams, SearchStateContext } from './SearchStateContext';
+import { ContentSearchParams, ContentSearchResult } from '../../../common/contentSearch';
 import { getInitialSearchParams, persistSearchParams } from './search-settings-cookies';
 import { useAppState } from '../app-state/useAppState';
+import { useApiFetch } from '../../fetch/useApiFetch';
 
-export const SearchStateProvider = ({ children }: { children: React.ReactNode }) => {
+type Props = {
+    children: React.ReactNode;
+};
+
+export const SearchStateProvider = ({ children }: Props) => {
     const { appContext } = useAppState();
     const { basePath } = appContext;
+    const { fetchSearch } = useApiFetch();
 
-    const [searchResult, setSearchResult] = useState<SearchState['searchResult']>(null);
-    const [searchParams, setSearchParams] = useState<SearchState['searchParams']>(
+    const [searchResult, setSearchResult] = useState<ContentSearchResult>(emptySearchResult);
+    const [searchParams, setSearchParams] = useState<ContentSearchParams>(
         getInitialSearchParams(basePath)
     );
     const [searchResultIsOpen, setSearchResultIsOpen] = useState(false);
@@ -23,8 +29,20 @@ export const SearchStateProvider = ({ children }: { children: React.ReactNode })
     const resetSearchSettings = () =>
         setSearchParams({ ...initialSearchParams, query: searchParams.query });
 
+    const runSearch = (params: ContentSearchParams) =>
+        fetchSearch(params).then((result) => {
+            setSearchResult(
+                result || {
+                    total: 0,
+                    hits: [],
+                    status: 'error',
+                    params: params,
+                }
+            );
+        });
+
     useEffect(() => {
-        setSearchResultIsOpen(!!searchResult);
+        setSearchResultIsOpen(searchResult.status !== 'empty');
     }, [searchResult]);
 
     return (
@@ -38,6 +56,7 @@ export const SearchStateProvider = ({ children }: { children: React.ReactNode })
                 setSearchResultIsOpen,
                 updateSearchParams,
                 resetSearchSettings,
+                runSearch,
             }}
         >
             {children}

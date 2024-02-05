@@ -1,6 +1,5 @@
 import React, { useRef } from 'react';
 import { Search } from '@navikt/ds-react';
-import { useApiFetch } from '../../../../fetch/useApiFetch';
 import { classNames } from '../../../../utils/classNames';
 import { SearchSettings } from './search-settings/SearchSettings';
 import { useSearchState } from '../../../../context/search-state/useSearchState';
@@ -12,11 +11,9 @@ type Props = {
 };
 
 export const SearchInput = ({ className }: Props) => {
-    const { setSearchResult, searchParams, setSearchParams } = useSearchState();
+    const { setSearchResult, searchParams, setSearchParams, runSearch } = useSearchState();
 
     const inputRef = useRef<HTMLInputElement>(null);
-
-    const { fetchSearch } = useApiFetch();
 
     return (
         <div className={classNames(style.search, className)}>
@@ -37,9 +34,7 @@ export const SearchInput = ({ className }: Props) => {
                         status: 'loading',
                     });
 
-                    fetchSearch(searchParams).then((result) => {
-                        setSearchResult(result);
-                    });
+                    runSearch(searchParams);
                 }}
             >
                 <Search
