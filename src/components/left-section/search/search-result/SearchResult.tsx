@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { classNames } from '../../../../utils/classNames';
 import { Alert, Button, Heading, Pagination } from '@navikt/ds-react';
 import { SearchResultHit } from './search-hit/SearchResultHit';
