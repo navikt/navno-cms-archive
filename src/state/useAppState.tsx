@@ -1,4 +1,4 @@
-import { createContext, useContext } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { AppContext, appErrorContext } from '../../common/appContext';
 import { CmsContent } from '../../common/cms-documents/content';
 import { CmsCategoryListItem } from '../../common/cms-documents/category';
@@ -13,7 +13,6 @@ type AppState = {
     setContentSelectorOpen: (isOpen: boolean) => void;
 };
 
-// eslint-disable-next-line react-refresh/only-export-components
 const AppStateContext = createContext<AppState>({
     appContext: appErrorContext,
     selectedContent: null,
@@ -25,24 +24,55 @@ const AppStateContext = createContext<AppState>({
 });
 
 export const useAppState = () => {
-    const {
-        appContext,
-        selectedContent,
-        setSelectedContent,
-        selectedCategory,
-        setSelectedCategory,
-        contentSelectorOpen,
-        setContentSelectorOpen,
-    } = useContext(AppStateContext);
+    return useContext(AppStateContext);
+};
 
-    return {
-        AppStateProvider: AppStateContext.Provider,
-        appContext,
-        selectedContent,
-        setSelectedContent,
-        selectedCategory,
-        setSelectedCategory,
-        contentSelectorOpen,
-        setContentSelectorOpen,
-    };
+type ProviderProps = {
+    appContext: AppContext;
+    children: React.ReactNode;
+};
+
+export const AppStateProvider = ({ appContext, children }: ProviderProps) => {
+    const [selectedContent, setSelectedContent] = useState<CmsContent | null>(null);
+    const [selectedCategory, setSelectedCategory] = useState<CmsCategoryListItem | null>(null);
+    const [contentSelectorOpen, setContentSelectorOpen] = useState<boolean>(false);
+
+    const setSelectedContentWithHistory = useCallback(
+        (content: CmsContent | null, toHistory: boolean = true) => {
+            setSelectedContent(content);
+            if (toHistory) {
+                window.history.pushState(
+                    { ...window.history.state, content },
+                    '',
+                    `${appContext.basePath}/${content ? content.versionKey : ''}`
+                );
+            }
+        },
+        [appContext]
+    );
+
+    useEffect(() => {
+        const onPopState = (e: PopStateEvent) => {
+            setSelectedContentWithHistory(e.state?.content || null, false);
+        };
+
+        window.addEventListener('popstate', onPopState);
+        return () => window.removeEventListener('popstate', onPopState);
+    }, [setSelectedContentWithHistory]);
+
+    return (
+        <AppStateContext.Provider
+            value={{
+                appContext,
+                selectedContent,
+                setSelectedContent: setSelectedContentWithHistory,
+                selectedCategory,
+                setSelectedCategory,
+                contentSelectorOpen,
+                setContentSelectorOpen,
+            }}
+        >
+            {children}
+        </AppStateContext.Provider>
+    );
 };

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, HelpText, Label, Radio, RadioGroup, UNSAFE_Combobox } from '@navikt/ds-react';
+import { Button, Label, Radio, RadioGroup, UNSAFE_Combobox } from '@navikt/ds-react';
 import { ChevronDownIcon, XMarkIcon } from '@navikt/aksel-icons';
 import { ContentSearchParams } from '../../../../../../common/contentSearch';
 import { classNames } from '../../../../../utils/classNames';
@@ -70,15 +70,7 @@ export const SearchSettings = ({ searchParams, setSearchParams, reset }: Props) 
                         onChange={(value) => updateSearchParams({ type: value })}
                     >
                         <Radio value={'titles'}>{'Tittel'}</Radio>
-                        <span className={style.withHelp}>
-                            <Radio value={'locations'}>{'URL'}</Radio>
-                            <HelpText wrapperClassName={style.help}>
-                                {'Prefix-søk på pathname. F.eks. vil '}
-                                <code>{'https://www.nav.no/no/person/arbeid'}</code>
-                                {' gi treff på alle sider med en path som starter med '}
-                                <code>{'/no/person/arbeid'}</code>
-                            </HelpText>
-                        </span>
+                        <Radio value={'locations'}>{'URL'}</Radio>
                         <Radio value={'all'}>{'Alt innhold'}</Radio>
                     </RadioGroup>
                     <RadioGroup

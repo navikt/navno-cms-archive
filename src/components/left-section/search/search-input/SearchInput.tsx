@@ -4,10 +4,11 @@ import { ContentSearchParams, ContentSearchResult } from '../../../../../common/
 import { useApiFetch } from '../../../../fetch/useApiFetch';
 import { classNames } from '../../../../utils/classNames';
 import { SearchSettings } from './search-settings/SearchSettings';
-import { getInitialSearchParams, initialSearchParams } from './params-initial-state';
+import { getInitialSearchParams } from './params-initial-state';
 import { useAppState } from '../../../../state/useAppState';
 
 import style from './SearchInput.module.css';
+import { initialSearchParams } from '../../../../state/useSearchState';
 
 type Props = {
     setSearchResult: (searchResult: ContentSearchResult | null) => void;
