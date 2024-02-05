@@ -1,6 +1,6 @@
-import { ContentSearchParams } from '../../../../../common/contentSearch';
+import { ContentSearchParams } from '../../../common/contentSearch';
 import Cookies from 'js-cookie';
-import { initialSearchParams } from '../../../../state/useSearchState';
+import { initialSearchParams } from './SearchStateContext';
 
 const getCookieKey = (basePath: string) => `cms-archive-search-settings${basePath}`;
 

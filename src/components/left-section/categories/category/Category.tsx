@@ -3,11 +3,11 @@ import { CmsCategoryListItem } from '../../../../../common/cms-documents/categor
 import { Tooltip } from '@navikt/ds-react';
 import { TreeItem } from '@mui/x-tree-view';
 import { CategoriesList } from '../CategoriesList';
-import { useAppState } from '../../../../state/useAppState';
 import { ArrowForwardIcon, CircleSlashIcon } from '@navikt/aksel-icons';
 import { useFetchCategories } from '../../../../fetch/useFetchCategories';
 import { ContentLoader } from '../../../common/loader/ContentLoader';
 import { TreeItemClasses } from '@mui/x-tree-view/TreeItem/treeItemClasses';
+import { useAppState } from '../../../../context/app-state/useAppState';
 
 import style from './Category.module.css';
 
@@ -15,7 +15,7 @@ const classesOverride: Partial<TreeItemClasses> = {
     content: style.content,
     label: style.label,
     disabled: style.disabled,
-};
+} as const;
 
 type Props = {
     category: CmsCategoryListItem;

@@ -1,36 +1,36 @@
 import React from 'react';
 import { classNames } from '../../../../utils/classNames';
-import { ContentSearchResult } from '../../../../../common/contentSearch';
 import { Button, Heading } from '@navikt/ds-react';
 import { SearchResultHit } from './search-hit/SearchResultHit';
 import { ContentLoader } from '../../../common/loader/ContentLoader';
+import { useSearchState } from '../../../../context/search-state/useSearchState';
 
 import style from './SearchResult.module.css';
 
-type Props = {
-    result: ContentSearchResult | null;
-    close: () => void;
-};
+export const SearchResult = () => {
+    const { searchResult, setSearchResult } = useSearchState();
 
-export const SearchResult = ({ result, close }: Props) => {
     return (
         <div className={classNames(style.result)}>
-            {result?.status === 'loading' && (
+            {searchResult?.status === 'loading' && (
                 <ContentLoader size={'3xlarge'} text={'Laster søketreff...'} />
             )}
-            {result && result.status !== 'loading' && (
+            {searchResult && searchResult.status !== 'loading' && (
                 <div className={style.header}>
                     <Heading
                         size={'small'}
                         level={'2'}
-                    >{`Treff for "${result.params.query}" (${result.total})`}</Heading>
-                    <Button size={'xsmall'} variant={'tertiary'} onClick={close}>
+                    >{`Treff for "${searchResult.params.query}" (${searchResult.total})`}</Heading>
+                    <Button
+                        size={'xsmall'}
+                        variant={'tertiary'}
+                        onClick={() => setSearchResult(null)}
+                    >
                         {'Lukk'}
                     </Button>
                 </div>
             )}
-
-            {result?.hits.map((hit) => <SearchResultHit hit={hit} key={hit.versionKey} />)}
+            {searchResult?.hits.map((hit) => <SearchResultHit hit={hit} key={hit.versionKey} />)}
         </div>
     );
 };

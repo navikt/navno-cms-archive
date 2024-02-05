@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { CmsCategoryListItem } from '../../../../common/cms-documents/category';
 import { Alert, Button, Heading, Pagination, TextField } from '@navikt/ds-react';
 import { ArrowLeftIcon } from '@navikt/aksel-icons';
-import { useAppState } from '../../../state/useAppState';
+import { useAppState } from '../../../context/app-state/useAppState';
 import { ContentLink } from './content-link/ContentLink';
 import { useFetchCategoryContents } from '../../../fetch/useFetchCategoryContents';
 import { ContentLoader } from '../../common/loader/ContentLoader';

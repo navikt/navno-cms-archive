@@ -1,9 +1,9 @@
-import { useAppState } from '../state/useAppState';
 import { fetchJson } from './fetchJson';
 import { CmsContent } from '../../common/cms-documents/content';
 import { CmsCategoryListItem } from '../../common/cms-documents/category';
 import { useCallback } from 'react';
 import { ContentSearchParams, ContentSearchResult } from '../../common/contentSearch';
+import { useAppState } from '../context/app-state/useAppState';
 
 const fetchContent = (basePath: string) => async (contentKey: string) =>
     fetchJson<CmsContent>(`${basePath}/api/content/${contentKey}`);

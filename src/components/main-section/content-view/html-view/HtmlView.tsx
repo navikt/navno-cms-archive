@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { classNames } from '../../../../utils/classNames';
 import { Button } from '@navikt/ds-react';
-import { useAppState } from '../../../../state/useAppState';
+import { useAppState } from '../../../../context/app-state/useAppState';
 import { ExpandIcon } from '@navikt/aksel-icons';
 
 import style from './HtmlView.module.css';

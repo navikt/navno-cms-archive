@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Select } from '@navikt/ds-react';
 import { CmsContent } from '../../../../../common/cms-documents/content';
-import { useAppState } from '../../../../state/useAppState';
 import { useApiFetch } from '../../../../fetch/useApiFetch';
+import { useAppState } from '../../../../context/app-state/useAppState';
 
 const TITLE_MAX_LENGTH = 100;
 

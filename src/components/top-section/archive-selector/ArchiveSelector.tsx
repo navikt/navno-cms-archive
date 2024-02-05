@@ -1,6 +1,6 @@
 import React from 'react';
 import { Select } from '@navikt/ds-react';
-import { useAppState } from '../../../state/useAppState';
+import { useAppState } from '../../../context/app-state/useAppState';
 
 import style from './ArchiveSelector.module.css';
 

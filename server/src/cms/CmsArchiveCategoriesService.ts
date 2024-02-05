@@ -31,8 +31,6 @@ export class CmsArchiveCategoriesService {
             return false;
         }
 
-        console.log(`Found ${allCategories.length} categories for ${this.config.name}`);
-
         this.populateCategoriesMap(allCategories);
 
         console.log(
@@ -69,27 +67,6 @@ export class CmsArchiveCategoriesService {
         return keys;
     }
 
-    private populateCategoriesMap(categories: CmsCategoryListItem[]) {
-        this.categoriesMap.clear();
-        this.rootCategories.length = 0;
-
-        categories.forEach((category) => {
-            this.categoriesMap.set(category.key, category);
-            if (!category.superKey) {
-                this.rootCategories.push(category);
-            }
-        });
-
-        this.categoriesMap.forEach((category) => {
-            if (category.superKey) {
-                category.path = this.resolveCategoryPath(category.superKey);
-            }
-            category.categories.sort((a, b) => a.name.localeCompare(b.name));
-        });
-
-        this.rootCategories.sort((a, b) => a.title.localeCompare(b.title));
-    }
-
     public resolveCategoryPath(categoryKey: string, path: CmsCategoryPath = []): CmsCategoryPath {
         const category = this.categoriesMap.get(categoryKey);
         if (!category) {
@@ -109,6 +86,27 @@ export class CmsArchiveCategoriesService {
         }
 
         return this.resolveCategoryPath(superKey, path);
+    }
+
+    private populateCategoriesMap(categories: CmsCategoryListItem[]) {
+        this.categoriesMap.clear();
+        this.rootCategories.length = 0;
+
+        categories.forEach((category) => {
+            this.categoriesMap.set(category.key, category);
+            if (!category.superKey) {
+                this.rootCategories.push(category);
+            }
+        });
+
+        this.categoriesMap.forEach((category) => {
+            if (category.superKey) {
+                category.path = this.resolveCategoryPath(category.superKey);
+            }
+            category.categories.sort((a, b) => a.name.localeCompare(b.name));
+        });
+
+        this.rootCategories.sort((a, b) => a.title.localeCompare(b.title));
     }
 
     private async getAllCategories(): Promise<CmsCategoryListItem[] | null> {

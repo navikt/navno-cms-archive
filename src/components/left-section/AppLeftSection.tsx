@@ -1,25 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { CategoriesMenu } from './categories/CategoriesMenu';
 import { ContentMenu } from './contents/ContentMenu';
-import { useAppState } from '../../state/useAppState';
 import { classNames } from '../../utils/classNames';
 import { SearchInput } from './search/search-input/SearchInput';
 import { SearchResult } from './search/search-result/SearchResult';
-import { ContentSearchResult } from '../../../common/contentSearch';
 import { Alert, BodyLong, Heading } from '@navikt/ds-react';
+import { useAppState } from '../../context/app-state/useAppState';
+import { useSearchState } from '../../context/search-state/useSearchState';
 
 import style from './AppLeftSection.module.css';
 
 export const AppLeftSection = () => {
-    const [searchResult, setSearchResult] = useState<ContentSearchResult | null>(null);
-    const [searchResultOpen, setSearchResultOpen] = useState(false);
-
     const { selectedCategory, appContext, contentSelectorOpen } = useAppState();
     const { rootCategories } = appContext;
 
-    useEffect(() => {
-        setSearchResultOpen(!!searchResult);
-    }, [searchResult]);
+    const { searchResultIsOpen } = useSearchState();
 
     return (
         <div className={style.root}>
@@ -41,22 +36,21 @@ export const AppLeftSection = () => {
                         </BodyLong>
                     </Alert>
                 ) : (
-                    <SearchInput setSearchResult={setSearchResult} />
+                    <SearchInput />
                 )}
                 <div className={style.categoriesAndSearchResult}>
                     <div
                         className={classNames(
                             style.categoriesMenu,
-                            searchResultOpen && style.hidden
+                            searchResultIsOpen && style.hidden
                         )}
                     >
                         <CategoriesMenu rootCategories={rootCategories} />
                     </div>
-                    <div className={classNames(style.searchResult, searchResultOpen && style.open)}>
-                        <SearchResult
-                            result={searchResult}
-                            close={() => setSearchResultOpen(false)}
-                        />
+                    <div
+                        className={classNames(style.searchResult, searchResultIsOpen && style.open)}
+                    >
+                        <SearchResult />
                     </div>
                 </div>
             </div>

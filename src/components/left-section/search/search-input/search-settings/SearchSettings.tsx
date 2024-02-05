@@ -1,38 +1,26 @@
 import React, { useState } from 'react';
 import { Button, Label, Radio, RadioGroup, UNSAFE_Combobox } from '@navikt/ds-react';
 import { ChevronDownIcon, XMarkIcon } from '@navikt/aksel-icons';
-import { ContentSearchParams } from '../../../../../../common/contentSearch';
 import { classNames } from '../../../../../utils/classNames';
-import { useAppState } from '../../../../../state/useAppState';
 import { CmsCategoryListItem } from '../../../../../../common/cms-documents/category';
-import { persistSearchParams } from '../params-initial-state';
+import { useAppState } from '../../../../../context/app-state/useAppState';
+import { useSearchState } from '../../../../../context/search-state/useSearchState';
 
 import style from './SearchSettings.module.css';
 
-type Props = {
-    searchParams: ContentSearchParams;
-    setSearchParams: (params: ContentSearchParams) => void;
-    reset: () => void;
-};
-
-export const SearchSettings = ({ searchParams, setSearchParams, reset }: Props) => {
+export const SearchSettings = () => {
     const [isOpen, setIsOpen] = useState(false);
 
     const { appContext } = useAppState();
-    const { rootCategories, basePath } = appContext;
+    const { rootCategories } = appContext;
 
+    const { searchParams, updateSearchParams, resetSearchParams } = useSearchState();
     const { sort, categoryKeys, type, isCustom } = searchParams;
 
     const { titlesToKeys, keysToTitles } = createKeysTitlesMaps(rootCategories);
     const categoryKeysSelected = new Set<string>(categoryKeys);
     const categoryTitlesSelected = [...categoryKeysSelected].map((key) => keysToTitles[key]);
     const categoryTitlesAll = Object.keys(titlesToKeys);
-
-    const updateSearchParams = (params: Partial<ContentSearchParams>) => {
-        const newParams: ContentSearchParams = { ...searchParams, ...params, isCustom: true };
-        persistSearchParams(newParams, basePath);
-        setSearchParams(newParams);
-    };
 
     return (
         <div className={style.container}>
@@ -44,7 +32,7 @@ export const SearchSettings = ({ searchParams, setSearchParams, reset }: Props) 
                             size={'xsmall'}
                             variant={'tertiary'}
                             className={style.toggle}
-                            onClick={reset}
+                            onClick={resetSearchParams}
                         >
                             {'Nullstill'}
                             <XMarkIcon />

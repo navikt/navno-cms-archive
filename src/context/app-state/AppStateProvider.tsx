@@ -1,31 +1,8 @@
-import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
-import { AppContext, appErrorContext } from '../../common/appContext';
-import { CmsContent } from '../../common/cms-documents/content';
-import { CmsCategoryListItem } from '../../common/cms-documents/category';
-
-type AppState = {
-    appContext: AppContext;
-    selectedContent: CmsContent | null;
-    setSelectedContent: (content: CmsContent | null, toHistory?: boolean) => void;
-    selectedCategory: CmsCategoryListItem | null;
-    setSelectedCategory: (content: CmsCategoryListItem | null) => void;
-    contentSelectorOpen: boolean;
-    setContentSelectorOpen: (isOpen: boolean) => void;
-};
-
-const AppStateContext = createContext<AppState>({
-    appContext: appErrorContext,
-    selectedContent: null,
-    setSelectedContent: () => ({}),
-    selectedCategory: null,
-    setSelectedCategory: () => ({}),
-    contentSelectorOpen: false,
-    setContentSelectorOpen: () => ({}),
-});
-
-export const useAppState = () => {
-    return useContext(AppStateContext);
-};
+import React, { useCallback, useEffect, useState } from 'react';
+import { AppContext } from '../../../common/appContext';
+import { CmsContent } from '../../../common/cms-documents/content';
+import { CmsCategoryListItem } from '../../../common/cms-documents/category';
+import { AppStateContext } from './AppStateContext';
 
 type ProviderProps = {
     appContext: AppContext;

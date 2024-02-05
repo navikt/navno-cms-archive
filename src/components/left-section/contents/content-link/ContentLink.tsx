@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { CmsContentListItem } from '../../../../../common/cms-documents/content';
 import { BodyShort, Link, Loader } from '@navikt/ds-react';
 import { useApiFetch } from '../../../../fetch/useApiFetch';
-import { useAppState } from '../../../../state/useAppState';
+import { useAppState } from '../../../../context/app-state/useAppState';
 import { classNames } from '../../../../utils/classNames';
 
 import style from './ContentLink.module.css';

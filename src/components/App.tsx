@@ -3,7 +3,8 @@ import { AppContext } from '../../common/appContext';
 import { AppTopSection } from './top-section/AppTopSection';
 import { AppLeftSection } from './left-section/AppLeftSection';
 import { AppMainSection } from './main-section/AppMainSection';
-import { AppStateProvider } from '../state/useAppState';
+import { AppStateProvider } from '../context/app-state/AppStateProvider';
+import { SearchStateProvider } from '../context/search-state/SearchStateProvider';
 
 import style from './App.module.css';
 
@@ -18,7 +19,9 @@ export const App = ({ appContext }: Props) => {
         <AppStateProvider appContext={appContext}>
             <div className={style.root}>
                 <AppTopSection cmsName={cmsName} />
-                <AppLeftSection />
+                <SearchStateProvider>
+                    <AppLeftSection />
+                </SearchStateProvider>
                 <AppMainSection />
             </div>
         </AppStateProvider>

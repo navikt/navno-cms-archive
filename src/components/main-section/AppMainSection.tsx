@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { ContentView } from './content-view/ContentView';
-import { useAppState } from '../../state/useAppState';
+import { useAppState } from '../../context/app-state/useAppState';
 import { Heading } from '@navikt/ds-react';
 import { ArrowLeftIcon } from '@navikt/aksel-icons';
 import { useApiFetch } from '../../fetch/useApiFetch';
