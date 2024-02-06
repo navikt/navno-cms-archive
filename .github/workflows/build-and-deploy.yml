@@ -32,7 +32,7 @@ jobs:
         run: npm ci
         env:
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
-          PUPPETEER_CACHE_DIR: '/puppeteer'
+          PUPPETEER_CACHE_DIR: '/tmp/puppeteer'
       - name: Build application
         run: npm run build
       - name: Build and push docker image
