@@ -17,7 +17,7 @@ export class CmsArchiveContentService {
     private readonly config: CmsArchiveSiteConfig;
     private readonly categoriesService: CmsArchiveCategoriesService;
 
-    private readonly contentsIndex: string;
+    private readonly index: string;
 
     constructor({ client, config, categoriesService }: ConstructorProps) {
         const { indexPrefix } = config;
@@ -25,14 +25,13 @@ export class CmsArchiveContentService {
         this.client = client;
         this.config = config;
         this.categoriesService = categoriesService;
-
-        this.contentsIndex = `${indexPrefix}_content`;
+        this.index = `${indexPrefix}_content`;
     }
 
     public async contentSearch(params: ContentSearchParams): Promise<ContentSearchResult> {
         const result = await this.client.search<CmsContentDocument>({
             ...buildContentSearchParams(params, this.categoriesService),
-            index: this.contentsIndex,
+            index: this.index,
         });
 
         if (!result) {
@@ -62,7 +61,7 @@ export class CmsArchiveContentService {
 
     public async getContent(contentKey: string): Promise<CmsContent | null> {
         const result = await this.client.search<CmsContentDocument>({
-            index: this.contentsIndex,
+            index: this.index,
             body: {
                 query: {
                     bool: {
@@ -101,11 +100,32 @@ export class CmsArchiveContentService {
 
     public async getContentVersion(versionKey: string): Promise<CmsContent | null> {
         const result = await this.client.getDocument<CmsContentDocument>({
-            index: this.contentsIndex,
+            index: this.index,
             id: versionKey,
         });
 
         return this.fixContent(result);
+    }
+
+    public async getContentVersions(versionKeys: string[]): Promise<CmsContent[] | null> {
+        const result = await this.client.getDocuments<CmsContentDocument>({
+            index: this.index,
+            _source_excludes: ['xmlAsString, versions'],
+            body: {
+                ids: versionKeys,
+            },
+        });
+
+        return (
+            result?.reduce<CmsContent[]>((acc, content) => {
+                const fixedContent = this.fixContent(content);
+                if (fixedContent) {
+                    acc.push(fixedContent);
+                }
+
+                return acc;
+            }, []) || null
+        );
     }
 
     private fixContent(contentDocument: CmsContentDocument | null): CmsContent | null {

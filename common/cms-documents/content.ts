@@ -72,8 +72,3 @@ export type CmsContentListItem = Pick<
     CmsContentDocument,
     'contentKey' | 'versionKey' | 'displayName'
 >;
-
-export type CategoryContentsResponse = {
-    hits: CmsContentListItem[];
-    total: number;
-};

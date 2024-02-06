@@ -2,6 +2,7 @@ import { Express } from 'express';
 import { CmsArchiveSite, CmsArchiveSiteConfig } from '../cms/CmsArchiveSite';
 import { CmsArchiveOpenSearchClient } from '../opensearch/CmsArchiveOpenSearchClient';
 import { initAndGetRenderer } from '../site/ssr/initRenderer';
+import puppeteer from 'puppeteer';
 
 const archiveConfigs: CmsArchiveSiteConfig[] = [
     {
@@ -17,15 +18,17 @@ const archiveConfigs: CmsArchiveSiteConfig[] = [
 ] as const;
 
 export const setupCmsArchiveSites = async (expressApp: Express) => {
-    const archiveClient = new CmsArchiveOpenSearchClient();
+    const opensearchClent = new CmsArchiveOpenSearchClient();
     const htmlRenderer = await initAndGetRenderer(expressApp);
+    const browser = await puppeteer.launch();
 
     const sites = archiveConfigs.map((config) => {
         return new CmsArchiveSite({
             config,
             expressApp,
-            client: archiveClient,
+            client: opensearchClent,
             htmlRenderer,
+            browser,
         });
     });
 
