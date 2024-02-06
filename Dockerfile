@@ -1,9 +1,13 @@
 FROM node:20-bookworm-slim
 
+RUN apt-get update
+RUN apt-get --assume-yes --no-install-recommends install chrome && apt-get clean
+
 WORKDIR /app
 
 ENV NODE_ENV=production
 ENV PUPPETEER_CACHE_DIR=/app/puppeteer
+ENV PUPPETEER_TMP_DIR=/tmp
 
 COPY package*.json .env /app/
 COPY node_modules /app/node_modules/
