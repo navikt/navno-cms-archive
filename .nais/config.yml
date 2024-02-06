@@ -20,6 +20,10 @@ spec:
   openSearch:
     access: read
     instance: enonic-cms-archive
+  accessPolicy:
+    outbound:
+      external:
+        - host: cms-arkiv.intern.nav.no
   replicas:
     min: 1
     max: 1
