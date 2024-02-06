@@ -1,7 +1,7 @@
 import { Express } from 'express';
 import { CmsArchiveSite, CmsArchiveSiteConfig } from '../cms/CmsArchiveSite';
 import { CmsArchiveOpenSearchClient } from '../opensearch/CmsArchiveOpenSearchClient';
-import { initAndGetRenderer } from '../site/ssr/initRenderer';
+import { initAndGetRenderer } from '../ssr/initRenderer';
 import puppeteer from 'puppeteer';
 
 const archiveConfigs: CmsArchiveSiteConfig[] = [

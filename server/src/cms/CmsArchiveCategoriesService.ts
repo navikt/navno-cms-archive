@@ -27,8 +27,9 @@ export class CmsArchiveCategoriesService {
     public async init() {
         const allCategories = await this.getAllCategories();
         if (!allCategories) {
-            console.error(`Could not retrieve categories for ${this.config.name}`);
-            return false;
+            const msg = `Could not retrieve categories for ${this.config.name}`;
+            console.error(msg);
+            throw Error(msg);
         }
 
         this.populateCategoriesMap(allCategories);

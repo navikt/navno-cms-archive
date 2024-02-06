@@ -108,24 +108,34 @@ export class CmsArchiveContentService {
     }
 
     public async getContentVersions(versionKeys: string[]): Promise<CmsContent[] | null> {
-        const result = await this.client.getDocuments<CmsContentDocument>({
+        const result = await this.client.search<CmsContentDocument>({
             index: this.index,
             _source_excludes: ['xmlAsString, versions'],
+            size: versionKeys.length,
             body: {
-                ids: versionKeys,
+                sort: {
+                    'meta.timestamp': 'desc',
+                },
+                query: {
+                    ids: {
+                        values: versionKeys,
+                    },
+                },
             },
         });
 
-        return (
-            result?.reduce<CmsContent[]>((acc, content) => {
-                const fixedContent = this.fixContent(content);
-                if (fixedContent) {
-                    acc.push(fixedContent);
-                }
+        if (!result) {
+            return null;
+        }
 
-                return acc;
-            }, []) || null
-        );
+        return result.hits.reduce<CmsContent[]>((acc, content) => {
+            const fixedContent = this.fixContent(content);
+            if (fixedContent) {
+                acc.push(fixedContent);
+            }
+
+            return acc;
+        }, []);
     }
 
     private fixContent(contentDocument: CmsContentDocument | null): CmsContent | null {

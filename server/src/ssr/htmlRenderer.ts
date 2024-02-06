@@ -1,18 +1,11 @@
 import { buildHtmlTemplate } from './templateBuilder';
 import { ViteDevServer } from 'vite';
-import { render } from '../../_ssr-dist/main-server';
-import { AppContext } from '../../../../common/appContext';
+import { render } from '../_ssr-dist/main-server';
+import { AppContext } from '../../../common/appContext';
 
-export type HtmlRenderer = (
-    url: string,
-    context: AppContext
-) => Promise<string>;
+export type HtmlRenderer = (url: string, context: AppContext) => Promise<string>;
 
-const processTemplate = (
-    templateHtml: string,
-    appHtml: string,
-    appContext: AppContext
-) => {
+const processTemplate = (templateHtml: string, appHtml: string, appContext: AppContext) => {
     return templateHtml
         .replace('<!--ssr-app-html-->', appHtml)
         .replace('"ssr-app-context"', JSON.stringify(appContext));

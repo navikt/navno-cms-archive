@@ -1,14 +1,14 @@
 import { CmsArchiveOpenSearchClient } from '../opensearch/CmsArchiveOpenSearchClient';
 import express, { Express, Response, Router } from 'express';
 import { CmsArchiveContentService } from './CmsArchiveContentService';
-import { parseQueryParamsList } from '../utils/queryParams';
+import { parseNumberParam, parseQueryParamsList } from '../utils/queryParams';
 import mime from 'mime';
-import { HtmlRenderer } from '../site/ssr/htmlRenderer';
+import { HtmlRenderer } from '../ssr/htmlRenderer';
 import { transformQueryToContentSearchParams } from '../opensearch/queries/contentSearch';
 import { CmsArchiveCategoriesService } from './CmsArchiveCategoriesService';
 import { cspMiddleware } from '../routing/csp';
 import { CmsArchiveBinariesService } from './CmsArchiveBinariesService';
-import { PdfGenerator } from '../site/pdf/PdfGenerator';
+import { PdfGenerator } from '../pdf/PdfGenerator';
 import { Browser } from 'puppeteer';
 
 export type CmsArchiveSiteConfig = {
@@ -151,12 +151,53 @@ export class CmsArchiveSite {
     }
 
     private setupFileRoutes(router: Router) {
-        router.get('/pdf/:versionKeys', async (req, res, next) => {
-            const versionKeys = req.params.versionKeys.split(',');
+        router.get('/pdf/single/:versionKey', async (req, res, next) => {
+            const result = await this.pdfGenerator.generatePdfFromVersion(
+                req.params.versionKey,
+                parseNumberParam(req.query.width)
+            );
 
-            const pdfs = this.pdfGenerator.generatePdfFromVersions(versionKeys);
+            if (!result) {
+                return next();
+            }
 
-            // return this.fileResponse(`${contentVersion.displayName}-${con}`);
+            const { filename, data } = result;
+
+            const contentType = mime.lookup(filename) || 'application/octet-stream';
+
+            return res
+                .setHeader('Content-Disposition', `attachment; filename="${filename}"`)
+                .setHeader('Content-Type', contentType)
+                .send(data);
+        });
+
+        router.get('/pdf/multi/:versionKeys', async (req, res, next) => {
+            const result = await this.pdfGenerator.generatePdfFromVersions(
+                req.params.versionKeys.split(','),
+                parseNumberParam(req.query.width)
+            );
+
+            if (!result) {
+                return next();
+            }
+
+            const { filename, dataStream } = result;
+
+            const contentType = mime.lookup(filename) || 'application/octet-stream';
+
+            res.setHeader('Content-Disposition', `attachment; filename="${filename}"`).setHeader(
+                'Content-Type',
+                contentType
+            );
+
+            dataStream.on('data', (chunk) => {
+                res.write(chunk);
+            });
+
+            dataStream.on('end', () => {
+                console.log(`Finished streaming file ${filename}`);
+                res.end();
+            });
         });
 
         router.get('/binary/file/:binaryKey', async (req, res, next) => {
@@ -167,7 +208,7 @@ export class CmsArchiveSite {
                 return next();
             }
 
-            return this.fileResponse(
+            return this.cmsBinaryResponse(
                 binary.filename,
                 binary.data,
                 `attachment; filename="${binary.filename}"`,
@@ -181,7 +222,7 @@ export class CmsArchiveSite {
                 return next();
             }
 
-            return this.fileResponse(file.filename, file.data, 'inline', res);
+            return this.cmsBinaryResponse(file.filename, file.data, 'inline', res);
         });
 
         router.use('/*/_image/:contentKey.:extension', async (req, res, next) => {
@@ -190,6 +231,7 @@ export class CmsArchiveSite {
                 return next();
             }
 
+            // The last item in the binaries array of an image content is the source file
             const binaryKey = content.binaries?.slice(-1)?.[0].key;
             if (!binaryKey) {
                 return next();
@@ -200,7 +242,7 @@ export class CmsArchiveSite {
                 return next();
             }
 
-            return this.fileResponse(binary.filename, binary.data, 'inline', res);
+            return this.cmsBinaryResponse(binary.filename, binary.data, 'inline', res);
         });
 
         router.use('/*/_image/:contentKey/label/:label.:extension', async (req, res, next) => {
@@ -221,21 +263,21 @@ export class CmsArchiveSite {
                 return next();
             }
 
-            return this.fileResponse(binary.filename, binary.data, 'inline', res);
+            return this.cmsBinaryResponse(binary.filename, binary.data, 'inline', res);
         });
     }
 
-    private fileResponse(
+    private cmsBinaryResponse(
         filename: string,
-        data: string,
+        base64Data: string,
         contentDisposition: string,
         res: Response
     ) {
         const contentType = mime.lookup(filename) || 'application/octet-stream';
 
         return res
-            .setHeader('Content-Dispositon', contentDisposition)
+            .setHeader('Content-Disposition', contentDisposition)
             .setHeader('Content-Type', contentType)
-            .send(Buffer.from(data, 'base64'));
+            .send(Buffer.from(base64Data, 'base64'));
     }
 }
