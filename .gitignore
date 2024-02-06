@@ -29,3 +29,4 @@ dist-ssr
 .env.prod-local
 cms-assets
 /.cache/
+/Dockerfile-local
