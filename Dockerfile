@@ -1,7 +1,7 @@
 FROM node:20-bookworm-slim
 
 RUN apt-get update
-RUN apt-get --assume-yes --no-install-recommends install chrome && apt-get clean
+RUN apt-get --assume-yes --no-install-recommends install chromium && apt-get clean
 
 WORKDIR /app
 
