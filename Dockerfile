@@ -7,7 +7,9 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 ENV PUPPETEER_CACHE_DIR=/app/puppeteer
-ENV PUPPETEER_TMP_DIR=/tmp
+ENV PUPPETEER_TMP_DIR=/tmp/.puppeteer
+ENV XDG_CONFIG_HOME=/tmp/.chromium
+ENV XDG_CACHE_HOME=/tmp/.chromium
 
 COPY package*.json .env /app/
 COPY node_modules /app/node_modules/

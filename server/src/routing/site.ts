@@ -20,7 +20,9 @@ const archiveConfigs: CmsArchiveSiteConfig[] = [
 export const setupCmsArchiveSites = async (expressApp: Express) => {
     const opensearchClent = new CmsArchiveOpenSearchClient();
     const htmlRenderer = await initAndGetRenderer(expressApp);
-    const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
+    const browser = await puppeteer.launch({
+        args: ['--no-sandbox', '--disable-setuid-sandbox', '--user-data-dir=/tmp/.chromium'],
+    });
 
     const sites = archiveConfigs.map((config) => {
         return new CmsArchiveSite({
