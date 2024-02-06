@@ -20,7 +20,7 @@ export const HtmlExporter = ({ content, hidden }: Props) => {
 
     const pdfApi = `${basePath}/pdf`;
 
-    const { versionKey, versions } = content;
+    const { versionKey: currentVersionKey, versions } = content;
 
     return (
         <div className={classNames(style.exporter, hidden && style.hidden)}>
@@ -29,28 +29,19 @@ export const HtmlExporter = ({ content, hidden }: Props) => {
                     {'Eksporter til PDF'}
                 </Heading>
                 <Button
-                    variant={'primary'}
+                    variant={'tertiary'}
                     size={'small'}
                     as={'a'}
-                    href={`${pdfApi}/single/${versionKey}`}
+                    href={`${pdfApi}/single/${currentVersionKey}`}
                     icon={<ArrowDownRightIcon className={style.downloadCurrentIcon} />}
                     iconPosition={'right'}
-                    className={style.downloadCurrent}
+                    className={style.downloadCurrentButton}
                 >
                     {'Last ned denne versjonen'}
                 </Button>
             </div>
-            <Button
-                variant={'primary'}
-                size={'small'}
-                as={'a'}
-                href={`${pdfApi}/multi/${versionKeysSelected.join(',')}`}
-                disabled={versionKeysSelected.length === 0}
-            >
-                {'Last ned valgte versjoner'}
-            </Button>
             <CheckboxGroup
-                legend={'Last ned flere versjoner'}
+                legend={'Velg flere versjoner (lastes ned i en samlet zip-fil)'}
                 size={'small'}
                 className={style.checkboxGroup}
                 onChange={setVersionKeysSelected}
@@ -64,6 +55,16 @@ export const HtmlExporter = ({ content, hidden }: Props) => {
                     );
                 })}
             </CheckboxGroup>
+            <Button
+                variant={'primary'}
+                size={'medium'}
+                as={'a'}
+                href={`${pdfApi}/multi/${versionKeysSelected.join(',')}`}
+                disabled={versionKeysSelected.length === 0}
+                className={style.downloadAllButton}
+            >
+                {'Last ned valgte versjoner'}
+            </Button>
         </div>
     );
 };

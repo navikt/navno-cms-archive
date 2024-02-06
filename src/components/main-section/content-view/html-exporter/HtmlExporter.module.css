@@ -1,7 +1,8 @@
 .exporter {
-    overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+    overflow-y: hidden;
     height: 100%;
-    scrollbar-width: thin;
 }
 
 .hidden {
@@ -17,7 +18,7 @@
     padding: 0.5rem 0;
 }
 
-.downloadCurrent {
+.downloadCurrentButton {
     margin-right: 0.5rem;
 }
 
@@ -26,9 +27,16 @@
 }
 
 .checkboxGroup {
-    margin-top: 1rem;
+    margin: 0.25rem 0;
+    overflow-y: scroll;
+    scrollbar-width: thin;
 
     :global(.navds-checkbox__label) {
         padding: 0.1875rem;
     }
+}
+
+.downloadAllButton {
+    align-self: flex-start;
+    margin: 0.25rem;
 }
