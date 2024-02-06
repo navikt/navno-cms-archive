@@ -5,7 +5,7 @@ import { CmsContent } from '../../../../common/cms-documents/content';
 
 import style from './ViewSelector.module.css';
 
-export type ViewState = 'html' | 'xml' | 'files' | 'none';
+export type ViewState = 'html' | 'xml' | 'files' | 'export' | 'none';
 
 type Props = {
     content: CmsContent;
@@ -36,9 +36,10 @@ export const ViewSelector = ({ content, viewState, setViewState }: Props) => {
                         }
                     }}
                 >
-                    {'Vis nettside'}
+                    {'Nettside'}
                 </ToggleGroup.Item>
             </WithTooltip>
+            {html && <ToggleGroup.Item value={'export'}>{'Eksporter'}</ToggleGroup.Item>}
             <WithTooltip tooltip={filesCount === 0 ? 'Innholdet har ingen filer' : undefined}>
                 <ToggleGroup.Item
                     value={'files'}
@@ -49,10 +50,10 @@ export const ViewSelector = ({ content, viewState, setViewState }: Props) => {
                         }
                     }}
                 >
-                    {`Vis filer (${filesCount})`}
+                    {`Filer (${filesCount})`}
                 </ToggleGroup.Item>
             </WithTooltip>
-            <ToggleGroup.Item value={'xml'}>{'Vis XML'}</ToggleGroup.Item>
+            <ToggleGroup.Item value={'xml'}>{'XML'}</ToggleGroup.Item>
         </ToggleGroup>
     );
 };

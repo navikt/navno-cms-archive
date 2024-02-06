@@ -73,7 +73,7 @@ export const SearchSettings = () => {
                     </RadioGroup>
                 </div>
                 <UNSAFE_Combobox
-                    label={'Avgrens til valgte kategorier'}
+                    label={'Avgrens søket til valgte kategorier:'}
                     size={'small'}
                     className={style.categoriesSelector}
                     clearButton={true}

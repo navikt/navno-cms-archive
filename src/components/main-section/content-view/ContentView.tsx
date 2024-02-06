@@ -7,6 +7,7 @@ import { ViewSelector, ViewState } from '../view-selector/ViewSelector';
 import { VersionSelector } from './version-selector/VersionSelector';
 import { Heading } from '@navikt/ds-react';
 import { CategoriesPath } from '../../common/categories-path/CategoriesPath';
+import { HtmlExporter } from './html-exporter/HtmlExporter';
 
 import style from './ContentView.module.css';
 
@@ -39,7 +40,12 @@ export const ContentView = ({ content }: Props) => {
                 <VersionSelector content={content} />
             </div>
             <XmlView xml={xmlAsString} hidden={viewState !== 'xml'} />
-            {html && <HtmlView html={html} versionKey={versionKey} hidden={viewState !== 'html'} />}
+            {html && (
+                <>
+                    <HtmlView html={html} versionKey={versionKey} hidden={viewState !== 'html'} />
+                    <HtmlExporter content={content} hidden={viewState !== 'export'} />
+                </>
+            )}
             {content.binaries && (
                 <FilesView binaries={content.binaries} hidden={viewState !== 'files'} />
             )}
