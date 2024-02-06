@@ -28,3 +28,4 @@ dist-ssr
 .env.development
 .env.prod-local
 cms-assets
+/.cache/
