@@ -26,6 +26,11 @@
     transform: rotate(-90deg);
 }
 
+.label {
+    display: flex;
+    gap: 0.5rem;
+}
+
 .checkboxGroup {
     padding: 0.25rem 0 0.5rem 0;
     overflow-y: auto;

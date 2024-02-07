@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { CmsContentDocument } from '../../../../../common/cms-documents/content';
-import { Button, Checkbox, CheckboxGroup, Heading } from '@navikt/ds-react';
+import { Button, Checkbox, CheckboxGroup, Heading, HelpText, Label } from '@navikt/ds-react';
 import { classNames } from '../../../../utils/classNames';
 import { useAppState } from '../../../../context/app-state/useAppState';
 import { ArrowDownRightIcon } from '@navikt/aksel-icons';
@@ -97,8 +97,17 @@ export const HtmlExporter = ({ content, hidden }: Props) => {
                     {'Last ned kun denne versjonen'}
                 </Button>
             </div>
+            <Label className={style.label}>
+                {'Velg flere versjoner (lastes ned i en samlet zip-fil)'}
+                <HelpText>
+                    {
+                        'Tips: Du kan markere flere versjoner samtidig ved å holde inne "shift"-knappen'
+                    }
+                </HelpText>
+            </Label>
             <CheckboxGroup
-                legend={'Velg flere versjoner (lastes ned i en samlet zip-fil)'}
+                legend={'Velg versjoner'}
+                hideLegend={true}
                 size={'small'}
                 className={style.checkboxGroup}
                 value={versionKeysSelected}
@@ -125,15 +134,18 @@ export const HtmlExporter = ({ content, hidden }: Props) => {
                     href={`${pdfApi}/multi/${versionKeysSelected.join(',')}`}
                     disabled={versionKeysSelected.length === 0}
                 >
-                    {'Last ned valgte versjoner'}
+                    {versionKeysSelected.length === 0
+                        ? 'Ingen versjoner valgt'
+                        : `Last ned ${versionKeysSelected.length} ${versionKeysSelected.length > 1 ? 'valgte versjoner' : 'valgt versjon'}`}
                 </Button>
-                <Button
-                    variant={'secondary'}
-                    disabled={versionKeysSelected.length === 0}
-                    onClick={() => setVersionsSelectedMap(versionsSelectedMapEmpty)}
-                >
-                    {'Nullstill valg'}
-                </Button>
+                {versionKeysSelected.length > 0 && (
+                    <Button
+                        variant={'secondary'}
+                        onClick={() => setVersionsSelectedMap(versionsSelectedMapEmpty)}
+                    >
+                        {'Nullstill valg'}
+                    </Button>
+                )}
             </div>
         </div>
     );
