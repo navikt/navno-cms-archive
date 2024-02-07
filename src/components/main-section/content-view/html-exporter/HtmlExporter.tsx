@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CmsContentDocument } from '../../../../../common/cms-documents/content';
 import { Button, Checkbox, CheckboxGroup, Heading } from '@navikt/ds-react';
 import { classNames } from '../../../../utils/classNames';
@@ -6,6 +6,8 @@ import { useAppState } from '../../../../context/app-state/useAppState';
 import { ArrowDownRightIcon } from '@navikt/aksel-icons';
 
 import style from './HtmlExporter.module.css';
+
+type VersionsSelectedMap = Record<number, { selected: boolean; versionKey: string }>;
 
 type Props = {
     content: CmsContentDocument;
@@ -15,12 +17,67 @@ type Props = {
 export const HtmlExporter = ({ content, hidden }: Props) => {
     const { appContext } = useAppState();
     const { basePath } = appContext;
-
-    const [versionKeysSelected, setVersionKeysSelected] = useState<string[]>([]);
-
     const pdfApi = `${basePath}/pdf`;
 
+    const versionsSelectedMapEmpty = Object.values(content.versions).reduce<VersionsSelectedMap>(
+        (acc, version, index) => {
+            acc[index] = { selected: false, versionKey: version.key };
+            return acc;
+        },
+        {}
+    );
+
+    const [versionsSelectedMap, setVersionsSelectedMap] =
+        useState<VersionsSelectedMap>(versionsSelectedMapEmpty);
+    const [prevClickedIndex, setPrevClickedIndex] = useState(0);
+    const [versionKeysSelected, setVersionKeysSelected] = useState<string[]>([]);
+
     const { versionKey: currentVersionKey, versions } = content;
+
+    const onCheckboxClick = (clickedIndex: number) => (e: React.MouseEvent<HTMLInputElement>) => {
+        console.log(`Clicked ${clickedIndex}`);
+
+        if (e.shiftKey) {
+            e.preventDefault();
+
+            const length = Math.abs(clickedIndex - prevClickedIndex) + 1;
+            const startIndex = Math.min(clickedIndex, prevClickedIndex);
+
+            const changedSelection = Object.entries(versionsSelectedMap)
+                .slice(startIndex, startIndex + length)
+                .reduce<VersionsSelectedMap>((acc, [index, item]) => {
+                    acc[Number(index)] = {
+                        versionKey: item.versionKey,
+                        selected: true,
+                    };
+                    return acc;
+                }, {});
+
+            setVersionsSelectedMap({ ...versionsSelectedMap, ...changedSelection });
+        } else {
+            const { versionKey, selected } = versionsSelectedMap[clickedIndex];
+            setVersionsSelectedMap({
+                ...versionsSelectedMap,
+                [clickedIndex]: { versionKey, selected: !selected },
+            });
+        }
+
+        setPrevClickedIndex(clickedIndex);
+    };
+
+    useEffect(() => {
+        const versionKeysSelected = Object.values(versionsSelectedMap).reduce<string[]>(
+            (acc, item) => {
+                if (item.selected) {
+                    acc.push(item.versionKey);
+                }
+                return acc;
+            },
+            []
+        );
+
+        setVersionKeysSelected(versionKeysSelected);
+    }, [versionsSelectedMap]);
 
     return (
         <div className={classNames(style.exporter, hidden && style.hidden)}>
@@ -37,34 +94,47 @@ export const HtmlExporter = ({ content, hidden }: Props) => {
                     iconPosition={'right'}
                     className={style.downloadCurrentButton}
                 >
-                    {'Last ned denne versjonen'}
+                    {'Last ned kun denne versjonen'}
                 </Button>
             </div>
             <CheckboxGroup
                 legend={'Velg flere versjoner (lastes ned i en samlet zip-fil)'}
                 size={'small'}
                 className={style.checkboxGroup}
-                onChange={setVersionKeysSelected}
+                value={versionKeysSelected}
             >
-                {versions.map((version) => {
+                {versions.map((version, index) => {
                     const dateTime = new Date(version.timestamp).toLocaleString('no');
                     return (
-                        <Checkbox value={version.key} size={'small'} key={version.key}>
+                        <Checkbox
+                            onClick={onCheckboxClick(index)}
+                            key={version.key}
+                            value={version.key}
+                            size={'small'}
+                        >
                             {`${version.title} - [${dateTime}]`}
                         </Checkbox>
                     );
                 })}
             </CheckboxGroup>
-            <Button
-                variant={'primary'}
-                size={'medium'}
-                as={'a'}
-                href={`${pdfApi}/multi/${versionKeysSelected.join(',')}`}
-                disabled={versionKeysSelected.length === 0}
-                className={style.downloadAllButton}
-            >
-                {'Last ned valgte versjoner'}
-            </Button>
+            <div className={style.multiSelectButtons}>
+                <Button
+                    variant={'primary'}
+                    size={'medium'}
+                    as={'a'}
+                    href={`${pdfApi}/multi/${versionKeysSelected.join(',')}`}
+                    disabled={versionKeysSelected.length === 0}
+                >
+                    {'Last ned valgte versjoner'}
+                </Button>
+                <Button
+                    variant={'secondary'}
+                    disabled={versionKeysSelected.length === 0}
+                    onClick={() => setVersionsSelectedMap(versionsSelectedMapEmpty)}
+                >
+                    {'Nullstill valg'}
+                </Button>
+            </div>
         </div>
     );
 };

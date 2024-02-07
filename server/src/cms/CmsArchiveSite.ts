@@ -174,30 +174,9 @@ export class CmsArchiveSite {
         router.get('/pdf/multi/:versionKeys', async (req, res, next) => {
             const result = await this.pdfGenerator.generatePdfFromVersions(
                 req.params.versionKeys.split(','),
+                res,
                 parseNumberParam(req.query.width)
             );
-
-            if (!result) {
-                return next();
-            }
-
-            const { filename, dataStream } = result;
-
-            const contentType = mime.lookup(filename) || 'application/octet-stream';
-
-            res.setHeader('Content-Disposition', `attachment; filename="${filename}"`).setHeader(
-                'Content-Type',
-                contentType
-            );
-
-            dataStream.on('data', (chunk) => {
-                res.write(chunk);
-            });
-
-            dataStream.on('end', () => {
-                console.log(`Finished streaming file ${filename}`);
-                res.end();
-            });
         });
 
         router.get('/binary/file/:binaryKey', async (req, res, next) => {

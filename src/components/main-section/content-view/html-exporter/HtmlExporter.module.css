@@ -27,8 +27,8 @@
 }
 
 .checkboxGroup {
-    margin: 0.25rem 0;
-    overflow-y: scroll;
+    padding: 0.25rem 0 0.5rem 0;
+    overflow-y: auto;
     scrollbar-width: thin;
 
     :global(.navds-checkbox__label) {
@@ -36,7 +36,8 @@
     }
 }
 
-.downloadAllButton {
-    align-self: flex-start;
-    margin: 0.25rem;
+.multiSelectButtons {
+    display: flex;
+    gap: 1rem;
+    padding: 0.5rem 0;
 }

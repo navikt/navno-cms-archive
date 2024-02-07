@@ -1,8 +1,10 @@
 import { Browser } from 'puppeteer';
 import { CmsArchiveContentService } from '../cms/CmsArchiveContentService';
-import JSZip from 'jszip';
 import { pixelWidthToA4Scale } from './pdf-scale';
 import { CmsContentDocument } from '../../../common/cms-documents/content';
+import archiver from 'archiver';
+import { Response } from 'express';
+import mime from 'mime';
 
 const DEFAULT_WIDTH_PX = 1024;
 const MIN_WIDTH_PX = 400;
@@ -33,45 +35,55 @@ export class PdfGenerator {
 
     public async generatePdfFromVersions(
         versionKeys: string[],
+        res: Response,
         width: number = DEFAULT_WIDTH_PX
-    ): Promise<ZipResult | null> {
+    ) {
         if (versionKeys.length === 0) {
-            return null;
+            return res.status(400).send();
         }
 
         const contentVersions = await this.contentService.getContentVersions(versionKeys);
         if (!contentVersions || contentVersions.length === 0) {
-            return null;
+            return res.status(404).send();
         }
-
-        const zip = JSZip();
-
-        await Promise.all(
-            contentVersions.map(async (content) => {
-                if (!content.html) {
-                    return;
-                }
-
-                const pdf = await this.generatePdf(content.html, width);
-                if (!pdf) {
-                    return;
-                }
-
-                const fileName = this.getPdfFilename(content);
-
-                zip.file(fileName, pdf, { binary: true });
-            })
-        );
 
         const newestVersion = contentVersions[0];
         const oldestVersion = contentVersions.slice(-1)[0];
 
         const zipFilename = `${newestVersion.name}_${newestVersion.meta.timestamp}-${oldestVersion.meta.timestamp}.zip`;
 
-        return {
-            dataStream: zip.generateNodeStream(),
-            filename: zipFilename,
-        };
+        res.setHeader('Content-Disposition', `attachment; filename="${zipFilename}"`).setHeader(
+            'Content-Type',
+            mime.lookup(zipFilename) || 'application/octet-stream'
+        );
+
+        const archive = archiver('zip');
+
+        archive.on('data', (chunk) => {
+            res.write(chunk);
+        });
+
+        archive.on('end', () => {
+            res.end();
+        });
+
+        for (const content of contentVersions) {
+            if (!content.html) {
+                continue;
+            }
+
+            await this.generatePdf(content.html, width).then((pdf) => {
+                if (!pdf) {
+                    return;
+                }
+
+                const fileName = this.getPdfFilename(content);
+
+                archive.append(pdf, { name: fileName });
+            });
+        }
+
+        archive.finalize();
     }
 
     public async generatePdfFromVersion(
