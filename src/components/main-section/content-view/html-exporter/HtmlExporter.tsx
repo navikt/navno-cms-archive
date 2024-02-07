@@ -94,14 +94,14 @@ export const HtmlExporter = ({ content, hidden }: Props) => {
                     iconPosition={'right'}
                     className={style.downloadCurrentButton}
                 >
-                    {'Last ned kun denne versjonen'}
+                    {'Last ned denne versjonen'}
                 </Button>
             </div>
             <div className={style.label}>
                 <Label>{'Velg flere versjoner (lastes ned i en samlet zip-fil)'}</Label>
-                <HelpText>
+                <HelpText title={'Tips!'}>
                     {
-                        'Tips: Du kan velge et spenn av versjoner ved å holde inne "shift"-knappen samtidig som du trykker på to adskilte versjoner'
+                        'Du kan velge et spenn av versjoner med ett klikk ved å holde inne "shift"-knappen'
                     }
                 </HelpText>
             </div>

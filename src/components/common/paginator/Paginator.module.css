@@ -1,0 +1,7 @@
+.paginator {
+    padding: 0.5rem 0 1rem 0;
+    align-self: center;
+    ul {
+        gap: 0.25rem;
+    }
+}

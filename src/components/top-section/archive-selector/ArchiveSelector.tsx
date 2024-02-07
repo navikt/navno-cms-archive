@@ -3,6 +3,7 @@ import { Select } from '@navikt/ds-react';
 import { useAppState } from '../../../context/app-state/useAppState';
 
 import style from './ArchiveSelector.module.css';
+import { archiveConfigs } from '../../../../common/archiveConfigs';
 
 export const ArchiveSelector = () => {
     const { appContext } = useAppState();
@@ -17,8 +18,11 @@ export const ArchiveSelector = () => {
                 size={'small'}
                 onChange={(e) => window.location.assign(e.target.value)}
             >
-                <option value={'/sbs'}>{'Selvbetjeningssonen'}</option>
-                <option value={'/fss'}>{'Fagsystemsonen'}</option>
+                {archiveConfigs.map((config) => (
+                    <option value={config.basePath} key={config.name}>
+                        {config.name}
+                    </option>
+                ))}
             </Select>
         </div>
     );

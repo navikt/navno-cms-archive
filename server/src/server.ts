@@ -3,7 +3,7 @@ import compression from 'compression';
 import { setupErrorHandlers } from './routing/errorHandlers';
 import { validateEnv } from './utils/validateEnv';
 import { setupInternalRoutes } from './routing/internal';
-import { setupCmsArchiveSites } from './routing/site';
+import { setupSites } from './routing/site';
 
 const { APP_PORT } = process.env;
 
@@ -12,7 +12,7 @@ validateEnv()
         const app = express().use(compression(), express.json());
 
         setupInternalRoutes(app);
-        await setupCmsArchiveSites(app);
+        await setupSites(app);
         setupErrorHandlers(app);
 
         return app;

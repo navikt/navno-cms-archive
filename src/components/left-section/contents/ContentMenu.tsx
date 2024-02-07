@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { CmsCategoryListItem } from '../../../../common/cms-documents/category';
-import { Alert, Button, Heading, Pagination, TextField } from '@navikt/ds-react';
+import { Alert, Button, Heading, TextField } from '@navikt/ds-react';
 import { ArrowLeftIcon } from '@navikt/aksel-icons';
 import { useAppState } from '../../../context/app-state/useAppState';
 import { ContentLink } from './content-link/ContentLink';
 import { useFetchCategoryContents } from '../../../fetch/useFetchCategoryContents';
 import { ContentLoader } from '../../common/loader/ContentLoader';
 import { CategoriesPath } from '../../common/categories-path/CategoriesPath';
+import { Paginator } from '../../common/paginator/Paginator';
 
 import style from './ContentMenu.module.css';
 
@@ -104,15 +105,7 @@ export const ContentMenu = ({ parentCategory }: Props) => {
                     >{`Kan ikke vise flere enn ${MAX_CONTENTS} elementer (fant ${currentCount}). Bruk søkefeltet for å redusere antall elementer.`}</Alert>
                 )}
             </div>
-            {numPages > 1 && (
-                <Pagination
-                    page={pageNumber}
-                    onPageChange={setPageNumber}
-                    count={numPages}
-                    size={'xsmall'}
-                    className={style.paginator}
-                />
-            )}
+            <Paginator numPages={numPages} pageNumber={pageNumber} onPageChange={setPageNumber} />
         </div>
     );
 };

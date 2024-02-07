@@ -38,7 +38,7 @@ export const VersionSelector = ({ content }: Props) => {
                 const dateTime = new Date(version.timestamp).toLocaleString('no');
                 return (
                     <option value={version.key} key={version.key}>
-                        {`[${dateTime}] - ${pruneTitle(version.title)}`}
+                        {`${pruneTitle(version.title)} - [${dateTime}]`}
                     </option>
                 );
             })}

@@ -1,9 +1,10 @@
 import React from 'react';
 import { classNames } from '../../../../utils/classNames';
-import { Alert, Button, Heading, Pagination } from '@navikt/ds-react';
+import { Alert, Button, Heading } from '@navikt/ds-react';
 import { SearchResultHit } from './search-hit/SearchResultHit';
 import { ContentLoader } from '../../../common/loader/ContentLoader';
 import { useSearchState } from '../../../../context/search-state/useSearchState';
+import { Paginator } from '../../../common/paginator/Paginator';
 
 import style from './SearchResult.module.css';
 
@@ -15,6 +16,8 @@ export const SearchResult = () => {
 
     const numPages = Math.ceil(total / size);
     const currentPage = Math.floor(from / size) + 1;
+
+    const onPageChange = (page: number) => runSearch({ ...searchParams, from: size * (page - 1) });
 
     return (
         <>
@@ -48,15 +51,7 @@ export const SearchResult = () => {
                     </>
                 ) : null}
             </div>
-            {numPages > 1 && (
-                <Pagination
-                    page={currentPage}
-                    onPageChange={(page) => runSearch({ ...searchParams, from: size * (page - 1) })}
-                    count={numPages}
-                    size={'xsmall'}
-                    className={style.paginator}
-                />
-            )}
+            <Paginator numPages={numPages} pageNumber={currentPage} onPageChange={onPageChange} />
         </>
     );
 };
