@@ -14,11 +14,6 @@ type PdfResult = {
     filename: string;
 };
 
-type ZipResult = {
-    dataStream: NodeJS.ReadableStream;
-    filename: string;
-};
-
 type ConstructorProps = {
     browser: Browser;
     contentService: CmsArchiveContentService;
@@ -52,10 +47,9 @@ export class PdfGenerator {
 
         const zipFilename = `${newestVersion.name}_${newestVersion.meta.timestamp}-${oldestVersion.meta.timestamp}.zip`;
 
-        res.setHeader('Content-Disposition', `attachment; filename="${zipFilename}"`).setHeader(
-            'Content-Type',
-            mime.lookup(zipFilename) || 'application/octet-stream'
-        );
+        res.setHeader('Content-Disposition', `attachment; filename="${zipFilename}"`)
+            .setHeader('Content-Type', mime.lookup(zipFilename) || 'application/octet-stream')
+            .setHeader('Transfer-Encoding', 'chunked');
 
         const archive = archiver('zip');
 
@@ -75,6 +69,12 @@ export class PdfGenerator {
             await this.generatePdf(content.html, width).then((pdf) => {
                 if (!pdf) {
                     return;
+                }
+
+                if (!res.headersSent) {
+                    // Set an estimate for content-length, which allows clients to track the download progress
+                    // This header is not according to spec for chunked responses, but browsers seem to respect it
+                    res.setHeader('Content-Length', pdf.length * contentVersions.length);
                 }
 
                 const fileName = this.getPdfFilename(content);
