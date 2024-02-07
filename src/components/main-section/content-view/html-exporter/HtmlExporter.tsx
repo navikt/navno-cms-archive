@@ -97,14 +97,14 @@ export const HtmlExporter = ({ content, hidden }: Props) => {
                     {'Last ned kun denne versjonen'}
                 </Button>
             </div>
-            <Label className={style.label}>
-                {'Velg flere versjoner (lastes ned i en samlet zip-fil)'}
+            <div className={style.label}>
+                <Label>{'Velg flere versjoner (lastes ned i en samlet zip-fil)'}</Label>
                 <HelpText>
                     {
-                        'Tips: Du kan markere flere versjoner samtidig ved å holde inne "shift"-knappen'
+                        'Tips: Du kan velge et spenn av versjoner ved å holde inne "shift"-knappen samtidig som du trykker på to adskilte versjoner'
                     }
                 </HelpText>
-            </Label>
+            </div>
             <CheckboxGroup
                 legend={'Velg versjoner'}
                 hideLegend={true}
