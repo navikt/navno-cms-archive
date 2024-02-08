@@ -44,7 +44,6 @@ export const DownloadLink = ({ href, icon, disabled, className, children }: Prop
     return (
         <Link
             href={href}
-            icon={icon}
             download={true}
             className={classNames(style.link, (isWaiting || disabled) && style.disabled, className)}
             onClick={onDownload}
