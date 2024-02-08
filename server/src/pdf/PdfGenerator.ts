@@ -5,6 +5,7 @@ import { CmsContent } from '../../../common/cms-documents/content';
 import archiver from 'archiver';
 import { Response } from 'express';
 import mime from 'mime';
+import { DOWNLOAD_COOKIE_NAME } from '../../../common/downloadCookie';
 
 const DEFAULT_WIDTH_PX = 1024;
 const MIN_WIDTH_PX = 400;
@@ -39,7 +40,7 @@ export class PdfGenerator {
 
         const contentVersions = await this.contentService.getContentVersions(versionKeys);
         if (!contentVersions || contentVersions.length === 0) {
-            return res.status(404).send();
+            return res.status(404).cookie(DOWNLOAD_COOKIE_NAME, false).send();
         }
 
         const newestVersion = contentVersions[0];
@@ -49,7 +50,8 @@ export class PdfGenerator {
 
         res.setHeader('Content-Disposition', `attachment; filename="${zipFilename}"`)
             .setHeader('Content-Type', mime.lookup(zipFilename) || 'application/octet-stream')
-            .setHeader('Transfer-Encoding', 'chunked');
+            .setHeader('Transfer-Encoding', 'chunked')
+            .cookie(DOWNLOAD_COOKIE_NAME, true);
 
         const archive = archiver('zip');
 

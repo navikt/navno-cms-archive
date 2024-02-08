@@ -7,7 +7,7 @@ import { ViewSelector, ViewState } from '../view-selector/ViewSelector';
 import { VersionSelector } from './version-selector/VersionSelector';
 import { Heading } from '@navikt/ds-react';
 import { CategoriesPath } from '../../common/categories-path/CategoriesPath';
-import { HtmlExporter } from './html-exporter/HtmlExporter';
+import { PdfExporter } from './pdf-exporter/PdfExporter';
 
 import style from './ContentView.module.css';
 
@@ -43,7 +43,7 @@ export const ContentView = ({ content }: Props) => {
             {html && (
                 <>
                     <HtmlView html={html} versionKey={versionKey} hidden={viewState !== 'html'} />
-                    <HtmlExporter content={content} hidden={viewState !== 'export'} />
+                    <PdfExporter content={content} hidden={viewState !== 'export'} />
                 </>
             )}
             {content.binaries && (

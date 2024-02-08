@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { CmsContentDocument } from '../../../../../common/cms-documents/content';
 import { Button, Checkbox, CheckboxGroup, Heading, HelpText, Label } from '@navikt/ds-react';
 import { classNames } from '../../../../utils/classNames';
 import { useAppState } from '../../../../context/app-state/useAppState';
-import { ArrowDownRightIcon } from '@navikt/aksel-icons';
+import { ArrowDownRightIcon, DownloadIcon } from '@navikt/aksel-icons';
 import { formatTimestamp } from '../../../../../common/timestamp';
+import { DownloadLink } from './download-link/DownloadLink';
 
-import style from './HtmlExporter.module.css';
+import style from './PdfExporter.module.css';
 
 type VersionsSelectedMap = Record<number, { selected: boolean; versionKey: string }>;
 
@@ -15,17 +16,20 @@ type Props = {
     hidden?: boolean;
 };
 
-export const HtmlExporter = ({ content, hidden }: Props) => {
+export const PdfExporter = ({ content, hidden }: Props) => {
     const { appContext } = useAppState();
     const { basePath } = appContext;
     const pdfApi = `${basePath}/pdf`;
 
-    const versionsSelectedMapEmpty = Object.values(content.versions).reduce<VersionsSelectedMap>(
-        (acc, version, index) => {
-            acc[index] = { selected: false, versionKey: version.key };
-            return acc;
-        },
-        {}
+    const { versionKey: currentVersionKey, versions } = content;
+
+    const versionsSelectedMapEmpty = useMemo(
+        () =>
+            Object.values(content.versions).reduce<VersionsSelectedMap>((acc, version, index) => {
+                acc[index] = { selected: false, versionKey: version.key };
+                return acc;
+            }, {}),
+        [content]
     );
 
     const [versionsSelectedMap, setVersionsSelectedMap] =
@@ -33,11 +37,7 @@ export const HtmlExporter = ({ content, hidden }: Props) => {
     const [prevClickedIndex, setPrevClickedIndex] = useState(0);
     const [versionKeysSelected, setVersionKeysSelected] = useState<string[]>([]);
 
-    const { versionKey: currentVersionKey, versions } = content;
-
     const onCheckboxClick = (clickedIndex: number) => (e: React.MouseEvent<HTMLInputElement>) => {
-        console.log(`Clicked ${clickedIndex}`);
-
         if (e.shiftKey) {
             e.preventDefault();
 
@@ -80,23 +80,24 @@ export const HtmlExporter = ({ content, hidden }: Props) => {
         setVersionKeysSelected(versionKeysSelected);
     }, [versionsSelectedMap]);
 
+    useEffect(() => {
+        setVersionsSelectedMap(versionsSelectedMapEmpty);
+        setVersionKeysSelected([]);
+        setPrevClickedIndex(0);
+    }, [versionsSelectedMapEmpty]);
+
     return (
         <div className={classNames(style.exporter, hidden && style.hidden)}>
             <div className={style.topRow}>
                 <Heading size={'small'} level={'3'}>
                     {'Eksporter til PDF'}
                 </Heading>
-                <Button
-                    variant={'tertiary'}
-                    size={'small'}
-                    as={'a'}
+                <DownloadLink
                     href={`${pdfApi}/single/${currentVersionKey}`}
                     icon={<ArrowDownRightIcon className={style.downloadCurrentIcon} />}
-                    iconPosition={'right'}
-                    className={style.downloadCurrentButton}
                 >
                     {'Last ned denne versjonen'}
-                </Button>
+                </DownloadLink>
             </div>
             <div className={style.label}>
                 <Label>{'Velg flere versjoner (lastes ned i en samlet zip-fil)'}</Label>
@@ -128,20 +129,18 @@ export const HtmlExporter = ({ content, hidden }: Props) => {
                 })}
             </CheckboxGroup>
             <div className={style.multiSelectButtons}>
-                <Button
-                    variant={'primary'}
-                    size={'medium'}
-                    as={'a'}
+                <DownloadLink
                     href={`${pdfApi}/multi/${versionKeysSelected.join(',')}`}
-                    disabled={versionKeysSelected.length === 0}
+                    icon={versionKeysSelected.length > 0 && <DownloadIcon />}
                 >
                     {versionKeysSelected.length === 0
                         ? 'Ingen versjoner valgt'
                         : `Last ned ${versionKeysSelected.length} ${versionKeysSelected.length > 1 ? 'valgte versjoner' : 'valgt versjon'}`}
-                </Button>
+                </DownloadLink>
                 {versionKeysSelected.length > 0 && (
                     <Button
-                        variant={'secondary'}
+                        variant={'tertiary-neutral'}
+                        size={'xsmall'}
                         onClick={() => setVersionsSelectedMap(versionsSelectedMapEmpty)}
                     >
                         {'Nullstill valg'}

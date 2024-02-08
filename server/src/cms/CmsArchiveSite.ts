@@ -10,6 +10,7 @@ import { cspMiddleware } from '../routing/csp';
 import { CmsArchiveBinariesService } from './CmsArchiveBinariesService';
 import { PdfGenerator } from '../pdf/PdfGenerator';
 import { Browser } from 'puppeteer';
+import { DOWNLOAD_COOKIE_NAME } from '../../../common/downloadCookie';
 
 export type CmsArchiveSiteConfig = {
     name: string;
@@ -158,6 +159,7 @@ export class CmsArchiveSite {
             );
 
             if (!result) {
+                res.cookie(DOWNLOAD_COOKIE_NAME, false);
                 return next();
             }
 
@@ -168,6 +170,7 @@ export class CmsArchiveSite {
             return res
                 .setHeader('Content-Disposition', `attachment; filename="${filename}"`)
                 .setHeader('Content-Type', contentType)
+                .cookie(DOWNLOAD_COOKIE_NAME, true)
                 .send(data);
         });
 

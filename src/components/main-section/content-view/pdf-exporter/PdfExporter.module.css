@@ -43,6 +43,6 @@
 
 .multiSelectButtons {
     display: flex;
-    gap: 1rem;
-    padding: 0.5rem 0;
+    gap: 0.5rem;
+    padding: 0.5rem 0.125rem;
 }
