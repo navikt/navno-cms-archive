@@ -22,8 +22,17 @@
 }
 
 .disabled {
-    pointer-events: none;
-    color: var(--a-gray-300);
+    color: var(--a-gray-400);
+    cursor: not-allowed;
+
+    &:hover {
+        background-color: unset;
+    }
+
+    &:active {
+        color: unset;
+        background-color: unset;
+    }
 }
 
 .iconContainer {

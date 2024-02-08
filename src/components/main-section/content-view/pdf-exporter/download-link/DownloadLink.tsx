@@ -17,7 +17,12 @@ type Props = {
 export const DownloadLink = ({ href, icon, disabled, className, children }: Props) => {
     const [isWaiting, setIsWaiting] = useState(false);
 
-    const onDownload = () => {
+    const onDownload = (e: React.MouseEvent) => {
+        if (disabled) {
+            e.preventDefault();
+            return;
+        }
+
         Cookies.remove(DOWNLOAD_COOKIE_NAME);
         setIsWaiting(true);
 

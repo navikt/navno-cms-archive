@@ -132,6 +132,7 @@ export const PdfExporter = ({ content, hidden }: Props) => {
                 <DownloadLink
                     href={`${pdfApi}/multi/${versionKeysSelected.join(',')}`}
                     icon={versionKeysSelected.length > 0 && <DownloadIcon />}
+                    disabled={versionKeysSelected.length === 0}
                 >
                     {versionKeysSelected.length === 0
                         ? 'Ingen versjoner valgt'
