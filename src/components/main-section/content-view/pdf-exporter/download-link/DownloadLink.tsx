@@ -8,13 +8,14 @@ import style from './DownloadLink.module.css';
 
 type Props = {
     href: string;
+    small?: boolean;
     icon?: React.ReactNode;
     className?: string;
     disabled?: boolean;
-    children: React.ReactNode | string;
+    children: React.ReactNode;
 };
 
-export const DownloadLink = ({ href, icon, disabled, className, children }: Props) => {
+export const DownloadLink = ({ href, small, icon, disabled, className, children }: Props) => {
     const [isWaiting, setIsWaiting] = useState(false);
 
     const onDownload = (e: React.MouseEvent) => {
@@ -45,7 +46,12 @@ export const DownloadLink = ({ href, icon, disabled, className, children }: Prop
         <Link
             href={href}
             download={true}
-            className={classNames(style.link, (isWaiting || disabled) && style.disabled, className)}
+            className={classNames(
+                style.link,
+                small && style.small,
+                (isWaiting || disabled) && style.disabled,
+                className
+            )}
             onClick={onDownload}
         >
             {children}

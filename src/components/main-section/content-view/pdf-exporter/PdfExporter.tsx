@@ -23,7 +23,7 @@ export const PdfExporter = ({ content, hidden }: Props) => {
 
     const { versionKey: currentVersionKey, versions } = content;
 
-    const versionsSelectedMapEmpty = useMemo(
+    const versionsSelectedMapNew = useMemo(
         () =>
             Object.values(content.versions).reduce<VersionsSelectedMap>((acc, version, index) => {
                 acc[index] = { selected: false, versionKey: version.key };
@@ -33,7 +33,7 @@ export const PdfExporter = ({ content, hidden }: Props) => {
     );
 
     const [versionsSelectedMap, setVersionsSelectedMap] =
-        useState<VersionsSelectedMap>(versionsSelectedMapEmpty);
+        useState<VersionsSelectedMap>(versionsSelectedMapNew);
     const [prevClickedIndex, setPrevClickedIndex] = useState(0);
     const [versionKeysSelected, setVersionKeysSelected] = useState<string[]>([]);
 
@@ -81,10 +81,10 @@ export const PdfExporter = ({ content, hidden }: Props) => {
     }, [versionsSelectedMap]);
 
     useEffect(() => {
-        setVersionsSelectedMap(versionsSelectedMapEmpty);
+        setVersionsSelectedMap(versionsSelectedMapNew);
         setVersionKeysSelected([]);
         setPrevClickedIndex(0);
-    }, [versionsSelectedMapEmpty]);
+    }, [versionsSelectedMapNew]);
 
     return (
         <div className={classNames(style.exporter, hidden && style.hidden)}>
@@ -95,6 +95,7 @@ export const PdfExporter = ({ content, hidden }: Props) => {
                 <DownloadLink
                     href={`${pdfApi}/single/${currentVersionKey}`}
                     icon={<ArrowDownRightIcon className={style.downloadCurrentIcon} />}
+                    small={true}
                 >
                     {'Last ned denne versjonen'}
                 </DownloadLink>
@@ -128,25 +129,25 @@ export const PdfExporter = ({ content, hidden }: Props) => {
                     );
                 })}
             </CheckboxGroup>
-            <div className={style.multiSelectButtons}>
+            <div
+                className={classNames(
+                    style.multiSelectButtons,
+                    versionKeysSelected.length === 0 && style.hidden
+                )}
+            >
                 <DownloadLink
                     href={`${pdfApi}/multi/${versionKeysSelected.join(',')}`}
-                    icon={versionKeysSelected.length > 0 && <DownloadIcon />}
-                    disabled={versionKeysSelected.length === 0}
+                    icon={<DownloadIcon />}
                 >
-                    {versionKeysSelected.length === 0
-                        ? 'Ingen versjoner valgt'
-                        : `Last ned ${versionKeysSelected.length} ${versionKeysSelected.length > 1 ? 'valgte versjoner' : 'valgt versjon'}`}
+                    {`Last ned ${versionKeysSelected.length} ${versionKeysSelected.length === 1 ? 'valgt versjon' : 'valgte versjoner'}`}
                 </DownloadLink>
-                {versionKeysSelected.length > 0 && (
-                    <Button
-                        variant={'tertiary-neutral'}
-                        size={'xsmall'}
-                        onClick={() => setVersionsSelectedMap(versionsSelectedMapEmpty)}
-                    >
-                        {'Nullstill valg'}
-                    </Button>
-                )}
+                <Button
+                    variant={'tertiary-neutral'}
+                    size={'xsmall'}
+                    onClick={() => setVersionsSelectedMap(versionsSelectedMapNew)}
+                >
+                    {'Nullstill valg'}
+                </Button>
             </div>
         </div>
     );
