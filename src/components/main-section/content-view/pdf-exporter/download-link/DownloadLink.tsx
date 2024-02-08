@@ -36,7 +36,7 @@ export const DownloadLink = ({ href, small, icon, disabled, className, children 
             }
         }, 200);
 
-        const timeout = window.setTimeout(() => {
+        const timeout = setTimeout(() => {
             clearInterval(interval);
             setIsWaiting(false);
         }, 10000);
