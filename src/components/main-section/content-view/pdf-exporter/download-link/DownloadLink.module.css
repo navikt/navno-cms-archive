@@ -39,14 +39,15 @@
     &.disabled {
         color: var(--a-gray-400);
         cursor: not-allowed;
+        border: none;
 
         &:hover {
-            background-color: unset;
+            background-color: var(--a-white);
         }
 
         &:active {
-            color: unset;
-            background-color: unset;
+            color: var(--a-gray-400);
+            background-color: var(--a-gray-200);
         }
     }
 }
