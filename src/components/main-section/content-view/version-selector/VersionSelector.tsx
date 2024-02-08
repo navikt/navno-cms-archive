@@ -3,6 +3,7 @@ import { Select } from '@navikt/ds-react';
 import { CmsContent } from '../../../../../common/cms-documents/content';
 import { useApiFetch } from '../../../../fetch/useApiFetch';
 import { useAppState } from '../../../../context/app-state/useAppState';
+import { formatTimestamp } from '../../../../../common/timestamp';
 
 const TITLE_MAX_LENGTH = 100;
 
@@ -35,7 +36,7 @@ export const VersionSelector = ({ content }: Props) => {
             }}
         >
             {content.versions.map((version) => {
-                const dateTime = new Date(version.timestamp).toLocaleString('no');
+                const dateTime = formatTimestamp(version.timestamp);
                 return (
                     <option value={version.key} key={version.key}>
                         {`${pruneTitle(version.title)} - [${dateTime}]`}

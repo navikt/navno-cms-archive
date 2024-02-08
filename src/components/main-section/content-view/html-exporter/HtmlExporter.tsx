@@ -4,6 +4,7 @@ import { Button, Checkbox, CheckboxGroup, Heading, HelpText, Label } from '@navi
 import { classNames } from '../../../../utils/classNames';
 import { useAppState } from '../../../../context/app-state/useAppState';
 import { ArrowDownRightIcon } from '@navikt/aksel-icons';
+import { formatTimestamp } from '../../../../../common/timestamp';
 
 import style from './HtmlExporter.module.css';
 
@@ -113,7 +114,7 @@ export const HtmlExporter = ({ content, hidden }: Props) => {
                 value={versionKeysSelected}
             >
                 {versions.map((version, index) => {
-                    const dateTime = new Date(version.timestamp).toLocaleString('no');
+                    const dateTime = formatTimestamp(version.timestamp);
                     return (
                         <Checkbox
                             onClick={onCheckboxClick(index)}

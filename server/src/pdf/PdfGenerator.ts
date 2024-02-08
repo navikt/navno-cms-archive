@@ -1,7 +1,7 @@
 import { Browser } from 'puppeteer';
 import { CmsArchiveContentService } from '../cms/CmsArchiveContentService';
-import { pixelWidthToA4Scale } from './pdf-scale';
-import { CmsContentDocument } from '../../../common/cms-documents/content';
+import { generatePdfFilename, generatePdfFooter, pixelWidthToA4Scale } from './pdf-utils';
+import { CmsContent } from '../../../common/cms-documents/content';
 import archiver from 'archiver';
 import { Response } from 'express';
 import mime from 'mime';
@@ -28,7 +28,7 @@ export class PdfGenerator {
         this.contentService = contentService;
     }
 
-    public async generatePdfFromVersions(
+    public async pdfFromVersionsResponse(
         versionKeys: string[],
         res: Response,
         width: number = DEFAULT_WIDTH_PX
@@ -66,7 +66,7 @@ export class PdfGenerator {
                 continue;
             }
 
-            await this.generatePdf(content.html, width).then((pdf) => {
+            await this.generateContentPdf(content, width).then((pdf) => {
                 if (!pdf) {
                     return;
                 }
@@ -77,7 +77,7 @@ export class PdfGenerator {
                     res.setHeader('Content-Length', pdf.length * contentVersions.length);
                 }
 
-                const fileName = this.getPdfFilename(content);
+                const fileName = generatePdfFilename(content);
 
                 archive.append(pdf, { name: fileName });
             });
@@ -95,18 +95,23 @@ export class PdfGenerator {
             return null;
         }
 
-        const data = await this.generatePdf(content.html, width);
+        const data = await this.generateContentPdf(content, width);
         if (!data) {
             return null;
         }
 
         return {
             data,
-            filename: this.getPdfFilename(content),
+            filename: generatePdfFilename(content),
         };
     }
 
-    private async generatePdf(html: string, width: number): Promise<Buffer | null> {
+    private async generateContentPdf(content: CmsContent, width: number): Promise<Buffer | null> {
+        const { html } = content;
+        if (!html) {
+            return null;
+        }
+
         const widthActual = width >= MIN_WIDTH_PX ? width : DEFAULT_WIDTH_PX;
 
         // Ensures assets with relative urls are loaded from the correct origin
@@ -124,8 +129,16 @@ export class PdfGenerator {
 
             const pdf = await page.pdf({
                 printBackground: true,
-                format: 'a4',
+                format: 'A4',
                 scale: pixelWidthToA4Scale(widthActual),
+                displayHeaderFooter: true,
+                footerTemplate: generatePdfFooter(content),
+                margin: {
+                    top: '4px',
+                    right: '4px',
+                    bottom: '24px',
+                    left: '4px',
+                },
             });
 
             await page.close();
@@ -135,9 +148,5 @@ export class PdfGenerator {
             console.error(`Error while generating PDF - ${e}`);
             return null;
         }
-    }
-
-    private getPdfFilename(content: CmsContentDocument) {
-        return `${content.meta.timestamp}_${content.name}_${content.contentKey}-${content.versionKey}.pdf`;
     }
 }

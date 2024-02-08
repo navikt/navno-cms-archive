@@ -38,8 +38,8 @@ type ContentMetaData = {
     contentType?: string;
     contentTypeKey?: string;
 
-    created?: string;
-    timestamp?: string;
+    created: string;
+    timestamp: string;
     publishFrom?: string;
     publishTo?: string;
 

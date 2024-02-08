@@ -171,8 +171,8 @@ export class CmsArchiveSite {
                 .send(data);
         });
 
-        router.get('/pdf/multi/:versionKeys', async (req, res, next) => {
-            const result = await this.pdfGenerator.generatePdfFromVersions(
+        router.get('/pdf/multi/:versionKeys', async (req, res) => {
+            await this.pdfGenerator.pdfFromVersionsResponse(
                 req.params.versionKeys.split(','),
                 res,
                 parseNumberParam(req.query.width)
