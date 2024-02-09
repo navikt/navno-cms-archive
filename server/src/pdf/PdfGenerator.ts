@@ -1,10 +1,14 @@
 import { Browser } from 'puppeteer';
 import { CmsArchiveContentService } from '../cms/CmsArchiveContentService';
-import { generatePdfFilename, generatePdfFooter, pixelWidthToA4Scale } from './pdf-utils';
+import {
+    generateErrorFilename,
+    generatePdfFilename,
+    generatePdfFooter,
+    pixelWidthToA4Scale,
+} from './pdf-utils';
 import { CmsContent } from '../../../common/cms-documents/content';
 import archiver from 'archiver';
 import { Response } from 'express';
-import mime from 'mime';
 import { DOWNLOAD_COOKIE_NAME } from '../../../common/downloadCookie';
 
 const DEFAULT_WIDTH_PX = 1024;
@@ -35,21 +39,27 @@ export class PdfGenerator {
         width: number = DEFAULT_WIDTH_PX
     ) {
         if (versionKeys.length === 0) {
-            return res.status(400).send();
+            return res
+                .status(400)
+                .cookie(DOWNLOAD_COOKIE_NAME, false)
+                .send('Version keys array must be non-empty');
         }
 
         const contentVersions = await this.contentService.getContentVersions(versionKeys);
         if (!contentVersions || contentVersions.length === 0) {
-            return res.status(404).cookie(DOWNLOAD_COOKIE_NAME, false).send();
+            return res
+                .status(404)
+                .cookie(DOWNLOAD_COOKIE_NAME, false)
+                .send('No content versions found');
         }
 
         const newestVersion = contentVersions[0];
-        const oldestVersion = contentVersions.slice(-1)[0];
+        const oldestVersion = contentVersions[contentVersions.length - 1];
 
-        const zipFilename = `${newestVersion.name}_${newestVersion.meta.timestamp}-${oldestVersion.meta.timestamp}.zip`;
+        const zipFilename = `${newestVersion.name}_${oldestVersion.meta.timestamp}-${newestVersion.meta.timestamp}.zip`;
 
         res.setHeader('Content-Disposition', `attachment; filename="${zipFilename}"`)
-            .setHeader('Content-Type', mime.lookup(zipFilename) || 'application/octet-stream')
+            .setHeader('Content-Type', 'application/zip')
             .setHeader('Transfer-Encoding', 'chunked')
             .cookie(DOWNLOAD_COOKIE_NAME, true);
 
@@ -68,20 +78,14 @@ export class PdfGenerator {
                 continue;
             }
 
-            await this.generateContentPdf(content, width).then((pdf) => {
-                if (!pdf) {
-                    return;
-                }
-
+            await this.generateContentPdf(content, width).then((result) => {
                 if (!res.headersSent) {
                     // Set an estimate for content-length, which allows clients to track the download progress
                     // This header is not according to spec for chunked responses, but browsers seem to respect it
-                    res.setHeader('Content-Length', pdf.length * contentVersions.length);
+                    res.setHeader('Content-Length', result.data.length * contentVersions.length);
                 }
 
-                const fileName = generatePdfFilename(content);
-
-                archive.append(pdf, { name: fileName });
+                archive.append(result.data, { name: result.filename });
             });
         }
 
@@ -97,21 +101,18 @@ export class PdfGenerator {
             return null;
         }
 
-        const data = await this.generateContentPdf(content, width);
-        if (!data) {
-            return null;
-        }
-
-        return {
-            data,
-            filename: generatePdfFilename(content),
-        };
+        return this.generateContentPdf(content, width);
     }
 
-    private async generateContentPdf(content: CmsContent, width: number): Promise<Buffer | null> {
-        const { html } = content;
+    private async generateContentPdf(content: CmsContent, width: number): Promise<PdfResult> {
+        const { html, versionKey } = content;
         if (!html) {
-            return null;
+            return {
+                data: Buffer.from(
+                    `Could not generate PDF from content version ${versionKey} - HTML field was empty`
+                ),
+                filename: generateErrorFilename(content),
+            };
         }
 
         const widthActual = width >= MIN_WIDTH_PX ? width : DEFAULT_WIDTH_PX;
@@ -145,10 +146,17 @@ export class PdfGenerator {
 
             await page.close();
 
-            return pdf;
+            return {
+                data: pdf,
+                filename: generatePdfFilename(content),
+            };
         } catch (e) {
-            console.error(`Error while generating PDF - ${e}`);
-            return null;
+            const msg = `Error while generating PDF for content version ${versionKey} - ${e}`;
+            console.error(msg);
+            return {
+                data: Buffer.from(msg),
+                filename: generateErrorFilename(content),
+            };
         }
     }
 }

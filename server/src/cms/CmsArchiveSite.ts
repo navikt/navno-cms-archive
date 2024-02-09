@@ -165,11 +165,9 @@ export class CmsArchiveSite {
 
             const { filename, data } = result;
 
-            const contentType = mime.lookup(filename) || 'application/octet-stream';
-
             return res
                 .setHeader('Content-Disposition', `attachment; filename="${filename}"`)
-                .setHeader('Content-Type', contentType)
+                .setHeader('Content-Type', 'application/pdf')
                 .cookie(DOWNLOAD_COOKIE_NAME, true)
                 .send(data);
         });
@@ -255,11 +253,9 @@ export class CmsArchiveSite {
         contentDisposition: string,
         res: Response
     ) {
-        const contentType = mime.lookup(filename) || 'application/octet-stream';
-
         return res
             .setHeader('Content-Disposition', contentDisposition)
-            .setHeader('Content-Type', contentType)
+            .setHeader('Content-Type', mime.lookup(filename, 'application/octet-stream'))
             .send(Buffer.from(base64Data, 'base64'));
     }
 }

@@ -4,6 +4,7 @@ import { CmsContent } from '../../../../../common/cms-documents/content';
 import { useApiFetch } from '../../../../fetch/useApiFetch';
 import { useAppState } from '../../../../context/app-state/useAppState';
 import { formatTimestamp } from '../../../../../common/timestamp';
+import { pruneString } from '../../../../../common/pruneString';
 
 const TITLE_MAX_LENGTH = 100;
 
@@ -39,18 +40,10 @@ export const VersionSelector = ({ content }: Props) => {
                 const dateTime = formatTimestamp(version.timestamp);
                 return (
                     <option value={version.key} key={version.key}>
-                        {`${pruneTitle(version.title)} - [${dateTime}]`}
+                        {`${pruneString(version.title, TITLE_MAX_LENGTH)} - [${dateTime}]`}
                     </option>
                 );
             })}
         </Select>
     );
-};
-
-const pruneTitle = (title: string) => {
-    if (title.length < TITLE_MAX_LENGTH) {
-        return title;
-    }
-
-    return `${title.slice(0, TITLE_MAX_LENGTH)} (...)`;
 };
