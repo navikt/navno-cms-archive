@@ -26,8 +26,10 @@ export const SearchStateProvider = ({ children }: Props) => {
         setSearchParams(newParams);
     };
 
-    const resetSearchSettings = () =>
+    const resetSearchSettings = () => {
         setSearchParams({ ...initialSearchParams, query: searchParams.query });
+        persistSearchParams(initialSearchParams, basePath);
+    };
 
     const runSearch = (params: ContentSearchParams) =>
         fetchSearch(params).then((result) => {
