@@ -2,12 +2,12 @@ import { CmsArchiveSiteConfig } from 'navno-cms-archive-server/src/cms/CmsArchiv
 
 export const archiveConfigs: CmsArchiveSiteConfig[] = [
     {
-        name: 'Selvbetjeningssonen',
+        name: 'nav.no (selvbetjeningssonen)',
         basePath: '/sbs',
         indexPrefix: 'cmssbs',
     },
     {
-        name: 'Fagsystemsonen',
+        name: 'Navet (fagsystemsonen)',
         basePath: '/fss',
         indexPrefix: 'cmsfss',
     },
