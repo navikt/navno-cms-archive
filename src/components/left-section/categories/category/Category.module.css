@@ -1,3 +1,7 @@
+.root {
+    width: 100%;
+}
+
 .content {
     align-items: flex-start;
 

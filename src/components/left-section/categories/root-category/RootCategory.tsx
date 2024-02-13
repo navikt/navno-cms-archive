@@ -22,7 +22,7 @@ export const RootCategory = ({ category }: Props) => {
                 className={classNames(style.checkbox, searchSettingsIsOpen && style.open)}
                 hideLabel={true}
             >
-                {`Filtrer ${category.title} i søket`}
+                {`Inkluder ${category.title} i søket`}
             </Checkbox>
             <Category category={category} />
         </div>
