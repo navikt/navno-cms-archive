@@ -11,7 +11,7 @@ type Props = {
 };
 
 export const SearchInput = ({ className }: Props) => {
-    const { setSearchResult, searchParams, updateSearchParams, runSearch } = useSearchState();
+    const { searchParams, updateSearchParams, runSearch } = useSearchState();
 
     const inputRef = useRef<HTMLInputElement>(null);
 
@@ -26,13 +26,6 @@ export const SearchInput = ({ className }: Props) => {
                     if (!searchParams.query) {
                         return;
                     }
-
-                    setSearchResult({
-                        hits: [],
-                        params: searchParams,
-                        total: 0,
-                        status: 'loading',
-                    });
 
                     runSearch(searchParams);
                 }}

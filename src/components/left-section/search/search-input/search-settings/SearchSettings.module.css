@@ -36,7 +36,7 @@
     flex-direction: column;
     gap: 0.5rem;
 
-    background-color: var(--a-gray-200);
+    background-color: var(--a-blue-50);
     border-radius: var(--a-border-radius-medium);
     margin-bottom: 0.5rem;
     padding: 0 0.5rem;

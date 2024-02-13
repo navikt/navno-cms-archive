@@ -34,7 +34,14 @@ export const SearchStateProvider = ({ children }: Props) => {
         setSearchSettingsIsOpen(false);
     };
 
-    const runSearch = (params: ContentSearchParams) =>
+    const runSearch = (params: ContentSearchParams) => {
+        setSearchResult({
+            hits: [],
+            params,
+            total: 0,
+            status: 'loading',
+        });
+
         fetchSearch(params).then((result) => {
             setSearchResult(
                 result || {
@@ -45,6 +52,7 @@ export const SearchStateProvider = ({ children }: Props) => {
                 }
             );
         });
+    };
 
     useEffect(() => {
         setSearchResultIsOpen(searchResult.status !== 'empty');

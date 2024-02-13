@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { classNames } from '../../../../utils/classNames';
 import { Alert, Button, Heading } from '@navikt/ds-react';
 import { SearchResultHit } from './search-hit/SearchResultHit';
@@ -9,6 +9,7 @@ import { Paginator } from '../../../common/paginator/Paginator';
 import style from './SearchResult.module.css';
 
 export const SearchResult = () => {
+    const ref = useRef<HTMLDivElement>(null);
     const { searchResult, setSearchResultIsOpen, searchParams, runSearch } = useSearchState();
 
     const { hits, total, status, params } = searchResult;
@@ -17,11 +18,14 @@ export const SearchResult = () => {
     const numPages = Math.ceil(total / size);
     const currentPage = Math.floor(from / size) + 1;
 
-    const onPageChange = (page: number) => runSearch({ ...searchParams, from: size * (page - 1) });
+    const onPageChange = (page: number) => {
+        runSearch({ ...searchParams, from: size * (page - 1) });
+        ref.current?.scrollTo({ top: 0 });
+    };
 
     return (
         <>
-            <div className={classNames(style.result)}>
+            <div className={classNames(style.result)} ref={ref}>
                 {status === 'loading' ? (
                     <ContentLoader size={'3xlarge'} text={'Laster søketreff...'} />
                 ) : status === 'error' ? (
