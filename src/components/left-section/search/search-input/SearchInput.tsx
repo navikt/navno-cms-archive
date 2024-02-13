@@ -11,7 +11,7 @@ type Props = {
 };
 
 export const SearchInput = ({ className }: Props) => {
-    const { setSearchResult, searchParams, setSearchParams, runSearch } = useSearchState();
+    const { setSearchResult, searchParams, updateSearchParams, runSearch } = useSearchState();
 
     const inputRef = useRef<HTMLInputElement>(null);
 
@@ -42,7 +42,8 @@ export const SearchInput = ({ className }: Props) => {
                     hideLabel={true}
                     size={'small'}
                     ref={inputRef}
-                    onChange={(value) => setSearchParams({ ...searchParams, query: value })}
+                    value={searchParams.query || ''}
+                    onChange={(value) => updateSearchParams({ query: value })}
                 />
             </form>
         </div>

@@ -28,7 +28,8 @@ export const SearchStateProvider = ({ children }: Props) => {
     };
 
     const resetSearchSettings = () => {
-        setSearchParams({ ...initialSearchParams, query: searchParams.query });
+        setSearchParams(initialSearchParams);
+        setSearchResultIsOpen(false);
         persistSearchParams(initialSearchParams, basePath);
     };
 

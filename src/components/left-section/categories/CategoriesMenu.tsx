@@ -12,7 +12,7 @@ type Props = {
 };
 
 export const CategoriesMenu = ({ rootCategories, className }: Props) => {
-    const { updateSearchParams } = useSearchState();
+    const { updateSearchParams, searchParams } = useSearchState();
 
     return (
         <TreeView
@@ -25,6 +25,7 @@ export const CategoriesMenu = ({ rootCategories, className }: Props) => {
             <CheckboxGroup
                 legend={'Velg kategorier for søket'}
                 hideLegend={true}
+                value={searchParams.categoryKeys || []}
                 onChange={(values) => updateSearchParams({ categoryKeys: values })}
             >
                 {rootCategories.map((category) => (
