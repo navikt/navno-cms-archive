@@ -28,7 +28,7 @@
     visibility: hidden;
     overflow: hidden;
 
-    transition-duration: 250ms;
+    transition-duration: 200ms;
     transition-timing-function: ease-out;
     transition-property: visibility, max-height, padding, overflow;
 
@@ -38,11 +38,11 @@
 
     background-color: var(--a-gray-200);
     border-radius: var(--a-border-radius-medium);
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.5rem;
     padding: 0 0.5rem;
 
     &.open {
-        max-height: 500px;
+        max-height: 150px;
         visibility: visible;
         padding: 0.5rem;
         overflow: visible;
@@ -57,11 +57,4 @@
 .searchFields {
     display: flex;
     align-items: center;
-}
-
-.categoriesSelector {
-    ul {
-        gap: 0.25rem;
-        font-size: 0.875rem;
-    }
 }

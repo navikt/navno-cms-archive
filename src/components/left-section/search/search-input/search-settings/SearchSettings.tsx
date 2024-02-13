@@ -1,26 +1,21 @@
-import React, { useState } from 'react';
-import { Button, Label, Radio, RadioGroup, UNSAFE_Combobox } from '@navikt/ds-react';
+import React from 'react';
+import { Button, Label, Radio, RadioGroup } from '@navikt/ds-react';
 import { ChevronDownIcon, XMarkIcon } from '@navikt/aksel-icons';
 import { classNames } from '../../../../../utils/classNames';
-import { CmsCategoryListItem } from '../../../../../../common/cms-documents/category';
-import { useAppState } from '../../../../../context/app-state/useAppState';
 import { useSearchState } from '../../../../../context/search-state/useSearchState';
 
 import style from './SearchSettings.module.css';
 
 export const SearchSettings = () => {
-    const [isOpen, setIsOpen] = useState(false);
+    const {
+        searchParams,
+        updateSearchParams,
+        resetSearchSettings,
+        searchSettingsIsOpen,
+        setSearchSettingsIsOpen,
+    } = useSearchState();
 
-    const { appContext } = useAppState();
-    const { rootCategories } = appContext;
-
-    const { searchParams, updateSearchParams, resetSearchSettings } = useSearchState();
-    const { sort, categoryKeys, type, isCustom } = searchParams;
-
-    const { titlesToKeys, keysToTitles } = createKeysTitlesMaps(rootCategories);
-    const categoryKeysSelected = new Set<string>(categoryKeys);
-    const categoryTitlesSelected = [...categoryKeysSelected].map((key) => keysToTitles[key]);
-    const categoryTitlesAll = Object.keys(titlesToKeys);
+    const { sort, type, isCustom } = searchParams;
 
     return (
         <div className={style.container}>
@@ -42,14 +37,16 @@ export const SearchSettings = () => {
                         size={'xsmall'}
                         variant={'tertiary'}
                         className={style.toggle}
-                        onClick={() => setIsOpen(!isOpen)}
+                        onClick={() => setSearchSettingsIsOpen(!searchSettingsIsOpen)}
                     >
                         {'Tilpass søket'}
-                        <ChevronDownIcon className={classNames(style.icon, isOpen && style.open)} />
+                        <ChevronDownIcon
+                            className={classNames(style.icon, searchSettingsIsOpen && style.open)}
+                        />
                     </Button>
                 </div>
             </div>
-            <div className={classNames(style.settings, isOpen && style.open)}>
+            <div className={classNames(style.settings, searchSettingsIsOpen && style.open)}>
                 <div className={style.radioGroups}>
                     <RadioGroup
                         size={'small'}
@@ -72,41 +69,7 @@ export const SearchSettings = () => {
                         <Radio value={'datetime'}>{'Sist endret'}</Radio>
                     </RadioGroup>
                 </div>
-                <UNSAFE_Combobox
-                    label={'Avgrens søket til valgte kategorier:'}
-                    size={'small'}
-                    className={style.categoriesSelector}
-                    clearButton={true}
-                    isMultiSelect={true}
-                    allowNewValues={false}
-                    options={categoryTitlesAll}
-                    selectedOptions={categoryTitlesSelected}
-                    onToggleSelected={(value, isSelected) => {
-                        const key = titlesToKeys[value];
-                        if (isSelected) {
-                            categoryKeysSelected.add(key);
-                        } else {
-                            categoryKeysSelected.delete(key);
-                        }
-
-                        updateSearchParams({ categoryKeys: [...categoryKeysSelected] });
-                    }}
-                />
             </div>
         </div>
-    );
-};
-
-const createKeysTitlesMaps = (categories: CmsCategoryListItem[]) => {
-    return categories.reduce<{
-        keysToTitles: Record<string, string>;
-        titlesToKeys: Record<string, string>;
-    }>(
-        (acc, category) => {
-            acc.titlesToKeys[category.title] = category.key;
-            acc.keysToTitles[category.key] = category.title;
-            return acc;
-        },
-        { keysToTitles: {}, titlesToKeys: {} }
     );
 };

@@ -1,0 +1,30 @@
+.rootCategory {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+}
+
+.checkbox {
+    position: absolute;
+    visibility: hidden;
+    opacity: 0;
+    left: -2rem;
+    overflow: hidden;
+    margin-left: 0.5rem;
+    padding: 0.0625rem 0;
+    background-color: var(--a-white);
+
+    transition-duration: 150ms;
+    transition-timing-function: ease-out;
+    transition-property: visibility, opacity, left;
+
+    &.open {
+        left: 0;
+        opacity: 1;
+        visibility: visible;
+    }
+
+    & > label:global(.navds-checkbox__label) {
+        padding: 0;
+    }
+}

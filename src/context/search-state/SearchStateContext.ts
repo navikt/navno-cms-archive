@@ -6,6 +6,8 @@ export type SearchState = {
     setSearchResult: (result: ContentSearchResult) => void;
     searchResultIsOpen: boolean;
     setSearchResultIsOpen: (isOpen: boolean) => void;
+    searchSettingsIsOpen: boolean;
+    setSearchSettingsIsOpen: (isOpen: boolean) => void;
     searchParams: ContentSearchParams;
     setSearchParams: (params: ContentSearchParams) => void;
     updateSearchParams: (params: Partial<ContentSearchParams>) => void;
@@ -31,6 +33,8 @@ export const SearchStateContext = createContext<SearchState>({
     setSearchResult: () => ({}),
     searchResultIsOpen: false,
     setSearchResultIsOpen: () => ({}),
+    searchSettingsIsOpen: false,
+    setSearchSettingsIsOpen: () => ({}),
     searchParams: initialSearchParams,
     setSearchParams: () => ({}),
     updateSearchParams: () => ({}),

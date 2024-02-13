@@ -10,7 +10,7 @@ type Props = {
 };
 
 export const Paginator = ({ numPages, pageNumber, onPageChange }: Props) => {
-    if (numPages === 0) {
+    if (numPages <= 1) {
         return null;
     }
 

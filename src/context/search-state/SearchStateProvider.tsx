@@ -19,6 +19,7 @@ export const SearchStateProvider = ({ children }: Props) => {
         getInitialSearchParams(basePath)
     );
     const [searchResultIsOpen, setSearchResultIsOpen] = useState(false);
+    const [searchSettingsIsOpen, setSearchSettingsIsOpen] = useState(false);
 
     const updateSearchParams = (params: Partial<ContentSearchParams>) => {
         const newParams: ContentSearchParams = { ...searchParams, ...params, isCustom: true };
@@ -56,6 +57,8 @@ export const SearchStateProvider = ({ children }: Props) => {
                 setSearchParams,
                 searchResultIsOpen,
                 setSearchResultIsOpen,
+                searchSettingsIsOpen,
+                setSearchSettingsIsOpen,
                 updateSearchParams,
                 resetSearchSettings,
                 runSearch,
