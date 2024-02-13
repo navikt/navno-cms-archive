@@ -58,3 +58,9 @@
     display: flex;
     align-items: center;
 }
+
+.topRight {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}

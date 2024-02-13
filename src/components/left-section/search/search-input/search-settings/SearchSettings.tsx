@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Label, Radio, RadioGroup } from '@navikt/ds-react';
+import { Button, HelpText, Label, Radio, RadioGroup } from '@navikt/ds-react';
 import { ChevronDownIcon, XMarkIcon } from '@navikt/aksel-icons';
 import { classNames } from '../../../../../utils/classNames';
 import { useSearchState } from '../../../../../context/search-state/useSearchState';
@@ -21,7 +21,14 @@ export const SearchSettings = () => {
         <div className={style.container}>
             <div className={style.topRow}>
                 <Label size={'small'}>{'Søk'}</Label>
-                <div>
+                <div className={style.topRight}>
+                    {searchSettingsIsOpen && (
+                        <HelpText title={'Tips!'}>
+                            {
+                                'Du kan avgrense søket til enkelte hovedkategorier med sjekkboksene til venstre i menyen.'
+                            }
+                        </HelpText>
+                    )}
                     {isCustom && (
                         <Button
                             size={'xsmall'}

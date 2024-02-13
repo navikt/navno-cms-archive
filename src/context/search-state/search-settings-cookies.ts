@@ -9,10 +9,8 @@ export const getInitialSearchParams = (basePath: string): ContentSearchParams =>
 
     if (cookieValue) {
         try {
-            const parsed = JSON.parse(cookieValue);
-
             return {
-                ...parsed,
+                ...JSON.parse(cookieValue),
                 ...initialSearchParams,
             };
         } catch (e) {
