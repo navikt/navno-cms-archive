@@ -106,7 +106,7 @@ export const buildContentSearchParams = (
         }
     }
 
-    if (categoryKeys) {
+    if (categoryKeys && categoryKeys.length > 0) {
         const categoryKeysFinal = [...categoryKeys];
 
         if (withChildCategories) {
