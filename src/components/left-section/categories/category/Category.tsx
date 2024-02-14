@@ -16,6 +16,7 @@ const classesOverride: Partial<TreeItemClasses> = {
     label: style.label,
     disabled: style.disabled,
     root: style.root,
+    iconContainer: style.iconContainer,
 } as const;
 
 type Props = {

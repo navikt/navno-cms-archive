@@ -8,7 +8,6 @@
     position: absolute;
     visibility: hidden;
     opacity: 0;
-    left: -2rem;
     overflow: hidden;
     margin-left: 0.5rem;
     padding: 0.0625rem 0;
@@ -16,10 +15,9 @@
 
     transition-duration: 150ms;
     transition-timing-function: ease-out;
-    transition-property: visibility, opacity, left;
+    transition-property: visibility, opacity;
 
     &.open {
-        left: 0;
         opacity: 1;
         visibility: visible;
     }
