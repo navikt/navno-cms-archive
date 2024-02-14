@@ -18,22 +18,23 @@ export const SearchSettings = () => {
     const { sort, type, isCustom } = searchParams;
 
     return (
-        <div className={style.container}>
+        <>
             <div className={style.topRow}>
                 <Label size={'small'}>{'Søk'}</Label>
                 <div className={style.topRight}>
-                    {searchSettingsIsOpen && (
-                        <HelpText title={'Tips!'}>
-                            {
-                                'Du kan avgrense søket til enkelte hovedkategorier med sjekkboksene til venstre i menyen.'
-                            }
-                        </HelpText>
-                    )}
+                    <HelpText
+                        title={'Tips!'}
+                        className={classNames(style.help, searchSettingsIsOpen && style.open)}
+                    >
+                        {
+                            'Du kan avgrense søket til enkelte hovedkategorier med sjekkboksene til venstre i menyen.'
+                        }
+                    </HelpText>
                     {isCustom && (
                         <Button
                             size={'xsmall'}
                             variant={'tertiary'}
-                            className={style.toggle}
+                            className={style.reset}
                             onClick={resetSearchSettings}
                         >
                             {'Nullstill'}
@@ -77,6 +78,6 @@ export const SearchSettings = () => {
                     </RadioGroup>
                 </div>
             </div>
-        </div>
+        </>
     );
 };

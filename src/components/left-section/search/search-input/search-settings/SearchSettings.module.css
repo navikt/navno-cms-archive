@@ -1,6 +1,4 @@
-.container {
-    width: 100%;
-}
+@value transitionDuration: 200ms;
 
 .topRow {
     display: flex;
@@ -9,14 +7,33 @@
     margin-bottom: 0.25rem;
 }
 
-.toggle > span {
+.topRight {
     display: flex;
     align-items: center;
     gap: 0.25rem;
 }
 
+.reset > span {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.help {
+    opacity: 0;
+    visibility: hidden;
+    transition-property: opacity, visibility;
+    transition-timing-function: ease-in;
+    transition-duration: transitionDuration;
+
+    &.open {
+        opacity: 1;
+        visibility: visible;
+    }
+}
+
 .icon {
-    transition: transform 200ms ease-out;
+    transition: transform ease-out transitionDuration;
 
     &.open {
         transform: rotateX(180deg);
@@ -28,7 +45,7 @@
     visibility: hidden;
     overflow: hidden;
 
-    transition-duration: 200ms;
+    transition-duration: transitionDuration;
     transition-timing-function: ease-out;
     transition-property: visibility, max-height, padding, overflow;
 
@@ -57,10 +74,4 @@
 .searchFields {
     display: flex;
     align-items: center;
-}
-
-.topRight {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
 }
