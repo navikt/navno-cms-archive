@@ -41,7 +41,12 @@ jobs:
           team: personbruker
           project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
-      - name: Deploy to nais
+      - name: Deploy OpenSearch
+        uses: nais/deploy/actions/deploy@v2
+        env:
+          CLUSTER: prod-gcp
+          RESOURCE: .nais/openSearch.yml
+      - name: Deploy application
         uses: nais/deploy/actions/deploy@v2
         env:
           CLUSTER: prod-gcp
