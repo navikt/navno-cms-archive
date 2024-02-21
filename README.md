@@ -1,3 +1,5 @@
 # NAV CMS-arkiv
 
-Coming soon!
+Frontend for CMS-arkivet. Dokumentasjon kommer!
+
+https://cms-arkiv.intern.nav.no

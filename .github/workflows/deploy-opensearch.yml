@@ -1,0 +1,19 @@
+name: Deploy Opensearch
+on:
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    name: Build and deploy
+    runs-on: ubuntu-latest
+    permissions:
+      contents: "read"
+      id-token: "write"
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - name: Deploy to nais
+        uses: nais/deploy/actions/deploy@v2
+        env:
+          CLUSTER: prod-gcp
+          RESOURCE: .nais/openSearch.yml
