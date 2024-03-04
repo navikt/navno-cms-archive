@@ -8,7 +8,7 @@ metadata:
 spec:
   plan: startup-8
   project: nav-prod
-  disk_space: 505GiB
+  disk_space: 755GiB
   userConfig:
     opensearch:
       http_max_content_length: 2147483647
