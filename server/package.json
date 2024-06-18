@@ -10,7 +10,7 @@
     "dev": "npm run build && concurrently \"npm run build -- --watch\" \"npm run nodemon-start\""
   },
   "dependencies": {
-    "@opensearch-project/opensearch": "2.7.0",
+    "@opensearch-project/opensearch": "2.10.0",
     "archiver": "7.0.1",
     "compression": "1.7.4",
     "csp-header": "5.2.1",
@@ -19,15 +19,15 @@
     "lru-cache": "10.2.2",
     "mime-types": "2.1.35",
     "node-cache": "5.1.2",
-    "puppeteer": "22.0.0"
+    "puppeteer": "22.11.1"
   },
   "devDependencies": {
     "@types/archiver": "6.0.2",
     "@types/compression": "1.7.5",
     "@types/express": "4.17.21",
-    "@types/node": "20.12.7",
+    "@types/node": "20.14.5",
     "concurrently": "8.2.2",
-    "nodemon": "3.1.0"
+    "nodemon": "3.1.3"
   },
   "nodemonConfig": {
     "delay": 500

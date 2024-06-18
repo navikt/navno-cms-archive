@@ -17,8 +17,8 @@
     "server"
   ],
   "dependencies": {
-    "@mui/material": "5.15.10",
-    "@mui/system": "5.15.9",
+    "@mui/material": "5.15.20",
+    "@mui/system": "5.15.20",
     "@mui/x-tree-view": "6.17.0",
     "@navikt/aksel-icons": "5.17.4",
     "@navikt/ds-css": "5.17.4",
@@ -32,21 +32,21 @@
   },
   "devDependencies": {
     "@types/js-cookie": "3.0.6",
-    "@types/lodash": "4.17.0",
-    "@types/react": "18.3.1",
+    "@types/lodash": "4.17.5",
+    "@types/react": "18.3.3",
     "@types/react-dom": "18.3.0",
-    "@typescript-eslint/eslint-plugin": "7.8.0",
-    "@typescript-eslint/parser": "7.8.0",
-    "@vitejs/plugin-react": "4.2.1",
+    "@typescript-eslint/eslint-plugin": "7.13.1",
+    "@typescript-eslint/parser": "7.13.1",
+    "@vitejs/plugin-react": "4.3.1",
     "eslint": "8.57.0",
-    "eslint-plugin-react": "7.34.1",
+    "eslint-plugin-react": "7.34.2",
     "eslint-plugin-react-hooks": "4.6.2",
-    "eslint-plugin-react-refresh": "0.4.6",
+    "eslint-plugin-react-refresh": "0.4.7",
     "eslint-plugin-css-modules": "2.12.0",
     "npm-run-all": "4.1.5",
-    "prettier": "3.2.5",
+    "prettier": "3.3.2",
     "rollup-plugin-visualizer": "5.12.0",
     "typescript": "5.4.5",
-    "vite": "5.2.10"
+    "vite": "5.3.1"
   }
 }
