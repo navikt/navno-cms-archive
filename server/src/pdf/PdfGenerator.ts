@@ -36,7 +36,7 @@ export class PdfGenerator {
     public async pdfFromVersionsResponse(
         versionKeys: string[],
         res: Response,
-        width: number = DEFAULT_WIDTH_PX
+        width: number = DEFAULT_WIDTH_PX,
     ) {
         if (versionKeys.length === 0) {
             return res
@@ -58,7 +58,7 @@ export class PdfGenerator {
 
         const zipFilename = `${newestVersion.name}_${oldestVersion.meta.timestamp}-${newestVersion.meta.timestamp}.zip`;
 
-        res.setHeader('Content-Disposition', `attachment; filename="${zipFilename}"`)
+        res.setHeader('Content-Disposition', `attachment; filename="${encodeURIComponent(zipFilename)}"`)
             .setHeader('Content-Type', 'application/zip')
             .setHeader('Transfer-Encoding', 'chunked')
             .cookie(DOWNLOAD_COOKIE_NAME, true);
@@ -94,7 +94,7 @@ export class PdfGenerator {
 
     public async generatePdfFromVersion(
         versionKey: string,
-        width: number = DEFAULT_WIDTH_PX
+        width: number = DEFAULT_WIDTH_PX,
     ): Promise<PdfResult | null> {
         const content = await this.contentService.getContentVersion(versionKey);
         if (!content?.html) {
@@ -109,7 +109,7 @@ export class PdfGenerator {
         if (!html) {
             return {
                 data: Buffer.from(
-                    `Could not generate PDF from content version ${versionKey} - HTML field was empty`
+                    `Could not generate PDF from content version ${versionKey} - HTML field was empty`,
                 ),
                 filename: generateErrorFilename(content),
             };
@@ -120,7 +120,7 @@ export class PdfGenerator {
         // Ensures assets with relative urls are loaded from the correct origin
         const htmlWithBase = html.replace(
             '<head>',
-            `<head><base href="${process.env.APP_ORIGIN}"/>`
+            `<head><base href="${process.env.APP_ORIGIN}"/>`,
         );
 
         try {
@@ -147,7 +147,7 @@ export class PdfGenerator {
             await page.close();
 
             return {
-                data: pdf,
+                data: Buffer.from(pdf),
                 filename: generatePdfFilename(content),
             };
         } catch (e) {
