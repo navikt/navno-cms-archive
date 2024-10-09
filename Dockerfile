@@ -1,4 +1,4 @@
-FROM node:20-bookworm-slim
+FROM node:22-bookworm-slim
 
 RUN apt-get update
 RUN apt-get --assume-yes --no-install-recommends install chromium && apt-get clean
