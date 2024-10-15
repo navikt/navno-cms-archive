@@ -1,10 +1,10 @@
 import { CmsContent, CmsContentDocument } from '../../../src-common/cms-documents/content';
 import { CmsArchiveOpenSearchClient } from '../opensearch/CmsArchiveOpenSearchClient';
-import { CmsArchiveSiteConfig } from './CmsArchiveSite';
 import { sortVersions } from '../utils/sort';
 import { ContentSearchParams, ContentSearchResult } from '../../../src-common/contentSearch';
 import { buildContentSearchParams } from '../opensearch/queries/contentSearch';
 import { CmsArchiveCategoriesService } from './CmsArchiveCategoriesService';
+import { CmsArchiveSiteConfig } from '../../../../common/src/siteConfigs';
 
 type ConstructorProps = {
     client: CmsArchiveOpenSearchClient;
@@ -158,6 +158,6 @@ export class CmsArchiveContentService {
 
         return html
             .replace(/(\r\n|\r|\n)/, '')
-            .replace(/="\/(\d)+\//g, `="${this.config.basePath}/`);
+            .replace(/="\/(\d)+\//g, `="${this.config.baseUrl}/`);
     }
 }

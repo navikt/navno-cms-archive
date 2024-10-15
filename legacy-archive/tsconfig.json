@@ -1,20 +1,6 @@
 {
-    "$schema": "https://json.schemastore.org/tsconfig",
-    "compilerOptions": {
-        "target": "ES2020",
-        "useDefineForClassFields": true,
-        "lib": ["ES2020", "DOM", "DOM.Iterable"],
-        "module": "ESNext",
-        "skipLibCheck": true,
-        "moduleResolution": "bundler",
-        "resolveJsonModule": true,
-        "isolatedModules": true,
-        "noEmit": true,
-        "jsx": "react-jsx",
-        "strict": true,
-        "noFallthroughCasesInSwitch": true
-    },
-    "include": ["src-client", "src-common"],
+    "extends": ["../tsconfig.json"],
+    "include": ["src-client", "src-common", "../common"],
     "references": [
         {
             "path": "./tsconfig.node.json"

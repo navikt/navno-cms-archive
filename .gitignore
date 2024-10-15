@@ -30,3 +30,4 @@ dist-ssr
 cms-assets
 /.cache/
 /Dockerfile-local
+/xp-archive/server/src/_ssr-dist/

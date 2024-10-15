@@ -11,12 +11,7 @@ import { CmsArchiveBinariesService } from './CmsArchiveBinariesService';
 import { PdfGenerator } from '../pdf/PdfGenerator';
 import { Browser } from 'puppeteer';
 import { DOWNLOAD_COOKIE_NAME } from '../../../src-common/downloadCookie';
-
-export type CmsArchiveSiteConfig = {
-    name: string;
-    basePath: string;
-    indexPrefix: string;
-};
+import { CmsArchiveSiteConfig } from '../../../../common/src/siteConfigs';
 
 type ContructorProps = {
     config: CmsArchiveSiteConfig;
@@ -55,8 +50,8 @@ export class CmsArchiveSite {
         const siteRouter = express.Router();
         const apiRouter = express.Router();
 
-        expressApp.use(config.basePath, siteRouter);
-        expressApp.use(`${config.basePath}/api`, apiRouter);
+        expressApp.use(config.baseUrl, siteRouter);
+        expressApp.use(`${config.baseUrl}/api`, apiRouter);
 
         this.setupApiRoutes(apiRouter);
         this.setupSiteRoutes(siteRouter, htmlRenderer);
@@ -125,7 +120,7 @@ export class CmsArchiveSite {
                 rootCategories,
                 selectedVersionKey: req.params.versionKey,
                 cmsName: this.config.name,
-                basePath: this.config.basePath,
+                basePath: this.config.baseUrl,
             };
 
             const html = await htmlRenderer(req.url, appContext);

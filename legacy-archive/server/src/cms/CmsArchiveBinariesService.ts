@@ -1,7 +1,7 @@
-import { CmsArchiveSiteConfig } from './CmsArchiveSite';
 import { CmsArchiveOpenSearchClient } from '../opensearch/CmsArchiveOpenSearchClient';
 import { CmsBinaryDocument } from '../../../src-common/cms-documents/binary';
 import { AssetDocument } from '../opensearch/types';
+import { CmsArchiveSiteConfig } from '../../../../common/src/siteConfigs';
 
 type ConstructorProps = {
     config: CmsArchiveSiteConfig;
