@@ -1,52 +1,52 @@
 {
-  "name": "navno-cms-archive",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "build": "npm-run-all build:*",
-    "build:client": "vite build --outDir ./server/dist/client",
-    "build:ssr": "vite build --outDir ./server/src/_ssr-dist --ssr src/main-server.tsx",
-    "build:server": "npm run build --workspace server",
-    "analyze-bundle": "ANALYZE=true npm run build:client",
-    "start": "npm run start --workspace server",
-    "start-local": "cp .env.prod-local .env && npm run build && npm run start --workspace server",
-    "dev": "cp .env.development .env && npm run dev --workspace server"
-  },
-  "workspaces": [
-    "server"
-  ],
-  "dependencies": {
-    "@mui/material": "5.16.7",
-    "@mui/system": "5.16.7",
-    "@mui/x-tree-view": "6.17.0",
-    "@navikt/aksel-icons": "5.18.3",
-    "@navikt/ds-css": "5.18.3",
-    "@navikt/ds-react": "5.18.3",
-    "js-cookie": "3.0.5",
-    "lodash.debounce": "4.0.8",
-    "react": "18.3.1",
-    "react-dom": "18.3.1",
-    "react-xml-viewer": "2.0.1",
-    "swr": "2.2.5"
-  },
-  "devDependencies": {
-    "@types/js-cookie": "3.0.6",
-    "@types/lodash": "4.17.10",
-    "@types/react": "18.3.11",
-    "@types/react-dom": "18.3.0",
-    "@typescript-eslint/eslint-plugin": "8.8.1",
-    "@typescript-eslint/parser": "8.8.1",
-    "@vitejs/plugin-react": "4.3.2",
-    "eslint": "8.57.1",
-    "eslint-plugin-react": "7.37.1",
-    "eslint-plugin-react-hooks": "4.6.2",
-    "eslint-plugin-react-refresh": "0.4.12",
-    "eslint-plugin-css-modules": "2.12.0",
-    "npm-run-all": "4.1.5",
-    "prettier": "3.3.3",
-    "rollup-plugin-visualizer": "5.12.0",
-    "typescript": "5.6.3",
-    "vite": "5.4.8"
-  }
+    "name": "navno-cms-archive",
+    "private": true,
+    "version": "0.0.0",
+    "type": "module",
+    "scripts": {
+        "build": "npm-run-all build:*",
+        "build:client": "vite build --outDir ./server/dist/client",
+        "build:ssr": "vite build --outDir ./server/src/_ssr-dist --ssr src/main-server.tsx",
+        "build:server": "npm run build --workspace server",
+        "analyze-bundle": "ANALYZE=true npm run build:client",
+        "start": "npm run start --workspace server",
+        "start-local": "cp .env.prod-local .env && npm run build && npm run start --workspace server",
+        "dev": "cp .env.development .env && npm run dev --workspace server"
+    },
+    "workspaces": [
+        "server"
+    ],
+    "dependencies": {
+        "@mui/material": "5.16.7",
+        "@mui/system": "5.16.7",
+        "@mui/x-tree-view": "6.17.0",
+        "@navikt/aksel-icons": "5.18.3",
+        "@navikt/ds-css": "5.18.3",
+        "@navikt/ds-react": "5.18.3",
+        "js-cookie": "3.0.5",
+        "lodash.debounce": "4.0.8",
+        "react": "18.3.1",
+        "react-dom": "18.3.1",
+        "react-xml-viewer": "2.0.1",
+        "swr": "2.2.5"
+    },
+    "devDependencies": {
+        "@types/js-cookie": "3.0.6",
+        "@types/lodash": "4.17.10",
+        "@types/react": "18.3.11",
+        "@types/react-dom": "18.3.0",
+        "@typescript-eslint/eslint-plugin": "8.8.1",
+        "@typescript-eslint/parser": "8.8.1",
+        "@vitejs/plugin-react": "4.3.2",
+        "eslint": "8.57.1",
+        "eslint-plugin-react": "7.37.1",
+        "eslint-plugin-react-hooks": "4.6.2",
+        "eslint-plugin-react-refresh": "0.4.12",
+        "eslint-plugin-css-modules": "2.12.0",
+        "npm-run-all": "4.1.5",
+        "prettier": "3.3.3",
+        "rollup-plugin-visualizer": "5.12.0",
+        "typescript": "5.6.3",
+        "vite": "5.4.8"
+    }
 }
