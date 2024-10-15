@@ -1,0 +1,56 @@
+name: Build and deploy legacy archive to nais
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+    paths:
+      - legacy-archive/**/*.*
+
+jobs:
+  build-and-deploy:
+    name: Build and deploy
+    runs-on: ubuntu-latest
+    permissions:
+      contents: "read"
+      id-token: "write"
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - name: Setup node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          registry-url: 'https://npm.pkg.github.com'
+          cache: 'npm'
+      - name: Set app environment
+        run: |
+          cat > .env <<EOF
+          APP_PORT=3399
+          APP_BASEPATH=/
+          APP_ORIGIN=https://cms-arkiv.intern.nav.no
+          EOF
+      - name: Install dependencies
+        run: npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+      - name: Build application
+        run: npm run build
+      - name: Build and push docker image
+        uses: nais/docker-build-push@v0
+        id: docker-push
+        with:
+          team: personbruker
+          project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
+          identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
+      - name: Deploy OpenSearch
+        uses: nais/deploy/actions/deploy@v2
+        env:
+          CLUSTER: prod-gcp
+          RESOURCE: legacy-archive/.nais/openSearch.yml
+      - name: Deploy application
+        uses: nais/deploy/actions/deploy@v2
+        env:
+          CLUSTER: prod-gcp
+          RESOURCE: legacy-archive/.nais/config.yml
+          VAR: image=${{ steps.docker-push.outputs.image }}
