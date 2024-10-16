@@ -22,7 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-/server/src/_ssr-dist/
 
 .env
 .env.development
@@ -30,3 +29,6 @@ dist-ssr
 cms-assets
 /.cache/
 /Dockerfile-local
+/xp-archive/server/src/_ssr-dist/
+/legacy-archive/server/src/_ssr-dist/
+/legacy-archive/.cache/
