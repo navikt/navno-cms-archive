@@ -24,7 +24,11 @@ jobs:
           registry-url: 'https://npm.pkg.github.com'
           cache: 'npm'
           cache-dependency-path: 'legacy-archive/**/package-lock.json'
-      - name: Install dependencies
+      - name: Install build dependencies
+        run: npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+      - name: Install app dependencies
         run: npm ci
         working-directory: legacy-archive
         env:
