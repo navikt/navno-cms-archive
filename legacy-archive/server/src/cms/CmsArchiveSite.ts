@@ -3,7 +3,6 @@ import express, { Express, Response, Router } from 'express';
 import { CmsArchiveContentService } from './CmsArchiveContentService';
 import { parseNumberParam, parseQueryParamsList } from '../utils/queryParams';
 import mime from 'mime';
-import { HtmlRenderer } from '../ssr/htmlRenderer';
 import { transformQueryToContentSearchParams } from '../opensearch/queries/contentSearch';
 import { CmsArchiveCategoriesService } from './CmsArchiveCategoriesService';
 import { cspMiddleware } from '../routing/csp';
@@ -12,6 +11,7 @@ import { PdfGenerator } from '../pdf/PdfGenerator';
 import { Browser } from 'puppeteer';
 import { DOWNLOAD_COOKIE_NAME } from '../../../shared/downloadCookie';
 import { LegacyArchiveSiteConfig } from '@common/shared/siteConfigs';
+import { HtmlRenderer } from '@common/server/ssr/htmlRenderer';
 
 type ContructorProps = {
     config: LegacyArchiveSiteConfig;

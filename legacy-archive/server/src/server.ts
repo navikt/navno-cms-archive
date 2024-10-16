@@ -1,13 +1,10 @@
 import express from 'express';
 import compression from 'compression';
-import { setupErrorHandlers } from './routing/errorHandlers';
-import { setupInternalRoutes } from './routing/internal';
 import { setupSites } from './routing/site';
 import { validateEnv } from '@common/server/utils/validateEnv';
+import { setupNaisProbeHandlers } from '@common/server/routing/internal';
 
-const { APP_PORT } = process.env;
-
-validateEnv([
+const expectedEnv = [
     'NODE_ENV',
     'APP_PORT',
     'APP_BASEPATH',
@@ -15,13 +12,14 @@ validateEnv([
     'OPEN_SEARCH_URI',
     'OPEN_SEARCH_USERNAME',
     'OPEN_SEARCH_PASSWORD',
-])
+] as const;
+
+validateEnv(expectedEnv)
     .then(async () => {
         const app = express().use(compression(), express.json());
 
-        setupInternalRoutes(app);
+        setupNaisProbeHandlers(app);
         await setupSites(app);
-        setupErrorHandlers(app);
 
         return app;
     })
@@ -30,6 +28,8 @@ validateEnv([
         throw e;
     })
     .then((app) => {
+        const { APP_PORT } = process.env;
+
         const server = app.listen(APP_PORT, () => {
             console.log(`Server starting on port ${APP_PORT}`);
         });

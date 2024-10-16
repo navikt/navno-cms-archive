@@ -1,21 +1,20 @@
-import { Express } from 'express';
+import { Router } from 'express';
 import { render } from '../_ssr-dist/main-server';
 import { buildHtmlRenderer } from '@common/server/ssr/initRenderer';
+import { setupErrorHandlers } from '@common/server/routing/errorHandlers';
 
-export const setupSite = async (expressApp: Express) => {
+export const setupSite = async (router: Router) => {
     const htmlRenderer = await buildHtmlRenderer({
-        expressApp,
+        router: router,
         appHtmlRenderer: render,
         appBaseBath: process.env.APP_BASEPATH as string,
         ssrModulePath: '/client/main-server.tsx',
     });
 
-    expressApp.get('/', (req, res) => {
-        return res.redirect('/xp');
-    });
-
-    expressApp.get('/xp', async (req, res) => {
+    router.get('/', async (req, res) => {
         const html = await htmlRenderer(req.url, {});
         return res.send(html);
     });
+
+    setupErrorHandlers(router);
 };

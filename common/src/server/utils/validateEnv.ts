@@ -1,6 +1,6 @@
 import process from 'process';
 
-export const validateEnv = async (expectedVars: string[]) => {
+export const validateEnv = async (expectedVars: readonly string[] | string[]) => {
     const isValid = expectedVars.every((key) => {
         if (process.env[key]) {
             return true;

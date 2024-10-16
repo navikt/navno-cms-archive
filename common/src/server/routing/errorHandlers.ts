@@ -1,6 +1,6 @@
-import { ErrorRequestHandler, Express, RequestHandler } from 'express';
+import { ErrorRequestHandler, RequestHandler, Router } from 'express';
 
-export const setupErrorHandlers = (expressApp: Express) => {
+export const setupErrorHandlers = (router: Router) => {
     const notFoundHandler: RequestHandler = (req, res, _) => {
         res.status(404).send('Not found');
     };
@@ -21,7 +21,7 @@ export const setupErrorHandlers = (expressApp: Express) => {
         return res.status(statusCode).end();
     };
 
-    expressApp.use('*', notFoundHandler);
+    router.use('*', notFoundHandler);
 
-    expressApp.use(serverErrorHandler);
+    router.use(serverErrorHandler);
 };

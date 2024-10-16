@@ -1,4 +1,4 @@
-import express, { Express } from 'express';
+import express, { Router } from 'express';
 import path from 'path';
 import { createServer } from 'vite';
 import { AppHtmlRenderer, devRenderer, HtmlRenderer, prodRenderer } from './htmlRenderer';
@@ -6,14 +6,14 @@ import { AppHtmlRenderer, devRenderer, HtmlRenderer, prodRenderer } from './html
 const assetsDir = path.resolve(process.cwd(), 'dist', 'client');
 
 type Props = {
-    expressApp: Express;
+    router: Router;
     appHtmlRenderer: AppHtmlRenderer;
     ssrModulePath: string;
     appBaseBath: string;
 };
 
 export const buildHtmlRenderer = async ({
-    expressApp,
+    router,
     appHtmlRenderer,
     ssrModulePath,
     appBaseBath,
@@ -28,14 +28,14 @@ export const buildHtmlRenderer = async ({
             base: appBaseBath,
         });
 
-        expressApp.use(vite.middlewares);
+        router.use(vite.middlewares);
 
         return devRenderer(vite, ssrModulePath);
     }
 
     console.log(`Configuring site renderer for production mode - Using assets dir ${assetsDir}`);
 
-    expressApp.use(
+    router.use(
         '/',
         express.static(assetsDir, {
             maxAge: '1y',

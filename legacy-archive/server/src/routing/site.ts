@@ -5,12 +5,13 @@ import { render } from '../_ssr-dist/main-server';
 import puppeteer from 'puppeteer';
 import { legacyArchiveConfigs } from '@common/shared/siteConfigs';
 import { buildHtmlRenderer } from '@common/server/ssr/initRenderer';
+import { setupErrorHandlers } from '@common/server/routing/errorHandlers';
 
 export const setupSites = async (expressApp: Express) => {
     const opensearchClent = new CmsArchiveOpenSearchClient();
 
     const htmlRenderer = await buildHtmlRenderer({
-        expressApp,
+        router: expressApp,
         appHtmlRenderer: render,
         appBaseBath: process.env.APP_BASEPATH,
         ssrModulePath: '/client/main-server.tsx',
@@ -35,4 +36,6 @@ export const setupSites = async (expressApp: Express) => {
     expressApp.get('/', (req, res) => {
         return res.redirect(legacyArchiveConfigs[0].baseUrl);
     });
+
+    setupErrorHandlers(expressApp);
 };
