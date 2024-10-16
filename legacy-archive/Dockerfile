@@ -11,7 +11,7 @@ ENV PUPPETEER_TMP_DIR=/tmp/.puppeteer
 ENV XDG_CONFIG_HOME=/tmp/.chromium
 ENV XDG_CACHE_HOME=/tmp/.chromium
 
-COPY package*.json .env /app/
+COPY package*.json /app/
 COPY node_modules /app/node_modules/
 COPY server/dist  /app/server/dist/
 COPY server/package*.json /app/server/
