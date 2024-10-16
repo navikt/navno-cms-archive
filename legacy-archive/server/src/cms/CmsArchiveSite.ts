@@ -10,8 +10,8 @@ import { cspMiddleware } from '../routing/csp';
 import { CmsArchiveBinariesService } from './CmsArchiveBinariesService';
 import { PdfGenerator } from '../pdf/PdfGenerator';
 import { Browser } from 'puppeteer';
-import { DOWNLOAD_COOKIE_NAME } from '../../../src-common/downloadCookie';
-import { CmsArchiveSiteConfig } from '../../../../common/src/siteConfigs';
+import { DOWNLOAD_COOKIE_NAME } from '../../../shared/downloadCookie';
+import { CmsArchiveSiteConfig } from '@common/shared/siteConfigs';
 
 type ContructorProps = {
     config: CmsArchiveSiteConfig;

@@ -1,4 +1,4 @@
-import { CmsCategoryRef } from '../../../src-common/cms-documents/_common';
+import { CmsCategoryRef } from '../../../shared/cms-documents/_common';
 
 export type AssetDocument = {
     path: string;

@@ -1,6 +1,13 @@
 {
     "extends": ["../tsconfig.json"],
-    "include": ["src-client", "src-common", "../common"],
+    "include": ["client", "shared"],
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "@common/client/*": ["node_modules/@archive/common/src/client/*"],
+            "@common/shared/*": ["node_modules/@archive/common/src/shared/*"]
+        }
+    },
     "references": [
         {
             "path": "./tsconfig.node.json"

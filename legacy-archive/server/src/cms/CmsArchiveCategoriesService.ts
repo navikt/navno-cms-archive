@@ -1,8 +1,8 @@
 import { CmsArchiveOpenSearchClient, SearchResult } from '../opensearch/CmsArchiveOpenSearchClient';
-import { CmsCategoryPath } from '../../../src-common/cms-documents/_common';
-import { CmsCategoryListItem } from '../../../src-common/cms-documents/category';
+import { CmsCategoryPath } from '../../../shared/cms-documents/_common';
+import { CmsCategoryListItem } from '../../../shared/cms-documents/category';
 import { CmsCategoryDocument } from '../opensearch/types';
-import { CmsArchiveSiteConfig } from '../../../../common/src/siteConfigs';
+import { CmsArchiveSiteConfig } from '@common/shared/siteConfigs';
 
 type ConstructorProps = {
     config: CmsArchiveSiteConfig;

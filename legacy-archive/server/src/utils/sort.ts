@@ -1,4 +1,4 @@
-import { CmsContentDocument } from '../../../src-common/cms-documents/content';
+import { CmsContentDocument } from '../../../shared/cms-documents/content';
 
 export const sortContents = (contents?: CmsContentDocument[] | null) =>
     contents?.sort((a, b) => (a.displayName > b.displayName ? 1 : -1)) || null;

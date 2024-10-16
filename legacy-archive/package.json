@@ -6,7 +6,7 @@
     "scripts": {
         "build": "npm-run-all build:*",
         "build:client": "vite build --outDir ./server/dist/client",
-        "build:ssr": "vite build --outDir ./server/src/_ssr-dist --ssr src-client/main-server.tsx",
+        "build:ssr": "vite build --outDir ./server/src/_ssr-dist --ssr client/main-server.tsx",
         "build:server": "npm run build --workspace server",
         "analyze-bundle": "ANALYZE=true npm run build:client",
         "start": "npm run start --workspace server",
@@ -38,6 +38,7 @@
         "@types/react": "18.3.11",
         "@types/react-dom": "18.3.1",
         "rollup-plugin-visualizer": "5.12.0",
-        "vite": "5.4.9"
+        "vite": "5.4.9",
+        "vite-tsconfig-paths": "5.0.1"
     }
 }

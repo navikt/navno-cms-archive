@@ -1,10 +1,10 @@
-import { CmsContent, CmsContentDocument } from '../../../src-common/cms-documents/content';
+import { CmsContent, CmsContentDocument } from '../../../shared/cms-documents/content';
 import { CmsArchiveOpenSearchClient } from '../opensearch/CmsArchiveOpenSearchClient';
 import { sortVersions } from '../utils/sort';
-import { ContentSearchParams, ContentSearchResult } from '../../../src-common/contentSearch';
+import { ContentSearchParams, ContentSearchResult } from '../../../shared/contentSearch';
 import { buildContentSearchParams } from '../opensearch/queries/contentSearch';
 import { CmsArchiveCategoriesService } from './CmsArchiveCategoriesService';
-import { CmsArchiveSiteConfig } from '../../../../common/src/siteConfigs';
+import { CmsArchiveSiteConfig } from '@common/shared/siteConfigs';
 
 type ConstructorProps = {
     client: CmsArchiveOpenSearchClient;

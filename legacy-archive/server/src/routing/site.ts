@@ -3,7 +3,7 @@ import { CmsArchiveSite } from '../cms/CmsArchiveSite';
 import { CmsArchiveOpenSearchClient } from '../opensearch/CmsArchiveOpenSearchClient';
 import { initAndGetRenderer } from '../ssr/initRenderer';
 import puppeteer from 'puppeteer';
-import { cmsArchiveConfigs } from '../../../../common/src/siteConfigs';
+import { cmsArchiveConfigs } from '@common/shared/siteConfigs';
 
 export const setupSites = async (expressApp: Express) => {
     const opensearchClent = new CmsArchiveOpenSearchClient();

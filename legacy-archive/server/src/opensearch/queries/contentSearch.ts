@@ -7,7 +7,7 @@ import {
     ContentSearchParams,
     ContentSearchSort,
     ContentSearchType,
-} from '../../../../src-common/contentSearch';
+} from '../../../../shared/contentSearch';
 import { Request } from 'express';
 import { parseNumberParam, parseToStringArray } from '../../utils/queryParams';
 import { CmsArchiveCategoriesService } from '../../cms/CmsArchiveCategoriesService';

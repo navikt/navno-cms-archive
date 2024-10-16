@@ -12,7 +12,11 @@
         "target": "es2022",
         "baseUrl": "src",
         "jsx": "react",
-        "noEmit": true
+        "noEmit": true,
+        "paths": {
+            "@common/server/*": ["../../node_modules/@archive/common/src/server/*"],
+            "@common/shared/*": ["../../node_modules/@archive/common/src/shared/*"]
+        }
     },
-    "include": ["src/**/*.ts", "../src-common/**/*.ts"]
+    "include": ["src/**/*.ts", "../shared/**/*.ts"]
 }

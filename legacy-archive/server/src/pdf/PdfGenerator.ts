@@ -6,10 +6,10 @@ import {
     generatePdfFooter,
     pixelWidthToA4Scale,
 } from './pdf-utils';
-import { CmsContent } from '../../../src-common/cms-documents/content';
+import { CmsContent } from '../../../shared/cms-documents/content';
 import archiver from 'archiver';
 import { Response } from 'express';
-import { DOWNLOAD_COOKIE_NAME } from '../../../src-common/downloadCookie';
+import { DOWNLOAD_COOKIE_NAME } from '../../../shared/downloadCookie';
 
 const DEFAULT_WIDTH_PX = 1024;
 const MIN_WIDTH_PX = 400;
