@@ -1,4 +1,4 @@
-name: Build and deploy legacy archive to nais
+name: Build and deploy legacy archive
 on:
   workflow_dispatch:
   push:
@@ -23,12 +23,15 @@ jobs:
           node-version: '22'
           registry-url: 'https://npm.pkg.github.com'
           cache: 'npm'
+          cache-dependency-path: 'legacy-archive/**/package-lock.json'
       - name: Install dependencies
         run: npm ci
+        working-directory: legacy-archive
         env:
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
       - name: Build application
         run: npm run build
+        working-directory: legacy-archive
       - name: Build and push docker image
         uses: nais/docker-build-push@v0
         id: docker-push
@@ -36,6 +39,7 @@ jobs:
           team: personbruker
           project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
+          docker_context: legacy-archive
       - name: Deploy OpenSearch
         uses: nais/deploy/actions/deploy@v2
         env:
