@@ -3,7 +3,7 @@ type BaseConfig = {
     baseUrl: string;
 };
 
-export type CmsArchiveSiteConfig = {
+export type LegacyArchiveSiteConfig = {
     indexPrefix: string;
     type: 'enonic-legacy';
 } & BaseConfig;
@@ -12,9 +12,9 @@ export type XpArchiveSiteConfig = {
     type: 'enonic-xp';
 } & BaseConfig;
 
-export type SiteConfig = CmsArchiveSiteConfig | XpArchiveSiteConfig;
+export type SiteConfig = LegacyArchiveSiteConfig | XpArchiveSiteConfig;
 
-export const cmsArchiveConfigs: CmsArchiveSiteConfig[] = [
+export const legacyArchiveConfigs: LegacyArchiveSiteConfig[] = [
     {
         name: 'nav.no (selvbetjeningssonen)',
         baseUrl: '/sbs',
@@ -29,11 +29,10 @@ export const cmsArchiveConfigs: CmsArchiveSiteConfig[] = [
     },
 ] as const;
 
-export const siteConfigs: SiteConfig[] = [
-    ...cmsArchiveConfigs,
-    {
-        name: 'nav.no (2024)',
-        baseUrl: 'http://localhost:3499/xp',
-        type: 'enonic-xp',
-    },
-] as const;
+export const xpArchiveConfig: XpArchiveSiteConfig = {
+    name: 'nav.no (2024)',
+    baseUrl: '/xp',
+    type: 'enonic-xp',
+} as const;
+
+export const siteConfigs: SiteConfig[] = [...legacyArchiveConfigs, xpArchiveConfig] as const;

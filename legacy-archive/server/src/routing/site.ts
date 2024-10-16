@@ -3,7 +3,7 @@ import { CmsArchiveSite } from '../cms/CmsArchiveSite';
 import { CmsArchiveOpenSearchClient } from '../opensearch/CmsArchiveOpenSearchClient';
 import { render } from '../_ssr-dist/main-server';
 import puppeteer from 'puppeteer';
-import { cmsArchiveConfigs } from '@common/shared/siteConfigs';
+import { legacyArchiveConfigs } from '@common/shared/siteConfigs';
 import { buildHtmlRenderer } from '@common/server/ssr/initRenderer';
 
 export const setupSites = async (expressApp: Express) => {
@@ -20,7 +20,7 @@ export const setupSites = async (expressApp: Express) => {
         args: ['--no-sandbox', '--disable-setuid-sandbox', '--user-data-dir=/tmp/.chromium'],
     });
 
-    const sites = cmsArchiveConfigs.map((config) => {
+    const sites = legacyArchiveConfigs.map((config) => {
         return new CmsArchiveSite({
             config,
             expressApp,
@@ -33,6 +33,6 @@ export const setupSites = async (expressApp: Express) => {
     await Promise.all(sites.map((site) => site.init()));
 
     expressApp.get('/', (req, res) => {
-        return res.redirect(cmsArchiveConfigs[0].baseUrl);
+        return res.redirect(legacyArchiveConfigs[0].baseUrl);
     });
 };

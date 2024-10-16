@@ -2,16 +2,16 @@ import { CmsArchiveOpenSearchClient, SearchResult } from '../opensearch/CmsArchi
 import { CmsCategoryPath } from '../../../shared/cms-documents/_common';
 import { CmsCategoryListItem } from '../../../shared/cms-documents/category';
 import { CmsCategoryDocument } from '../opensearch/types';
-import { CmsArchiveSiteConfig } from '@common/shared/siteConfigs';
+import { LegacyArchiveSiteConfig } from '@common/shared/siteConfigs';
 
 type ConstructorProps = {
-    config: CmsArchiveSiteConfig;
+    config: LegacyArchiveSiteConfig;
     client: CmsArchiveOpenSearchClient;
 };
 
 export class CmsArchiveCategoriesService {
     private readonly client: CmsArchiveOpenSearchClient;
-    private readonly config: CmsArchiveSiteConfig;
+    private readonly config: LegacyArchiveSiteConfig;
 
     private readonly categoriesIndex: string;
 

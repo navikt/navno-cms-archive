@@ -1,13 +1,21 @@
 import express from 'express';
 import compression from 'compression';
 import { setupErrorHandlers } from './routing/errorHandlers';
-import { validateEnv } from './utils/validateEnv';
 import { setupInternalRoutes } from './routing/internal';
 import { setupSites } from './routing/site';
+import { validateEnv } from '@common/server/utils/validateEnv';
 
 const { APP_PORT } = process.env;
 
-validateEnv()
+validateEnv([
+    'NODE_ENV',
+    'APP_PORT',
+    'APP_BASEPATH',
+    'APP_ORIGIN',
+    'OPEN_SEARCH_URI',
+    'OPEN_SEARCH_USERNAME',
+    'OPEN_SEARCH_PASSWORD',
+])
     .then(async () => {
         const app = express().use(compression(), express.json());
 

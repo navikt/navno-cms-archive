@@ -11,10 +11,10 @@ import { CmsArchiveBinariesService } from './CmsArchiveBinariesService';
 import { PdfGenerator } from '../pdf/PdfGenerator';
 import { Browser } from 'puppeteer';
 import { DOWNLOAD_COOKIE_NAME } from '../../../shared/downloadCookie';
-import { CmsArchiveSiteConfig } from '@common/shared/siteConfigs';
+import { LegacyArchiveSiteConfig } from '@common/shared/siteConfigs';
 
 type ContructorProps = {
-    config: CmsArchiveSiteConfig;
+    config: LegacyArchiveSiteConfig;
     browser: Browser;
     client: CmsArchiveOpenSearchClient;
     expressApp: Express;
@@ -22,7 +22,7 @@ type ContructorProps = {
 };
 
 export class CmsArchiveSite {
-    private readonly config: CmsArchiveSiteConfig;
+    private readonly config: LegacyArchiveSiteConfig;
     private readonly pdfGenerator: PdfGenerator;
 
     private readonly categoriesService: CmsArchiveCategoriesService;

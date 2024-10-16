@@ -1,10 +1,10 @@
 import { CmsArchiveOpenSearchClient } from '../opensearch/CmsArchiveOpenSearchClient';
 import { CmsBinaryDocument } from '../../../shared/cms-documents/binary';
 import { AssetDocument } from '../opensearch/types';
-import { CmsArchiveSiteConfig } from '@common/shared/siteConfigs';
+import { LegacyArchiveSiteConfig } from '@common/shared/siteConfigs';
 
 type ConstructorProps = {
-    config: CmsArchiveSiteConfig;
+    config: LegacyArchiveSiteConfig;
     client: CmsArchiveOpenSearchClient;
 };
 

@@ -4,17 +4,17 @@ import { sortVersions } from '../utils/sort';
 import { ContentSearchParams, ContentSearchResult } from '../../../shared/contentSearch';
 import { buildContentSearchParams } from '../opensearch/queries/contentSearch';
 import { CmsArchiveCategoriesService } from './CmsArchiveCategoriesService';
-import { CmsArchiveSiteConfig } from '@common/shared/siteConfigs';
+import { LegacyArchiveSiteConfig } from '@common/shared/siteConfigs';
 
 type ConstructorProps = {
     client: CmsArchiveOpenSearchClient;
-    config: CmsArchiveSiteConfig;
+    config: LegacyArchiveSiteConfig;
     categoriesService: CmsArchiveCategoriesService;
 };
 
 export class CmsArchiveContentService {
     private readonly client: CmsArchiveOpenSearchClient;
-    private readonly config: CmsArchiveSiteConfig;
+    private readonly config: LegacyArchiveSiteConfig;
     private readonly categoriesService: CmsArchiveCategoriesService;
 
     private readonly index: string;
