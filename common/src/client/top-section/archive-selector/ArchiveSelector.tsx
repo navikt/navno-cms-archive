@@ -20,7 +20,7 @@ export const ArchiveSelector = ({ basePath }: Props) => {
                 onChange={(e) => window.location.assign(e.target.value)}
             >
                 {siteConfigs.map((config) => (
-                    <option value={config.baseUrl} key={config.name}>
+                    <option value={config.basePath} key={config.name}>
                         {config.name}
                     </option>
                 ))}

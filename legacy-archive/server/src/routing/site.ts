@@ -34,7 +34,7 @@ export const setupSites = async (expressApp: Express) => {
     await Promise.all(sites.map((site) => site.init()));
 
     expressApp.get('/', (req, res) => {
-        return res.redirect(legacyArchiveConfigs[0].baseUrl);
+        return res.redirect(legacyArchiveConfigs[0].basePath);
     });
 
     setupErrorHandlers(expressApp);

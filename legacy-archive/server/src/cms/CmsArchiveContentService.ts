@@ -158,6 +158,6 @@ export class CmsArchiveContentService {
 
         return html
             .replace(/(\r\n|\r|\n)/, '')
-            .replace(/="\/(\d)+\//g, `="${this.config.baseUrl}/`);
+            .replace(/="\/(\d)+\//g, `="${this.config.basePath}/`);
     }
 }

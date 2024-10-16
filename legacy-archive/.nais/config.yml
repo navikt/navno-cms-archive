@@ -17,6 +17,13 @@ spec:
   readiness:
     path: /internal/isReady
     initialDelay: 10
+  env:
+    - name: APP_PORT
+      value: "3399"
+    - name: APP_BASEPATH
+      value: "/"
+    - name: APP_ORIGIN
+      value: "https://cms-arkiv.intern.nav.no"
   openSearch:
     access: read
     instance: enonic-cms-archive

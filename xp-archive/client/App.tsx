@@ -1,9 +1,12 @@
+import '@common/client/global.css';
+
 import React from 'react';
 import { AppLayout } from '@common/client/AppLayout';
+import { xpArchiveConfig } from '@common/shared/siteConfigs';
 
 export const App = () => {
     return (
-        <AppLayout siteName={'xp'} basePath={'/xp'}>
+        <AppLayout siteName={xpArchiveConfig.name} basePath={xpArchiveConfig.basePath}>
             <div>{'Hello world!'}</div>
         </AppLayout>
     );

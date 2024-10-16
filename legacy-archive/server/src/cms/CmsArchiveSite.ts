@@ -50,8 +50,8 @@ export class CmsArchiveSite {
         const siteRouter = express.Router();
         const apiRouter = express.Router();
 
-        expressApp.use(config.baseUrl, siteRouter);
-        expressApp.use(`${config.baseUrl}/api`, apiRouter);
+        expressApp.use(config.basePath, siteRouter);
+        expressApp.use(`${config.basePath}/api`, apiRouter);
 
         this.setupApiRoutes(apiRouter);
         this.setupSiteRoutes(siteRouter, htmlRenderer);
@@ -120,7 +120,7 @@ export class CmsArchiveSite {
                 rootCategories,
                 selectedVersionKey: req.params.versionKey,
                 cmsName: this.config.name,
-                basePath: this.config.baseUrl,
+                basePath: this.config.basePath,
             };
 
             const html = await htmlRenderer(req.url, appContext);
