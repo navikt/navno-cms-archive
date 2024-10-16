@@ -4,8 +4,8 @@
     "compilerOptions": {
         "baseUrl": ".",
         "paths": {
-            "@common/client/*": ["node_modules/@archive/common/src/client/*"],
-            "@common/shared/*": ["node_modules/@archive/common/src/shared/*"]
+            "@common/client/*": ["../common/src/client/*"],
+            "@common/shared/*": ["../common/src/shared/*"]
         }
     },
     "references": [

@@ -14,8 +14,8 @@
         "jsx": "react",
         "noEmit": true,
         "paths": {
-            "@common/server/*": ["../../node_modules/@archive/common/src/server/*"],
-            "@common/shared/*": ["../../node_modules/@archive/common/src/shared/*"]
+            "@common/server/*": ["../../../common/src/server/*"],
+            "@common/shared/*": ["../../../common/src/shared/*"]
         }
     },
     "include": ["src/**/*.ts", "../shared/**/*.ts"]

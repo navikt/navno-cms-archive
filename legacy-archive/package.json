@@ -17,7 +17,6 @@
         "server"
     ],
     "dependencies": {
-        "@archive/common": "file:../common",
         "@mui/material": "5.16.7",
         "@mui/system": "5.16.7",
         "@mui/x-tree-view": "6.17.0",
