@@ -7,10 +7,5 @@
             "@common/client/*": ["../common/src/client/*"],
             "@common/shared/*": ["../common/src/shared/*"]
         }
-    },
-    "references": [
-        {
-            "path": "./tsconfig.node.json"
-        }
-    ]
+    }
 }
