@@ -1,3 +1,5 @@
+import './global.css';
+
 import React from 'react';
 import { AppTopSection } from './top-section/AppTopSection';
 

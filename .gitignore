@@ -31,3 +31,4 @@ cms-assets
 /Dockerfile-local
 /xp-archive/server/src/_ssr-dist/
 /legacy-archive/server/src/_ssr-dist/
+/legacy-archive/.cache/
