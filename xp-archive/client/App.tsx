@@ -1,5 +1,3 @@
-import '@common/client/global.css';
-
 import React from 'react';
 import { AppLayout } from '@common/client/AppLayout';
 import { xpArchiveConfig } from '@common/shared/siteConfigs';
