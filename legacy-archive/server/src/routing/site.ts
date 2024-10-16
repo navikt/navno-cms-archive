@@ -1,13 +1,21 @@
 import { Express } from 'express';
 import { CmsArchiveSite } from '../cms/CmsArchiveSite';
 import { CmsArchiveOpenSearchClient } from '../opensearch/CmsArchiveOpenSearchClient';
-import { initAndGetRenderer } from '../ssr/initRenderer';
+import { render } from '../_ssr-dist/main-server';
 import puppeteer from 'puppeteer';
 import { cmsArchiveConfigs } from '@common/shared/siteConfigs';
+import { buildHtmlRenderer } from '@common/server/ssr/initRenderer';
 
 export const setupSites = async (expressApp: Express) => {
     const opensearchClent = new CmsArchiveOpenSearchClient();
-    const htmlRenderer = await initAndGetRenderer(expressApp);
+
+    const htmlRenderer = await buildHtmlRenderer({
+        expressApp,
+        appHtmlRenderer: render,
+        appBaseBath: process.env.APP_BASEPATH,
+        ssrModulePath: '/client/main-server.tsx',
+    });
+
     const browser = await puppeteer.launch({
         args: ['--no-sandbox', '--disable-setuid-sandbox', '--user-data-dir=/tmp/.chromium'],
     });

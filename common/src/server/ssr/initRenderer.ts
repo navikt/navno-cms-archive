@@ -1,11 +1,23 @@
 import express, { Express } from 'express';
 import path from 'path';
 import { createServer } from 'vite';
-import { devRender, HtmlRenderer, prodRender } from './htmlRenderer';
+import { AppHtmlRenderer, devRenderer, HtmlRenderer, prodRenderer } from './htmlRenderer';
 
 const assetsDir = path.resolve(process.cwd(), 'dist', 'client');
 
-export const initAndGetRenderer = async (expressApp: Express): Promise<HtmlRenderer> => {
+type Props = {
+    expressApp: Express;
+    appHtmlRenderer: AppHtmlRenderer;
+    ssrModulePath: string;
+    appBaseBath: string;
+};
+
+export const buildHtmlRenderer = async ({
+    expressApp,
+    appHtmlRenderer,
+    ssrModulePath,
+    appBaseBath,
+}: Props): Promise<HtmlRenderer> => {
     if (process.env.NODE_ENV === 'development') {
         console.log('Configuring site renderer for development mode');
 
@@ -13,12 +25,12 @@ export const initAndGetRenderer = async (expressApp: Express): Promise<HtmlRende
             server: { middlewareMode: true },
             appType: 'custom',
             root: '../',
-            base: process.env.APP_BASEPATH,
+            base: appBaseBath,
         });
 
         expressApp.use(vite.middlewares);
 
-        return devRender(vite);
+        return devRenderer(vite, ssrModulePath);
     }
 
     console.log(`Configuring site renderer for production mode - Using assets dir ${assetsDir}`);
@@ -31,5 +43,5 @@ export const initAndGetRenderer = async (expressApp: Express): Promise<HtmlRende
         })
     );
 
-    return prodRender;
+    return prodRenderer(appHtmlRenderer);
 };

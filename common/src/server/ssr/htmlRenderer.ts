@@ -1,8 +1,9 @@
-import { buildHtmlTemplate } from './templateBuilder';
 import { ViteDevServer } from 'vite';
-import { render } from '../_ssr-dist/main-server';
-import { AppContext } from '../../../shared/appContext';
+import { buildHtmlTemplate } from './templateBuilder';
 
+type AppContext = Record<string, unknown>;
+
+export type AppHtmlRenderer = (url: string, context: AppContext) => string;
 export type HtmlRenderer = (url: string, context: AppContext) => Promise<string>;
 
 const processTemplate = (templateHtml: string, appHtml: string, appContext: AppContext) => {
@@ -11,17 +12,19 @@ const processTemplate = (templateHtml: string, appHtml: string, appContext: AppC
         .replace('"ssr-app-context"', JSON.stringify(appContext));
 };
 
-export const prodRender: HtmlRenderer = async (url, context) => {
-    const template = buildHtmlTemplate();
+export const prodRenderer =
+    (render: AppHtmlRenderer): HtmlRenderer =>
+    async (url, context) => {
+        const template = buildHtmlTemplate();
 
-    try {
-        const appHtml = render(url, context);
-        return processTemplate(template, appHtml, context);
-    } catch (e) {
-        console.error(`Rendering failed ${e}}`);
-        return processTemplate(template, '', context);
-    }
-};
+        try {
+            const appHtml = render(url, context);
+            return processTemplate(template, appHtml, context);
+        } catch (e) {
+            console.error(`Rendering failed ${e}}`);
+            return processTemplate(template, '', context);
+        }
+    };
 
 const devErrorHtml = (e: Error) => {
     return `
@@ -33,14 +36,14 @@ const devErrorHtml = (e: Error) => {
         </div>`;
 };
 
-export const devRender =
-    (vite: ViteDevServer): HtmlRenderer =>
+export const devRenderer =
+    (vite: ViteDevServer, ssrEntryModule: string): HtmlRenderer =>
     async (url, context) => {
         const template = buildHtmlTemplate();
         const html = await vite.transformIndexHtml(url, template);
 
         try {
-            const { render } = await vite.ssrLoadModule('/src/main-server.tsx');
+            const { render } = await vite.ssrLoadModule(ssrEntryModule);
             const appHtml = render(url, context);
 
             return processTemplate(html, appHtml, context);

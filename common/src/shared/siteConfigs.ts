@@ -5,7 +5,7 @@ type BaseConfig = {
 
 export type CmsArchiveSiteConfig = {
     indexPrefix: string;
-    type: 'enonic-cms';
+    type: 'enonic-legacy';
 } & BaseConfig;
 
 export type XpArchiveSiteConfig = {
@@ -19,13 +19,13 @@ export const cmsArchiveConfigs: CmsArchiveSiteConfig[] = [
         name: 'nav.no (selvbetjeningssonen)',
         baseUrl: '/sbs',
         indexPrefix: 'cmssbs',
-        type: 'enonic-cms',
+        type: 'enonic-legacy',
     },
     {
         name: 'Navet (fagsystemsonen)',
         baseUrl: '/fss',
         indexPrefix: 'cmsfss',
-        type: 'enonic-cms',
+        type: 'enonic-legacy',
     },
 ] as const;
 
