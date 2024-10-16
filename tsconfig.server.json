@@ -1,0 +1,16 @@
+{
+    "$schema": "https://json.schemastore.org/tsconfig",
+    "compilerOptions": {
+        "strict": true,
+        "allowJs": true,
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
+        "skipLibCheck": true,
+        "lib": ["es2023"],
+        "moduleResolution": "bundler",
+        "module": "esnext",
+        "target": "es2022",
+        "jsx": "react",
+        "noEmit": true
+    }
+}
