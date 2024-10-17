@@ -1,10 +1,10 @@
 import React from 'react';
 import { useFetchContent } from '../hooks/useFetchContent';
 import { Heading, Loader } from '@navikt/ds-react';
-import { useAppContext } from '../context/AppState';
+import { useAppState } from '../context/AppState';
 
 export const ContentView = () => {
-    const { contentId } = useAppContext();
+    const { contentId } = useAppState();
 
     const { data, isLoading } = useFetchContent(contentId || '');
 

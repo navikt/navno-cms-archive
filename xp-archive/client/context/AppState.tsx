@@ -7,7 +7,7 @@ type State = {
 
 const AppContext = createContext<State>({ contentId: null, setContentId: () => ({}) });
 
-export const useAppContext = () => {
+export const useAppState = () => {
     const { contentId, setContentId } = useContext(AppContext);
 
     return {
@@ -20,7 +20,7 @@ type Props = {
     children: React.ReactNode;
 };
 
-export const AppContextProvider = ({ children }: Props) => {
+export const AppStateProvider = ({ children }: Props) => {
     const [contentId, setContentId] = useState<string | null>(null);
 
     return (

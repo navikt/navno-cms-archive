@@ -1,9 +1,9 @@
-import { fetchJson } from './fetchJson';
 import { CmsContent } from '../../shared/cms-documents/content';
 import { CmsCategoryListItem } from '../../shared/cms-documents/category';
 import { useCallback } from 'react';
 import { ContentSearchParams, ContentSearchResult } from '../../shared/contentSearch';
 import { useAppState } from '../context/app-state/useAppState';
+import { fetchJson } from '@common/shared/fetchJson';
 
 const fetchContent = (basePath: string) => async (contentKey: string) =>
     fetchJson<CmsContent>(`${basePath}/api/content/${contentKey}`);
@@ -21,7 +21,7 @@ const fetchCategories =
             : [];
 
 const fetchSearch = (basePath: string) => async (params: ContentSearchParams) =>
-    fetchJson<ContentSearchResult>(`${basePath}/api/search`, params);
+    fetchJson<ContentSearchResult>(`${basePath}/api/search`, { params });
 
 export const useApiFetch = () => {
     const { appContext } = useAppState();

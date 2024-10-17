@@ -1,13 +1,13 @@
 import React from 'react';
 import { ContentTreeEntryData } from '../../../shared/types';
-import { useAppContext } from '../../context/AppState';
+import { useAppState } from '../../context/AppState';
 
 type Props = {
     entry: ContentTreeEntryData;
 };
 
 export const NavigationItem = ({ entry }: Props) => {
-    const { setContentId } = useAppContext();
+    const { setContentId } = useAppState();
 
     return (
         <div

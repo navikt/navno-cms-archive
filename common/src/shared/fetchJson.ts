@@ -13,13 +13,15 @@ export const objectToQueryString = (params?: Record<string, unknown>) =>
 
 export const fetchJson = async <ResponseType>(
     url: string,
-    options: { params?: Record<string, unknown>; headers?: HeadersInit },
+    options: { params?: Record<string, unknown>; headers?: HeadersInit } = {},
     retries = 1
 ): Promise<ResponseType | null> => {
     const { headers, params } = options;
 
+    const urlWithParams = `${url}${objectToQueryString(params)}`;
+
     try {
-        const res = await fetch(`${url}${objectToQueryString(params)}`, { headers });
+        const res = await fetch(urlWithParams, { headers });
         if (res.ok) {
             return res.json();
         }
@@ -27,11 +29,11 @@ export const fetchJson = async <ResponseType>(
         throw new Error(`${res.status} - ${res.statusText}`);
     } catch (e) {
         if (retries > 0) {
-            console.log(`Failed to fetch from ${url}, retrying`);
+            console.log(`Failed to fetch from ${urlWithParams}, retrying`);
             return fetchJson(url, options, retries - 1);
         }
 
-        console.error(`Failed to fetch json from ${url} - ${e}`);
+        console.error(`Failed to fetch json from ${urlWithParams} - ${e}`);
         return null;
     }
 };
