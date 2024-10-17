@@ -1,6 +1,6 @@
 import React from 'react';
 import { ContentTreeEntryData } from '../../../shared/types';
-import { useAppState } from '../../context/AppState';
+import { useAppState } from '../../context/appState/useAppState';
 
 type Props = {
     entry: ContentTreeEntryData;

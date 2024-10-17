@@ -3,7 +3,7 @@ import { AppLayout } from '@common/client/AppLayout';
 import { xpArchiveConfig } from '@common/shared/siteConfigs';
 import { NavigationBar } from './contentTree/NavigationBar';
 import { ContentView } from './contentView/ContentView';
-import { AppStateProvider } from './context/AppState';
+import { AppStateProvider } from './context/appState/AppStateProvider';
 
 export const App = () => {
     return (
