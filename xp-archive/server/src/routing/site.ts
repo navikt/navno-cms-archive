@@ -3,6 +3,7 @@ import { render } from '../_ssr-dist/main-server';
 import { buildHtmlRenderer } from '@common/server/ssr/initRenderer';
 import { setupErrorHandlers } from '@common/server/routing/errorHandlers';
 import { ContentTreeService } from '../services/ContentTreeService';
+import { ContentService } from '../services/ContentService';
 
 export const setupSite = async (router: Router) => {
     const htmlRenderer = await buildHtmlRenderer({
@@ -17,7 +18,9 @@ export const setupSite = async (router: Router) => {
         return res.send(html);
     });
 
-    const contentTreeService = new ContentTreeService();
+    const contentTreeService = new ContentTreeService({
+        xpServiceUrl: 'http://localhost:8080/_/service/no.nav.navno',
+    });
 
     router.get('/api/contentTree', async (req, res) => {
         const { path } = req.query;
@@ -29,6 +32,22 @@ export const setupSite = async (router: Router) => {
         const contentTreeResponse = await contentTreeService.getContentTree(path);
 
         return res.status(200).json(contentTreeResponse);
+    });
+
+    const contentService = new ContentService({
+        xpServiceUrl: 'http://localhost:8080/_/service/no.nav.navno',
+    });
+
+    router.get('/api/content', async (req, res) => {
+        const { id, locale } = req.query;
+
+        if (typeof id !== 'string' || typeof locale !== 'string') {
+            return res.status(400).send('Parameters id and locale are required');
+        }
+
+        const contentResponse = await contentService.getCurrentContent(id, locale);
+
+        return res.status(200).json(contentResponse);
     });
 
     setupErrorHandlers(router);

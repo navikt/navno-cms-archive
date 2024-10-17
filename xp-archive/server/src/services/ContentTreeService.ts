@@ -1,21 +1,16 @@
 import { fetchJson } from '@common/shared/fetchJson';
+import { ContentTreeResponse } from '../../../shared/types';
 
-type ContentTreeEntry = {
-    id: string;
-    path: string;
-    name: string;
-    displayName: string;
-};
-
-type ContentTreeResponse = {
-    current: ContentTreeEntry;
-    children: ContentTreeEntry[];
+type ConstructorProps = {
+    xpServiceUrl: string;
 };
 
 export class ContentTreeService {
-    private readonly CONTENT_TREE_API = `http://localhost:8080/_/service/no.nav.navno/contentTree`;
+    private readonly CONTENT_TREE_API: string;
 
-    constructor() {}
+    constructor({ xpServiceUrl }: ConstructorProps) {
+        this.CONTENT_TREE_API = `${xpServiceUrl}/contentTree`;
+    }
 
     public getContentTree(path: string) {
         return this.fetchContentTree(path);
