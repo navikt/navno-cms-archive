@@ -1,8 +1,8 @@
 import { createContext } from 'react';
 
-type State = {
-    contentId?: string;
-    setContentId: (contentId: string) => void;
+export type AppState = {
+    selectedContentId?: string;
+    setSelectedContentId: (contentId: string) => void;
 };
 
-export const AppStateContext = createContext<State>({ setContentId: () => ({}) });
+export const AppStateContext = createContext<AppState>({ setSelectedContentId: () => ({}) });

@@ -4,9 +4,9 @@ import { Heading, Loader } from '@navikt/ds-react';
 import { useAppState } from '../context/appState/useAppState';
 
 export const ContentView = () => {
-    const { contentId } = useAppState();
+    const { selectedContentId } = useAppState();
 
-    const { data, isLoading } = useFetchContent(contentId || '');
+    const { data, isLoading } = useFetchContent(selectedContentId || '');
 
     return (
         <div>

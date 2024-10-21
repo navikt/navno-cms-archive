@@ -2,15 +2,14 @@ import React, { useState } from 'react';
 import { AppStateContext } from './AppStateContext';
 
 type Props = {
-    contentId?: string;
     children: React.ReactNode;
 };
 
 export const AppStateProvider = ({ children }: Props) => {
-    const [contentId, setContentId] = useState<string>();
+    const [selectedContentId, setSelectedContentId] = useState<string>();
 
     return (
-        <AppStateContext.Provider value={{ contentId, setContentId }}>
+        <AppStateContext.Provider value={{ selectedContentId, setSelectedContentId }}>
             {children}
         </AppStateContext.Provider>
     );

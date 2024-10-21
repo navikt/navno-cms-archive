@@ -7,12 +7,12 @@ type Props = {
 };
 
 export const NavigationItem = ({ entry }: Props) => {
-    const { setContentId } = useAppState();
+    const { setSelectedContentId } = useAppState();
 
     return (
         <div
             onClick={() => {
-                setContentId(entry.id);
+                setSelectedContentId(entry.id);
             }}
         >{`${entry.name} [${entry.id}]`}</div>
     );
