@@ -5,8 +5,8 @@ on:
     branches:
       - master
     paths:
-      - xp-archive/**/*.*
-      - common/**/*.*
+      - xp-archive/**/*
+      - common/**/*
 
 jobs:
   build-and-deploy:
