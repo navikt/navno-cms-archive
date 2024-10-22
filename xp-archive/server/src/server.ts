@@ -9,7 +9,7 @@ const expectedEnv = [
     'NODE_ENV',
     'APP_PORT',
     'APP_BASEPATH',
-    'APP_ORIGIN',
+    'VITE_APP_ORIGIN',
     'XP_ORIGIN',
     'SERVICE_SECRET',
 ] as const;
