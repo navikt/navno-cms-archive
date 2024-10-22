@@ -6,7 +6,7 @@ export class ContentService {
 
     public getCurrentContent(id: string, locale = 'no') {
         const response = fetchJson(this.SITECONTENT_API_URL, {
-            headers: { secret: 'dummyToken' },
+            headers: { secret: process.env.SERVICE_SECRET },
             params: { id, locale, branch: 'draft' },
         });
 

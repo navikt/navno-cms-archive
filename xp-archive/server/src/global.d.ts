@@ -5,6 +5,7 @@ declare global {
             APP_BASEPATH: string;
             APP_PORT: string;
             APP_ORIGIN: string;
+            SERVICE_SECRET: string;
             XP_ORIGIN: string;
         }
     }

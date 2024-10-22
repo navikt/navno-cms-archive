@@ -11,7 +11,7 @@ export class ContentTreeService {
 
     private async fetchContentTree(path: string) {
         const response = await fetchJson<ContentTreeResponse>(this.CONTENT_TREE_API, {
-            headers: { secret: 'dummyToken' },
+            headers: { secret: process.env.SERVICE_SECRET },
             params: { path },
         });
 
