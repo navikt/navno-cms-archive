@@ -3,6 +3,7 @@ import compression from 'compression';
 import { setupSite } from './routing/site';
 import { setupNaisProbeHandlers } from '@common/server/routing/internal';
 import { startServer } from '@common/server/startServer';
+import { setupErrorHandlers } from '@common/server/routing/errorHandlers';
 
 const expectedEnv = ['NODE_ENV', 'APP_PORT', 'APP_BASEPATH', 'APP_ORIGIN', 'XP_ORIGIN'] as const;
 
@@ -21,6 +22,7 @@ startServer({
 
         setupNaisProbeHandlers(router);
         await setupSite(router);
+        setupErrorHandlers(router);
 
         return app;
     },

@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import { render } from '../_ssr-dist/main-server';
 import { buildHtmlRenderer } from '@common/server/ssr/initRenderer';
-import { setupErrorHandlers } from '@common/server/routing/errorHandlers';
 import { ContentTreeService } from '../services/ContentTreeService';
 import { ContentService } from '../services/ContentService';
 
@@ -45,6 +44,4 @@ export const setupSite = async (router: Router) => {
 
         return res.status(200).json(contentResponse);
     });
-
-    setupErrorHandlers(router);
 };
