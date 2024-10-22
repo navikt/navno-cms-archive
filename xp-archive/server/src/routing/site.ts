@@ -18,9 +18,7 @@ export const setupSite = async (router: Router) => {
         return res.send(html);
     });
 
-    const contentTreeService = new ContentTreeService({
-        xpServiceUrl: 'http://localhost:8080/_/service/no.nav.navno',
-    });
+    const contentTreeService = new ContentTreeService();
 
     router.get('/api/contentTree', async (req, res) => {
         const { path } = req.query;
@@ -34,9 +32,7 @@ export const setupSite = async (router: Router) => {
         return res.status(200).json(contentTreeResponse);
     });
 
-    const contentService = new ContentService({
-        xpServiceUrl: 'http://localhost:8080/_/service/no.nav.navno',
-    });
+    const contentService = new ContentService();
 
     router.get('/api/content', async (req, res) => {
         const { id, locale } = req.query;

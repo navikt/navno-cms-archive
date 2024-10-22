@@ -4,7 +4,7 @@ import { setupSite } from './routing/site';
 import { setupNaisProbeHandlers } from '@common/server/routing/internal';
 import { startServer } from '@common/server/startServer';
 
-const expectedEnv = ['NODE_ENV', 'APP_PORT', 'APP_BASEPATH', 'APP_ORIGIN'] as const;
+const expectedEnv = ['NODE_ENV', 'APP_PORT', 'APP_BASEPATH', 'APP_ORIGIN', 'XP_ORIGIN'] as const;
 
 startServer({
     envKeys: expectedEnv,

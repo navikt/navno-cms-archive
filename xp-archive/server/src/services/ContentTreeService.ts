@@ -1,16 +1,9 @@
 import { fetchJson } from '@common/shared/fetchJson';
 import { ContentTreeResponse } from '../../../shared/types';
-
-type ConstructorProps = {
-    xpServiceUrl: string;
-};
+import { xpServiceUrl } from '../utils/urls';
 
 export class ContentTreeService {
-    private readonly CONTENT_TREE_API: string;
-
-    constructor({ xpServiceUrl }: ConstructorProps) {
-        this.CONTENT_TREE_API = `${xpServiceUrl}/contentTree`;
-    }
+    private readonly CONTENT_TREE_API = xpServiceUrl('contentTree');
 
     public getContentTree(path: string) {
         return this.fetchContentTree(path);

@@ -1,20 +1,11 @@
 import { fetchJson } from '@common/shared/fetchJson';
-
-type ConstructorProps = {
-    xpServiceUrl: string;
-};
+import { xpServiceUrl } from '../utils/urls';
 
 export class ContentService {
-    private readonly SITECONTENT_API: string;
-    private readonly SITECONTENT_VERSIONS_API: string;
-
-    constructor({ xpServiceUrl }: ConstructorProps) {
-        this.SITECONTENT_API = `${xpServiceUrl}/sitecontent`;
-        this.SITECONTENT_VERSIONS_API = `${xpServiceUrl}/sitecontentVersions`;
-    }
+    private readonly SITECONTENT_API_URL = xpServiceUrl('sitecontent');
 
     public getCurrentContent(id: string, locale = 'no') {
-        const response = fetchJson(this.SITECONTENT_API, {
+        const response = fetchJson(this.SITECONTENT_API_URL, {
             headers: { secret: 'dummyToken' },
             params: { id, locale, branch: 'draft' },
         });
