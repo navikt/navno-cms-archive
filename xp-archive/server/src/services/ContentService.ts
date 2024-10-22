@@ -2,7 +2,7 @@ import { fetchJson } from '@common/shared/fetchJson';
 import { xpServiceUrl } from '../utils/urls';
 
 export class ContentService {
-    private readonly SITECONTENT_API_URL = xpServiceUrl('sitecontent');
+    private readonly SITECONTENT_API_URL = xpServiceUrl('externalArchive/content');
 
     public getCurrentContent(id: string, locale = 'no') {
         const response = fetchJson(this.SITECONTENT_API_URL, {

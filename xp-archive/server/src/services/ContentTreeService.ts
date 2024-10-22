@@ -3,7 +3,7 @@ import { ContentTreeResponse } from '../../../shared/types';
 import { xpServiceUrl } from '../utils/urls';
 
 export class ContentTreeService {
-    private readonly CONTENT_TREE_API = xpServiceUrl('contentTree');
+    private readonly CONTENT_TREE_API = xpServiceUrl('externalArchive/contentTree');
 
     public getContentTree(path: string) {
         return this.fetchContentTree(path);
