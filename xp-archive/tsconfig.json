@@ -2,6 +2,7 @@
     "extends": ["../tsconfig.json"],
     "include": ["client"],
     "compilerOptions": {
+        "types": ["vite/client"],
         "baseUrl": ".",
         "paths": {
             "@common/client/*": ["../common/src/client/*"],

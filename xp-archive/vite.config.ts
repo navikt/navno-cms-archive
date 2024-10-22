@@ -5,6 +5,8 @@ import visualizer from 'rollup-plugin-visualizer';
 
 // https://vitejs.dev/config/
 export default defineConfig(() => {
+    process.env = { ...process.env, VITE_APP_ORIGIN: process.env.APP_ORIGIN };
+
     return {
         plugins: [
             react(),
