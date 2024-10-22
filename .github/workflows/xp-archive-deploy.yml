@@ -34,6 +34,15 @@ jobs:
         working-directory: xp-archive
         env:
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+      - name: Set app environmment
+        run: |
+          cat > .env <<EOF
+          NODE_ENV=production
+          VITE_APP_ORIGIN=https://cms-arkiv.ansatt.dev.nav.no
+          APP_PORT=3499
+          APP_BASEPATH=/xp
+          XP_ORIGIN=https://www.dev.nav.no
+          EOF
       - name: Build application
         run: npm run build
         working-directory: xp-archive

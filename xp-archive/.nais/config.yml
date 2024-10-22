@@ -17,15 +17,6 @@ spec:
   readiness:
     path: /xp/internal/isReady
     initialDelay: 10
-  env:
-    - name: APP_PORT
-      value: "3499"
-    - name: APP_BASEPATH
-      value: "/xp"
-    - name: VITE_APP_ORIGIN
-      value: {{ appOrigin }}
-    - name: XP_ORIGIN
-      value: https://{{ xpHost }}
   accessPolicy:
     outbound:
       external:

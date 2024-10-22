@@ -4,7 +4,7 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 
-COPY package*.json /app/
+COPY package*.json .env /app/
 COPY node_modules /app/node_modules/
 COPY server/dist  /app/server/dist/
 COPY server/package*.json /app/server/
