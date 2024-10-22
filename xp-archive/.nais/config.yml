@@ -10,7 +10,7 @@ spec:
   image: {{image}}
   port: 3499
   ingresses:
-     - {{ APP_ORIGIN }}/xp
+     - {{ appOrigin }}/xp
   liveness:
     path: /xp/internal/isAlive
     initialDelay: 10
@@ -22,14 +22,14 @@ spec:
       value: "3499"
     - name: APP_BASEPATH
       value: "/xp"
-    - name: APP_ORIGIN
-      value: {{ APP_ORIGIN }}
+    - name: VITE_APP_ORIGIN
+      value: {{ appOrigin }}
     - name: XP_ORIGIN
-      value: https://{{ XP_HOST }}
+      value: https://{{ xpHost }}
   accessPolicy:
     outbound:
       external:
-        - host: {{ XP_HOST }}
+        - host: {{ xpHost }}
   envFrom:
     - secret: {{ secret }}
   replicas:
