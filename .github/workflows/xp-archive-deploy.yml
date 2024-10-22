@@ -1,11 +1,11 @@
-name: Build and deploy legacy archive
+name: Build and deploy XP archive (dev)
 on:
   workflow_dispatch:
   push:
     branches:
       - master
     paths:
-      - legacy-archive/**/*.*
+      - xp-archive/**/*.*
       - common/**/*.*
 
 jobs:
@@ -24,19 +24,19 @@ jobs:
           node-version: '22'
           registry-url: 'https://npm.pkg.github.com'
           cache: 'npm'
-          cache-dependency-path: 'legacy-archive/**/package-lock.json'
+          cache-dependency-path: 'xp-archive/**/package-lock.json'
       - name: Install build dependencies
         run: npm ci
         env:
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
       - name: Install app dependencies
         run: npm ci
-        working-directory: legacy-archive
+        working-directory: xp-archive
         env:
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
       - name: Build application
         run: npm run build
-        working-directory: legacy-archive
+        working-directory: xp-archive
       - name: Build and push docker image
         uses: nais/docker-build-push@v0
         id: docker-push
@@ -44,15 +44,11 @@ jobs:
           team: personbruker
           project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
-          docker_context: legacy-archive
-      - name: Deploy OpenSearch
-        uses: nais/deploy/actions/deploy@v2
-        env:
-          CLUSTER: prod-gcp
-          RESOURCE: legacy-archive/.nais/openSearch.yml
+          docker_context: xp-archive
       - name: Deploy application
         uses: nais/deploy/actions/deploy@v2
         env:
-          CLUSTER: prod-gcp
-          RESOURCE: legacy-archive/.nais/config.yml
+          CLUSTER: dev-gcp
+          RESOURCE: xp-archive/.nais/config.yml
           VAR: image=${{ steps.docker-push.outputs.image }}
+          VARS: xp-archive/.nais/vars/dev.yml
