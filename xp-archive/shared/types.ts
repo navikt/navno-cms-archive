@@ -3,6 +3,7 @@ export type ContentTreeEntryData = {
     path: string;
     name: string;
     displayName: string;
+    hasChildren: boolean;
 };
 
 export type ContentTreeResponse = {
