@@ -1,9 +1,7 @@
 import { useFetchContent } from '../hooks/useFetchContent';
 import { Heading, Loader } from '@navikt/ds-react';
 import { useAppState } from '../context/appState/useAppState';
-import { Content } from 'shared/types';
-
-import style from './ContentView.module.css';
+import { JsonView } from 'client/JsonView/JsonView';
 
 export const ContentView = () => {
     const { selectedContentId } = useAppState();
@@ -14,11 +12,7 @@ export const ContentView = () => {
         <div>
             <Heading size={'medium'}>{'Content!'}</Heading>
 
-            <div className={style.view}>
-                {isLoading ? <Loader /> : data ? jsonPrettyPrint(data) : 'Ingen JSON'}
-            </div>
+            {isLoading ? <Loader /> : data ? <JsonView data={data} /> : 'Ingen JSON'}
         </div>
     );
 };
-
-const jsonPrettyPrint = (data: Content) => JSON.stringify(data, null, 2);
