@@ -4,6 +4,7 @@ import { xpArchiveConfig } from '@common/shared/siteConfigs';
 import { NavigationBar } from './contentTree/NavigationBar';
 import { AppStateProvider } from './context/appState/AppStateProvider';
 import { ViewSelector } from './viewSelector/ViewSelector';
+import { ContentView } from './contentView/ContentView';
 
 export const App = () => {
     return (
@@ -11,6 +12,7 @@ export const App = () => {
             <AppStateProvider>
                 <NavigationBar />
                 <ViewSelector />
+                <ContentView />
             </AppStateProvider>
         </AppLayout>
     );

@@ -1,0 +1,12 @@
+.view {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    /* overflow: auto; */
+
+    font-family: monospace; /* Ensures the output text is monospaced */
+    white-space: pre-wrap; /* Preserves spaces and line breaks */
+    word-wrap: break-word; /* Prevents long words from overflowing */
+    /* width: 100%; */
+    width: 1000px;
+}
