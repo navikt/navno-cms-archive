@@ -11,8 +11,7 @@ export const ContentView = () => {
     return (
         <div>
             <Heading size={'medium'}>{'Content!'}</Heading>
-
-            {isLoading ? <Loader /> : data ? <JsonView data={data} /> : 'Ingen JSON'}
+            {isLoading ? <Loader /> : <JsonView data={data} />}
         </div>
     );
 };
