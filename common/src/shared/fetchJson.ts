@@ -1,3 +1,5 @@
+type Options = { params?: Record<string, unknown>; headers?: HeadersInit };
+
 export const objectToQueryString = (params?: Record<string, unknown>) =>
     params
         ? Object.entries(params).reduce(
@@ -11,11 +13,11 @@ export const objectToQueryString = (params?: Record<string, unknown>) =>
           )
         : '';
 
-export const fetchJson = async <ResponseType>(
+const fetchAndHandleErrors = async (
     url: string,
-    options: { params?: Record<string, unknown>; headers?: HeadersInit } = {},
+    options: Options = {},
     retries = 1
-): Promise<ResponseType | null> => {
+): Promise<Response> => {
     const { headers, params } = options;
 
     const urlWithParams = `${url}${objectToQueryString(params)}`;
@@ -23,17 +25,36 @@ export const fetchJson = async <ResponseType>(
     try {
         const res = await fetch(urlWithParams, { headers });
         if (res.ok) {
-            return res.json();
+            return res;
         }
 
         throw new Error(`${res.status} - ${res.statusText}`);
     } catch (e) {
         if (retries > 0) {
             console.log(`Failed to fetch from ${urlWithParams}, retrying`);
-            return fetchJson(url, options, retries - 1);
+            return fetchAndHandleErrors(url, options, retries - 1);
         }
 
-        console.error(`Failed to fetch json from ${urlWithParams} - ${e}`);
-        return null;
+        console.error(`Failed to fetch from ${urlWithParams} - ${e}`);
+        throw e;
     }
 };
+
+export const fetchJson = async <ResponseType>(
+    url: string,
+    options?: Options
+): Promise<ResponseType | null> =>
+    fetchAndHandleErrors(url, options)
+        .then((res) => res.json() as ResponseType)
+        .catch((e) => {
+            console.error(`Failed to fetch json from ${url} - ${e}`);
+            return null;
+        });
+
+export const fetchHtml = async (url: string, options?: Options): Promise<string | null> =>
+    fetchAndHandleErrors(url, options)
+        .then((res) => res.text())
+        .catch((e) => {
+            console.error(`Failed to fetch html from ${url} - ${e}`);
+            return null;
+        });
