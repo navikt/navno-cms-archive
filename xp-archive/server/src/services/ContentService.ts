@@ -1,4 +1,4 @@
-import { fetchJson } from '@common/shared/fetchJson';
+import { fetchHtml, fetchJson } from '@common/shared/fetchJson';
 import { xpServiceUrl } from '../utils/urls';
 import { Content, ContentServiceResponse, XPContentServiceResponse } from '../../../shared/types';
 import { RequestHandler } from 'express';
@@ -37,7 +37,7 @@ export class ContentService {
 
         const { contentRaw, contentRenderProps, versions } = contentServiceResponse;
 
-        const html = await this.getContentHtml(contentRenderProps);
+        const html = (await this.getContentHtml(contentRenderProps)) ?? undefined;
 
         return {
             html,
@@ -51,7 +51,7 @@ export class ContentService {
             return undefined;
         }
 
-        return fetch(this.HTML_RENDER_API, {
+        return fetchHtml(this.HTML_RENDER_API, {
             headers: {
                 secret: process.env.SERVICE_SECRET,
                 Accept: 'text/html',
@@ -59,6 +59,6 @@ export class ContentService {
             },
             method: 'POST',
             body: JSON.stringify({ contentProps }),
-        }).then((res) => res.text());
+        });
     }
 }

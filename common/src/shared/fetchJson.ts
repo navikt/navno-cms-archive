@@ -1,4 +1,4 @@
-type Options = { params?: Record<string, unknown>; headers?: HeadersInit };
+type Options = RequestInit & { params?: Record<string, unknown> };
 
 export const objectToQueryString = (params?: Record<string, unknown>) =>
     params
@@ -18,12 +18,12 @@ const fetchAndHandleErrors = async (
     options: Options = {},
     retries = 1
 ): Promise<Response> => {
-    const { headers, params } = options;
+    const { params, ...init } = options;
 
     const urlWithParams = `${url}${objectToQueryString(params)}`;
 
     try {
-        const res = await fetch(urlWithParams, { headers });
+        const res = await fetch(urlWithParams, init);
         if (res.ok) {
             return res;
         }
