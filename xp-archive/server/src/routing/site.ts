@@ -3,6 +3,7 @@ import { render } from '../_ssr-dist/main-server';
 import { buildHtmlRenderer } from '@common/server/ssr/initRenderer';
 import { ContentTreeService } from '../services/ContentTreeService';
 import { ContentService } from '../services/ContentService';
+import { ContentIconService } from 'services/ContentIconService';
 
 export const setupSite = async (router: Router) => {
     const htmlRenderer = await buildHtmlRenderer({
@@ -44,4 +45,16 @@ export const setupSite = async (router: Router) => {
 
         return res.status(200).json(contentResponse);
     });
+
+    const contentIconService = new ContentIconService();
+
+    router.get('/api/contentIcon', async (req, res) => {
+        const { type } = req.query;
+        if (typeof type !== 'string') {
+            return res.status(400).send('Parameter type is required');
+        }
+
+        const contentIconResponse = await contentIconService.getContentIcon(type);
+        return res.status(200).setHeader('content-type', contentIconResponse.headers.get('content-type') || '').send(contentIconResponse.body)
+    })
 };

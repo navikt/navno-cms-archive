@@ -13,7 +13,11 @@ type Props = {
 export const NavigationItem = ({ entry }: Props) => {
     const { setSelectedContentId } = useAppState();
 
-    const label = <span style={{ display: 'flex', alignItems: 'center' }}><FolderIcon style={{ marginRight: '5px' }} />{entry.displayName} </span>
+    const iconUrl = `${import.meta.env.VITE_APP_ORIGIN}/xp/api/contentIcon?type=${entry.type}`
+    const label = <span style={{ display: 'flex', alignItems: 'center' }}>
+        {/* <img src={`${import.meta.env.VITE_APP_ORIGIN}/xp/api/contentIcon?type=${entry.type}`} width={20} height={20} style={{ marginRight: '5px' }} /> */}
+        {entry.displayName}
+    </span>
 
     return (
         <TreeItem itemId={entry.id} label={label}
@@ -21,7 +25,7 @@ export const NavigationItem = ({ entry }: Props) => {
                 setSelectedContentId(entry.id);
             }}
         >
-            {entry.hasChildren ? <NavigationItems path={entry.path} /> : null}
+            {entry.numChildren > 0 ? <NavigationItems path={entry.path} /> : null}
         </TreeItem>
     );
 };

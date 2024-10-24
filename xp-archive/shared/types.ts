@@ -3,7 +3,8 @@ export type ContentTreeEntryData = {
     path: string;
     name: string;
     displayName: string;
-    hasChildren: boolean;
+    type: string;
+    numChildren: number;
 };
 
 export type ContentTreeResponse = {
@@ -27,3 +28,7 @@ export type Content = {
     layerLocale?: string;
     data: Record<string, unknown>;
 };
+
+export type ContentIconResponse = {
+
+}
