@@ -1,4 +1,4 @@
-import { fetchHtml, fetchJson } from '@common/shared/fetchJson';
+import { fetchHtml, fetchJson } from '@common/shared/fetchUtils';
 import { xpServiceUrl } from '../utils/urls';
 import { Content, ContentServiceResponse, XPContentServiceResponse } from '../../../shared/types';
 import { RequestHandler } from 'express';

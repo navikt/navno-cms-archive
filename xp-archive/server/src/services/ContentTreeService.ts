@@ -1,4 +1,4 @@
-import { fetchJson } from '@common/shared/fetchJson';
+import { fetchJson } from '@common/shared/fetchUtils';
 import { XPContentTreeServiceResponse } from '../../../shared/types';
 import { xpServiceUrl } from '../utils/urls';
 

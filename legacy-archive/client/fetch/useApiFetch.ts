@@ -3,7 +3,7 @@ import { CmsCategoryListItem } from '../../shared/cms-documents/category';
 import { useCallback } from 'react';
 import { ContentSearchParams, ContentSearchResult } from '../../shared/contentSearch';
 import { useAppState } from '../context/app-state/useAppState';
-import { fetchJson } from '@common/shared/fetchJson';
+import { fetchJson } from '@common/shared/fetchUtils';
 
 const fetchContent = (basePath: string) => async (contentKey: string) =>
     fetchJson<CmsContent>(`${basePath}/api/content/${contentKey}`);

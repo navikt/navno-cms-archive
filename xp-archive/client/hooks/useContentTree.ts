@@ -1,4 +1,4 @@
-import { fetchJson } from '@common/shared/fetchJson';
+import { fetchJson } from '@common/shared/fetchUtils';
 import useSWRImmutable from 'swr/immutable';
 import { XPContentTreeServiceResponse } from '../../shared/types';
 
