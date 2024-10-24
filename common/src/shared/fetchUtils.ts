@@ -59,7 +59,7 @@ export const fetchHtml = async (url: string, options?: Options): Promise<string 
             return null;
         });
 
-type FileResponse = {
+export type FileResponse = {
     data: ArrayBuffer;
     mimeType: string;
 };

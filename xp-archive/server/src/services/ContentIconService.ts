@@ -1,9 +1,11 @@
 import { xpServiceUrl } from '../utils/urls';
 import { RequestHandler } from 'express';
-import { fetchFile } from '@common/shared/fetchUtils';
+import { fetchFile, FileResponse } from '@common/shared/fetchUtils';
 
 export class ContentIconService {
     private readonly CONTENT_ICON_API = xpServiceUrl('externalArchive/contentIcon');
+
+    private readonly cache: Record<string, FileResponse> = {};
 
     public getContentIconHandler: RequestHandler = async (req, res) => {
         const { type } = req.query;
@@ -11,7 +13,7 @@ export class ContentIconService {
             return res.status(400).send('Parameter type is required');
         }
 
-        const contentIconResponse = await this.fetchContentIcon(type);
+        const contentIconResponse = await this.getContentIcon(type);
         if (!contentIconResponse) {
             return res.status(404).send(`Icon not found for type ${type}`);
         }
@@ -23,13 +25,20 @@ export class ContentIconService {
             .send(Buffer.from(contentIconResponse.data));
     };
 
-    public getContentIconUrl = (type: string) => {};
+    private async getContentIcon(type: string) {
+        const fromCache = this.cache[type];
+        if (fromCache) {
+            return fromCache;
+        }
 
-    private async fetchContentIcon(type: string) {
         const response = await fetchFile(this.CONTENT_ICON_API, {
             headers: { secret: process.env.SERVICE_SECRET },
             params: { type },
         });
+
+        if (response) {
+            this.cache[type] = response;
+        }
 
         return response;
     }
