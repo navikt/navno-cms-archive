@@ -1,6 +1,6 @@
 type Options = RequestInit & { params?: Record<string, unknown> };
 
-export const objectToQueryString = (params?: Record<string, unknown>) =>
+const objectToQueryString = (params?: Record<string, unknown>) =>
     params
         ? Object.entries(params).reduce(
               (acc, [k, v], i) =>
@@ -13,7 +13,7 @@ export const objectToQueryString = (params?: Record<string, unknown>) =>
           )
         : '';
 
-const fetchAndHandleErrors = async (
+const fetchWithRetry = async (
     url: string,
     options: Options = {},
     retries = 1
@@ -32,7 +32,7 @@ const fetchAndHandleErrors = async (
     } catch (e) {
         if (retries > 0) {
             console.log(`Failed to fetch from ${urlWithParams}, retrying`);
-            return fetchAndHandleErrors(url, options, retries - 1);
+            return fetchWithRetry(url, options, retries - 1);
         }
 
         console.error(`Failed to fetch from ${urlWithParams} - ${e}`);
@@ -44,7 +44,7 @@ export const fetchJson = async <ResponseType>(
     url: string,
     options?: Options
 ): Promise<ResponseType | null> =>
-    fetchAndHandleErrors(url, options)
+    fetchWithRetry(url, options)
         .then((res) => res.json() as ResponseType)
         .catch((e) => {
             console.error(`Failed to fetch json from ${url} - ${e}`);
@@ -52,9 +52,27 @@ export const fetchJson = async <ResponseType>(
         });
 
 export const fetchHtml = async (url: string, options?: Options): Promise<string | null> =>
-    fetchAndHandleErrors(url, options)
+    fetchWithRetry(url, options)
         .then((res) => res.text())
         .catch((e) => {
             console.error(`Failed to fetch html from ${url} - ${e}`);
+            return null;
+        });
+
+type FileResponse = {
+    data: ArrayBuffer;
+    mimeType: string;
+};
+
+export const fetchFile = async (url: string, options: Options): Promise<FileResponse | null> =>
+    fetchWithRetry(url, options)
+        .then(async (res) => {
+            return {
+                data: await res.arrayBuffer(),
+                mimeType: res.headers.get('content-type') || 'application/octet-stream',
+            };
+        })
+        .catch((e) => {
+            console.error(`Failed to fetch file from ${url} - ${e}`);
             return null;
         });
