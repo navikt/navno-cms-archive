@@ -8,6 +8,8 @@ import { ContentJsonView } from 'client/contentJsonView/contentJsonView';
 import { ContentFilesView } from 'client/contentFilesView/ContentFilesView';
 import { ContentServiceResponse } from 'shared/types';
 
+import style from './ContentView.module.css';
+
 const getDisplayComponent = (viewVariant: ViewVariant, data: ContentServiceResponse) => {
     const translations: Record<ViewVariant, React.ReactElement> = {
         html: <ContentHtmlView html={data.html} />,
@@ -21,21 +23,21 @@ export const ContentView = () => {
     const { selectedContentId } = useAppState();
     const { data, isLoading } = useFetchContent(selectedContentId || '');
 
-    const [selectedView, setSelectedView] = useState<ViewVariant>('json');
+    const [selectedView, setSelectedView] = useState<ViewVariant>('html');
 
     if (isLoading) {
         return <Loader />;
     }
 
     return (
-        <div>
+        <>
             {data ? (
-                <>
+                <div className={style.content}>
                     <Heading size={'medium'}>{data?.json.displayName}</Heading>
                     <ViewSelector selectedView={selectedView} setSelectedView={setSelectedView} />
                     {getDisplayComponent(selectedView, data)}
-                </>
+                </div>
             ) : null}
-        </div>
+        </>
     );
 };

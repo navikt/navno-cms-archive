@@ -1,9 +1,17 @@
 import React from 'react';
+import style from './ContentHtmlView.module.css';
 
 type Props = {
     html?: string;
 };
 
 export const ContentHtmlView = ({ html }: Props) => {
-    return <div>{html}</div>;
+    if (!html) {
+        return <div>Ingen innhold</div>;
+    }
+    return (
+        <div className={style.content}>
+            <iframe srcDoc={html} title="my-iframe" className={style.iframe}></iframe>
+        </div>
+    );
 };
