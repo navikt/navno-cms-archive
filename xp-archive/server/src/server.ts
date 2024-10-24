@@ -12,6 +12,7 @@ const expectedEnv = [
     'VITE_APP_ORIGIN',
     'XP_ORIGIN',
     'SERVICE_SECRET',
+    'HTML_RENDER_API',
 ] as const;
 
 startServer({

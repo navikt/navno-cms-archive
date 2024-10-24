@@ -7,6 +7,7 @@ declare global {
             VITE_APP_ORIGIN: string;
             SERVICE_SECRET: string;
             XP_ORIGIN: string;
+            HTML_RENDER_API: string;
         }
     }
 }

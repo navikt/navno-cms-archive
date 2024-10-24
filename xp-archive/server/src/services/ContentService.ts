@@ -5,7 +5,7 @@ import { RequestHandler } from 'express';
 
 export class ContentService {
     private readonly CONTENT_PROPS_API = xpServiceUrl('externalArchive/content');
-    private readonly HTML_RENDER_API = 'http://localhost:3000/render-from-props';
+    private readonly HTML_RENDER_API = process.env.HTML_RENDER_API;
 
     public getContentHandler: RequestHandler = async (req, res) => {
         const { id, locale } = req.query;
@@ -54,7 +54,7 @@ export class ContentService {
         return fetch(this.HTML_RENDER_API, {
             headers: {
                 secret: process.env.SERVICE_SECRET,
-                Accept: 'application/json',
+                Accept: 'text/html',
                 'Content-Type': 'application/json',
             },
             method: 'POST',
