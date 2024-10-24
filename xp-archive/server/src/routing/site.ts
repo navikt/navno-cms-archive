@@ -55,6 +55,12 @@ export const setupSite = async (router: Router) => {
         }
 
         const contentIconResponse = await contentIconService.getContentIcon(type);
-        return res.status(200).setHeader('content-type', contentIconResponse.headers.get('content-type') || '').send(contentIconResponse.body)
-    })
+
+        const body = await contentIconResponse.arrayBuffer();
+
+        return res
+            .status(200)
+            .setHeader('content-type', contentIconResponse.headers.get('content-type') ?? '')
+            .send(Buffer.from(body));
+    });
 };
