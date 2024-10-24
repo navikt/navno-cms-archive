@@ -9,7 +9,7 @@ export const setupSite = async (router: Router) => {
     const htmlRenderer = await buildHtmlRenderer({
         router: router,
         appHtmlRenderer: render,
-        appBaseBath: process.env.APP_BASEPATH as string,
+        appBaseBath: process.env.APP_BASEPATH,
         ssrModulePath: '/client/main-server.tsx',
     });
 
