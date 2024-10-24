@@ -4,10 +4,11 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "build": "esbuild src/server.ts --bundle --platform=node --packages=external --outfile=dist/server/server.cjs",
+        "build": "node build.mjs",
+        "build-and-watch": "WATCH=true node build.mjs",
         "start": "node -r dotenv/config ./dist/server/server.cjs dotenv_config_path=../.env",
         "nodemon-start": "nodemon -r dotenv/config -w ./dist/server -w ../.env ./dist/server/server.cjs dotenv_config_path=../.env",
-        "dev": "npm run build && concurrently \"npm run build -- --watch\" \"npm run nodemon-start\""
+        "dev": "concurrently \"npm run build-and-watch\" \"npm run nodemon-start\" --kill-others"
     },
     "dependencies": {
         "compression": "1.7.4",

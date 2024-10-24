@@ -8,7 +8,7 @@ module.exports = {
         'plugin:react-hooks/recommended',
         'plugin:css-modules/recommended',
     ],
-    ignorePatterns: ['dist', '.eslintrc.cjs', 'puppeteer.config.cjs'],
+    ignorePatterns: ['dist', '*.cjs', '*.mjs', '*.js'],
     parser: '@typescript-eslint/parser',
     plugins: ['@typescript-eslint', 'react', 'react-refresh', 'css-modules'],
     rules: {

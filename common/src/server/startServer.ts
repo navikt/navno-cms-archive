@@ -22,8 +22,8 @@ export const startServer = ({ envKeys, port, initApp }: Props) => {
 
             const httpTerminator = createHttpTerminator({ server });
 
-            const shutdown = () => {
-                console.log('Server shutting down');
+            const shutdown = (signal: string) => {
+                console.log(`Received ${signal} - Server shutting down`);
                 httpTerminator.terminate().then(() => {
                     server.close(() => {
                         console.log('Shutdown complete!');
