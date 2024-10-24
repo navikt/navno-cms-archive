@@ -1,5 +1,5 @@
 import { fetchJson } from '@common/shared/fetchJson';
-import { ContentTreeResponse } from '../../../shared/types';
+import { XPContentTreeServiceResponse } from '../../../shared/types';
 import { xpServiceUrl } from '../utils/urls';
 
 export class ContentTreeService {
@@ -10,7 +10,7 @@ export class ContentTreeService {
     }
 
     private async fetchContentTree(path: string) {
-        const response = await fetchJson<ContentTreeResponse>(this.CONTENT_TREE_API, {
+        const response = await fetchJson<XPContentTreeServiceResponse>(this.CONTENT_TREE_API, {
             headers: { secret: process.env.SERVICE_SECRET },
             params: { path },
         });

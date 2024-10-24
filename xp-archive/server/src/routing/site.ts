@@ -33,15 +33,5 @@ export const setupSite = async (router: Router) => {
 
     const contentService = new ContentService();
 
-    router.get('/api/content', async (req, res) => {
-        const { id, locale } = req.query;
-
-        if (typeof id !== 'string' || typeof locale !== 'string') {
-            return res.status(400).send('Parameters id and locale are required');
-        }
-
-        const contentResponse = await contentService.getCurrentContent(id, locale);
-
-        return res.status(200).json(contentResponse);
-    });
+    router.get('/api/content', contentService.getContentHandler);
 };

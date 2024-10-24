@@ -5,11 +5,26 @@ export type ContentTreeEntryData = {
     displayName: string;
 };
 
-export type ContentTreeResponse = {
+export type XPContentTreeServiceResponse = {
     current: ContentTreeEntryData;
     children: ContentTreeEntryData[];
 };
 
+export type XPContentServiceResponse = {
+    contentRaw: Content;
+    contentRenderProps?: Content;
+    versions: VersionReference[];
+};
+
+export type VersionReference = {
+    versionId: string;
+    nodeId: string;
+    nodePath: string;
+    timestamp: string;
+    locale: string;
+};
+
+// This is not a complete type. Expand as needed.
 export type Content = {
     type: `${string}:${string}`;
     _id: string;
