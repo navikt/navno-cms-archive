@@ -1,3 +1,4 @@
+import React from 'react';
 import { ToggleGroup } from '@navikt/ds-react';
 
 const viewVariants = ['html', 'json', 'files'] as const;
@@ -25,7 +26,9 @@ export const ViewSelector = ({ selectedView, setSelectedView }: Props) => {
             onChange={(e) => setSelectedView(e as ViewVariant)}
         >
             {viewVariants.map((view) => (
-                <ToggleGroup.Item value={view}>{getDisplayname(view)}</ToggleGroup.Item>
+                <ToggleGroup.Item key={view} value={view}>
+                    {getDisplayname(view)}
+                </ToggleGroup.Item>
             ))}
         </ToggleGroup>
     );
