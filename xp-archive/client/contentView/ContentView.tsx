@@ -6,9 +6,9 @@ import { ViewSelector, ViewVariant } from 'client/viewSelector/ViewSelector';
 import { ContentHtmlView } from 'client/contentHtmlView/ContentHtmlView';
 import { ContentJsonView } from 'client/contentJsonView/contentJsonView';
 import { ContentFilesView } from 'client/contentFilesView/ContentFilesView';
-import { XPContentServiceResponse } from 'shared/types';
+import { ContentServiceResponse } from 'shared/types';
 
-const getDisplayComponent = (viewVariant: ViewVariant, data: XPContentServiceResponse) => {
+const getDisplayComponent = (viewVariant: ViewVariant, data: ContentServiceResponse) => {
     const translations: Record<ViewVariant, React.ReactElement> = {
         html: <ContentHtmlView html={data.html} />,
         json: <ContentJsonView />,
@@ -31,7 +31,7 @@ export const ContentView = () => {
         <div>
             {data ? (
                 <>
-                    <Heading size={'medium'}>{data?.contentRaw.displayName}</Heading>
+                    <Heading size={'medium'}>{data?.json.displayName}</Heading>
                     <ViewSelector selectedView={selectedView} setSelectedView={setSelectedView} />
                     {getDisplayComponent(selectedView, data)}
                 </>
