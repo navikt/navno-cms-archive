@@ -18,6 +18,12 @@ export type XPContentServiceResponse = {
     versions: VersionReference[];
 };
 
+export type ContentServiceResponse = {
+    json: Content;
+    versions: VersionReference[];
+    html?: string;
+};
+
 export type VersionReference = {
     versionId: string;
     nodeId: string;

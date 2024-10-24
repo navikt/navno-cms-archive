@@ -1,6 +1,6 @@
 import { fetchJson } from '@common/shared/fetchJson';
 import { xpServiceUrl } from '../utils/urls';
-import { Content, XPContentServiceResponse } from '../../../shared/types';
+import { Content, ContentServiceResponse, XPContentServiceResponse } from '../../../shared/types';
 import { RequestHandler } from 'express';
 
 export class ContentService {
@@ -19,7 +19,10 @@ export class ContentService {
         return res.status(200).json(contentResponse);
     };
 
-    private async getCurrentContent(id: string, locale = 'no') {
+    private async getCurrentContent(
+        id: string,
+        locale = 'no'
+    ): Promise<ContentServiceResponse | null> {
         const contentServiceResponse = await fetchJson<XPContentServiceResponse>(
             this.CONTENT_PROPS_API,
             {
@@ -38,15 +41,14 @@ export class ContentService {
 
         return {
             html,
-            contentRaw,
-            contentRenderProps,
+            json: contentRaw,
             versions,
         };
     }
 
     private async getContentHtml(contentProps?: Content) {
         if (!contentProps) {
-            return null;
+            return undefined;
         }
 
         return fetch(this.HTML_RENDER_API, {
