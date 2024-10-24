@@ -1,5 +1,3 @@
-import { fetchJson } from '@common/shared/fetchJson';
-import { ContentIconResponse } from '../../../shared/types';
 import { xpServiceUrl } from '../utils/urls';
 
 export class ContentIconService {

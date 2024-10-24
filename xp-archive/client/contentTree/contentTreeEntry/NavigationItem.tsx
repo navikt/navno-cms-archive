@@ -14,7 +14,7 @@ export const NavigationItem = ({ entry }: Props) => {
     const iconUrl = `${import.meta.env.VITE_APP_ORIGIN}/xp/api/contentIcon?type=${entry.type}`;
     const label = (
         <span style={{ display: 'flex', alignItems: 'center' }}>
-            <img src={iconUrl} width={20} height={20} style={{ marginRight: '5px' }} />
+            <img src={iconUrl} width={20} height={20} style={{ marginRight: '5px' }} alt={''} />
             {entry.displayName}
         </span>
     );
@@ -39,7 +39,7 @@ const NavigationItems = ({ path }: { path: string }) => {
             {isLoading ? (
                 <div>Loading...</div>
             ) : (
-                data?.children.map((c) => <NavigationItem entry={c} />)
+                data?.children.map((entry) => <NavigationItem entry={entry} key={entry.id} />)
             )}
         </>
     );

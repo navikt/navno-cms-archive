@@ -43,7 +43,3 @@ export type Content = {
     layerLocale?: string;
     data: Record<string, unknown>;
 };
-
-export type ContentIconResponse = {
-
-}

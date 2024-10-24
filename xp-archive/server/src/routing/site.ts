@@ -52,4 +52,5 @@ export const setupSite = async (router: Router) => {
             .status(200)
             .setHeader('content-type', contentIconResponse.headers.get('content-type') ?? '')
             .send(Buffer.from(body));
+    });
 };
