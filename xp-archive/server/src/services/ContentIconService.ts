@@ -21,7 +21,7 @@ export class ContentIconService {
         return res
             .status(200)
             .setHeader('Content-Disposition', 'inline')
-            .setHeader('content-type', contentIconResponse.mimeType)
+            .setHeader('Content-Type', contentIconResponse.mimeType)
             .send(Buffer.from(contentIconResponse.data));
     };
 

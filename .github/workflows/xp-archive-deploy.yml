@@ -43,6 +43,7 @@ jobs:
           APP_PORT=3499
           APP_BASEPATH=/xp
           XP_ORIGIN=https://www.dev.nav.no
+          HTML_RENDER_API=http://nav-enonicxp-frontend-dev1/render-from-props
           EOF
       - name: Build application
         run: npm run build

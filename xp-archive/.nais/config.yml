@@ -19,6 +19,8 @@ spec:
     initialDelay: 10
   accessPolicy:
     outbound:
+      rules:
+        - application: {{ xpFrontendApp }}
       external:
         - host: {{ xpHost }}
   envFrom:
