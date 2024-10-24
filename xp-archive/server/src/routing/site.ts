@@ -18,39 +18,11 @@ export const setupSite = async (router: Router) => {
         return res.send(html);
     });
 
-    const contentTreeService = new ContentTreeService();
-
-    router.get('/api/contentTree', async (req, res) => {
-        const { path } = req.query;
-
-        if (typeof path !== 'string') {
-            return res.status(400).send('Parameter path is required');
-        }
-
-        const contentTreeResponse = await contentTreeService.getContentTree(path);
-
-        return res.status(200).json(contentTreeResponse);
-    });
-
     const contentService = new ContentService();
-
-    router.get('/api/content', contentService.getContentHandler);
-
+    const contentTreeService = new ContentTreeService();
     const contentIconService = new ContentIconService();
 
-    router.get('/api/contentIcon', async (req, res) => {
-        const { type } = req.query;
-        if (typeof type !== 'string') {
-            return res.status(400).send('Parameter type is required');
-        }
-
-        const contentIconResponse = await contentIconService.getContentIcon(type);
-
-        const body = await contentIconResponse.arrayBuffer();
-
-        return res
-            .status(200)
-            .setHeader('content-type', contentIconResponse.headers.get('content-type') ?? '')
-            .send(Buffer.from(body));
-    });
+    router.get('/api/content', contentService.getContentHandler);
+    router.get('/api/contentTree', contentTreeService.getContentTreeHandler);
+    router.get('/api/contentIcon', contentIconService.getContentIconHandler);
 };
