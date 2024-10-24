@@ -15,6 +15,7 @@ export type XPContentTreeServiceResponse = {
 export type XPContentServiceResponse = {
     contentRaw: Content;
     contentRenderProps?: Content;
+    html?: string;
     versions: VersionReference[];
 };
 

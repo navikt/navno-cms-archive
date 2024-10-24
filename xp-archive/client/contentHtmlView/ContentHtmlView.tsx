@@ -1,5 +1,9 @@
-export const ContentHtmlView = () => {
-  return <div>
-    Se html her (Ikke implementert)
-  </div>
-}
+import React from 'react';
+
+type Props = {
+    html?: string;
+};
+
+export const ContentHtmlView = ({ html }: Props) => {
+    return <div>{html}</div>;
+};

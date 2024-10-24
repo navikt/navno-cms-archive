@@ -6,16 +6,16 @@ import { ViewSelector, ViewVariant } from 'client/viewSelector/ViewSelector';
 import { ContentHtmlView } from 'client/contentHtmlView/ContentHtmlView';
 import { ContentJsonView } from 'client/contentJsonView/contentJsonView';
 import { ContentFilesView } from 'client/contentFilesView/ContentFilesView';
+import { XPContentServiceResponse } from 'shared/types';
 
-const getDisplayComponent = (viewVariant: ViewVariant) => {
+const getDisplayComponent = (viewVariant: ViewVariant, data: XPContentServiceResponse) => {
     const translations: Record<ViewVariant, React.ReactElement> = {
-        html: <ContentHtmlView />,
+        html: <ContentHtmlView html={data.html} />,
         json: <ContentJsonView />,
-        files: <ContentFilesView />
-    }
-    return translations[viewVariant]
-}
-
+        files: <ContentFilesView />,
+    };
+    return translations[viewVariant];
+};
 
 export const ContentView = () => {
     const { selectedContentId } = useAppState();
@@ -29,10 +29,13 @@ export const ContentView = () => {
 
     return (
         <div>
-            <Heading size={'medium'}>{data?.contentRaw.displayName}</Heading>
-            <ViewSelector selectedView={selectedView} setSelectedView={setSelectedView} />
-            {getDisplayComponent(selectedView)}
+            {data ? (
+                <>
+                    <Heading size={'medium'}>{data?.contentRaw.displayName}</Heading>
+                    <ViewSelector selectedView={selectedView} setSelectedView={setSelectedView} />
+                    {getDisplayComponent(selectedView, data)}
+                </>
+            ) : null}
         </div>
-
     );
 };
