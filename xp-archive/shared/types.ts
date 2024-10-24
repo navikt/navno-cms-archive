@@ -3,6 +3,8 @@ export type ContentTreeEntryData = {
     path: string;
     name: string;
     displayName: string;
+    type: string;
+    numChildren: number;
 };
 
 export type XPContentTreeServiceResponse = {
