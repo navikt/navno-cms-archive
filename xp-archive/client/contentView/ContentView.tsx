@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useFetchContent } from '../hooks/useFetchContent';
 import { Heading, Loader } from '@navikt/ds-react';
 import { useAppState } from '../context/appState/useAppState';
@@ -9,6 +9,11 @@ import { ContentFilesView } from 'client/contentFilesView/ContentFilesView';
 import { ContentServiceResponse } from 'shared/types';
 
 import style from './ContentView.module.css';
+
+const getDefaultView = (data: ContentServiceResponse | null | undefined): ViewVariant => {
+    if (data?.html) return 'html';
+    return 'json';
+};
 
 const getDisplayComponent = (viewVariant: ViewVariant, data: ContentServiceResponse) => {
     const translations: Record<ViewVariant, React.ReactElement> = {
@@ -24,6 +29,10 @@ export const ContentView = () => {
     const { data, isLoading } = useFetchContent(selectedContentId || '');
 
     const [selectedView, setSelectedView] = useState<ViewVariant>('json');
+
+    useEffect(() => {
+        setSelectedView(getDefaultView(data));
+    }, [data]);
 
     if (isLoading) {
         return <Loader />;
