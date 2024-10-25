@@ -1,5 +1,6 @@
 import { Request } from 'express';
 
+// Does not support arrays of a param. Add if/when needed.
 export const validateQuery = <RequiredKeys extends string, OptionalKeys extends string>(
     query: Request['query'],
     requiredKeys: RequiredKeys[],

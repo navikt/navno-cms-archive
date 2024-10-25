@@ -1,6 +1,7 @@
 import { xpServiceUrl } from '../utils/urls';
 import { RequestHandler } from 'express';
 import { fetchFile, FileResponse } from '@common/shared/fetchUtils';
+import { validateQuery } from '../utils/params';
 
 export class ContentIconService {
     private readonly CONTENT_ICON_API = xpServiceUrl('externalArchive/contentIcon');
@@ -8,10 +9,11 @@ export class ContentIconService {
     private readonly cache: Record<string, FileResponse> = {};
 
     public getContentIconHandler: RequestHandler = async (req, res) => {
-        const { type } = req.query;
-        if (typeof type !== 'string') {
+        if (!validateQuery(req.query, ['type'])) {
             return res.status(400).send('Parameter type is required');
         }
+
+        const { type } = req.query;
 
         const contentIconResponse = await this.getContentIcon(type);
         if (!contentIconResponse) {
