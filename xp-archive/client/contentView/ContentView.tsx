@@ -13,7 +13,7 @@ import style from './ContentView.module.css';
 const getDisplayComponent = (viewVariant: ViewVariant, data: ContentServiceResponse) => {
     const translations: Record<ViewVariant, React.ReactElement> = {
         html: <ContentHtmlView html={data.html} />,
-        json: <ContentJsonView />,
+        json: <ContentJsonView json={data.json} />,
         files: <ContentFilesView />,
     };
     return translations[viewVariant];
@@ -23,7 +23,7 @@ export const ContentView = () => {
     const { selectedContentId } = useAppState();
     const { data, isLoading } = useFetchContent(selectedContentId || '');
 
-    const [selectedView, setSelectedView] = useState<ViewVariant>('html');
+    const [selectedView, setSelectedView] = useState<ViewVariant>('json');
 
     if (isLoading) {
         return <Loader />;
