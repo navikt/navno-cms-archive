@@ -2,16 +2,17 @@ import { fetchJson } from '@common/shared/fetchUtils';
 import { XPContentTreeServiceResponse } from '../../../shared/types';
 import { xpServiceUrl } from '../utils/urls';
 import { RequestHandler } from 'express';
+import { validateQuery } from '../utils/params';
 
 export class ContentTreeService {
     private readonly CONTENT_TREE_API = xpServiceUrl('externalArchive/contentTree');
 
     public getContentTreeHandler: RequestHandler = async (req, res) => {
-        const { path } = req.query;
-
-        if (typeof path !== 'string') {
+        if (!validateQuery(req.query, ['path'])) {
             return res.status(400).send('Parameter path is required');
         }
+
+        const { path } = req.query;
 
         const contentTreeResponse = await this.fetchContentTree(path);
 
