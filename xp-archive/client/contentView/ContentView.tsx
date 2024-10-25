@@ -43,7 +43,11 @@ export const ContentView = () => {
             {data ? (
                 <div className={style.content}>
                     <Heading size={'medium'}>{data?.json.displayName}</Heading>
-                    <ViewSelector selectedView={selectedView} setSelectedView={setSelectedView} />
+                    <ViewSelector
+                        selectedView={selectedView}
+                        setSelectedView={setSelectedView}
+                        hasHtml={!!data.html}
+                    />
                     {getDisplayComponent(selectedView, data)}
                 </div>
             ) : null}
