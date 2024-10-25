@@ -2,40 +2,39 @@ import { fetchHtml, fetchJson } from '@common/shared/fetchUtils';
 import { xpServiceUrl } from '../utils/urls';
 import { Content, ContentServiceResponse, XPContentServiceResponse } from '../../../shared/types';
 import { RequestHandler } from 'express';
+import { validateQuery } from '../utils/params';
 
 export class ContentService {
     private readonly CONTENT_PROPS_API = xpServiceUrl('externalArchive/content');
     private readonly HTML_RENDER_API = process.env.HTML_RENDER_API;
 
     public getContentHandler: RequestHandler = async (req, res) => {
-        const { id, locale } = req.query;
-
-        if (typeof id !== 'string' || typeof locale !== 'string') {
-            return res.status(400).send('Parameters "id" and "locale" are required');
+        if (!validateQuery(req.query, ['id', 'locale'], ['versionId'])) {
+            return res.status(400).send('Missing or invalid parameters');
         }
 
-        const contentResponse = await this.getCurrentContent(id, locale);
+        const { id, locale, versionId } = req.query;
+
+        const contentResponse = await this.fetchContent(id, locale, versionId);
 
         return res.status(200).json(contentResponse);
     };
 
-    private async getCurrentContent(
-        id: string,
-        locale = 'no'
+    private async fetchContent(
+        contentId: string,
+        locale: string,
+        versionId?: string
     ): Promise<ContentServiceResponse | null> {
-        const contentServiceResponse = await fetchJson<XPContentServiceResponse>(
-            this.CONTENT_PROPS_API,
-            {
-                headers: { secret: process.env.SERVICE_SECRET },
-                params: { id, locale, branch: 'draft' },
-            }
-        );
+        const xpResponse = await fetchJson<XPContentServiceResponse>(this.CONTENT_PROPS_API, {
+            headers: { secret: process.env.SERVICE_SECRET },
+            params: { id: contentId, locale, versionId },
+        });
 
-        if (!contentServiceResponse) {
+        if (!xpResponse) {
             return null;
         }
 
-        const { contentRaw, contentRenderProps, versions } = contentServiceResponse;
+        const { contentRaw, contentRenderProps, versions } = xpResponse;
 
         const html = (await this.getContentHtml(contentRenderProps)) ?? undefined;
 
