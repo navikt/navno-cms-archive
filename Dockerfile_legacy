@@ -7,7 +7,7 @@ RUN npx puppeteer browsers install chrome
 WORKDIR /app/legacy-archive/server
 
 ENV NODE_ENV=production
-ENV PUPPETEER_CACHE_DIR=/app/.puppeteer-cache
+ENV PUPPETEER_CACHE_DIR=.cache/puppeteer
 ENV PUPPETEER_TMP_DIR=/tmp/.puppeteer
 ENV XDG_CONFIG_HOME=/tmp/.chromium
 ENV XDG_CACHE_HOME=/tmp/.chromium
