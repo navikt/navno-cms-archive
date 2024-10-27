@@ -51,7 +51,7 @@ jobs:
           team: personbruker
           project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
-          dockerfile: Dockerfile_xp-archive
+          dockerfile: Dockerfile_xp
       - name: Deploy application
         uses: nais/deploy/actions/deploy@v2
         env:
