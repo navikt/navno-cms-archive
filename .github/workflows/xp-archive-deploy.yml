@@ -5,6 +5,7 @@ on:
     branches:
       - master
     paths:
+      - package*.json
       - xp-archive/**/*
       - common/**/*
 
@@ -24,17 +25,12 @@ jobs:
           node-version: '22'
           registry-url: 'https://npm.pkg.github.com'
           cache: 'npm'
-          cache-dependency-path: 'xp-archive/**/package-lock.json'
-      - name: Install build dependencies
-        run: npm ci
+          cache-dependency-path: '**/package-lock.json'
+      - name: Install dependencies
+        run: npm ci --include-workspace-root --workspace=common --workspace=xp-archive
         env:
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
-      - name: Install app dependencies
-        run: npm ci
-        working-directory: xp-archive
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
-      - name: Set app environmment
+      - name: Set env vars
         working-directory: xp-archive
         run: |
           cat > .env <<EOF
@@ -55,7 +51,7 @@ jobs:
           team: personbruker
           project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
-          docker_context: xp-archive
+          dockerfile: Dockerfile_xp-archive
       - name: Deploy application
         uses: nais/deploy/actions/deploy@v2
         env:
