@@ -30,9 +30,6 @@ jobs:
         run: npm ci --include-workspace-root --workspace=common --workspace=legacy-archive
         env:
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
-      - name: Install Puppeteer
-        run: npx puppeteer browsers install chrome
-        working-directory: legacy-archive
       - name: Build application
         run: npm run build
         working-directory: legacy-archive
