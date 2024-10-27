@@ -6,12 +6,13 @@ RUN apt-get --assume-yes --no-install-recommends install chromium && apt-get cle
 WORKDIR /app/legacy-archive/server
 
 ENV NODE_ENV=production
-ENV PUPPETEER_CACHE_DIR=/app/puppeteer
+ENV PUPPETEER_CACHE_DIR=/app/.puppeteer-cache
 ENV PUPPETEER_TMP_DIR=/tmp/.puppeteer
 ENV XDG_CONFIG_HOME=/tmp/.chromium
 ENV XDG_CACHE_HOME=/tmp/.chromium
 
 COPY node_modules /app/node_modules/
+COPY .cache/puppeteer /app/.puppeteer-cache/
 COPY legacy-archive/server/dist  /app/legacy-archive/server/dist/
 COPY legacy-archive/server/package.json /app/legacy-archive/server/
 
