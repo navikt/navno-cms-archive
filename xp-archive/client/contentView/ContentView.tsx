@@ -6,6 +6,7 @@ import { ViewSelector, ViewVariant } from 'client/viewSelector/ViewSelector';
 import { ContentHtmlView } from 'client/contentHtmlView/ContentHtmlView';
 import { ContentJsonView } from 'client/contentJsonView/contentJsonView';
 import { ContentFilesView } from 'client/contentFilesView/ContentFilesView';
+import { VersionSelector } from 'client/versionSelector/VersionSelector';
 import { ContentServiceResponse } from 'shared/types';
 
 import style from './ContentView.module.css';
@@ -42,12 +43,20 @@ export const ContentView = () => {
         <>
             {data ? (
                 <div className={style.content}>
-                    <Heading size={'medium'}>{data?.json.displayName}</Heading>
-                    <ViewSelector
-                        selectedView={selectedView}
-                        setSelectedView={setSelectedView}
-                        hasHtml={!!data.html}
-                    />
+                    <div className={style.top}>
+                        <div>
+                            <Heading size={'medium'}>{data?.json.displayName}</Heading>
+                            <ViewSelector
+                                selectedView={selectedView}
+                                setSelectedView={setSelectedView}
+                                hasHtml={!!data.html}
+                            />
+                        </div>
+                        <VersionSelector
+                            displayName={data.json.displayName}
+                            versions={data.versions}
+                        />
+                    </div>
                     {getDisplayComponent(selectedView, data)}
                 </div>
             ) : null}
