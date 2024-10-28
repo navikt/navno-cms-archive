@@ -3,8 +3,8 @@ import { Select } from '@navikt/ds-react';
 import { CmsContent } from '../../../../../shared/cms-documents/content';
 import { useApiFetch } from '../../../../fetch/useApiFetch';
 import { useAppState } from '../../../../context/app-state/useAppState';
-import { formatTimestamp } from '../../../../../shared/timestamp';
-import { pruneString } from '../../../../../shared/pruneString';
+import { formatTimestamp } from '@common/shared/timestamp';
+import { pruneString } from '@common/shared/pruneString';
 
 const TITLE_MAX_LENGTH = 100;
 

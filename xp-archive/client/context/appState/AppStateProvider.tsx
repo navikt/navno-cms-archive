@@ -7,9 +7,17 @@ type Props = {
 
 export const AppStateProvider = ({ children }: Props) => {
     const [selectedContentId, setSelectedContentId] = useState<string>();
+    const [selectedVersionId, setSelectedVersionId] = useState<string>();
 
     return (
-        <AppStateContext.Provider value={{ selectedContentId, setSelectedContentId }}>
+        <AppStateContext.Provider
+            value={{
+                selectedContentId,
+                setSelectedContentId,
+                selectedVersionId,
+                setSelectedVersionId,
+            }}
+        >
             {children}
         </AppStateContext.Provider>
     );
