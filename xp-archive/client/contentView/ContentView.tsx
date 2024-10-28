@@ -26,8 +26,12 @@ const getDisplayComponent = (viewVariant: ViewVariant, data: ContentServiceRespo
 };
 
 export const ContentView = () => {
-    const { selectedContentId } = useAppState();
-    const { data, isLoading } = useFetchContent(selectedContentId || '');
+    const { selectedContentId, selectedVersionId } = useAppState();
+
+    const { data, isLoading } = useFetchContent({
+        id: selectedContentId || '',
+        version: selectedVersionId,
+    });
 
     const [selectedView, setSelectedView] = useState<ViewVariant>('json');
 
