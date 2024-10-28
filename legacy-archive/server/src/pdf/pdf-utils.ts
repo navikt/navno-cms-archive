@@ -1,6 +1,6 @@
 import { CmsContent } from '../../../shared/cms-documents/content';
 import { formatTimestamp } from '../../../shared/timestamp';
-import { pruneString } from '../../../shared/pruneString';
+import { pruneString } from '@common/shared/pruneString';
 
 const PUPPETEER_PDF_DPI = 96;
 const A4_INCH_WIDTH = 8.27;

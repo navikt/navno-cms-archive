@@ -4,7 +4,7 @@ import { Button, Checkbox, CheckboxGroup, Heading, HelpText, Label } from '@navi
 import { classNames } from '../../../../utils/classNames';
 import { useAppState } from '../../../../context/app-state/useAppState';
 import { ArrowDownRightIcon, DownloadIcon } from '@navikt/aksel-icons';
-import { formatTimestamp } from '../../../../../shared/timestamp';
+import { formatTimestamp } from '@common/shared/timestamp';
 import { DownloadLink } from './download-link/DownloadLink';
 
 import style from './PdfExporter.module.css';
