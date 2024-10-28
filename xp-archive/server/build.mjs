@@ -12,7 +12,19 @@ const options = {
 
 if (isWatchMode) {
     console.log('Building in watch mode');
-    await context(options).then((buildContext) => buildContext.watch());
+    const stopWatch = new Promise(() => {});
+
+    const kill = async (signal) => {
+        console.log(`Received ${signal} - Aborting build/watch`);
+        await Promise.all([ctx.dispose(), Promise.resolve(stopWatch)]);
+    };
+
+    process.on('SIGTERM', kill);
+    process.on('SIGINT', kill);
+
+    const ctx = await context(options);
+
+    await Promise.all([ctx.watch(), stopWatch]);
 } else {
     console.log('Building in production mode');
     await build(options);

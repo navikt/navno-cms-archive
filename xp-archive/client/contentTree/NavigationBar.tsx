@@ -9,7 +9,6 @@ export const NavigationBar = () => {
 
     return (
         <div>
-
             <Heading size={'small'}>{'Innhold'}</Heading>
             {isLoading ? (
                 <Loader />
