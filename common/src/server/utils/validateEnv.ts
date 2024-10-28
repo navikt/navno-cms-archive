@@ -1,16 +1,16 @@
 import process from 'process';
 
 export const validateEnv = async (expectedVars: readonly string[] | string[]) => {
-    const isValid = expectedVars.every((key) => {
-        if (process.env[key]) {
-            return true;
-        }
+    const missingVars: string[] = [];
 
-        console.error(`Missing env var for ${key}!`);
-        return false;
+    expectedVars.forEach((key) => {
+        if (!process.env[key]) {
+            console.error(`Missing env var for ${key}!`);
+            missingVars.push(key);
+        }
     });
 
-    if (!isValid) {
+    if (missingVars.length > 0) {
         throw new Error('Missing critical env vars!');
     }
 };
