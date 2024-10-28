@@ -30,6 +30,7 @@ export type VersionReference = {
     nodePath: string;
     timestamp: string;
     locale: string;
+    displayName: string;
 };
 
 // This is not a complete type. Expand as needed.
