@@ -1,5 +1,5 @@
 import { CmsContent } from '../../../shared/cms-documents/content';
-import { formatTimestamp } from '../../../shared/timestamp';
+import { formatTimestamp } from '@common/shared/timestamp';
 import { pruneString } from '@common/shared/pruneString';
 
 const PUPPETEER_PDF_DPI = 96;
