@@ -21,6 +21,14 @@ export const setupSites = async (expressApp: Express) => {
         args: ['--no-sandbox', '--disable-setuid-sandbox', '--user-data-dir=/tmp/.chromium'],
     });
 
+    expressApp.all('/:cms/:versionId?', (req, res, next) => {
+        if (req.hostname.endsWith('intern.nav.no')) {
+            return res.redirect(req.url.replace('intern.nav.no', 'ansatt.nav.no'));
+        }
+
+        return next();
+    });
+
     const sites = legacyArchiveConfigs.map((config) => {
         return new CmsArchiveSite({
             config,
@@ -35,14 +43,6 @@ export const setupSites = async (expressApp: Express) => {
 
     expressApp.get('/', (req, res) => {
         return res.redirect(legacyArchiveConfigs[0].basePath);
-    });
-
-    expressApp.all('/:cms/:versionId?', (req, res, next) => {
-        if (req.hostname.endsWith('intern.nav.no')) {
-            return res.redirect(req.url.replace('intern.nav.no', 'ansatt.nav.no'));
-        }
-
-        return next();
     });
 
     setupErrorHandlers(expressApp);
