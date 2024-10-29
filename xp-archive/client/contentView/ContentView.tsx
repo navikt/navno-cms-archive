@@ -30,7 +30,7 @@ export const ContentView = () => {
 
     const { data, isLoading } = useFetchContent({
         id: selectedContentId || '',
-        version: selectedVersionId,
+        versionId: selectedVersionId,
     });
 
     const [selectedView, setSelectedView] = useState<ViewVariant>('json');
