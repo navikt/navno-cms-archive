@@ -19,15 +19,6 @@ on:
         required: true
       NAIS_WORKLOAD_IDENTITY_PROVIDER:
         required: true
-#on:
-#  workflow_dispatch:
-#  push:
-#    branches:
-#      - master
-#    paths:
-#      - package*.json
-#      - xp-archive/**/*
-#      - common/**/*
 
 jobs:
   build-and-deploy:
@@ -57,9 +48,9 @@ jobs:
           NODE_ENV=production
           APP_PORT=3499
           APP_BASEPATH=/xp
-          VITE_APP_ORIGIN={{ inputs.VITE_APP_ORIGIN }}
-          XP_ORIGIN={{ inputs.XP_ORIGIN }}
-          HTML_RENDER_API={{ inputs.HTML_RENDER_API }}
+          VITE_APP_ORIGIN=${{ inputs.VITE_APP_ORIGIN }}
+          XP_ORIGIN=${{ inputs.XP_ORIGIN }}
+          HTML_RENDER_API=${{ inputs.HTML_RENDER_API }}
           EOF
       - name: Build application
         run: npm run build
@@ -75,7 +66,7 @@ jobs:
       - name: Deploy application
         uses: nais/deploy/actions/deploy@v2
         env:
-          CLUSTER: {{ inputs.naisEnv }}-gcp
+          CLUSTER: ${{ inputs.naisEnv }}-gcp
           RESOURCE: xp-archive/.nais/config.yml
           VAR: image=${{ steps.docker-push.outputs.image }}
-          VARS: xp-archive/.nais/vars/{{ inputs.naisEnv }}.yml
+          VARS: xp-archive/.nais/vars/${{ inputs.naisEnv }}.yml
