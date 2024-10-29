@@ -42,6 +42,9 @@ npm run dev -C legacy-archive
 npm run dev -C xp-archive
 ```
 
+5. Relaterte applikasjoner
+   Vi bruker tjenester i nav-enonicxp for å hente ut innholdsinformasjon og nav-enonicxp-frontend for å rendre innholdet, så de må kjøres opp lokalt for å få hentet informasjon.
+
 ### Troubleshooting
 
 Hvis du har problemer med at css og js ikke laster ved første oppstart i dev-modus, prøv å start appen i prod-modus en gang og se om det løser problemet.
@@ -49,6 +52,8 @@ Hvis du har problemer med at css og js ikke laster ved første oppstart i dev-mo
 ```
 npm run start-local -C xp-archive
 ```
+
+Hvis iframes ikke vises, sjekk om du får cors-issues i srcdoc. Disse vil oppstå hvis du kjører nav-enonicxp-frontend i dev-modus og ikke i prod-modus.
 
 ## <a name="enonic-legacy"></a> Enonic CMS legacy arkiv (2006-2019)
 
