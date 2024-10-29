@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 import { Select } from '@navikt/ds-react';
 import { VersionReference } from 'shared/types';
 import { pruneString } from '@common/shared/pruneString';
@@ -16,12 +16,13 @@ export const VersionSelector = ({ versions }: Props) => {
         return null;
     }
 
+    const selectVersion = (e: ChangeEvent<HTMLSelectElement>) => {
+        setSelectedVersionId(e.target.value || undefined);
+    };
+
     return (
-        <Select
-            label={'Versjoner'}
-            onChange={(e) => setSelectedVersionId(e.target.value)}
-            value={selectedVersionId ?? ''}
-        >
+        <Select label={'Versjoner'} onChange={selectVersion} value={selectedVersionId ?? ''}>
+            <option value={''}>Siste versjon</option>
             {versions.map((version) => (
                 <option key={version.versionId} value={version.versionId}>
                     {`${pruneString(version.displayName, 100)} - [${formatTimestamp(version.timestamp)}]`}

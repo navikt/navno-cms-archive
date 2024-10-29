@@ -13,6 +13,7 @@ export const AppStateProvider = ({ children }: Props) => {
         setSelectedVersionId(undefined);
         setSelectedContentId(selectedContentId);
     }, []);
+
     const setSelectedVersionIdMemoized = useCallback(setSelectedVersionId, [setSelectedVersionId]);
 
     return (
