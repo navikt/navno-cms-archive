@@ -1,13 +1,24 @@
-name: Build and deploy XP archive (dev)
+name: Build and deploy XP archive
 on:
-  workflow_dispatch:
-  push:
-    branches:
-      - master
-    paths:
-      - package*.json
-      - xp-archive/**/*
-      - common/**/*
+  workflow_call:
+    inputs:
+      naisEnv:
+        required: true
+        type: string
+      VITE_APP_ORIGIN:
+        required: true
+        type: string
+      XP_ORIGIN:
+        required: true
+        type: string
+      HTML_RENDER_API:
+        required: true
+        type: string
+    secrets:
+      READER_TOKEN:
+        required: true
+      NAIS_WORKLOAD_IDENTITY_PROVIDER:
+        required: true
 
 jobs:
   build-and-deploy:
@@ -35,11 +46,11 @@ jobs:
         run: |
           cat > .env <<EOF
           NODE_ENV=production
-          VITE_APP_ORIGIN=https://cms-arkiv.ansatt.dev.nav.no
           APP_PORT=3499
           APP_BASEPATH=/xp
-          XP_ORIGIN=https://www.dev.nav.no
-          HTML_RENDER_API=http://nav-enonicxp-frontend-dev1/render-from-props
+          VITE_APP_ORIGIN=${{ inputs.VITE_APP_ORIGIN }}
+          XP_ORIGIN=${{ inputs.XP_ORIGIN }}
+          HTML_RENDER_API=${{ inputs.HTML_RENDER_API }}
           EOF
       - name: Build application
         run: npm run build
@@ -55,7 +66,7 @@ jobs:
       - name: Deploy application
         uses: nais/deploy/actions/deploy@v2
         env:
-          CLUSTER: dev-gcp
+          CLUSTER: ${{ inputs.naisEnv }}-gcp
           RESOURCE: xp-archive/.nais/config.yml
           VAR: image=${{ steps.docker-push.outputs.image }}
-          VARS: xp-archive/.nais/vars/dev.yml
+          VARS: xp-archive/.nais/vars/${{ inputs.naisEnv }}.yml
