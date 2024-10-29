@@ -7,6 +7,8 @@ export type ContentTreeEntryData = {
     displayName: string;
     type: string;
     numChildren: number;
+    isLocalized: boolean;
+    hasLocalizedDescendants: boolean;
 };
 
 export type XPContentTreeServiceResponse = {

@@ -22,7 +22,7 @@ export class ContentTreeService {
     private async fetchContentTree(path: string) {
         const response = await fetchJson<XPContentTreeServiceResponse>(this.CONTENT_TREE_API, {
             headers: { secret: process.env.SERVICE_SECRET },
-            params: { path },
+            params: { path, locale: 'no' }, // TODO: ikke hardkode locale
         });
 
         return response;
