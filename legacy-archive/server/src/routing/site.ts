@@ -37,5 +37,13 @@ export const setupSites = async (expressApp: Express) => {
         return res.redirect(legacyArchiveConfigs[0].basePath);
     });
 
+    expressApp.all('/:cms/:versionId?', (req, res, next) => {
+        if (req.hostname.endsWith('intern.nav.no')) {
+            return res.redirect(req.url.replace('intern.nav.no', 'ansatt.nav.no'));
+        }
+
+        return next();
+    });
+
     setupErrorHandlers(expressApp);
 };
