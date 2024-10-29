@@ -1,4 +1,4 @@
-name: Build and deploy XP archive to dev
+name: Build and deploy XP archive to prod
 on:
   workflow_dispatch:
   push:
@@ -11,16 +11,17 @@ on:
 
 jobs:
   build-and-deploy:
-    name: Build and deploy to dev
+    name: Build and deploy to prod
     permissions:
       contents: "read"
       id-token: "write"
+    #if: github.event.release.target_commitish == 'master' // TODO: fix for workflow_dispatch
     uses: ./.github/workflows/.xp-archive-deploy.yml
     with:
-      naisEnv: dev
-      VITE_APP_ORIGIN: https://cms-arkiv.ansatt.dev.nav.no
-      XP_ORIGIN: https://www.dev.nav.no
-      HTML_RENDER_API: http://nav-enonicxp-frontend-dev1/render-from-props
+      naisEnv: prod
+      VITE_APP_ORIGIN: https://cms-arkiv.ansatt.nav.no
+      XP_ORIGIN: https://www.nav.no
+      HTML_RENDER_API: http://nav-enonicxp-frontend/render-from-props
     secrets:
       READER_TOKEN: ${{ secrets.READER_TOKEN }}
       NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
