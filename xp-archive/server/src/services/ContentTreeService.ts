@@ -8,21 +8,21 @@ export class ContentTreeService {
     private readonly CONTENT_TREE_API = xpServiceUrl('externalArchive/contentTree');
 
     public getContentTreeHandler: RequestHandler = async (req, res) => {
-        if (!validateQuery(req.query, ['path'])) {
-            return res.status(400).send('Parameter path is required');
+        if (!validateQuery(req.query, ['path', 'locale'])) {
+            return res.status(400).send('Parameters path and locale are required');
         }
 
-        const { path } = req.query;
+        const { path, locale } = req.query;
 
-        const contentTreeResponse = await this.fetchContentTree(path);
+        const contentTreeResponse = await this.fetchContentTree(path, locale);
 
         return res.status(200).json(contentTreeResponse);
     };
 
-    private async fetchContentTree(path: string) {
+    private async fetchContentTree(path: string, locale: string) {
         const response = await fetchJson<XPContentTreeServiceResponse>(this.CONTENT_TREE_API, {
             headers: { secret: process.env.SERVICE_SECRET },
-            params: { path, locale: 'no' }, // TODO: ikke hardkode locale
+            params: { path, locale },
         });
 
         return response;

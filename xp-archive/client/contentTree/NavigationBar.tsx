@@ -5,7 +5,7 @@ import { NavigationItem } from './contentTreeEntry/NavigationItem';
 import { SimpleTreeView } from '@mui/x-tree-view';
 
 export const NavigationBar = () => {
-    const { data, isLoading } = useContentTree('/');
+    const { data, isLoading } = useContentTree('/', 'no');
 
     return (
         <div>
