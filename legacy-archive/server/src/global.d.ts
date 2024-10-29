@@ -4,7 +4,7 @@ declare global {
             NODE_ENV: 'development' | 'production';
             APP_BASEPATH: string;
             APP_PORT: string;
-            APP_ORIGIN: string;
+            APP_ORIGIN_INTERNAL: string;
             OPEN_SEARCH_URI: string;
             OPEN_SEARCH_USERNAME: string;
             OPEN_SEARCH_PASSWORD: string;
