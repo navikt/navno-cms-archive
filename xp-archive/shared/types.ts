@@ -1,3 +1,5 @@
+export type ContentType = `${string}:${string}`;
+
 export type ContentTreeEntryData = {
     id: string;
     path: string;
@@ -31,11 +33,12 @@ export type VersionReference = {
     timestamp: string;
     locale: string;
     displayName: string;
+    type: ContentType;
 };
 
 // This is not a complete type. Expand as needed.
 export type Content = {
-    type: `${string}:${string}`;
+    type: ContentType;
     _id: string;
     _path: string;
     createdTime: string;
