@@ -6,11 +6,10 @@ import { formatTimestamp } from '@common/shared/timestamp';
 import { useAppState } from 'client/context/appState/useAppState';
 
 type Props = {
-    displayName: string; // TODO: Burde komme fra versjon?
     versions: VersionReference[];
 };
 
-export const VersionSelector = ({ displayName, versions }: Props) => {
+export const VersionSelector = ({ versions }: Props) => {
     const { selectedVersionId, setSelectedVersionId } = useAppState();
 
     if (versions.length === 0) {
@@ -25,7 +24,7 @@ export const VersionSelector = ({ displayName, versions }: Props) => {
         >
             {versions.map((version) => (
                 <option key={version.versionId} value={version.versionId}>
-                    {`${pruneString(displayName, 100)} - [${formatTimestamp(version.timestamp)}]`}
+                    {`${pruneString(version.displayName, 100)} - [${formatTimestamp(version.timestamp)}]`}
                 </option>
             ))}
         </Select>

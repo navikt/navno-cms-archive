@@ -56,10 +56,7 @@ export const ContentView = () => {
                                 hasHtml={!!data.html}
                             />
                         </div>
-                        <VersionSelector
-                            displayName={data.json.displayName}
-                            versions={data.versions}
-                        />
+                        <VersionSelector versions={data.versions} />
                     </div>
                     {getDisplayComponent(selectedView, data)}
                 </div>
