@@ -11,7 +11,7 @@ export const ContentHtmlView = ({ html }: Props) => {
     }
     return (
         <div className={style.content}>
-            <iframe srcDoc={html} title="my-iframe" className={style.iframe}></iframe>
+            <iframe srcDoc={html} className={style.iframe}></iframe>
         </div>
     );
 };
