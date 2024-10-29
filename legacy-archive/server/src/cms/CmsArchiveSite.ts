@@ -21,6 +21,9 @@ type ContructorProps = {
     htmlRenderer: HtmlRenderer;
 };
 
+const HOST_SUFFIX_INTERNAL = 'intern.nav.no';
+const HOST_SUFFIX_EXTERNAL = 'ansatt.nav.no';
+
 export class CmsArchiveSite {
     private readonly config: LegacyArchiveSiteConfig;
     private readonly pdfGenerator: PdfGenerator;
@@ -115,6 +118,13 @@ export class CmsArchiveSite {
     private setupSiteRoutes(router: Router, htmlRenderer: HtmlRenderer) {
         router.get('/:versionKey?', cspMiddleware, async (req, res) => {
             const rootCategories = this.categoriesService.getRootCategories();
+
+            const { hostname, protocol, baseUrl } = req;
+
+            if (hostname.endsWith(HOST_SUFFIX_INTERNAL)) {
+                const externalUrl = `${protocol}://${hostname.replace(HOST_SUFFIX_INTERNAL, HOST_SUFFIX_EXTERNAL)}${baseUrl}`;
+                return res.redirect(externalUrl);
+            }
 
             const appContext = {
                 rootCategories,
