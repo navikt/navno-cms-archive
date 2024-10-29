@@ -10,14 +10,18 @@ type Props = {
 };
 
 export const VersionSelector = ({ versions }: Props) => {
-    const { selectedVersionId, setSelectedVersionId } = useAppState();
+    const { selectedVersionId, updateSelectedContent } = useAppState();
 
     if (versions.length === 0) {
         return null;
     }
 
     const selectVersion = (e: ChangeEvent<HTMLSelectElement>) => {
-        setSelectedVersionId(e.target.value || undefined);
+        if (!e.target.value) {
+            updateSelectedContent(undefined, undefined);
+        }
+        const versionId = e.target.value;
+        updateSelectedContent(versions.find((v) => v.versionId === versionId)?.nodeId, versionId);
     };
 
     return (

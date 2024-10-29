@@ -9,7 +9,7 @@ type Props = {
 };
 
 export const NavigationItem = ({ entry }: Props) => {
-    const { setSelectedContentId } = useAppState();
+    const { updateSelectedContent } = useAppState();
 
     const iconUrl = `${import.meta.env.VITE_APP_ORIGIN}/xp/api/contentIcon?type=${entry.type}`;
     const label = (
@@ -24,7 +24,7 @@ export const NavigationItem = ({ entry }: Props) => {
             itemId={entry.id}
             label={label}
             onClick={() => {
-                setSelectedContentId(entry.id);
+                updateSelectedContent(entry.id);
             }}
         >
             {entry.numChildren > 0 ? <NavigationItems path={entry.path} /> : null}
