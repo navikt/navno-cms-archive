@@ -4,6 +4,7 @@ import { buildHtmlRenderer } from '@common/server/ssr/initRenderer';
 import { ContentTreeService } from '../services/ContentTreeService';
 import { ContentService } from '../services/ContentService';
 import { ContentIconService } from 'services/ContentIconService';
+import { AttachmentService } from '../services/AttachmentService';
 
 export const setupSite = async (router: Router) => {
     const htmlRenderer = await buildHtmlRenderer({
@@ -21,8 +22,10 @@ export const setupSite = async (router: Router) => {
     const contentService = new ContentService();
     const contentTreeService = new ContentTreeService();
     const contentIconService = new ContentIconService();
+    const attachmentService = new AttachmentService();
 
     router.get('/api/content', contentService.getContentHandler);
     router.get('/api/contentTree', contentTreeService.getContentTreeHandler);
     router.get('/api/contentIcon', contentIconService.getContentIconHandler);
+    router.get('/api/attachment', attachmentService.getAttachmentHandler);
 };

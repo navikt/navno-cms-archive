@@ -62,6 +62,7 @@ export const fetchHtml = async (url: string, options?: Options): Promise<string 
 export type FileResponse = {
     data: ArrayBuffer;
     mimeType: string;
+    contentDisposition: string | null;
 };
 
 export const fetchFile = async (url: string, options: Options): Promise<FileResponse | null> =>
@@ -70,6 +71,7 @@ export const fetchFile = async (url: string, options: Options): Promise<FileResp
             return {
                 data: await res.arrayBuffer(),
                 mimeType: res.headers.get('content-type') || 'application/octet-stream',
+                contentDisposition: res.headers.get('content-disposition'),
             };
         })
         .catch((e) => {
