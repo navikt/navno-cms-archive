@@ -27,13 +27,15 @@ export const NavigationItem = ({ entry }: Props) => {
                 setSelectedContentId(entry.id);
             }}
         >
-            {entry.numChildren > 0 ? <NavigationItems path={entry.path} /> : null}
+            {entry.numChildren > 0 ? (
+                <NavigationItems path={entry.path} locale={entry.locale} />
+            ) : null}
         </TreeItem>
     );
 };
 
-const NavigationItems = ({ path }: { path: string }) => {
-    const { data, isLoading } = useContentTree(path);
+const NavigationItems = ({ path, locale }: { path: string; locale: string }) => {
+    const { data, isLoading } = useContentTree(path, locale);
     return (
         <>
             {isLoading ? (

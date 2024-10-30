@@ -4,7 +4,7 @@ import { ContentServiceResponse } from '../../shared/types';
 
 const CONTENT_API = `${import.meta.env.VITE_APP_ORIGIN}/xp/api/content`;
 
-type FetchContentParams = { id: string; version?: string };
+type FetchContentParams = { id: string; versionId?: string };
 
 const fetchContent = async (params: FetchContentParams) => {
     if (!params.id) return;
@@ -13,6 +13,6 @@ const fetchContent = async (params: FetchContentParams) => {
     });
 };
 
-export const useFetchContent = ({ id, version }: FetchContentParams) => {
-    return useSWRImmutable({ id, version }, fetchContent);
+export const useFetchContent = ({ id, versionId }: FetchContentParams) => {
+    return useSWRImmutable({ id, versionId }, fetchContent);
 };

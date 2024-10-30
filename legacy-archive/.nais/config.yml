@@ -11,6 +11,7 @@ spec:
   port: 3399
   ingresses:
      - https://cms-arkiv.intern.nav.no
+     - https://cms-arkiv.ansatt.nav.no
   liveness:
     path: /internal/isAlive
     initialDelay: 10
@@ -22,7 +23,7 @@ spec:
       value: "3399"
     - name: APP_BASEPATH
       value: "/"
-    - name: APP_ORIGIN
+    - name: APP_ORIGIN_INTERNAL
       value: "https://cms-arkiv.intern.nav.no"
   openSearch:
     access: read

@@ -78,7 +78,7 @@ export const buildContentSearchParams = (
 
     if (query) {
         if (type === 'locations') {
-            const { pathname } = new URL(query, process.env.APP_ORIGIN);
+            const { pathname } = new URL(query, process.env.APP_ORIGIN_INTERNAL);
 
             must.push({
                 prefix: {

@@ -9,7 +9,7 @@ const expectedEnv = [
     'NODE_ENV',
     'APP_PORT',
     'APP_BASEPATH',
-    'APP_ORIGIN',
+    'APP_ORIGIN_INTERNAL',
     'OPEN_SEARCH_URI',
     'OPEN_SEARCH_USERNAME',
     'OPEN_SEARCH_PASSWORD',

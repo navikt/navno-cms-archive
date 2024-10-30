@@ -6,6 +6,7 @@ export type ContentTreeEntryData = {
     name: string;
     displayName: string;
     type: string;
+    locale: string;
     numChildren: number;
     isLocalized: boolean;
     hasLocalizedDescendants: boolean;

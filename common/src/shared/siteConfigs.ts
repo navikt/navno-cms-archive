@@ -30,7 +30,7 @@ export const legacyArchiveConfigs: LegacyArchiveSiteConfig[] = [
 ] as const;
 
 export const xpArchiveConfig: XpArchiveSiteConfig = {
-    name: 'nav.no (2024)',
+    name: 'nav.no (Enonic XP)',
     basePath: '/xp',
     type: 'enonic-xp',
 } as const;

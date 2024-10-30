@@ -32,7 +32,7 @@ export const ContentView = () => {
 
     const { data, isLoading } = useFetchContent({
         id: fetchId || '',
-        version: selectedVersion?.versionId ?? undefined,
+        versionId: selectedVersion?.versionId ?? undefined,
     });
 
     const [selectedView, setSelectedView] = useState<ViewVariant>('json');
