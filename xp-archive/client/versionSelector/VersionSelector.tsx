@@ -10,7 +10,7 @@ type Props = {
 };
 
 export const VersionSelector = ({ versions }: Props) => {
-    const { selectedVersionId, updateSelectedContent } = useAppState();
+    const { selectedVersion, setSelectedVersion } = useAppState();
 
     if (versions.length === 0) {
         return null;
@@ -18,14 +18,19 @@ export const VersionSelector = ({ versions }: Props) => {
 
     const selectVersion = (e: ChangeEvent<HTMLSelectElement>) => {
         if (!e.target.value) {
-            updateSelectedContent(undefined, undefined);
+            setSelectedVersion(undefined);
         }
         const versionId = e.target.value;
-        updateSelectedContent(versions.find((v) => v.versionId === versionId)?.nodeId, versionId);
+        const nodeId = versions.find((v) => v.versionId === versionId)?.nodeId;
+        setSelectedVersion({ nodeId, versionId });
     };
 
     return (
-        <Select label={'Versjoner'} onChange={selectVersion} value={selectedVersionId ?? ''}>
+        <Select
+            label={'Versjoner'}
+            onChange={selectVersion}
+            value={selectedVersion?.versionId ?? ''}
+        >
             <option value={''}>Siste versjon</option>
             {versions.map((version) => (
                 <option key={version.versionId} value={version.versionId}>

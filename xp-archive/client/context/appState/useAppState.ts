@@ -2,12 +2,13 @@ import { useContext } from 'react';
 import { AppStateContext } from './AppStateContext';
 
 export const useAppState = () => {
-    const { selectedContentId, selectedVersionId, updateSelectedContent } =
+    const { selectedContentId, selectedVersion, setSelectedContentId, setSelectedVersion } =
         useContext(AppStateContext);
 
     return {
         selectedContentId,
-        selectedVersionId,
-        updateSelectedContent,
+        selectedVersion,
+        setSelectedContentId,
+        setSelectedVersion,
     };
 };

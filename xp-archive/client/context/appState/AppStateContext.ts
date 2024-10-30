@@ -1,11 +1,14 @@
 import { createContext } from 'react';
+import { SelectedVersion } from './AppStateProvider';
 
 export type AppState = {
     selectedContentId?: string;
-    selectedVersionId?: string;
-    updateSelectedContent: (contentId: string | undefined, versionId?: string) => void;
+    setSelectedContentId: (contentId: string) => void;
+    selectedVersion?: SelectedVersion;
+    setSelectedVersion: (selectedVersion: SelectedVersion | undefined) => void;
 };
 
 export const AppStateContext = createContext<AppState>({
-    updateSelectedContent: () => ({}),
+    setSelectedContentId: () => ({}),
+    setSelectedVersion: () => ({}),
 });
