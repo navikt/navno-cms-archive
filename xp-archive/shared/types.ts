@@ -39,20 +39,26 @@ export type VersionReference = {
     type: ContentType;
 };
 
+export type Attachment = {
+    name: string;
+    mimeType: string;
+    size: number;
+};
+
 // This is not a complete type. Expand as needed.
 export type Content = {
-    type: ContentType;
     _id: string;
     _path: string;
+    displayName: string;
+    type: ContentType;
+    language: string;
     createdTime: string;
     modifiedTime: string;
-    displayName: string;
-    language: string;
     publish?: {
         first?: string;
         from?: string;
         to?: string;
     };
-    layerLocale?: string;
     data: Record<string, unknown>;
+    attachment?: Attachment;
 };
