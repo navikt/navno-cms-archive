@@ -26,12 +26,13 @@ const getDisplayComponent = (viewVariant: ViewVariant, data: ContentServiceRespo
 };
 
 export const ContentView = () => {
-    const { selectedContentId, selectedVersion } = useAppState();
+    const { selectedContentId, selectedLocale, selectedVersion } = useAppState();
 
     const fetchId = selectedVersion?.nodeId ?? selectedContentId;
 
     const { data, isLoading } = useFetchContent({
         id: fetchId || '',
+        locale: selectedLocale,
         versionId: selectedVersion?.versionId ?? undefined,
     });
 
