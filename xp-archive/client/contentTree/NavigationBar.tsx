@@ -1,6 +1,7 @@
 import React from 'react';
 import { Alert, Heading, Tabs } from '@navikt/ds-react';
 import { LayerPanel } from './layerPanel/LayerPanel';
+import { useAppState } from 'client/context/appState/useAppState';
 
 const locales = ['no', 'en', 'nn', 'se'] as const;
 export type Locale = (typeof locales)[number];
@@ -16,10 +17,12 @@ const getLabel = (locale: Locale) => {
 };
 
 export const NavigationBar = () => {
+    const { setSelectedLocale } = useAppState();
+
     return (
         <div>
             <Heading size={'small'}>{'Innhold'}</Heading>
-            <Tabs defaultValue="no">
+            <Tabs defaultValue="no" onChange={(locale) => setSelectedLocale(locale as Locale)}>
                 <Tabs.List>
                     {locales.map((locale) => (
                         <Tabs.Tab key={locale} value={locale} label={getLabel(locale)} />
