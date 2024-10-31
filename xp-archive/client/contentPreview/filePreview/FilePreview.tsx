@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from '@navikt/ds-react';
+import { DownloadIcon } from '@navikt/aksel-icons';
 import { FileResponse } from '@common/shared/fetchUtils';
 import style from './FilePreview.module.css';
 
@@ -19,13 +20,16 @@ export const FilePreview = ({ name, file }: Props) => {
         return <iframe className={style.iframe} src={blobURL} />;
     }
 
-    if (imageFiletype.includes(file.mimeType)) {
-        return <img className={style.image} alt="" src={blobURL} />;
-    }
-
     return (
-        <Link href={blobURL} target={'_blank'}>
-            {name}
-        </Link>
+        <>
+            {imageFiletype.includes(file.mimeType) ? (
+                <img className={style.image} alt="" src={blobURL} />
+            ) : null}
+            <div>
+                <Link href={blobURL} target={'_blank'}>
+                    {name} <DownloadIcon title="Last ned fil" />
+                </Link>
+            </div>
+        </>
     );
 };
