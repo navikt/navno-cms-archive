@@ -22,14 +22,18 @@ export const NavigationItem = ({ entry }: Props) => {
 
     const entryLocalized = entry.isLocalized || entry.hasLocalizedDescendants;
 
+    const onClick = () => {
+        if (!entry.isEmpty) {
+            setSelectedContentId(entry.id);
+        }
+    };
+
     return (
         <TreeItem
             className={entryLocalized ? '' : style.foggy}
             itemId={entry.id}
             label={label}
-            onClick={() => {
-                setSelectedContentId(entry.id);
-            }}
+            onClick={onClick}
         >
             {entry.numChildren > 0 ? (
                 <NavigationItems path={entry.path} locale={entry.locale} />
