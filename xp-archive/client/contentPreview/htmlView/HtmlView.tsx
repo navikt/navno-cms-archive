@@ -6,9 +6,5 @@ type Props = {
 };
 
 export const HtmlView = ({ html }: Props) => {
-    return (
-        <div className={style.content}>
-            <iframe srcDoc={html} className={style.iframe}></iframe>
-        </div>
-    );
+    return <iframe srcDoc={html} className={style.iframe}></iframe>;
 };

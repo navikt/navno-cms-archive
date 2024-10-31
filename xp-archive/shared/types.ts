@@ -49,6 +49,7 @@ export type Attachment = {
 export type Content = {
     _id: string;
     _path: string;
+    _versionKey: string;
     displayName: string;
     type: ContentType;
     language: string;

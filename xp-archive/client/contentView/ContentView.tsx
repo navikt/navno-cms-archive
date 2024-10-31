@@ -12,7 +12,7 @@ import style from './ContentView.module.css';
 
 const getDisplayComponent = (viewVariant: ViewVariant, data: ContentServiceResponse) => {
     const components: Record<ViewVariant, React.ReactElement> = {
-        preview: <ContentPreview html={data.html} attachment={data.json.attachment} />,
+        preview: <ContentPreview html={data.html} content={data.json} />,
         json: <ContentJsonView json={data.json} />,
     };
     return components[viewVariant];
@@ -55,7 +55,7 @@ export const ContentView = () => {
                         </div>
                         <VersionSelector versions={data.versions} />
                     </div>
-                    {getDisplayComponent(selectedView, data)}
+                    <div className={style.main}>{getDisplayComponent(selectedView, data)}</div>
                 </div>
             ) : null}
         </>
