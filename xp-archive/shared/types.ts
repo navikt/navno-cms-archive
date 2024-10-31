@@ -10,6 +10,8 @@ export type ContentTreeEntryData = {
     numChildren: number;
     isLocalized: boolean;
     hasLocalizedDescendants: boolean;
+    // If true, this is an empty dummy tree node purely used for navigation, without any content available
+    isEmpty?: boolean;
 };
 
 export type XPContentTreeServiceResponse = {
