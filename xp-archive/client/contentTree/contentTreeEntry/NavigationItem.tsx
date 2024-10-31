@@ -3,6 +3,7 @@ import { ContentTreeEntryData } from '../../../shared/types';
 import { useAppState } from '../../context/appState/useAppState';
 import { TreeItem } from '@mui/x-tree-view';
 import { useContentTree } from 'client/hooks/useContentTree';
+import style from './NavigationItem.module.css';
 
 type Props = {
     entry: ContentTreeEntryData;
@@ -19,8 +20,11 @@ export const NavigationItem = ({ entry }: Props) => {
         </span>
     );
 
+    const entryLocalized = entry.isLocalized || entry.hasLocalizedDescendants;
+
     return (
         <TreeItem
+            className={entryLocalized ? '' : style.foggy}
             itemId={entry.id}
             label={label}
             onClick={() => {

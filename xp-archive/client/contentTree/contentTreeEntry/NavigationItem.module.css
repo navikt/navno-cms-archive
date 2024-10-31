@@ -1,0 +1,4 @@
+.foggy {
+  color: var(--a-gray-500);
+  background-color: var(--a-grayalpha-50);
+}
