@@ -21,6 +21,14 @@ export const NavigationBar = () => {
 
     return (
         <div>
+            <Alert
+                variant={'warning'}
+                size={'small'}
+                inline={true}
+                style={{ marginBottom: '1rem' }}
+            >
+                {'Obs: dette arkivet er under utvikling og er ikke klart til bruk!'}
+            </Alert>
             <Heading size={'small'}>{'Innhold'}</Heading>
             <Tabs defaultValue="no" onChange={(locale) => setSelectedLocale(locale as Locale)}>
                 <Tabs.List>
@@ -34,9 +42,6 @@ export const NavigationBar = () => {
                     </Tabs.Panel>
                 ))}
             </Tabs>
-            <Alert variant={'warning'} size={'small'} inline={true} style={{ marginTop: '1.5rem' }}>
-                {'Obs: dette arkivet er under utvikling og er ikke klart til bruk!'}
-            </Alert>
         </div>
     );
 };
