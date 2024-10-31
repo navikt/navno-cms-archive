@@ -17,7 +17,7 @@ export const FilePreview = ({ name, file }: Props) => {
     const blobURL = URL.createObjectURL(blob);
 
     if (iframeFiletype.includes(file.mimeType)) {
-        return <iframe className={style.iframe} src={blobURL} />;
+        return <iframe className={style.iframe} src={blobURL} title={name} />;
     }
 
     return (
