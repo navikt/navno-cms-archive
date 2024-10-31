@@ -1,7 +1,7 @@
 import React from 'react';
 import { HtmlView } from './htmlView/HtmlView';
 import { Content } from 'shared/types';
-import { FilePreview } from './filePreview.tsx/FilePreview';
+import { FilePreviewWrapper } from './filePreview/FilePreviewWrapper';
 
 type Props = {
     html: string | undefined;
@@ -10,7 +10,13 @@ type Props = {
 
 export const ContentPreview = ({ html, content }: Props) => {
     if (content.attachment) {
-        return <FilePreview id={content._id} versionId={content._versionKey} />;
+        return (
+            <FilePreviewWrapper
+                name={content.attachment.name}
+                id={content._id}
+                versionId={content._versionKey}
+            />
+        );
     }
 
     if (html) {
