@@ -3,26 +3,19 @@ import { useFetchContent } from '../hooks/useFetchContent';
 import { Heading, Loader } from '@navikt/ds-react';
 import { useAppState } from '../context/appState/useAppState';
 import { ViewSelector, ViewVariant } from 'client/viewSelector/ViewSelector';
-import { ContentHtmlView } from 'client/contentHtmlView/ContentHtmlView';
+import { ContentPreview } from 'client/contentPreview/ContentPreview';
 import { ContentJsonView } from 'client/contentJsonView/contentJsonView';
-import { ContentFilesView } from 'client/contentFilesView/ContentFilesView';
 import { VersionSelector } from 'client/versionSelector/VersionSelector';
 import { ContentServiceResponse } from 'shared/types';
 
 import style from './ContentView.module.css';
 
-const getDefaultView = (data: ContentServiceResponse | null | undefined): ViewVariant => {
-    if (data?.html) return 'html';
-    return 'json';
-};
-
 const getDisplayComponent = (viewVariant: ViewVariant, data: ContentServiceResponse) => {
-    const translations: Record<ViewVariant, React.ReactElement> = {
-        html: <ContentHtmlView html={data.html} />,
+    const components: Record<ViewVariant, React.ReactElement> = {
+        preview: <ContentPreview html={data.html} content={data.json} />,
         json: <ContentJsonView json={data.json} />,
-        files: <ContentFilesView />,
     };
-    return translations[viewVariant];
+    return components[viewVariant];
 };
 
 export const ContentView = () => {
@@ -36,11 +29,12 @@ export const ContentView = () => {
         versionId: selectedVersion?.versionId ?? undefined,
     });
 
-    const [selectedView, setSelectedView] = useState<ViewVariant>('json');
+    const hasPreview = !!data?.html || !!data?.json.attachment;
+    const [selectedView, setSelectedView] = useState<ViewVariant>('preview');
 
     useEffect(() => {
-        setSelectedView(getDefaultView(data));
-    }, [data]);
+        setSelectedView(hasPreview ? 'preview' : 'json');
+    }, [hasPreview]);
 
     if (isLoading) {
         return <Loader />;
@@ -56,12 +50,12 @@ export const ContentView = () => {
                             <ViewSelector
                                 selectedView={selectedView}
                                 setSelectedView={setSelectedView}
-                                hasHtml={!!data.html}
+                                hasPreview={hasPreview}
                             />
                         </div>
                         <VersionSelector versions={data.versions} />
                     </div>
-                    {getDisplayComponent(selectedView, data)}
+                    <div className={style.main}>{getDisplayComponent(selectedView, data)}</div>
                 </div>
             ) : null}
         </>

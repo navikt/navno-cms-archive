@@ -2,14 +2,13 @@ import React from 'react';
 import { ToggleGroup } from '@navikt/ds-react';
 import style from './ViewSelector.module.css';
 
-const viewVariants = ['html', 'json', 'files'] as const;
+const viewVariants = ['preview', 'json'] as const;
 export type ViewVariant = (typeof viewVariants)[number];
 
 const getDisplayname = (viewVariant: ViewVariant) => {
     const translations: Record<ViewVariant, string> = {
-        html: 'Nettside',
+        preview: 'Forhåndsvisning',
         json: 'JSON',
-        files: 'Filer',
     };
     return translations[viewVariant];
 };
@@ -17,13 +16,13 @@ const getDisplayname = (viewVariant: ViewVariant) => {
 type Props = {
     selectedView: ViewVariant;
     setSelectedView(selectedView: ViewVariant): void;
-    hasHtml: boolean;
+    hasPreview: boolean;
 };
 
-export const ViewSelector = ({ selectedView, setSelectedView, hasHtml }: Props) => {
+export const ViewSelector = ({ selectedView, setSelectedView, hasPreview }: Props) => {
     const updateSelectedView = (viewVariantString: string) => {
         const viewVariant = viewVariantString as ViewVariant;
-        if (viewVariant === 'html' && !hasHtml) {
+        if (viewVariant === 'preview' && !hasPreview) {
             return;
         }
         setSelectedView(viewVariant);
@@ -35,7 +34,7 @@ export const ViewSelector = ({ selectedView, setSelectedView, hasHtml }: Props) 
                 <ToggleGroup.Item
                     key={view}
                     value={view}
-                    className={`${view === 'html' && !hasHtml ? style.disabled : ''}`}
+                    className={`${view === 'preview' && !hasPreview ? style.disabled : ''}`}
                 >
                     {getDisplayname(view)}
                 </ToggleGroup.Item>
