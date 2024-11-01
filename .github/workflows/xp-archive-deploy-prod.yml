@@ -12,10 +12,10 @@ on:
 jobs:
   build-and-deploy:
     name: Build and deploy to prod
+    environment: prod-xp
     permissions:
       contents: "read"
       id-token: "write"
-    #if: github.event.release.target_commitish == 'master' // TODO: fix for workflow_dispatch
     uses: ./.github/workflows/.xp-archive-deploy.yml
     with:
       naisEnv: prod
