@@ -62,7 +62,7 @@ Innholdet ble migrert til en Opensearch-database: https://opensearch-personbruke
 
 Migrerings-applikasjonen finnes her: https://github.com/navikt/enonic-cms-site-extractor
 
-Logger for migreringsjobbene er indeksert under `cmssbs_migrationlogs` og `cmsfss_migrationlogs`
+Logger for migreringsjobbene finnes i Opensearch-databasen, under index'ene `cmssbs_migrationlogs` og `cmsfss_migrationlogs`.
 
 ### Oppsett for utvikling
 
