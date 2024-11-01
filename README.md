@@ -56,6 +56,13 @@ npm run start-local -C xp-archive
 Hvis iframes ikke vises, sjekk om du får cors-issues i srcdoc. Disse vil oppstå hvis du kjører nav-enonicxp-frontend i dev-modus og ikke i prod-modus.
 
 ## <a name="enonic-legacy"></a> Enonic CMS legacy arkiv (2006-2019)
+Dette er et arkiv av innhold fra Enonic CMS, som Nav benyttet fra 2006-2019. Arkivet har to deler: SBS (nav.no og annet åpent innhold) og FSS (intranett).
+
+Innholdet ble migrert til en Opensearch-database: https://opensearch-personbruker-enonic-cms-archive-nav-prod.a.aivencloud.com
+
+Migrerings-applikasjonen finnes her: https://github.com/navikt/enonic-cms-site-extractor
+
+Logger for migreringsjobbene er indeksert under `cmssbs_migrationlogs` og `cmsfss_migrationlogs`
 
 ### Oppsett for utvikling
 
