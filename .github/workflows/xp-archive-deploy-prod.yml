@@ -12,7 +12,6 @@ on:
 jobs:
   build-and-deploy:
     name: Build and deploy to prod
-    environment: prod-xp
     permissions:
       contents: "read"
       id-token: "write"
