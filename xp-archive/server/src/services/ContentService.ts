@@ -20,7 +20,7 @@ export class ContentService {
         return res.status(200).json(contentResponse);
     };
 
-    private async fetchContent(
+    public async fetchContent(
         contentId: string,
         locale: string,
         versionId?: string
