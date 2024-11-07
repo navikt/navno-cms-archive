@@ -29,7 +29,7 @@ export const PdfExport = ({ versions }: Props) => {
             <Link
                 href={`${PDF_API}?contentId=${versions[0].nodeId}&versionIds=${versionsSelected.join(',')}&locale=no`}
                 target={'_blank'}
-                // download={true}
+                download={true}
             >
                 {'Last ned valgte versjoner '}
                 <DownloadIcon title="Last ned versjon(er)" />
