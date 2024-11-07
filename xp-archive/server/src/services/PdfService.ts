@@ -65,16 +65,16 @@ export class PdfService {
         return this.createPdfZip(allPdfs, res);
     };
 
-    private singlePdf = (content: PdfResult, res: Response) => {
+    private singlePdf(content: PdfResult, res: Response) {
         const { filename, data } = content;
 
         return res
             .setHeader('Content-Disposition', `attachment; filename="${filename}"`)
             .setHeader('Content-Type', 'application/pdf')
             .send(data);
-    };
+    }
 
-    private createPdfZip = (pdfs: PdfResult[], res: Response) => {
+    private createPdfZip(pdfs: PdfResult[], res: Response) {
         const newestVersion = pdfs[0];
         const oldestVersion = pdfs[pdfs.length - 1];
 
@@ -108,7 +108,7 @@ export class PdfService {
         }
 
         archive.finalize();
-    };
+    }
 
     private async generateContentPdf(
         content: ContentServiceResponse,
