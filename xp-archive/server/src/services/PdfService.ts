@@ -6,7 +6,7 @@ import {
     generatePdfFooter,
     pixelWidthToA4Scale,
 } from 'utils/pdf-utils';
-import { RequestHandler } from 'express';
+import { RequestHandler, Response } from 'express';
 import { validateQuery } from 'utils/params';
 // TODO: Flytt archiver til rot-mappe
 import archiver from 'archiver';
@@ -17,6 +17,7 @@ const MIN_WIDTH_PX = 400;
 
 type PdfResult = {
     data: Buffer;
+    timestamp: string;
     filename: string;
 };
 
@@ -35,29 +36,37 @@ export class PdfService {
     }
 
     public generatePdfHandler: RequestHandler = async (req, res) => {
-        if (!validateQuery(req.query, ['versionIds', 'contentId', 'locale'])) {
-            return res.status(400).send('Parameter versionIds is required');
+        if (!validateQuery(req.query, ['versionIds', 'locale'])) {
+            return res.status(400).send('Parameters versionIds and locale are required');
         }
-        const versionIds = req.query.versionIds.split(',');
+
+        const versionIds = req.query.versionIds.split(',').map((v) => v.split(';'));
+        const { locale } = req.query;
 
         if (versionIds.length === 0) {
             return res.status(400).send('Version keys array must be non-empty');
         }
-
-        const { locale, contentId } = req.query;
-
-        // TODO: Hent alle versjoner
-        const contents = await this.contentService.fetchContent(contentId, locale, versionIds[0]);
-        // this.pdfFromVersionsResponse(versionIds, res)
-        // this.
-        if (!contents) {
+        const contents = await Promise.all(
+            versionIds.map(([nodeId, versionId]) =>
+                this.contentService
+                    .fetchContent(nodeId, locale, versionId)
+                    .then((val) => (val ? this.generateContentPdf(val, DEFAULT_WIDTH_PX) : null))
+            )
+        );
+        const allPdfs = contents.filter((c) => c !== null);
+        if (allPdfs.length === 0) {
             return res.status(404).send('No content versions found');
         }
 
-        // TODO: Vurder å ta med timestamp på første + siste
-        // const zipFilename = `${contents.json.displayName}_${contents.json.createdTime}.zip`;
+        if (allPdfs.length === 1) {
+            return this.singlePdf(allPdfs[0], res);
+        }
 
-        const { filename, data } = await this.generateContentPdf(contents, DEFAULT_WIDTH_PX);
+        return this.createPdfZip(allPdfs, res);
+    };
+
+    private singlePdf = (content: PdfResult, res: Response) => {
+        const { filename, data } = content;
 
         return res
             .setHeader('Content-Disposition', `attachment; filename="${filename}"`)
@@ -65,54 +74,41 @@ export class PdfService {
             .send(data);
     };
 
-    // //multi
-    // private async pdfFromVersionsResponse(
-    //     versionIds: string[],
-    //     res: Response,
-    //     width: number = DEFAULT_WIDTH_PX
-    // ) {
+    private createPdfZip = (pdfs: PdfResult[], res: Response) => {
+        const newestVersion = pdfs[0];
+        const oldestVersion = pdfs[pdfs.length - 1];
 
-    //     const newestVersion = contentVersions[0];
-    //     const oldestVersion = contentVersions[contentVersions.length - 1];
+        const zipFilename = `${newestVersion.filename}_${oldestVersion.timestamp}-${newestVersion.timestamp}.zip`;
 
-    //     const zipFilename = `${newestVersion.name}_${oldestVersion.meta.timestamp}-${newestVersion.meta.timestamp}.zip`;
+        res.setHeader(
+            'Content-Disposition',
+            `attachment; filename="${encodeURIComponent(zipFilename)}"`
+        )
+            .setHeader('Content-Type', 'application/zip')
+            .setHeader('Transfer-Encoding', 'chunked');
 
-    //     res.setHeader(
-    //         'Content-Disposition',
-    //         `attachment; filename="${encodeURIComponent(zipFilename)}"`
-    //     )
-    //         .setHeader('Content-Type', 'application/zip')
-    //         .setHeader('Transfer-Encoding', 'chunked')
-    //         .cookie(DOWNLOAD_COOKIE_NAME, true);
+        const archive = archiver('zip');
 
-    //     const archive = archiver('zip');
+        archive.on('data', (chunk) => {
+            res.write(chunk);
+        });
 
-    //     archive.on('data', (chunk) => {
-    //         res.write(chunk);
-    //     });
+        archive.on('end', () => {
+            res.end();
+        });
 
-    //     archive.on('end', () => {
-    //         res.end();
-    //     });
+        for (const pdf of pdfs) {
+            if (!res.headersSent) {
+                // Set an estimate for content-length, which allows clients to track the download progress
+                // This header is not according to spec for chunked responses, but browsers seem to respect it
+                res.setHeader('Content-Length', pdf.data.length * pdfs.length);
+            }
 
-    //     for (const content of contentVersions) {
-    //         if (!content.html) {
-    //             continue;
-    //         }
+            archive.append(pdf.data, { name: pdf.filename });
+        }
 
-    //         await this.generateContentPdf(content, width).then((result) => {
-    //             if (!res.headersSent) {
-    //                 // Set an estimate for content-length, which allows clients to track the download progress
-    //                 // This header is not according to spec for chunked responses, but browsers seem to respect it
-    //                 res.setHeader('Content-Length', result.data.length * contentVersions.length);
-    //             }
-
-    //             archive.append(result.data, { name: result.filename });
-    //         });
-    //     }
-
-    //     archive.finalize();
-    // }
+        archive.finalize();
+    };
 
     private async generateContentPdf(
         content: ContentServiceResponse,
@@ -124,6 +120,7 @@ export class PdfService {
                 data: Buffer.from(
                     `Could not generate PDF from content version ${json._versionKey} - HTML field was empty`
                 ),
+                timestamp: json.createdTime,
                 filename: generateErrorFilename(content),
             };
         }
@@ -161,6 +158,7 @@ export class PdfService {
 
             return {
                 data: Buffer.from(pdf),
+                timestamp: json.createdTime,
                 filename: generatePdfFilename(content),
             };
         } catch (e) {
@@ -168,6 +166,7 @@ export class PdfService {
             console.error(msg);
             return {
                 data: Buffer.from(msg),
+                timestamp: json.createdTime,
                 filename: generateErrorFilename(content),
             };
         }

@@ -20,13 +20,12 @@ export const PdfExport = ({ versions }: Props) => {
         <>
             <CheckboxGroup legend="Versjoner" onChange={handleChange}>
                 {versions.map((v) => (
-                    <Checkbox key={v.versionId} value={v.versionId}>
+                    <Checkbox key={v.versionId} value={`${v.nodeId};${v.versionId}`}>
                         {v.displayName} {formatTimestamp(v.timestamp)}{' '}
                     </Checkbox>
                 ))}
             </CheckboxGroup>
 
-            {/* TODO: contentId er feil!! */}
             <Link
                 href={`${PDF_API}?contentId=${versions[0].nodeId}&versionIds=${versionsSelected.join(',')}&locale=no`}
                 target={'_blank'}
