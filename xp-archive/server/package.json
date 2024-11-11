@@ -11,11 +11,14 @@
         "dev": "npm-run-all -p build-and-watch nodemon-start"
     },
     "dependencies": {
+        "archiver": "7.0.1",
         "compression": "1.7.4",
         "csp-header": "5.2.1",
-        "dotenv": "16.4.5"
+        "dotenv": "16.4.5",
+        "puppeteer": "23.7.0"
     },
     "devDependencies": {
+        "@types/archiver": "6.0.3",
         "@types/compression": "1.7.5",
         "nodemon": "3.1.7"
     },

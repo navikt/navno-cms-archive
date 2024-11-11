@@ -6,6 +6,7 @@ import { ViewSelector, ViewVariant } from 'client/viewSelector/ViewSelector';
 import { ContentPreview } from 'client/contentPreview/ContentPreview';
 import { ContentJsonView } from 'client/contentJsonView/contentJsonView';
 import { VersionSelector } from 'client/versionSelector/VersionSelector';
+import { PdfExport } from 'client/pdfExport/PdfExport';
 import { ContentServiceResponse } from 'shared/types';
 
 import style from './ContentView.module.css';
@@ -13,6 +14,7 @@ import style from './ContentView.module.css';
 const getDisplayComponent = (viewVariant: ViewVariant, data: ContentServiceResponse) => {
     const components: Record<ViewVariant, React.ReactElement> = {
         preview: <ContentPreview html={data.html} content={data.json} />,
+        pdf: <PdfExport versions={data.versions} />,
         json: <ContentJsonView json={data.json} />,
     };
     return components[viewVariant];
@@ -51,6 +53,7 @@ export const ContentView = () => {
                                 selectedView={selectedView}
                                 setSelectedView={setSelectedView}
                                 hasPreview={hasPreview}
+                                isWebpage={!!data.html && !data.json.attachment}
                             />
                         </div>
                         <VersionSelector versions={data.versions} />
