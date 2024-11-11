@@ -1,5 +1,8 @@
 FROM node:22-alpine
 
+RUN apt-get update
+RUN apt-get --assume-yes --no-install-recommends install chromium && apt-get clean
+
 WORKDIR /app/xp-archive/server
 
 ENV NODE_ENV=production
