@@ -83,7 +83,9 @@ List ut secrets:
 kubectl get secret -n personbruker
 ```
 
-Be om tilgang til aiven-prod i naisdevice:
+Be om tilgang til aiven-prod i naisdevice.
+
+Åpne secret:
 
 ```
 kubectl edit secret -n personbruker aiven-navno-cms-archive-<id> //Bytt ut <id> med id fra lista
