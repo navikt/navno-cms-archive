@@ -33,6 +33,8 @@ cp xp-archive/.env-template xp-archive/.env.development
 cp xp-archive/.env-template xp-archive/.env.prod-local
 ```
 
+bytt ut med NODE_ENV=production i begge apper i prod-local?
+
 For legacy arkivet trenger du også credentials for open-search, se [Enonic CMS legacy arkiv](#enonic-cms-legacy-arkiv-2006-2019)
 
 4. Starte applikasjon i dev-modus
@@ -56,6 +58,7 @@ npm run start-local -C xp-archive
 Hvis iframes ikke vises, sjekk om du får cors-issues i srcdoc. Disse vil oppstå hvis du kjører nav-enonicxp-frontend i dev-modus og ikke i prod-modus.
 
 ## <a name="enonic-legacy"></a> Enonic CMS legacy arkiv (2006-2019)
+
 Dette er et arkiv av innhold fra Enonic CMS, som Nav benyttet fra 2006-2019. Arkivet har to deler: SBS (nav.no og annet åpent innhold) og FSS (intranett).
 
 Innholdet ble migrert til en Opensearch-database: https://opensearch-personbruker-enonic-cms-archive-nav-prod.a.aivencloud.com
@@ -71,14 +74,28 @@ Credentials for opensearch må legges inn i .env filer lokalt. Disse kan hentes 
 liste ut secrets
 
 ```
+kubectl config use-context prod-gcp
+```
+
+```
 kubectl get secret -n personbruker
 ```
 
+Be om tilgang til aiven-prod i naisdevice.
+
 ```
-kubectl edit secret aiven-navno-cms-archive-<id>
+kubectl edit secret -n personbruker aiven-navno-cms-archive-<id> //Bytt ut <id> med id fra lista
 ```
 
-Kopier .env-template til .env.development/.env.prod-local. Erstatt disse feltene med tilsvarende verdier fra secrets:
+Dekod OPEN_SEARCH_URI, OPEN_SEARCH_USERNAME og OPEN_SEARCH_PASSWORD fra base64:
+
+```
+echo <OPEN_SEARCH_URI> | base64 --decode
+```
+
+Fjern eventuelt trailing prosent-tegn.
+
+Erstatt disse feltene med dekodede verdier fra secrets i .env.prod-local og .env.development: (IKKE i .env-template)
 
 ```
 OPEN_SEARCH_URI=http://my-opensearch-instance
@@ -86,8 +103,4 @@ OPEN_SEARCH_USERNAME=username
 OPEN_SEARCH_PASSWORD=password
 ```
 
-Secretene er base64.encodet så de må decodes.
-
 Husk å ikke commit secrets! 👿
-
-For tilgang til aiven opensearch må du logge på aiven-prod gateway i naisdevice.
