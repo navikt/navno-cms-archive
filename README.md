@@ -26,14 +26,14 @@ npm run build -C xp-archive
    Husk å endre NODE_ENV=production i .env.prod-local filen.
 
 ```
-cp legacy-archive/.env-template xp-archive/.env.development
-cp legacy-archive/.env-template xp-archive/.env.prod-local
+cp legacy-archive/.env-template legacy-archive/.env.development
+cp legacy-archive/.env-template legacy-archive/.env.prod-local
 
 cp xp-archive/.env-template xp-archive/.env.development
 cp xp-archive/.env-template xp-archive/.env.prod-local
 ```
 
-bytt ut med NODE_ENV=production i begge apper i prod-local?
+Sett NODE_ENV=production i xp-archive/.env.prod-local og legacy-archive/.env.prod-local
 
 For legacy arkivet trenger du også credentials for open-search, se [Enonic CMS legacy arkiv](#enonic-cms-legacy-arkiv-2006-2019)
 
@@ -71,17 +71,19 @@ Logger for migreringsjobbene finnes i Opensearch-databasen, under index'ene `cms
 
 Credentials for opensearch må legges inn i .env filer lokalt. Disse kan hentes ut fra kubernetes secret `aiven-navno-cms-archive-*`.
 
-liste ut secrets
+Sett context til prod-gcp:
 
 ```
 kubectl config use-context prod-gcp
 ```
 
+List ut secrets:
+
 ```
 kubectl get secret -n personbruker
 ```
 
-Be om tilgang til aiven-prod i naisdevice.
+Be om tilgang til aiven-prod i naisdevice:
 
 ```
 kubectl edit secret -n personbruker aiven-navno-cms-archive-<id> //Bytt ut <id> med id fra lista
