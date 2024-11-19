@@ -1,15 +1,20 @@
 .content {
-  display: flex;
-  flex-direction: column;
+    grid-area: main;
+
+    display: flex;
+    flex-direction: column;
+    overflow-y: hidden;
+    padding: 1rem;
+    background-color: var(--a-surface-subtle);
 }
 
 .top {
-  display: flex;
-  justify-content: space-between;
-  gap: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    gap: 1.5rem;
 }
 
 .main {
-  height: 100%;
-  margin-top: 1rem;
+    height: 100%;
+    margin-top: 1rem;
 }

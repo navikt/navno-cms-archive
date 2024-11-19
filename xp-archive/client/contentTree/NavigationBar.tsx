@@ -1,7 +1,9 @@
 import React from 'react';
-import { Alert, Heading, Tabs } from '@navikt/ds-react';
+import { Heading, Tabs } from '@navikt/ds-react';
 import { LayerPanel } from './layerPanel/LayerPanel';
 import { useAppState } from 'client/context/appState/useAppState';
+
+import style from './NavigationBar.module.css';
 
 const locales = ['no', 'en', 'nn', 'se'] as const;
 export type Locale = (typeof locales)[number];
@@ -20,16 +22,10 @@ export const NavigationBar = () => {
     const { setSelectedLocale } = useAppState();
 
     return (
-        <div>
-            <Alert
-                variant={'warning'}
-                size={'small'}
-                inline={true}
-                style={{ marginBottom: '1rem' }}
-            >
-                {'Obs: dette arkivet er under utvikling og er ikke klart til bruk!'}
-            </Alert>
-            <Heading size={'small'}>{'Innhold'}</Heading>
+        <div className={style.wrapper}>
+            <Heading size={'small'} className={style.heading}>
+                {'Innhold'}
+            </Heading>
             <Tabs defaultValue="no" onChange={(locale) => setSelectedLocale(locale as Locale)}>
                 <Tabs.List>
                     {locales.map((locale) => (

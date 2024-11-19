@@ -7,7 +7,11 @@ import { AppStateProvider } from './context/appState/AppStateProvider';
 
 export const App = () => {
     return (
-        <AppLayout siteName={xpArchiveConfig.name} basePath={xpArchiveConfig.basePath}>
+        <AppLayout
+            siteName={xpArchiveConfig.name}
+            basePath={xpArchiveConfig.basePath}
+            showUnderDevAlert
+        >
             <AppStateProvider>
                 <NavigationBar />
                 <ContentView />
