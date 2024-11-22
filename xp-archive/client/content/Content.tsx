@@ -40,15 +40,12 @@ export const Content = () => {
             {selectedContentId ? (
                 <div className={style.content}>
                     <div className={style.top}>
-                        <div>
-                            <Heading size={'medium'}>{'Visning'}</Heading>
-                            <ViewSelector
-                                selectedView={selectedView}
-                                setSelectedView={setSelectedView}
-                                hasAttachment={hasAttachment}
-                                isWebpage={isWebpage}
-                            />
-                        </div>
+                        <ViewSelector
+                            selectedView={selectedView}
+                            setSelectedView={setSelectedView}
+                            hasAttachment={hasAttachment}
+                            isWebpage={isWebpage}
+                        />
                         <VersionSelector versions={data?.versions || []} />
                     </div>
                     <ContentView selectedView={selectedView} isLoading={isLoading} data={data} />

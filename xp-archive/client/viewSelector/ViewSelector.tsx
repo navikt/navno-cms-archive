@@ -1,5 +1,6 @@
 import React from 'react';
 import { ToggleGroup } from '@navikt/ds-react';
+import style from './ViewSelector.module.css';
 
 export type ViewVariant = 'html' | 'pdf' | 'json' | 'filepreview';
 
@@ -38,7 +39,14 @@ export const ViewSelector = ({
           : ['json'];
 
     return (
-        <ToggleGroup size={'small'} value={selectedView} onChange={updateSelectedView}>
+        <ToggleGroup
+            className={style.datatheme}
+            data-theme="viewSelector"
+            label={'Visning'}
+            size={'small'}
+            value={selectedView}
+            onChange={updateSelectedView}
+        >
             {relevantViewVariants.map((view) => (
                 <ToggleGroup.Item key={view} value={view}>
                     {getDisplayname(view)}

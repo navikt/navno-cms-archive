@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { DownloadIcon } from '@navikt/aksel-icons';
-import { Checkbox, CheckboxGroup, Link } from '@navikt/ds-react';
+import { Button, Checkbox, CheckboxGroup, Link } from '@navikt/ds-react';
 import { VersionReference } from 'shared/types';
 import { formatTimestamp } from '@common/shared/timestamp';
+import style from './PdfExport.module.css';
 
 type Props = {
     versions: VersionReference[];
@@ -18,22 +19,29 @@ export const PdfExport = ({ versions }: Props) => {
 
     return (
         <>
-            <CheckboxGroup legend="Versjoner" onChange={handleChange}>
-                {versions.map((v) => (
-                    <Checkbox key={v.versionId} value={`${v.nodeId};${v.versionId}`}>
-                        {v.displayName} {formatTimestamp(v.timestamp)}{' '}
-                    </Checkbox>
-                ))}
-            </CheckboxGroup>
-
-            <Link
-                href={`${PDF_API}?contentId=${versions[0].nodeId}&versionIds=${versionsSelected.join(',')}&locale=no`}
-                target={'_blank'}
-                download={true}
-            >
-                {'Last ned valgte versjoner '}
-                <DownloadIcon title="Last ned versjon(er)" />
-            </Link>
+            <div className={style.wrapper}>
+                <CheckboxGroup legend="Versjoner" onChange={handleChange}>
+                    {versions.map((v) => (
+                        <Checkbox key={v.versionId} value={`${v.nodeId};${v.versionId}`}>
+                            {v.displayName} {formatTimestamp(v.timestamp)}{' '}
+                        </Checkbox>
+                    ))}
+                </CheckboxGroup>
+            </div>
+            <div className={style.downloadBar}>
+                <Button
+                    variant="secondary-neutral"
+                    className={style.button}
+                    onClick={() =>
+                        window.open(
+                            `${PDF_API}?contentId=${versions[0].nodeId}&versionIds=${versionsSelected.join(',')}&locale=no`
+                        )
+                    }
+                    icon={<DownloadIcon title="Last ned versjon(er)" />}
+                >
+                    {'Last ned valgte versjoner '}
+                </Button>
+            </div>
         </>
     );
 };
