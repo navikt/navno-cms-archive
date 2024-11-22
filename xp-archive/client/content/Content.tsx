@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useFetchContent } from '../hooks/useFetchContent';
-import { Heading } from '@navikt/ds-react';
 import { useAppState } from '../context/appState/useAppState';
 import { ViewSelector, ViewVariant } from 'client/viewSelector/ViewSelector';
 import { VersionSelector } from 'client/versionSelector/VersionSelector';
