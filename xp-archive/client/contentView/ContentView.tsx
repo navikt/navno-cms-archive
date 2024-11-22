@@ -1,6 +1,6 @@
 import React from 'react';
 import { ViewVariant } from 'client/viewSelector/ViewSelector';
-import { ContentJsonView } from 'client/contentView/contentJsonView/contentJsonView';
+import { ContentJsonView } from 'client/contentView/contentJsonView/ContentJsonView';
 import { PdfExport } from 'client/contentView/pdfExport/PdfExport';
 import { ContentServiceResponse } from 'shared/types';
 
