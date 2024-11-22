@@ -12,10 +12,10 @@
     },
     "dependencies": {
         "archiver": "7.0.1",
-        "compression": "1.7.4",
-        "csp-header": "5.2.1",
+        "compression": "1.7.5",
+        "csp-header": "6.0.0",
         "dotenv": "16.4.5",
-        "puppeteer": "23.7.0"
+        "puppeteer": "23.8.0"
     },
     "devDependencies": {
         "@types/archiver": "6.0.3",
