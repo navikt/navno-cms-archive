@@ -1,13 +1,12 @@
 import React from 'react';
 import { ToggleGroup } from '@navikt/ds-react';
-import style from './ViewSelector.module.css';
 
-const viewVariants = ['preview', 'pdf', 'json'] as const;
-export type ViewVariant = (typeof viewVariants)[number];
+export type ViewVariant = 'html' | 'pdf' | 'json' | 'filepreview';
 
 const getDisplayname = (viewVariant: ViewVariant) => {
     const translations: Record<ViewVariant, string> = {
-        preview: 'Forhåndsvisning',
+        html: 'HTML',
+        filepreview: 'Forhåndsvisning',
         pdf: 'PDF',
         json: 'JSON',
     };
@@ -17,32 +16,34 @@ const getDisplayname = (viewVariant: ViewVariant) => {
 type Props = {
     selectedView: ViewVariant;
     setSelectedView(selectedView: ViewVariant): void;
-    hasPreview: boolean;
+    hasAttachment: boolean;
     isWebpage: boolean;
 };
 
-export const ViewSelector = ({ selectedView, setSelectedView, hasPreview, isWebpage }: Props) => {
+export const ViewSelector = ({
+    selectedView,
+    setSelectedView,
+    hasAttachment,
+    isWebpage,
+}: Props) => {
     const updateSelectedView = (viewVariantString: string) => {
         const viewVariant = viewVariantString as ViewVariant;
-        if (viewVariant === 'preview' && !hasPreview) {
-            return;
-        }
         setSelectedView(viewVariant);
     };
 
+    const relevantViewVariants: ViewVariant[] = isWebpage
+        ? ['html', 'pdf', 'json']
+        : hasAttachment
+          ? ['filepreview', 'json']
+          : ['json'];
+
     return (
         <ToggleGroup size={'small'} value={selectedView} onChange={updateSelectedView}>
-            {viewVariants
-                .filter((v) => !(!isWebpage && v === 'pdf'))
-                .map((view) => (
-                    <ToggleGroup.Item
-                        key={view}
-                        value={view}
-                        className={`${view === 'preview' && !hasPreview ? style.disabled : ''}`}
-                    >
-                        {getDisplayname(view)}
-                    </ToggleGroup.Item>
-                ))}
+            {relevantViewVariants.map((view) => (
+                <ToggleGroup.Item key={view} value={view}>
+                    {getDisplayname(view)}
+                </ToggleGroup.Item>
+            ))}
         </ToggleGroup>
     );
 };

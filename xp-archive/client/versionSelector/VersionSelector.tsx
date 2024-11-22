@@ -12,10 +12,6 @@ type Props = {
 export const VersionSelector = ({ versions }: Props) => {
     const { selectedVersion, setSelectedVersion } = useAppState();
 
-    if (versions.length === 0) {
-        return null;
-    }
-
     const selectVersion = (e: ChangeEvent<HTMLSelectElement>) => {
         if (!e.target.value) {
             setSelectedVersion(undefined);

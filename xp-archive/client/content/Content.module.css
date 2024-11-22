@@ -1,0 +1,14 @@
+.content {
+    grid-area: main;
+    display: flex;
+    flex-direction: column;
+    overflow-y: hidden;
+}
+
+.top {
+    padding: 1rem;
+    background-color: var(--a-surface-subtle);
+    display: flex;
+    justify-content: space-between;
+    gap: 1.5rem;
+}

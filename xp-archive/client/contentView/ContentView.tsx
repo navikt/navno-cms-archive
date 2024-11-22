@@ -1,66 +1,34 @@
-import React, { useEffect, useState } from 'react';
-import { useFetchContent } from '../hooks/useFetchContent';
-import { Heading, Loader } from '@navikt/ds-react';
-import { useAppState } from '../context/appState/useAppState';
-import { ViewSelector, ViewVariant } from 'client/viewSelector/ViewSelector';
-import { ContentPreview } from 'client/contentPreview/ContentPreview';
-import { ContentJsonView } from 'client/contentJsonView/contentJsonView';
-import { VersionSelector } from 'client/versionSelector/VersionSelector';
-import { PdfExport } from 'client/pdfExport/PdfExport';
+import React from 'react';
+import { ViewVariant } from 'client/viewSelector/ViewSelector';
+import { ContentJsonView } from 'client/contentView/contentJsonView/contentJsonView';
+import { PdfExport } from 'client/contentView/pdfExport/PdfExport';
 import { ContentServiceResponse } from 'shared/types';
 
 import style from './ContentView.module.css';
+import { Loader } from '@navikt/ds-react';
+import { HtmlView } from './htmlView/HtmlView';
+import { FilePreviewWrapper } from './filePreview/FilePreviewWrapper';
 
-const getDisplayComponent = (viewVariant: ViewVariant, data: ContentServiceResponse) => {
+const getDisplayComponent = (viewVariant: ViewVariant, data?: ContentServiceResponse | null) => {
+    if (!data) return null;
     const components: Record<ViewVariant, React.ReactElement> = {
-        preview: <ContentPreview html={data.html} content={data.json} />,
+        html: <HtmlView html={data.html} />,
+        filepreview: <FilePreviewWrapper content={data.json} />,
         pdf: <PdfExport versions={data.versions} />,
         json: <ContentJsonView json={data.json} />,
     };
     return components[viewVariant];
 };
 
-export const ContentView = () => {
-    const { selectedContentId, selectedLocale, selectedVersion } = useAppState();
+type Props = {
+    selectedView: ViewVariant;
+    isLoading: boolean;
+    data?: ContentServiceResponse | null;
+};
 
-    const fetchId = selectedVersion?.nodeId ?? selectedContentId;
-
-    const { data, isLoading } = useFetchContent({
-        id: fetchId || '',
-        locale: selectedLocale,
-        versionId: selectedVersion?.versionId ?? undefined,
-    });
-
-    const hasPreview = !!data?.html || !!data?.json.attachment;
-    const [selectedView, setSelectedView] = useState<ViewVariant>('preview');
-
-    useEffect(() => {
-        setSelectedView(hasPreview ? 'preview' : 'json');
-    }, [hasPreview]);
-
+export const ContentView = ({ selectedView, isLoading, data }: Props) => {
     if (isLoading) {
         return <Loader />;
     }
-
-    return (
-        <>
-            {data ? (
-                <div className={style.content}>
-                    <div className={style.top}>
-                        <div>
-                            <Heading size={'medium'}>{data?.json.displayName}</Heading>
-                            <ViewSelector
-                                selectedView={selectedView}
-                                setSelectedView={setSelectedView}
-                                hasPreview={hasPreview}
-                                isWebpage={!!data.html && !data.json.attachment}
-                            />
-                        </div>
-                        <VersionSelector versions={data.versions} />
-                    </div>
-                    <div className={style.main}>{getDisplayComponent(selectedView, data)}</div>
-                </div>
-            ) : null}
-        </>
-    );
+    return <div className={style.main}>{getDisplayComponent(selectedView, data)}</div>;
 };
