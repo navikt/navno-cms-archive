@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { DownloadIcon } from '@navikt/aksel-icons';
-import { Button, Checkbox, CheckboxGroup, Link } from '@navikt/ds-react';
+import { Button, Checkbox, CheckboxGroup } from '@navikt/ds-react';
 import { VersionReference } from 'shared/types';
 import { formatTimestamp } from '@common/shared/timestamp';
 import style from './PdfExport.module.css';

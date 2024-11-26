@@ -14,6 +14,12 @@ const getDisplayname = (viewVariant: ViewVariant) => {
     return translations[viewVariant];
 };
 
+function getRelevantViewVariants(isWebpage: boolean, hasAttachment: boolean): ViewVariant[] {
+    if (isWebpage) return ['html', 'pdf', 'json'];
+    if (hasAttachment) return ['filepreview', 'json'];
+    return ['json'];
+}
+
 type Props = {
     selectedView: ViewVariant;
     setSelectedView(selectedView: ViewVariant): void;
@@ -32,11 +38,7 @@ export const ViewSelector = ({
         setSelectedView(viewVariant);
     };
 
-    const relevantViewVariants: ViewVariant[] = isWebpage
-        ? ['html', 'pdf', 'json']
-        : hasAttachment
-          ? ['filepreview', 'json']
-          : ['json'];
+    const relevantViewVariants = getRelevantViewVariants(isWebpage, hasAttachment);
 
     return (
         <ToggleGroup

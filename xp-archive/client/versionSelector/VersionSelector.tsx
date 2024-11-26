@@ -1,5 +1,5 @@
-import React, { ChangeEvent, version } from 'react';
-import { Select, UNSAFE_Combobox } from '@navikt/ds-react';
+import React, { ChangeEvent } from 'react';
+import { Select } from '@navikt/ds-react';
 import { VersionReference } from 'shared/types';
 import { pruneString } from '@common/shared/pruneString';
 import { formatTimestamp } from '@common/shared/timestamp';

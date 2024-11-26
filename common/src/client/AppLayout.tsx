@@ -4,7 +4,6 @@ import { AppTopSection } from './top-section/AppTopSection';
 import style from './AppLayout.module.css';
 
 type Props = {
-    siteName: string; // TODO: Can this be removed?
     basePath: string;
     children: React.ReactNode;
     showUnderDevAlert?: boolean;
