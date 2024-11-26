@@ -16,7 +16,13 @@ export const AppStateProvider = ({ children }: Props) => {
     const [selectedLocale, setSelectedLocale] = useState<Locale>('no');
     const [selectedVersion, setSelectedVersion] = useState<SelectedVersion>();
 
-    const setSelectedContentIdMemoized = useCallback(setSelectedContentId, [setSelectedContentId]);
+    const updateSelectedContent = useCallback(
+        (selectedContent: string) => {
+            setSelectedContentId(selectedContent);
+            setSelectedVersion(undefined);
+        },
+        [setSelectedContentId]
+    );
 
     const setSelectedLocaleMemoized = useCallback(setSelectedLocale, [setSelectedLocale]);
 
@@ -27,7 +33,7 @@ export const AppStateProvider = ({ children }: Props) => {
         <AppStateContext.Provider
             value={{
                 selectedContentId,
-                setSelectedContentId: setSelectedContentIdMemoized,
+                setSelectedContentId: updateSelectedContent,
                 selectedVersion: selectedVersionMemoized,
                 setSelectedVersion: setSelectedVersionMemoized,
                 selectedLocale,
