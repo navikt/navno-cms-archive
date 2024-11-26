@@ -1,25 +1,29 @@
 import React from 'react';
-import { InternalHeader, Spacer } from '@navikt/ds-react';
+import { Alert, InternalHeader, Spacer } from '@navikt/ds-react';
 import { ArchiveSelector } from './archive-selector/ArchiveSelector';
-import NavLogo from '../../../assets/nav-logo-white.svg';
 
 import style from './AppTopSection.module.css';
 
 type Props = {
-    siteName: string;
     basePath: string;
+    showUnderDevAlert: boolean;
 };
 
-export const AppTopSection = ({ siteName, basePath }: Props) => {
+export const AppTopSection = ({ basePath, showUnderDevAlert }: Props) => {
     return (
-        <InternalHeader className={style.header}>
-            <InternalHeader.Title>
-                <img src={NavLogo} alt={''} />
-            </InternalHeader.Title>
-            <InternalHeader.Title>{`CMS-arkiv`}</InternalHeader.Title>
-            <InternalHeader.Title>{siteName}</InternalHeader.Title>
-            <Spacer />
-            <ArchiveSelector basePath={basePath} />
-        </InternalHeader>
+        <div className={style.header}>
+            <InternalHeader className={style.header}>
+                <InternalHeader.Title>{`CMS-arkiv`}</InternalHeader.Title>
+                <Spacer />
+                <ArchiveSelector basePath={basePath} />
+            </InternalHeader>
+            {showUnderDevAlert ? (
+                <Alert variant={'warning'} className={style.devAlert} fullWidth>
+                    {
+                        'Obs! Denne delen av arkivet er fortsatt under utvikling og er IKKE klar til bruk.'
+                    }
+                </Alert>
+            ) : null}
+        </div>
     );
 };

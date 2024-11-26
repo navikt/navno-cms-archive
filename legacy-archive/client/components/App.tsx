@@ -11,11 +11,11 @@ type Props = {
 };
 
 export const App = ({ appContext }: Props) => {
-    const { cmsName, basePath } = appContext;
+    const { basePath } = appContext;
 
     return (
         <AppStateProvider appContext={appContext}>
-            <AppLayout siteName={cmsName} basePath={basePath}>
+            <AppLayout basePath={basePath}>
                 <SearchStateProvider>
                     <AppLeftSection />
                 </SearchStateProvider>

@@ -38,6 +38,7 @@ Sett NODE_ENV=production i xp-archive/.env.prod-local og legacy-archive/.env.pro
 For legacy arkivet trenger du også credentials for open-search, se [Enonic CMS legacy arkiv](#enonic-cms-legacy-arkiv-2006-2019)
 
 4. Starte applikasjon i dev-modus
+   For legacy-archive må man logge på aiven-prod i naisdevice.
 
 ```
 npm run dev -C legacy-archive

@@ -4,6 +4,7 @@
     position: relative;
     grid-area: left;
     border-left: solid 4px var(--a-gray-600);
+    padding-top: 1rem;
 }
 
 .root,

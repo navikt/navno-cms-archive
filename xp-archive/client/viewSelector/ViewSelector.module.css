@@ -1,4 +1,7 @@
-.disabled {
-  color: var(--a-gray-400);
-  cursor: not-allowed;
+.datatheme {
+    /* Has to be here for the data-theme to work */
+}
+
+[data-theme='viewSelector'] {
+    --ac-toggle-group-bg: var(--a-white);
 }

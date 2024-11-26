@@ -1,8 +1,8 @@
 .header {
     grid-area: top;
+}
 
-    span {
-        display: flex;
-        align-items: center;
-    }
+.devAlert {
+    display: flex;
+    justify-content: center;
 }

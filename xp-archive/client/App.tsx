@@ -2,15 +2,15 @@ import React from 'react';
 import { AppLayout } from '@common/client/AppLayout';
 import { xpArchiveConfig } from '@common/shared/siteConfigs';
 import { NavigationBar } from './contentTree/NavigationBar';
-import { ContentView } from './contentView/ContentView';
+import { Content } from './content/Content';
 import { AppStateProvider } from './context/appState/AppStateProvider';
 
 export const App = () => {
     return (
-        <AppLayout siteName={xpArchiveConfig.name} basePath={xpArchiveConfig.basePath}>
+        <AppLayout basePath={xpArchiveConfig.basePath} showUnderDevAlert>
             <AppStateProvider>
                 <NavigationBar />
-                <ContentView />
+                <Content />
             </AppStateProvider>
         </AppLayout>
     );

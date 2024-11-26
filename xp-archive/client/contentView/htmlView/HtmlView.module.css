@@ -1,0 +1,11 @@
+.wrapper {
+    height: 100%;
+    padding: 1rem;
+    background-color: var(--a-surface-neutral);
+}
+
+.iframe {
+    height: 100%;
+    width: 100%;
+    border: none;
+}
