@@ -31,6 +31,22 @@ export const setupSite = async (router: Router) => {
     const attachmentService = new AttachmentService();
     const pdfService = new PdfService({ browser, contentService });
 
+    router.get('/html/:versionKey/:locale?', async (req, res, next) => {
+        const { versionKey, locale } = req.params;
+
+        const version = await contentService.fetchContent(versionKey, locale || 'no');
+        if (!version) {
+            return next();
+        }
+
+        if (!version.html) {
+            return res
+                .status(406)
+                .send(`Content with version key ${versionKey} does not have html content`);
+        }
+
+        return res.send(version.html);
+    });
     router.get('/api/content', contentService.getContentHandler);
     router.get('/api/contentTree', contentTreeService.getContentTreeHandler);
     router.get('/api/contentIcon', contentIconService.getContentIconHandler);
