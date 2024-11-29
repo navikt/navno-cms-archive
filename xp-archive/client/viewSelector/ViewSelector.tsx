@@ -2,22 +2,21 @@ import React from 'react';
 import { ToggleGroup } from '@navikt/ds-react';
 import style from './ViewSelector.module.css';
 
-export type ViewVariant = 'html' | 'pdf' | 'json' | 'filepreview';
+export type ViewVariant = 'html' | 'pdf' | 'filepreview';
 
 const getDisplayname = (viewVariant: ViewVariant) => {
     const translations: Record<ViewVariant, string> = {
         html: 'HTML',
         filepreview: 'Forhåndsvisning',
         pdf: 'PDF',
-        json: 'JSON',
     };
     return translations[viewVariant];
 };
 
 function getRelevantViewVariants(isWebpage: boolean, hasAttachment: boolean): ViewVariant[] {
-    if (isWebpage) return ['html', 'pdf', 'json'];
-    if (hasAttachment) return ['filepreview', 'json'];
-    return ['json'];
+    if (isWebpage) return ['html', 'pdf'];
+    if (hasAttachment) return ['filepreview'];
+    return [];
 }
 
 type Props = {
