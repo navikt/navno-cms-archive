@@ -56,9 +56,7 @@ const setupBrowserRoutes = async (router: Router, htmlRenderer: HtmlRenderer) =>
         }
 
         if (!content.html) {
-            return res
-                .status(406)
-                .send(`Content with contentId ${contentId} does not have html content`);
+            return res.status(406).send('This content does not have an html representation.');
         }
 
         return res.send(content.html);
