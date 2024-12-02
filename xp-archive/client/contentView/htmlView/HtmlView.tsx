@@ -5,21 +5,21 @@ import { xpArchiveConfig } from '@common/shared/siteConfigs';
 import { Button } from '@navikt/ds-react';
 
 type Props = {
-    html: string | undefined;
     versionId: string;
     locale: string;
 };
 
-export const HtmlView = ({ html, versionId, locale }: Props) => {
-    if (!html) {
-        return <div>Ingenting å forhåndsvise</div>;
-    }
+export const HtmlView = ({ versionId, locale }: Props) => {
+    //TODO: Gjør noe viss ingenting å vise?
+    // if (!html) {
+    //     return <div>Ingenting å forhåndsvise</div>;
+    // }
 
     const fullscreenPath = `${xpArchiveConfig.basePath}/html/${versionId}/${locale || ''}`;
 
     return (
         <div className={style.wrapper}>
-            <iframe title={'HTML-visning'} srcDoc={html} className={style.iframe}></iframe>;
+            <iframe title={'HTML-visning'} src={fullscreenPath} className={style.iframe} />;
             <Button
                 as={'a'}
                 href={fullscreenPath}
