@@ -5,17 +5,15 @@ import { ContentServiceResponse } from 'shared/types';
 import { Loader } from '@navikt/ds-react';
 import { HtmlView } from './htmlView/HtmlView';
 import { FilePreviewWrapper } from './filePreview/FilePreviewWrapper';
-import { ContentJsonView } from './contentJsonView/contentJsonView';
 
 import style from './ContentView.module.css';
 
 const getDisplayComponent = (viewVariant: ViewVariant, data?: ContentServiceResponse | null) => {
     if (!data) return null;
     const components: Record<ViewVariant, React.ReactElement> = {
-        html: <HtmlView html={data.html} />,
+        html: <HtmlView html={data.html} versionId={data.json._id} locale={data.json.language} />,
         filepreview: <FilePreviewWrapper content={data.json} />,
         pdf: <PdfExport versions={data.versions} />,
-        json: <ContentJsonView json={data.json} />,
     };
     return components[viewVariant];
 };

@@ -7,6 +7,7 @@ import { ContentIconService } from 'services/ContentIconService';
 import { AttachmentService } from '../services/AttachmentService';
 import { PdfService } from '../services/PdfService';
 import puppeteer from 'puppeteer';
+import { HtmlRenderer } from '../../../../common/src/server/ssr/htmlRenderer';
 
 export const setupSite = async (router: Router) => {
     const htmlRenderer = await buildHtmlRenderer({
@@ -16,13 +17,18 @@ export const setupSite = async (router: Router) => {
         ssrModulePath: '/client/main-server.tsx',
     });
 
-    const browser = await puppeteer.launch({
-        args: ['--no-sandbox', '--disable-setuid-sandbox', '--user-data-dir=/tmp/.chromium'],
-    });
-
     router.get('/', async (req, res) => {
         const html = await htmlRenderer(req.url, {});
         return res.send(html);
+    });
+
+    await setupApiRoutes(router);
+    await setupBrowserRoutes(router, htmlRenderer);
+};
+
+const setupApiRoutes = async (router: Router) => {
+    const browser = await puppeteer.launch({
+        args: ['--no-sandbox', '--disable-setuid-sandbox', '--user-data-dir=/tmp/.chromium'],
     });
 
     const contentService = new ContentService();
@@ -36,4 +42,23 @@ export const setupSite = async (router: Router) => {
     router.get('/api/contentIcon', contentIconService.getContentIconHandler);
     router.get('/api/attachment', attachmentService.getAttachmentHandler);
     router.get('/api/pdf', pdfService.generatePdfHandler);
+};
+
+const setupBrowserRoutes = async (router: Router, htmlRenderer: HtmlRenderer) => {
+    const contentService = new ContentService();
+
+    router.get('/html/:contentId/:locale', async (req, res, next) => {
+        const { contentId, locale } = req.params;
+
+        const content = await contentService.fetchContent(contentId, locale);
+        if (!content) {
+            return next();
+        }
+
+        if (!content.html) {
+            return res.status(406).send('This content does not have an html representation.');
+        }
+
+        return res.send(content.html);
+    });
 };

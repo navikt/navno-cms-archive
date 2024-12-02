@@ -7,10 +7,10 @@ import { ContentView } from '../contentView/ContentView';
 
 import style from './Content.module.css';
 
-const getDefaultView = (isWebpage: boolean, hasAttachment: boolean): ViewVariant => {
+const getDefaultView = (isWebpage: boolean, hasAttachment: boolean): ViewVariant | undefined => {
     if (isWebpage) return 'html';
     if (hasAttachment) return 'filepreview';
-    return 'json';
+    return undefined;
 };
 
 export const Content = () => {
@@ -26,7 +26,7 @@ export const Content = () => {
 
     const isWebpage = !!data?.html && !data.json.attachment;
     const hasAttachment = !!data?.json.attachment;
-    const [selectedView, setSelectedView] = useState<ViewVariant>(
+    const [selectedView, setSelectedView] = useState<ViewVariant | undefined>(
         getDefaultView(isWebpage, hasAttachment)
     );
 
@@ -36,7 +36,7 @@ export const Content = () => {
 
     return (
         <>
-            {selectedContentId ? (
+            {selectedContentId && selectedView ? (
                 <div className={style.content}>
                     <div className={style.top}>
                         <ViewSelector
