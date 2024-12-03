@@ -10,7 +10,7 @@ type Props = {
 };
 
 export const NavigationItem = ({ entry }: Props) => {
-    const { setSelectedContentId } = useAppState();
+    const { setSelectedContentId, selectedContentId } = useAppState();
 
     const iconUrl = `${import.meta.env.VITE_APP_ORIGIN}/xp/api/contentIcon?type=${entry.type}`;
     const label = (
@@ -23,9 +23,13 @@ export const NavigationItem = ({ entry }: Props) => {
     const entryLocalized = entry.isLocalized || entry.hasLocalizedDescendants;
 
     const onClick = () => {
+        console.log('entry:', entry.id);
         if (!entry.isEmpty) {
             setSelectedContentId(entry.id);
+            window.history.pushState({}, '', entry.id);
         }
+        console.log('entryAfter:', entry.id);
+        console.log('selectedContentId', selectedContentId);
     };
 
     return (
