@@ -11,7 +11,7 @@ type Props = {
 };
 
 export const NavigationItem = ({ entry }: Props) => {
-    const { setSelectedContentId, selectedContentId } = useAppState();
+    const { setSelectedContentId } = useAppState();
 
     const iconUrl = `${import.meta.env.VITE_APP_ORIGIN}/xp/api/contentIcon?type=${entry.type}`;
     const label = (
