@@ -10,16 +10,14 @@ type Props = {
 };
 
 export const HtmlView = ({ versionId, locale }: Props) => {
-    //TODO: Gjør noe viss ingenting å vise?
-    // if (!html) {
-    //     return <div>Ingenting å forhåndsvise</div>;
-    // }
+    console.log('HtmlView rendered with:', { versionId, locale });
 
     const fullscreenPath = `${xpArchiveConfig.basePath}/html/${versionId}/${locale || ''}`;
+    console.log('iframe src:', fullscreenPath);
 
     return (
         <div className={style.wrapper}>
-            <iframe title={'HTML-visning'} src={fullscreenPath} className={style.iframe} />;
+            <iframe title={'HTML-visning'} src={fullscreenPath} className={style.iframe} />
             <Button
                 as={'a'}
                 href={fullscreenPath}
