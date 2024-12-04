@@ -18,14 +18,6 @@ export const Content = () => {
 
     const fetchId = selectedVersion?.nodeId || selectedContentId;
 
-    //TODO: fjern log
-    console.log('Content initial state:', {
-        selectedContentId,
-        selectedLocale,
-        selectedVersion,
-        fetchId,
-    });
-
     const { data, isLoading } = useFetchContent({
         id: fetchId || '',
         locale: selectedLocale,
@@ -57,7 +49,9 @@ export const Content = () => {
                     </div>
                     <ContentView selectedView={selectedView} isLoading={isLoading} data={data} />
                 </div>
-            ) : null}
+            ) : (
+                <div>Ingenting å forhåndsvise</div>
+            )}
         </>
     );
 };
