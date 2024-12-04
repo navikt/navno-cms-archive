@@ -1,5 +1,6 @@
 import React from 'react';
 import { ContentTreeEntryData } from '../../../shared/types';
+import { xpArchiveConfig } from '@common/shared/siteConfigs';
 import { useAppState } from '../../context/appState/useAppState';
 import { TreeItem } from '@mui/x-tree-view';
 import { useContentTree } from 'client/hooks/useContentTree';
@@ -23,13 +24,11 @@ export const NavigationItem = ({ entry }: Props) => {
     const entryLocalized = entry.isLocalized || entry.hasLocalizedDescendants;
 
     const onClick = () => {
-        console.log('entry:', entry.id);
         if (!entry.isEmpty) {
             setSelectedContentId(entry.id);
-            window.history.pushState({}, '', entry.id);
+            const newUrl = `${xpArchiveConfig.basePath}/${entry.id}/${entry.locale}`;
+            window.history.pushState({}, '', newUrl);
         }
-        console.log('entryAfter:', entry.id);
-        console.log('selectedContentId', selectedContentId);
     };
 
     return (
