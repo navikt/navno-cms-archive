@@ -10,10 +10,7 @@ type Props = {
 };
 
 export const HtmlView = ({ versionId, locale }: Props) => {
-    console.log('HtmlView rendered with:', { versionId, locale });
-
     const fullscreenPath = `${xpArchiveConfig.basePath}/html/${versionId}/${locale || ''}`;
-    console.log('iframe src:', fullscreenPath);
 
     return (
         <div className={style.wrapper}>
