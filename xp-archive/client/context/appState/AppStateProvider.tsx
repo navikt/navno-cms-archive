@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo, useState, useEffect } from 'react';
 import { AppStateContext } from './AppStateContext';
 import { Locale } from 'client/contentTree/NavigationBar';
+import { useParams } from 'react-router-dom';
 
 type Props = {
     children: React.ReactNode;
@@ -16,17 +17,14 @@ export const AppStateProvider = ({ children }: Props) => {
     const [selectedLocale, setSelectedLocale] = useState<Locale>('no');
     const [selectedVersion, setSelectedVersion] = useState<SelectedVersion>();
 
-    // Parse URL on mount
-    useEffect(() => {
-        const path = window.location.pathname;
-        const matches = path.match(/\/xp\/([^\/]+)\/([^\/]+)/);
+    const { contentId, locale } = useParams<{ contentId: string; locale: Locale }>();
 
-        if (matches) {
-            const [, contentId, locale] = matches;
+    useEffect(() => {
+        if (contentId && locale) {
             setSelectedContentId(contentId);
-            setSelectedLocale(locale as Locale);
+            setSelectedLocale(locale);
         }
-    }, []);
+    }, [contentId, locale]);
 
     const updateSelectedContent = useCallback(
         (selectedContent: string) => {
