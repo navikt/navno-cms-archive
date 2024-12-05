@@ -18,7 +18,7 @@ export const AppStateProvider = ({ children }: Props) => {
 
     useEffect(() => {
         const path = window.location.pathname;
-        const matches = path.match(/\/xp\/([^\/]+)\/([^\/]+)/);
+        const matches = path.match(/\/xp\/([^/]+)\/([^/]+)/);
 
         if (matches) {
             const [, contentId, locale] = matches;
