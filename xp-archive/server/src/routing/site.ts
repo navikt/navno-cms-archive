@@ -70,10 +70,6 @@ const setupBrowserRoutes = async (router: Router, htmlRenderer: HtmlRenderer) =>
             return next();
         }
 
-        if (!content.html) {
-            return res.status(406).send('This content does not have an html representation.');
-        }
-
         const contextContent = {
             ...content,
             html: undefined,
