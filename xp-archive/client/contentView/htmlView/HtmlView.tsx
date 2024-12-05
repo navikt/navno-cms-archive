@@ -10,19 +10,19 @@ type Props = {
 };
 
 export const HtmlView = ({ versionId, locale }: Props) => {
-    const fullscreenPath = `${xpArchiveConfig.basePath}/html/${versionId}/${locale || ''}`;
+    const htmlPath = `${xpArchiveConfig.basePath}/html/${versionId}/${locale || ''}`;
 
     return (
         <div className={style.wrapper}>
-            <iframe title={'HTML-visning'} src={fullscreenPath} className={style.iframe} />
+            <iframe title={'HTML-visning'} src={htmlPath} className={style.iframe} />
             <Button
                 as={'a'}
-                href={fullscreenPath}
+                href={htmlPath}
                 className={style.fullscreenButton}
                 icon={<ExpandIcon />}
                 onClick={(e) => {
                     e.preventDefault();
-                    window.open(fullscreenPath, '_blank');
+                    window.open(htmlPath, '_blank');
                 }}
             >
                 {'Åpne i nytt vindu'}
