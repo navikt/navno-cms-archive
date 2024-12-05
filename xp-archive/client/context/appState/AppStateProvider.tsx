@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState, useEffect } from 'react';
 import { AppStateContext } from './AppStateContext';
 import { Locale } from 'client/contentTree/NavigationBar';
 
@@ -15,6 +15,17 @@ export const AppStateProvider = ({ children }: Props) => {
     const [selectedContentId, setSelectedContentId] = useState<string>();
     const [selectedLocale, setSelectedLocale] = useState<Locale>('no');
     const [selectedVersion, setSelectedVersion] = useState<SelectedVersion>();
+
+    useEffect(() => {
+        const path = window.location.pathname;
+        const matches = /\/xp\/([^/]+)\/([^/]+)/.exec(path);
+
+        if (matches) {
+            const [, contentId, locale] = matches;
+            setSelectedContentId(contentId);
+            setSelectedLocale(locale as Locale);
+        }
+    }, []);
 
     const updateSelectedContent = useCallback(
         (selectedContent: string) => {

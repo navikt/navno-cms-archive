@@ -61,4 +61,21 @@ const setupBrowserRoutes = async (router: Router, htmlRenderer: HtmlRenderer) =>
 
         return res.send(content.html);
     });
+
+    router.get('/:contentId/:locale', async (req, res, next) => {
+        const { contentId, locale } = req.params;
+
+        const content = await contentService.fetchContent(contentId, locale);
+        if (!content) {
+            return next();
+        }
+
+        const contextContent = {
+            ...content,
+            html: undefined,
+        };
+
+        const html = await htmlRenderer(req.url, { content: contextContent });
+        return res.send(html);
+    });
 };
