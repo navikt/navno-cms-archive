@@ -16,7 +16,6 @@ export const AppStateProvider = ({ children }: Props) => {
     const [selectedLocale, setSelectedLocale] = useState<Locale>('no');
     const [selectedVersion, setSelectedVersion] = useState<SelectedVersion>();
 
-    // Parse URL on mount
     useEffect(() => {
         const path = window.location.pathname;
         const matches = path.match(/\/xp\/([^\/]+)\/([^\/]+)/);
