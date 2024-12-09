@@ -49,7 +49,9 @@ export const Content = () => {
                     </div>
                     <ContentView selectedView={selectedView} isLoading={isLoading} data={data} />
                 </div>
-            ) : null}
+            ) : (
+                <div>Ingenting å forhåndsvise</div>
+            )}
         </>
     );
 };
