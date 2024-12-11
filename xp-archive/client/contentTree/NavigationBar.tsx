@@ -1,5 +1,5 @@
 import React from 'react';
-import { Heading, Tabs } from '@navikt/ds-react';
+import { Heading, Tabs, Search } from '@navikt/ds-react';
 import { LayerPanel } from './layerPanel/LayerPanel';
 import { useAppState } from 'client/context/appState/useAppState';
 
@@ -26,6 +26,12 @@ export const NavigationBar = () => {
             <Heading size={'small'} className={style.heading}>
                 {'Innhold'}
             </Heading>
+            <Search
+                label="Søk"
+                onSearchClick={() => {
+                    console.log('search');
+                }}
+            />
             <Tabs defaultValue="no" onChange={(locale) => setSelectedLocale(locale as Locale)}>
                 <Tabs.List>
                     {locales.map((locale) => (
