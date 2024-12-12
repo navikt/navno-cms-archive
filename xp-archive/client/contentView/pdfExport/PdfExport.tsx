@@ -3,6 +3,7 @@ import { DownloadIcon } from '@navikt/aksel-icons';
 import { Button, Checkbox, CheckboxGroup } from '@navikt/ds-react';
 import { VersionReference } from 'shared/types';
 import { formatTimestamp } from '@common/shared/timestamp';
+import { useAppState } from '../../context/appState/useAppState';
 import style from './PdfExport.module.css';
 
 type Props = {
@@ -11,6 +12,8 @@ type Props = {
 const PDF_API = `${import.meta.env.VITE_APP_ORIGIN}/xp/api/pdf`;
 
 export const PdfExport = ({ versions }: Props) => {
+    const { selectedLocale } = useAppState();
+
     const [versionsSelected, setVersionsSelected] = useState<string[]>([]);
 
     const handleChange = (selectedVersions: string[]) => {
@@ -34,7 +37,7 @@ export const PdfExport = ({ versions }: Props) => {
                     className={style.button}
                     onClick={() =>
                         window.open(
-                            `${PDF_API}?contentId=${versions[0].nodeId}&versionIds=${versionsSelected.join(',')}&locale=no`
+                            `${PDF_API}?contentId=${versions[0].nodeId}&versionIds=${versionsSelected.join(',')}&locale=${selectedLocale}`
                         )
                     }
                     icon={<DownloadIcon title="Last ned versjon(er)" />}
