@@ -2,6 +2,8 @@ import React from 'react';
 import { Heading, Tabs, Search } from '@navikt/ds-react';
 import { LayerPanel } from './layerPanel/LayerPanel';
 import { useAppState } from 'client/context/appState/useAppState';
+import { fetchJson } from '@common/shared/fetchUtils';
+import { SearchResponse } from 'shared/types';
 
 import style from './NavigationBar.module.css';
 
@@ -21,17 +23,18 @@ const getLabel = (locale: Locale) => {
 export const NavigationBar = () => {
     const { setSelectedLocale } = useAppState();
 
+    const SEARCH_API = `${import.meta.env.VITE_APP_ORIGIN}/xp/api/search`;
+
+    const searchData = async (title: string) => {
+        return fetchJson<SearchResponse>(SEARCH_API, { params: { title } });
+    };
+
     return (
         <div className={style.wrapper}>
             <Heading size={'small'} className={style.heading}>
                 {'Innhold'}
             </Heading>
-            <Search
-                label="Søk"
-                onSearchClick={() => {
-                    console.log('search');
-                }}
-            />
+            <Search label="Søk" onSearchClick={searchData} />
             <Tabs defaultValue="no" onChange={(locale) => setSelectedLocale(locale as Locale)}>
                 <Tabs.List>
                     {locales.map((locale) => (

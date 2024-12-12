@@ -65,3 +65,12 @@ export type Content = {
     data: Record<string, unknown>;
     attachment?: Attachment;
 };
+
+export type SearchResponse = {
+    title: string;
+    // results: {
+    //     id: string;
+    //     title: string;
+    //     description: string;
+    // }[];
+};
