@@ -127,18 +127,12 @@ export class PdfService {
 
         const widthActual = width >= MIN_WIDTH_PX ? width : DEFAULT_WIDTH_PX;
 
-        // Ensures assets with relative urls are loaded from the correct origin
-        const htmlWithBase = html.replace(
-            '<head>',
-            `<head><base href="${process.env.APP_ORIGIN_INTERNAL}"/>`
-        );
-
         try {
             const page = await this.browser.newPage();
 
             await page.setViewport({ width: widthActual, height: 1024 });
             await page.emulateMediaType('screen');
-            await page.setContent(htmlWithBase);
+            await page.setContent(html);
 
             const pdf = await page.pdf({
                 printBackground: true,
