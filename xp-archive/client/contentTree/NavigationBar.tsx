@@ -53,7 +53,13 @@ export const NavigationBar = () => {
                 {'Innhold'}
             </Heading>
             <Search label="Søk" onSearchClick={searchData} />
-            {searchResultIsOpen && <SearchResult isLoading={isLoading} />}
+            {searchResultIsOpen && (
+                <SearchResult
+                    isLoading={isLoading}
+                    searchResult={searchResult}
+                    query={searchQuery}
+                />
+            )}
             <Tabs defaultValue="no" onChange={(locale) => setSelectedLocale(locale as Locale)}>
                 <Tabs.List>
                     {locales.map((locale) => (
