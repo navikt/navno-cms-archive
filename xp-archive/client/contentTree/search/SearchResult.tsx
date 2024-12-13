@@ -10,7 +10,7 @@ type SearchResultProps = {
 };
 
 export const SearchResult = ({ isLoading, searchResult, query }: SearchResultProps) => {
-    const { setSelectedContentId } = useAppState();
+    const { setSelectedContentId, selectedContentId } = useAppState();
     const { hits, total } = searchResult;
 
     return (
@@ -28,7 +28,10 @@ export const SearchResult = ({ isLoading, searchResult, query }: SearchResultPro
                                 cursor: 'pointer',
                                 padding: '4px',
                                 margin: '4px 0',
-                                backgroundColor: 'var(--a-surface-subtle)',
+                                backgroundColor:
+                                    selectedContentId === hit._id
+                                        ? 'var(--a-surface-selected)'
+                                        : 'var(--a-surface-subtle)',
                                 borderRadius: '4px',
                             }}
                         >
