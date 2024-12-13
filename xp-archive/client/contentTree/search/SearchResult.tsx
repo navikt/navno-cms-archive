@@ -24,7 +24,13 @@ export const SearchResult = ({ isLoading, searchResult, query }: SearchResultPro
                         <div
                             key={hit._id}
                             onClick={() => setSelectedContentId(hit._id)}
-                            style={{ cursor: 'pointer' }}
+                            style={{
+                                cursor: 'pointer',
+                                padding: '4px',
+                                margin: '4px 0',
+                                backgroundColor: 'var(--a-surface-subtle)',
+                                borderRadius: '4px',
+                            }}
                         >
                             {hit.displayName}
                         </div>
