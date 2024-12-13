@@ -25,6 +25,11 @@ export const NavigationBar = () => {
     const [searchResultIsOpen, setSearchResultIsOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [searchResult, setSearchResult] = useState<SearchResponse>({
+        hits: [],
+        total: 0,
+        hasMore: false,
+    });
 
     const SEARCH_API = `${import.meta.env.VITE_APP_ORIGIN}/xp/api/search`;
 
@@ -32,6 +37,9 @@ export const NavigationBar = () => {
         setIsLoading(true);
         setSearchQuery(query);
         const result = await fetchJson<SearchResponse>(SEARCH_API, { params: { query } });
+        if (result) {
+            setSearchResult(result);
+        }
         console.log('Search result:', result);
         setSearchResultIsOpen(true);
         setIsLoading(false);
@@ -45,7 +53,11 @@ export const NavigationBar = () => {
             </Heading>
             <Search label="Søk" onSearchClick={searchData} />
             {searchResultIsOpen && (
-                <div>{isLoading ? 'Laster...' : `Søkeresultat for: ${searchQuery}`}</div>
+                <div>
+                    {isLoading
+                        ? 'Laster...'
+                        : `Søkeresultat for: ${searchQuery} (${searchResult.total} treff)`}
+                </div>
             )}
             <Tabs defaultValue="no" onChange={(locale) => setSelectedLocale(locale as Locale)}>
                 <Tabs.List>
