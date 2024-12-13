@@ -1,6 +1,6 @@
 {
     "extends": ["../tsconfig.json"],
-    "include": ["client", "shared"],
+    "include": ["client", "shared", "../common/src/client/utils/classNames.ts"],
     "compilerOptions": {
         "baseUrl": ".",
         "paths": {

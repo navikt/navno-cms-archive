@@ -1,6 +1,6 @@
 import React from 'react';
 import { BodyShort, Loader, LoaderProps } from '@navikt/ds-react';
-import { classNames } from '../../../utils/classNames';
+import { classNames } from '../../../../../common/src/client/utils/classNames';
 
 import style from './ContentLoader.module.css';
 

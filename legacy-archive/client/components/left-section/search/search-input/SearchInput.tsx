@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { Search } from '@navikt/ds-react';
-import { classNames } from '../../../../utils/classNames';
+import { classNames } from '../../../../../../common/src/client/utils/classNames';
 import { SearchSettings } from './search-settings/SearchSettings';
 import { useSearchState } from '../../../../context/search-state/useSearchState';
 

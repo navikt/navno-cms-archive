@@ -2,6 +2,9 @@ import React from 'react';
 import { Loader } from '@navikt/ds-react';
 import { SearchResponse } from 'shared/types';
 import { useAppState } from 'client/context/appState/useAppState';
+import { classNames } from '../../../../common/src/client/utils/classNames';
+
+import style from './SearchResult.module.css';
 
 type SearchResultProps = {
     isLoading: boolean;
@@ -18,10 +21,17 @@ export const SearchResult = ({ isLoading, searchResult, query }: SearchResultPro
             {isLoading ? (
                 <Loader size={'3xlarge'} />
             ) : (
-                <>
+                <div className={style.wrapper}>
                     <div>{`Treff for "${query}" (${total}):`}</div>
                     {hits.map((hit, index) => (
-                        <>
+                        <div
+                            className={classNames(
+                                style.hit,
+                                selectedContentId === hit._id && style.hitSelected
+                            )}
+                            key={index}
+                            onClick={() => setSelectedContentId(hit._id)}
+                        >
                             <img
                                 src={`${import.meta.env.VITE_APP_ORIGIN}/xp/api/contentIcon?type=${hit.type}`}
                                 width={20}
@@ -29,27 +39,10 @@ export const SearchResult = ({ isLoading, searchResult, query }: SearchResultPro
                                 style={{ marginRight: '5px' }}
                                 alt={''}
                             />
-                            <div
-                                key={index}
-                                onClick={() => setSelectedContentId(hit._id)}
-                                style={{
-                                    cursor: 'pointer',
-                                    padding: '4px',
-                                    margin: '4px 0',
-                                    backgroundColor:
-                                        selectedContentId === hit._id
-                                            ? 'var(--a-surface-selected)'
-                                            : 'var(--a-surface-subtle)',
-                                    borderRadius: '4px',
-                                }}
-                            >
-                                {hit.displayName}
-                                --
-                                {hit.type}
-                            </div>
-                        </>
+                            {hit.displayName}
+                        </div>
                     ))}
-                </>
+                </div>
             )}
         </div>
     );

@@ -1,6 +1,6 @@
 import React from 'react';
 import { ToggleGroup, Tooltip, TooltipProps } from '@navikt/ds-react';
-import { classNames } from '../../../utils/classNames';
+import { classNames } from '../../../../../common/src/client/utils/classNames';
 import { CmsContent } from '../../../../shared/cms-documents/content';
 
 import style from './ViewSelector.module.css';
