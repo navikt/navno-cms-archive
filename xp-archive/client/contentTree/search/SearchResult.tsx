@@ -21,22 +21,33 @@ export const SearchResult = ({ isLoading, searchResult, query }: SearchResultPro
                 <>
                     <div>{`Treff for "${query}" (${total}):`}</div>
                     {hits.map((hit, index) => (
-                        <div
-                            key={index}
-                            onClick={() => setSelectedContentId(hit._id)}
-                            style={{
-                                cursor: 'pointer',
-                                padding: '4px',
-                                margin: '4px 0',
-                                backgroundColor:
-                                    selectedContentId === hit._id
-                                        ? 'var(--a-surface-selected)'
-                                        : 'var(--a-surface-subtle)',
-                                borderRadius: '4px',
-                            }}
-                        >
-                            {hit.displayName}
-                        </div>
+                        <>
+                            <img
+                                src={`${import.meta.env.VITE_APP_ORIGIN}/xp/api/contentIcon?type=${hit.type}`}
+                                width={20}
+                                height={20}
+                                style={{ marginRight: '5px' }}
+                                alt={''}
+                            />
+                            <div
+                                key={index}
+                                onClick={() => setSelectedContentId(hit._id)}
+                                style={{
+                                    cursor: 'pointer',
+                                    padding: '4px',
+                                    margin: '4px 0',
+                                    backgroundColor:
+                                        selectedContentId === hit._id
+                                            ? 'var(--a-surface-selected)'
+                                            : 'var(--a-surface-subtle)',
+                                    borderRadius: '4px',
+                                }}
+                            >
+                                {hit.displayName}
+                                --
+                                {hit.type}
+                            </div>
+                        </>
                     ))}
                 </>
             )}

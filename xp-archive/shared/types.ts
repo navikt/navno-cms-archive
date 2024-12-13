@@ -71,6 +71,7 @@ export type SearchResponse = {
     hits: {
         _id: string;
         displayName: string;
+        type: string;
     }[];
     hasMore: boolean;
 };
