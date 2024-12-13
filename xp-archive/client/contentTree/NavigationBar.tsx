@@ -50,7 +50,7 @@ export const NavigationBar = () => {
     return (
         <div className={style.wrapper}>
             <Heading size={'small'} className={style.heading}>
-                {'Innhold'}
+                {'Søk'}
             </Heading>
             <Search label="Søk" onSearchClick={searchData} />
             {searchResultIsOpen && (
