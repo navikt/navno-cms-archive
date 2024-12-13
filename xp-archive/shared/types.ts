@@ -67,10 +67,10 @@ export type Content = {
 };
 
 export type SearchResponse = {
-    hits: {
-        id: string;
-        title: string;
-        path: string;
-    }[];
     total: number;
+    hits: {
+        _id: string;
+        displayName: string;
+    }[];
+    hasMore: boolean;
 };
