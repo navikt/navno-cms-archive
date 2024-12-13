@@ -24,14 +24,17 @@ export const NavigationBar = () => {
     const { setSelectedLocale } = useAppState();
     const [searchResultIsOpen, setSearchResultIsOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
     const SEARCH_API = `${import.meta.env.VITE_APP_ORIGIN}/xp/api/search`;
 
     const searchData = async (query: string) => {
+        setIsLoading(true);
         setSearchQuery(query);
         const result = await fetchJson<SearchResponse>(SEARCH_API, { params: { query } });
         console.log('Search result:', result);
         setSearchResultIsOpen(true);
+        setIsLoading(false);
         return result;
     };
 
@@ -41,7 +44,9 @@ export const NavigationBar = () => {
                 {'Innhold'}
             </Heading>
             <Search label="Søk" onSearchClick={searchData} />
-            {searchResultIsOpen && <div>Søkeresultat for: {searchQuery}</div>}
+            {searchResultIsOpen && (
+                <div>{isLoading ? 'Laster...' : `Søkeresultat for: ${searchQuery}`}</div>
+            )}
             <Tabs defaultValue="no" onChange={(locale) => setSelectedLocale(locale as Locale)}>
                 <Tabs.List>
                     {locales.map((locale) => (
