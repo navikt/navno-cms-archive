@@ -4,6 +4,7 @@ import { LayerPanel } from './layerPanel/LayerPanel';
 import { useAppState } from 'client/context/appState/useAppState';
 import { fetchJson } from '@common/shared/fetchUtils';
 import { SearchResponse } from 'shared/types';
+import { SearchResult } from './search/SearchResult';
 
 import style from './NavigationBar.module.css';
 
@@ -52,13 +53,7 @@ export const NavigationBar = () => {
                 {'Innhold'}
             </Heading>
             <Search label="Søk" onSearchClick={searchData} />
-            {searchResultIsOpen && (
-                <div>
-                    {isLoading
-                        ? 'Laster...'
-                        : `Søkeresultat for: ${searchQuery} (${searchResult.total} treff)`}
-                </div>
-            )}
+            {searchResultIsOpen && <SearchResult isLoading={isLoading} />}
             <Tabs defaultValue="no" onChange={(locale) => setSelectedLocale(locale as Locale)}>
                 <Tabs.List>
                     {locales.map((locale) => (
