@@ -25,8 +25,8 @@ export const NavigationBar = () => {
 
     const SEARCH_API = `${import.meta.env.VITE_APP_ORIGIN}/xp/api/search`;
 
-    const searchData = async (title: string) => {
-        return fetchJson<SearchResponse>(SEARCH_API, { params: { title } });
+    const searchData = async (query: string) => {
+        return fetchJson<SearchResponse>(SEARCH_API, { params: { query } });
     };
 
     return (
