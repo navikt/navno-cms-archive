@@ -20,9 +20,9 @@ export const SearchResult = ({ isLoading, searchResult, query }: SearchResultPro
             ) : (
                 <>
                     <div>{`Treff for "${query}" (${total}):`}</div>
-                    {hits.map((hit) => (
+                    {hits.map((hit, index) => (
                         <div
-                            key={hit._id}
+                            key={index}
                             onClick={() => setSelectedContentId(hit._id)}
                             style={{
                                 cursor: 'pointer',
