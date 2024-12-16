@@ -30,21 +30,27 @@ export const NavigationBar = () => {
         hits: [],
         total: 0,
         hasMore: false,
+        query: '',
     });
 
     const SEARCH_API = `${import.meta.env.VITE_APP_ORIGIN}/xp/api/search`;
 
-    const searchData = async (query: string) => {
+    const searchData = async () => {
         setIsLoading(true);
-        setSearchQuery(query);
-        const result = await fetchJson<SearchResponse>(SEARCH_API, { params: { query } });
+        const result = await fetchJson<SearchResponse>(SEARCH_API, {
+            params: { query: searchQuery },
+        });
         if (result) {
             setSearchResult(result);
         }
-        console.log('Search result:', result);
         setSearchResultIsOpen(true);
         setIsLoading(false);
         return result;
+    };
+
+    const closeSearchResult = () => {
+        setSearchResultIsOpen(false);
+        setSearchQuery('');
     };
 
     return (
@@ -52,26 +58,43 @@ export const NavigationBar = () => {
             <Heading size={'small'} className={style.heading}>
                 {'Søk'}
             </Heading>
-            <Search label="Søk" onSearchClick={searchData} />
-            {searchResultIsOpen && (
+            <form
+                role={'search'}
+                onSubmit={(e) => {
+                    e.preventDefault();
+                    if (!searchQuery) {
+                        return;
+                    }
+
+                    searchData();
+                }}
+            >
+                <Search
+                    label={'Søk'}
+                    value={searchQuery}
+                    onChange={(value) => setSearchQuery(value)}
+                />
+            </form>
+            {searchResultIsOpen ? (
                 <SearchResult
                     isLoading={isLoading}
                     searchResult={searchResult}
-                    query={searchQuery}
+                    closeSearchResult={closeSearchResult}
                 />
-            )}
-            <Tabs defaultValue="no" onChange={(locale) => setSelectedLocale(locale as Locale)}>
-                <Tabs.List>
+            ) : (
+                <Tabs defaultValue="no" onChange={(locale) => setSelectedLocale(locale as Locale)}>
+                    <Tabs.List>
+                        {locales.map((locale) => (
+                            <Tabs.Tab key={locale} value={locale} label={getLabel(locale)} />
+                        ))}
+                    </Tabs.List>
                     {locales.map((locale) => (
-                        <Tabs.Tab key={locale} value={locale} label={getLabel(locale)} />
+                        <Tabs.Panel key={locale} value={locale}>
+                            <LayerPanel locale={locale} />
+                        </Tabs.Panel>
                     ))}
-                </Tabs.List>
-                {locales.map((locale) => (
-                    <Tabs.Panel key={locale} value={locale}>
-                        <LayerPanel locale={locale} />
-                    </Tabs.Panel>
-                ))}
-            </Tabs>
+                </Tabs>
+            )}
         </div>
     );
 };

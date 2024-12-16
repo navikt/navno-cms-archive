@@ -68,6 +68,7 @@ export type Content = {
 
 export type SearchResponse = {
     total: number;
+    query: string;
     hits: {
         _id: string;
         displayName: string;

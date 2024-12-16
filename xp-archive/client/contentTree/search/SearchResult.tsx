@@ -1,5 +1,5 @@
 import React from 'react';
-import { Loader } from '@navikt/ds-react';
+import { Button, Loader } from '@navikt/ds-react';
 import { SearchResponse } from 'shared/types';
 import { useAppState } from 'client/context/appState/useAppState';
 import { classNames } from '../../../../common/src/client/utils/classNames';
@@ -9,10 +9,10 @@ import style from './SearchResult.module.css';
 type SearchResultProps = {
     isLoading: boolean;
     searchResult: SearchResponse;
-    query: string;
+    closeSearchResult: () => void;
 };
 
-export const SearchResult = ({ isLoading, searchResult, query }: SearchResultProps) => {
+export const SearchResult = ({ isLoading, searchResult, closeSearchResult }: SearchResultProps) => {
     const { setSelectedContentId, selectedContentId } = useAppState();
     const { hits, total } = searchResult;
 
@@ -22,7 +22,12 @@ export const SearchResult = ({ isLoading, searchResult, query }: SearchResultPro
                 <Loader size={'3xlarge'} />
             ) : (
                 <div className={style.wrapper}>
-                    <div>{`Treff for "${query}" (${total}):`}</div>
+                    <div>
+                        {`Treff for "${searchResult.query}" (${total})`}{' '}
+                        <Button variant="tertiary" size="small" onClick={closeSearchResult}>
+                            Lukk
+                        </Button>
+                    </div>
                     {hits.map((hit, index) => (
                         <div
                             className={classNames(
