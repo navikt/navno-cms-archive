@@ -71,6 +71,7 @@ export type SearchResponse = {
     query: string;
     hits: {
         _id: string;
+        layerLocale: string;
         displayName: string;
         type: string;
     }[];

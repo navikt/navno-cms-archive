@@ -5,6 +5,7 @@ import { useAppState } from 'client/context/appState/useAppState';
 import { classNames } from '../../../../common/src/client/utils/classNames';
 
 import style from './SearchResult.module.css';
+import { xpArchiveConfig } from '@common/shared/siteConfigs';
 
 type SearchResultProps = {
     isLoading: boolean;
@@ -35,7 +36,11 @@ export const SearchResult = ({ isLoading, searchResult, closeSearchResult }: Sea
                                 selectedContentId === hit._id && style.hitSelected
                             )}
                             key={index}
-                            onClick={() => setSelectedContentId(hit._id)}
+                            onClick={() => {
+                                setSelectedContentId(hit._id);
+                                const newUrl = `${xpArchiveConfig.basePath}/${hit._id}/${hit.layerLocale}`;
+                                window.history.pushState({}, '', newUrl);
+                            }}
                         >
                             <img
                                 src={`${import.meta.env.VITE_APP_ORIGIN}/xp/api/contentIcon?type=${hit.type}`}
