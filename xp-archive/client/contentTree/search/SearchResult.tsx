@@ -1,11 +1,11 @@
 import React from 'react';
 import { Button, Loader } from '@navikt/ds-react';
+import { xpArchiveConfig } from '@common/shared/siteConfigs';
 import { SearchResponse } from 'shared/types';
 import { useAppState } from 'client/context/appState/useAppState';
 import { classNames } from '../../../../common/src/client/utils/classNames';
 
 import style from './SearchResult.module.css';
-import { xpArchiveConfig } from '@common/shared/siteConfigs';
 
 type SearchResultProps = {
     isLoading: boolean;
@@ -14,7 +14,8 @@ type SearchResultProps = {
 };
 
 export const SearchResult = ({ isLoading, searchResult, closeSearchResult }: SearchResultProps) => {
-    const { setSelectedContentId, selectedContentId } = useAppState();
+    const { setSelectedContentId, selectedContentId, setSelectedLocale, selectedLocale } =
+        useAppState();
     const { hits, total } = searchResult;
 
     return (
@@ -33,11 +34,14 @@ export const SearchResult = ({ isLoading, searchResult, closeSearchResult }: Sea
                         <div
                             className={classNames(
                                 style.hit,
-                                selectedContentId === hit._id && style.hitSelected
+                                hit._id === selectedContentId &&
+                                    hit.layerLocale === selectedLocale &&
+                                    style.hitSelected
                             )}
                             key={index}
                             onClick={() => {
                                 setSelectedContentId(hit._id);
+                                setSelectedLocale(hit.layerLocale);
                                 const newUrl = `${xpArchiveConfig.basePath}/${hit._id}/${hit.layerLocale}`;
                                 window.history.pushState({}, '', newUrl);
                             }}

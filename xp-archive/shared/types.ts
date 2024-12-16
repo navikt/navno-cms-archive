@@ -1,3 +1,5 @@
+import { Locale } from 'client/contentTree/NavigationBar';
+
 export type ContentType = `${string}:${string}`;
 
 export type ContentTreeEntryData = {
@@ -71,7 +73,7 @@ export type SearchResponse = {
     query: string;
     hits: {
         _id: string;
-        layerLocale: string;
+        layerLocale: Locale;
         displayName: string;
         type: string;
     }[];
