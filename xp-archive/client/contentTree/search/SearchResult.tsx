@@ -31,7 +31,7 @@ export const SearchResult = ({ isLoading, searchResult, closeSearchResult }: Sea
                         </Button>
                     </div>
                     {hits.map((hit, index) => (
-                        <div
+                        <button
                             className={classNames(
                                 style.hit,
                                 hit._id === selectedContentId &&
@@ -53,7 +53,7 @@ export const SearchResult = ({ isLoading, searchResult, closeSearchResult }: Sea
                                 alt={''}
                             />
                             {hit.displayName}
-                        </div>
+                        </button>
                     ))}
                 </div>
             )}
