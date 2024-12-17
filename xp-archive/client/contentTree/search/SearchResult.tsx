@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Loader } from '@navikt/ds-react';
+import { BodyShort, Button, Detail, Loader } from '@navikt/ds-react';
 import { SearchResponse } from 'shared/types';
 import { useAppState } from 'client/context/appState/useAppState';
 import { getContentIconUrl, updateContentUrl } from '../contentTreeEntry/NavigationItem';
@@ -52,7 +52,10 @@ export const SearchResult = ({ isLoading, searchResult, closeSearchResult }: Sea
                                 style={{ marginRight: '5px' }}
                                 alt={''}
                             />
-                            {hit.displayName}
+                            <div className={style.hitTextWrapper}>
+                                <BodyShort className={style.hitText}>{hit.displayName}</BodyShort>
+                                <Detail className={style.hitText}>{hit._path}</Detail>
+                            </div>
                         </button>
                     ))}
                 </div>

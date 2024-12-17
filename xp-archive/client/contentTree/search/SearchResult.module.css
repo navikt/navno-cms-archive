@@ -7,6 +7,7 @@
 .hit {
     display: flex;
     cursor: pointer;
+    overflow: hidden;
     padding: 6px;
     background-color: var(--a-surface-subtle);
     border-radius: 4px;
@@ -14,4 +15,23 @@
 
 .hitSelected {
     background-color: var(--a-surface-selected);
+}
+
+.hitTextWrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    overflow: hidden;
+}
+
+.hitText {
+    width: 100%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    text-align: left;
+}
+
+.hitPath {
+    color: var(--a-text-subtle);
 }
