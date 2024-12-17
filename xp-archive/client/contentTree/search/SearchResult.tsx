@@ -1,9 +1,8 @@
 import React from 'react';
 import { Button, Loader } from '@navikt/ds-react';
-import { xpArchiveConfig } from '@common/shared/siteConfigs';
 import { SearchResponse } from 'shared/types';
 import { useAppState } from 'client/context/appState/useAppState';
-import { getContentIconUrl } from '../contentTreeEntry/NavigationItem';
+import { getContentIconUrl, updateContentUrl } from '../contentTreeEntry/NavigationItem';
 import { classNames } from '../../../../common/src/client/utils/classNames';
 
 import style from './SearchResult.module.css';
@@ -43,8 +42,7 @@ export const SearchResult = ({ isLoading, searchResult, closeSearchResult }: Sea
                             onClick={() => {
                                 setSelectedContentId(hit._id);
                                 setSelectedLocale(hit.layerLocale);
-                                const newUrl = `${xpArchiveConfig.basePath}/${hit._id}/${hit.layerLocale}`;
-                                window.history.pushState({}, '', newUrl);
+                                updateContentUrl(hit._id, hit.layerLocale);
                             }}
                         >
                             <img

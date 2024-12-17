@@ -13,6 +13,11 @@ type Props = {
 export const getContentIconUrl = (type: string) =>
     `${import.meta.env.VITE_APP_ORIGIN}/xp/api/contentIcon?type=${type}`;
 
+export const updateContentUrl = (id: string, locale: string) => {
+    const newUrl = `${xpArchiveConfig.basePath}/${id}/${locale}`;
+    window.history.pushState({}, '', newUrl);
+};
+
 export const NavigationItem = ({ entry }: Props) => {
     const { setSelectedContentId } = useAppState();
 
@@ -34,8 +39,7 @@ export const NavigationItem = ({ entry }: Props) => {
     const onClick = () => {
         if (!entry.isEmpty) {
             setSelectedContentId(entry.id);
-            const newUrl = `${xpArchiveConfig.basePath}/${entry.id}/${entry.locale}`;
-            window.history.pushState({}, '', newUrl);
+            updateContentUrl(entry.id, entry.locale);
         }
     };
 
