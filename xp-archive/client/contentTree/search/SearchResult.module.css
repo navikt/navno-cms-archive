@@ -15,8 +15,12 @@
     border-radius: 4px;
 }
 
+.hit:hover {
+    background-color: var(--a-surface-hover);
+}
+
 .hitSelected {
-    background-color: var(--a-surface-selected);
+    background-color: var(--a-surface-selected) !important;
 }
 
 .hitTextWrapper {
