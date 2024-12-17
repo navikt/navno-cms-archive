@@ -6,9 +6,11 @@
 
 .hit {
     display: flex;
+    align-items: center;
     cursor: pointer;
     overflow: hidden;
-    padding: 6px;
+    gap: 8px;
+    padding: 8px;
     background-color: var(--a-surface-subtle);
     border-radius: 4px;
 }

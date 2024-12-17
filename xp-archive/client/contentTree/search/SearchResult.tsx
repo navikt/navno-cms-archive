@@ -47,8 +47,8 @@ export const SearchResult = ({ isLoading, searchResult, closeSearchResult }: Sea
                         >
                             <img
                                 src={getContentIconUrl(hit.type)}
-                                width={20}
-                                height={20}
+                                width={32}
+                                height={32}
                                 style={{ marginRight: '5px' }}
                                 alt={''}
                             />
