@@ -1,7 +1,6 @@
 .wrapper {
     display: flex;
     flex-direction: column;
-    gap: 4px;
 }
 
 .hit {
@@ -11,7 +10,8 @@
     overflow: hidden;
     gap: 8px;
     padding: 8px;
-    background-color: var(--a-surface-subtle);
+    background-color: white;
+    border: none;
     border-radius: 4px;
 }
 
