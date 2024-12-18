@@ -1,9 +1,7 @@
 import React from 'react';
-import { BodyShort, Button, Detail, Loader } from '@navikt/ds-react';
+import { Button, Loader } from '@navikt/ds-react';
 import { SearchResponse } from 'shared/types';
-import { useAppState } from 'client/context/appState/useAppState';
-import { getContentIconUrl, updateContentUrl } from '../contentTreeEntry/NavigationItem';
-import { classNames } from '../../../../common/src/client/utils/classNames';
+import { SearchResultItem } from './SearchResultItem/SearchResultItem';
 
 import style from './SearchResult.module.css';
 
@@ -48,39 +46,5 @@ export const SearchResult = ({ isLoading, searchResult, closeSearchResult }: Sea
                 </div>
             )}
         </div>
-    );
-};
-
-const SearchResultItem = ({ hit, key }: { hit: SearchResponse['hits'][number]; key: number }) => {
-    const { setSelectedContentId, selectedContentId, setSelectedLocale, selectedLocale } =
-        useAppState();
-
-    return (
-        <button
-            className={classNames(
-                style.hit,
-                hit._id === selectedContentId &&
-                    hit.layerLocale === selectedLocale &&
-                    style.hitSelected
-            )}
-            key={key}
-            onClick={() => {
-                setSelectedContentId(hit._id);
-                setSelectedLocale(hit.layerLocale);
-                updateContentUrl(hit._id, hit.layerLocale);
-            }}
-        >
-            <img
-                src={getContentIconUrl(hit.type)}
-                width={32}
-                height={32}
-                style={{ marginRight: '5px' }}
-                alt={''}
-            />
-            <div className={style.hitTextWrapper}>
-                <BodyShort className={style.hitText}>{hit.displayName}</BodyShort>
-                <Detail className={style.hitText}>{hit._path}</Detail>
-            </div>
-        </button>
     );
 };
