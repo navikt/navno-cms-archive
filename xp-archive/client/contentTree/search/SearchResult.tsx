@@ -14,8 +14,6 @@ type SearchResultProps = {
 };
 
 export const SearchResult = ({ isLoading, searchResult, closeSearchResult }: SearchResultProps) => {
-    const { setSelectedContentId, selectedContentId, setSelectedLocale, selectedLocale } =
-        useAppState();
     const { hits } = searchResult;
 
     const filteredHits = hits.filter(
@@ -41,64 +39,48 @@ export const SearchResult = ({ isLoading, searchResult, closeSearchResult }: Sea
                         </Button>
                     </div>
                     {filteredHits.map((hit, index) => (
-                        <button
-                            className={classNames(
-                                style.hit,
-                                hit._id === selectedContentId &&
-                                    hit.layerLocale === selectedLocale &&
-                                    style.hitSelected
-                            )}
-                            key={index}
-                            onClick={() => {
-                                setSelectedContentId(hit._id);
-                                setSelectedLocale(hit.layerLocale);
-                                updateContentUrl(hit._id, hit.layerLocale);
-                            }}
-                        >
-                            <img
-                                src={getContentIconUrl(hit.type)}
-                                width={32}
-                                height={32}
-                                style={{ marginRight: '5px' }}
-                                alt={''}
-                            />
-                            <div className={style.hitTextWrapper}>
-                                <BodyShort className={style.hitText}>{hit.displayName}</BodyShort>
-                                <Detail className={style.hitText}>{hit._path}</Detail>
-                            </div>
-                        </button>
+                        <SearchResultItem hit={hit} key={index} />
                     ))}
                     {`Treff i filer og annet: (${otherHits.length})`}{' '}
                     {otherHits.map((hit, index) => (
-                        <button
-                            className={classNames(
-                                style.hit,
-                                hit._id === selectedContentId &&
-                                    hit.layerLocale === selectedLocale &&
-                                    style.hitSelected
-                            )}
-                            key={index}
-                            onClick={() => {
-                                setSelectedContentId(hit._id);
-                                setSelectedLocale(hit.layerLocale);
-                                updateContentUrl(hit._id, hit.layerLocale);
-                            }}
-                        >
-                            <img
-                                src={getContentIconUrl(hit.type)}
-                                width={32}
-                                height={32}
-                                style={{ marginRight: '5px' }}
-                                alt={''}
-                            />
-                            <div className={style.hitTextWrapper}>
-                                <BodyShort className={style.hitText}>{hit.displayName}</BodyShort>
-                                <Detail className={style.hitText}>{hit._path}</Detail>
-                            </div>
-                        </button>
+                        <SearchResultItem hit={hit} key={index} />
                     ))}
                 </div>
             )}
         </div>
+    );
+};
+
+const SearchResultItem = ({ hit, key }: { hit: SearchResponse['hits'][number]; key: number }) => {
+    const { setSelectedContentId, selectedContentId, setSelectedLocale, selectedLocale } =
+        useAppState();
+
+    return (
+        <button
+            className={classNames(
+                style.hit,
+                hit._id === selectedContentId &&
+                    hit.layerLocale === selectedLocale &&
+                    style.hitSelected
+            )}
+            key={key}
+            onClick={() => {
+                setSelectedContentId(hit._id);
+                setSelectedLocale(hit.layerLocale);
+                updateContentUrl(hit._id, hit.layerLocale);
+            }}
+        >
+            <img
+                src={getContentIconUrl(hit.type)}
+                width={32}
+                height={32}
+                style={{ marginRight: '5px' }}
+                alt={''}
+            />
+            <div className={style.hitTextWrapper}>
+                <BodyShort className={style.hitText}>{hit.displayName}</BodyShort>
+                <Detail className={style.hitText}>{hit._path}</Detail>
+            </div>
+        </button>
     );
 };
