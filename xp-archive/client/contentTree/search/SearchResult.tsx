@@ -16,7 +16,17 @@ type SearchResultProps = {
 export const SearchResult = ({ isLoading, searchResult, closeSearchResult }: SearchResultProps) => {
     const { setSelectedContentId, selectedContentId, setSelectedLocale, selectedLocale } =
         useAppState();
-    const { hits, total } = searchResult;
+    const { hits } = searchResult;
+
+    const filteredHits = hits.filter(
+        (hit) =>
+            hit.type === 'no.nav.navno:content-page-with-sidemenus' ||
+            hit.type === 'no.nav.navno:themed-article-page' ||
+            hit.type === 'no.nav.navno:situation-page' ||
+            hit.type === 'no.nav.navno:guide-page'
+    );
+
+    const otherHits = hits.filter((hit) => !filteredHits.includes(hit));
 
     return (
         <div>
@@ -25,12 +35,41 @@ export const SearchResult = ({ isLoading, searchResult, closeSearchResult }: Sea
             ) : (
                 <div className={style.wrapper}>
                     <div>
-                        {`Treff for "${searchResult.query}" (${total})`}{' '}
+                        {`Treff i innholdssider: (${filteredHits.length})`}{' '}
                         <Button variant="tertiary" size="small" onClick={closeSearchResult}>
                             Lukk
                         </Button>
                     </div>
-                    {hits.map((hit, index) => (
+                    {filteredHits.map((hit, index) => (
+                        <button
+                            className={classNames(
+                                style.hit,
+                                hit._id === selectedContentId &&
+                                    hit.layerLocale === selectedLocale &&
+                                    style.hitSelected
+                            )}
+                            key={index}
+                            onClick={() => {
+                                setSelectedContentId(hit._id);
+                                setSelectedLocale(hit.layerLocale);
+                                updateContentUrl(hit._id, hit.layerLocale);
+                            }}
+                        >
+                            <img
+                                src={getContentIconUrl(hit.type)}
+                                width={32}
+                                height={32}
+                                style={{ marginRight: '5px' }}
+                                alt={''}
+                            />
+                            <div className={style.hitTextWrapper}>
+                                <BodyShort className={style.hitText}>{hit.displayName}</BodyShort>
+                                <Detail className={style.hitText}>{hit._path}</Detail>
+                            </div>
+                        </button>
+                    ))}
+                    {`Treff i filer og annet: (${otherHits.length})`}{' '}
+                    {otherHits.map((hit, index) => (
                         <button
                             className={classNames(
                                 style.hit,
