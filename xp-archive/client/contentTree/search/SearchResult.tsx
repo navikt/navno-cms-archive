@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Loader } from '@navikt/ds-react';
+import { BodyShort, Button, Heading, Loader } from '@navikt/ds-react';
 import { SearchResponse } from 'shared/types';
 import { SearchResultItem } from './SearchResultItem/SearchResultItem';
 
@@ -30,8 +30,10 @@ export const SearchResult = ({ isLoading, searchResult, closeSearchResult }: Sea
                 <Loader size={'3xlarge'} />
             ) : (
                 <div className={style.wrapper}>
-                    <div>
-                        {`Treff i innholdssider: (${filteredHits.length})`}{' '}
+                    <div className={style.filteredHitsHeading}>
+                        <Heading size="small" level="2">
+                            {`Treff i innholdssider: (${filteredHits.length})`}
+                        </Heading>
                         <Button variant="tertiary" size="small" onClick={closeSearchResult}>
                             Lukk
                         </Button>
@@ -39,7 +41,9 @@ export const SearchResult = ({ isLoading, searchResult, closeSearchResult }: Sea
                     {filteredHits.map((hit, index) => (
                         <SearchResultItem hit={hit} key={index} />
                     ))}
-                    {`Treff i filer og annet: (${otherHits.length})`}{' '}
+                    <Heading size="small" level="2" className={style.otherHitsHeading}>
+                        {`Treff i filer og annet: (${otherHits.length})`}
+                    </Heading>
                     {otherHits.map((hit, index) => (
                         <SearchResultItem hit={hit} key={index} />
                     ))}

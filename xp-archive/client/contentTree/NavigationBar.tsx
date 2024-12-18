@@ -59,6 +59,7 @@ export const NavigationBar = () => {
                 {'Søk'}
             </Heading>
             <form
+                className={style.search}
                 role={'search'}
                 onSubmit={(e) => {
                     e.preventDefault();
