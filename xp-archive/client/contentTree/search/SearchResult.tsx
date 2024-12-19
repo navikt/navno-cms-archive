@@ -12,7 +12,7 @@ type SearchResultProps = {
 };
 
 export const SearchResult = ({ isLoading, searchResult, closeSearchResult }: SearchResultProps) => {
-    const { hits } = searchResult;
+    const { hits, query } = searchResult;
 
     const filteredHits = hits.filter(
         (hit) =>
@@ -34,7 +34,7 @@ export const SearchResult = ({ isLoading, searchResult, closeSearchResult }: Sea
                         <div>
                             <div className={style.filteredHitsHeadingText}>
                                 <Heading size="small" level="2">
-                                    {`Treff i sidetyper: (${filteredHits.length})`}
+                                    {`Treff for "${query}" i sidetyper: (${filteredHits.length})`}
                                 </Heading>
                                 <HelpText>
                                     Treff i sidetypene Produktside, Situasjonsside, Temaartikkel og
@@ -50,7 +50,7 @@ export const SearchResult = ({ isLoading, searchResult, closeSearchResult }: Sea
                         <SearchResultItem hit={hit} key={hit._id + hit.layerLocale} />
                     ))}
                     <Heading size="small" level="2" className={style.otherHitsHeading}>
-                        {`Treff i filer og annet: (${otherHits.length})`}
+                        {`Treff for "${query}" i filer og annet: (${otherHits.length})`}
                     </Heading>
                     {otherHits.map((hit) => (
                         <SearchResultItem hit={hit} key={hit._id + hit.layerLocale} />
