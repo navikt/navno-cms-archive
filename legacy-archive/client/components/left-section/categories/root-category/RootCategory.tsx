@@ -3,7 +3,7 @@ import { CmsCategoryListItem } from '../../../../../shared/cms-documents/categor
 import { Category } from '../category/Category';
 import { Checkbox } from '@navikt/ds-react';
 import { useSearchState } from '../../../../context/search-state/useSearchState';
-import { classNames } from '../../../../utils/classNames';
+import { classNames } from '../../../../../../common/src/client/utils/classNames';
 
 import style from './RootCategory.module.css';
 

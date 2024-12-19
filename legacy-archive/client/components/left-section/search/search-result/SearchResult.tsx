@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { classNames } from '../../../../utils/classNames';
+import { classNames } from '../../../../../../common/src/client/utils/classNames';
 import { Alert, Button, Heading } from '@navikt/ds-react';
 import { SearchResultHit } from './search-hit/SearchResultHit';
 import { ContentLoader } from '../../../common/loader/ContentLoader';

@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { CmsContentDocument } from '../../../../../shared/cms-documents/content';
 import { Button, Checkbox, CheckboxGroup, Heading, HelpText, Label } from '@navikt/ds-react';
-import { classNames } from '../../../../utils/classNames';
+import { classNames } from '../../../../../../common/src/client/utils/classNames';
 import { useAppState } from '../../../../context/app-state/useAppState';
 import { ArrowDownRightIcon, DownloadIcon } from '@navikt/aksel-icons';
 import { formatTimestamp } from '@common/shared/timestamp';

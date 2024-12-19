@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { classNames } from '../../../../utils/classNames';
+import { classNames } from '../../../../../../common/src/client/utils/classNames';
 import { Button } from '@navikt/ds-react';
 import { useAppState } from '../../../../context/app-state/useAppState';
 import { ExpandIcon } from '@navikt/aksel-icons';

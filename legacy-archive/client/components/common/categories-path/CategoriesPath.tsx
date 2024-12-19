@@ -1,7 +1,7 @@
 import React from 'react';
 import { CmsCategoryPath } from '../../../../shared/cms-documents/_common';
 import { BodyShort, Tooltip, TooltipProps } from '@navikt/ds-react';
-import { classNames } from '../../../utils/classNames';
+import { classNames } from '../../../../../common/src/client/utils/classNames';
 
 import style from './CategoriesPath.module.css';
 

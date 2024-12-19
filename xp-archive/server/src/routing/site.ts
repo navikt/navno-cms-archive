@@ -7,6 +7,7 @@ import { ContentIconService } from 'services/ContentIconService';
 import { AttachmentService } from '../services/AttachmentService';
 import { PdfService } from '../services/PdfService';
 import puppeteer from 'puppeteer';
+import { SearchService } from 'services/SearchService';
 import { HtmlRenderer } from '../../../../common/src/server/ssr/htmlRenderer';
 
 export const setupSite = async (router: Router) => {
@@ -36,12 +37,13 @@ const setupApiRoutes = async (router: Router) => {
     const contentIconService = new ContentIconService();
     const attachmentService = new AttachmentService();
     const pdfService = new PdfService({ browser, contentService });
-
+    const searchService = new SearchService();
     router.get('/api/content', contentService.getContentHandler);
     router.get('/api/contentTree', contentTreeService.getContentTreeHandler);
     router.get('/api/contentIcon', contentIconService.getContentIconHandler);
     router.get('/api/attachment', attachmentService.getAttachmentHandler);
     router.get('/api/pdf', pdfService.generatePdfHandler);
+    router.get('/api/search', searchService.getSearchHandler);
 };
 
 const setupBrowserRoutes = async (router: Router, htmlRenderer: HtmlRenderer) => {

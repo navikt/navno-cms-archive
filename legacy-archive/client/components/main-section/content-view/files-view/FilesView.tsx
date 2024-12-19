@@ -2,7 +2,7 @@ import React from 'react';
 import { CmsContent } from '../../../../../shared/cms-documents/content';
 import { Link } from '@navikt/ds-react';
 import { useAppState } from '../../../../context/app-state/useAppState';
-import { classNames } from '../../../../utils/classNames';
+import { classNames } from '../../../../../../common/src/client/utils/classNames';
 
 import style from './FilesView.module.css';
 

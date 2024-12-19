@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, HelpText, Label, Radio, RadioGroup } from '@navikt/ds-react';
 import { ChevronDownIcon, XMarkIcon } from '@navikt/aksel-icons';
-import { classNames } from '../../../../../utils/classNames';
+import { classNames } from '../../../../../../../common/src/client/utils/classNames';
 import { useSearchState } from '../../../../../context/search-state/useSearchState';
 
 import style from './SearchSettings.module.css';

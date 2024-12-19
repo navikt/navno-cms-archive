@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import XMLViewer from 'react-xml-viewer';
 import { Alert, Switch, Tooltip } from '@navikt/ds-react';
-import { classNames } from '../../../../utils/classNames';
+import { classNames } from '../../../../../../common/src/client/utils/classNames';
 
 import style from './XmlView.module.css';
 

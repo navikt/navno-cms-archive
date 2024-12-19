@@ -1,7 +1,7 @@
 import React from 'react';
 import { CategoriesMenu } from './categories/CategoriesMenu';
 import { ContentMenu } from './contents/ContentMenu';
-import { classNames } from '../../utils/classNames';
+import { classNames } from '../../../../common/src/client/utils/classNames';
 import { SearchInput } from './search/search-input/SearchInput';
 import { SearchResult } from './search/search-result/SearchResult';
 import { Alert, BodyLong, Heading } from '@navikt/ds-react';
