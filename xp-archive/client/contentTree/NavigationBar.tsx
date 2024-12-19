@@ -55,9 +55,6 @@ export const NavigationBar = () => {
 
     return (
         <div className={style.wrapper}>
-            <Heading size={'small'} className={style.heading}>
-                {'Søk'}
-            </Heading>
             <form
                 className={style.search}
                 role={'search'}
