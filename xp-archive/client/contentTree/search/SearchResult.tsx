@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Heading, Loader } from '@navikt/ds-react';
+import { Button, Heading, HelpText, Loader } from '@navikt/ds-react';
 import { SearchResponse } from 'shared/types';
 import { SearchResultItem } from './SearchResultItem/SearchResultItem';
 
@@ -31,9 +31,17 @@ export const SearchResult = ({ isLoading, searchResult, closeSearchResult }: Sea
             ) : (
                 <div className={style.wrapper}>
                     <div className={style.filteredHitsHeading}>
-                        <Heading size="small" level="2">
-                            {`Treff i sidetyper: (${filteredHits.length})`}
-                        </Heading>
+                        <div>
+                            <div className={style.filteredHitsHeadingText}>
+                                <Heading size="small" level="2">
+                                    {`Treff i sidetyper: (${filteredHits.length})`}
+                                </Heading>
+                                <HelpText>
+                                    Treff i sidetypene Produktside, Situasjonsside, Temaartikkel og
+                                    Slik gjør du det.
+                                </HelpText>
+                            </div>
+                        </div>
                         <Button variant="tertiary" size="small" onClick={closeSearchResult}>
                             Lukk
                         </Button>

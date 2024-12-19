@@ -9,6 +9,13 @@
     margin-bottom: 0.5rem;
 }
 
+.filteredHitsHeadingText {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+}
+
 .otherHitsHeading {
     margin-top: 1.5rem;
     margin-bottom: 0.5rem;
