@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Heading, Tabs, Search } from '@navikt/ds-react';
+import { Tabs, Search } from '@navikt/ds-react';
 import { LayerPanel } from './layerPanel/LayerPanel';
 import { useAppState } from 'client/context/appState/useAppState';
 import { fetchJson } from '@common/shared/fetchUtils';
