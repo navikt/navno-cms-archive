@@ -46,14 +46,14 @@ export const SearchResult = ({ isLoading, searchResult, closeSearchResult }: Sea
                             Lukk
                         </Button>
                     </div>
-                    {filteredHits.map((hit, index) => (
-                        <SearchResultItem hit={hit} key={index} />
+                    {filteredHits.map((hit) => (
+                        <SearchResultItem hit={hit} key={hit._id + hit.layerLocale} />
                     ))}
                     <Heading size="small" level="2" className={style.otherHitsHeading}>
                         {`Treff i filer og annet: (${otherHits.length})`}
                     </Heading>
-                    {otherHits.map((hit, index) => (
-                        <SearchResultItem hit={hit} key={index} />
+                    {otherHits.map((hit) => (
+                        <SearchResultItem hit={hit} key={hit._id + hit.layerLocale} />
                     ))}
                 </div>
             )}

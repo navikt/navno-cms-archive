@@ -14,7 +14,7 @@ export const SearchResultItem = ({
     key,
 }: {
     hit: SearchResponse['hits'][number];
-    key: number;
+    key: string;
 }) => {
     const { setSelectedContentId, selectedContentId, setSelectedLocale, selectedLocale } =
         useAppState();
