@@ -1,5 +1,5 @@
 import React from 'react';
-import { BodyShort, Button, Heading, Loader } from '@navikt/ds-react';
+import { Button, Heading, Loader } from '@navikt/ds-react';
 import { SearchResponse } from 'shared/types';
 import { SearchResultItem } from './SearchResultItem/SearchResultItem';
 
@@ -32,7 +32,7 @@ export const SearchResult = ({ isLoading, searchResult, closeSearchResult }: Sea
                 <div className={style.wrapper}>
                     <div className={style.filteredHitsHeading}>
                         <Heading size="small" level="2">
-                            {`Treff i innholdssider: (${filteredHits.length})`}
+                            {`Treff i sidetyper: (${filteredHits.length})`}
                         </Heading>
                         <Button variant="tertiary" size="small" onClick={closeSearchResult}>
                             Lukk

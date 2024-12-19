@@ -1,6 +1,4 @@
-import { Detail } from '@navikt/ds-react';
-
-import { BodyShort } from '@navikt/ds-react';
+import { BodyShort, Detail } from '@navikt/ds-react';
 import { classNames } from '@common/client/utils/classNames';
 import {
     updateContentUrl,
