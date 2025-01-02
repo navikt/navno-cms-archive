@@ -14,7 +14,9 @@ type SearchResultProps = {
 export const SearchResult = ({ isLoading, searchResult, closeSearchResult }: SearchResultProps) => {
     const { hits, query } = searchResult;
 
-    const filteredHits = hits.filter(
+    const nonFolderHits = hits.filter((hit) => hit.type !== 'base:folder');
+
+    const filteredHits = nonFolderHits.filter(
         (hit) =>
             hit.type === 'no.nav.navno:content-page-with-sidemenus' ||
             hit.type === 'no.nav.navno:themed-article-page' ||
@@ -22,7 +24,7 @@ export const SearchResult = ({ isLoading, searchResult, closeSearchResult }: Sea
             hit.type === 'no.nav.navno:guide-page'
     );
 
-    const otherHits = hits.filter((hit) => !filteredHits.includes(hit));
+    const otherHits = nonFolderHits.filter((hit) => !filteredHits.includes(hit));
 
     return (
         <div>
