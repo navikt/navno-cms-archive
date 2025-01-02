@@ -10,13 +10,26 @@ type Props = {
     entry: ContentTreeEntryData;
 };
 
+export const getContentIconUrl = (type: string) =>
+    `${import.meta.env.VITE_APP_ORIGIN}/xp/api/contentIcon?type=${type}`;
+
+export const updateContentUrl = (id: string, locale: string) => {
+    const newUrl = `${xpArchiveConfig.basePath}/${id}/${locale}`;
+    window.history.pushState({}, '', newUrl);
+};
+
 export const NavigationItem = ({ entry }: Props) => {
     const { setSelectedContentId } = useAppState();
 
-    const iconUrl = `${import.meta.env.VITE_APP_ORIGIN}/xp/api/contentIcon?type=${entry.type}`;
     const label = (
         <span style={{ display: 'flex', alignItems: 'center' }}>
-            <img src={iconUrl} width={20} height={20} style={{ marginRight: '5px' }} alt={''} />
+            <img
+                src={getContentIconUrl(entry.type)}
+                width={20}
+                height={20}
+                style={{ marginRight: '5px' }}
+                alt={''}
+            />
             {entry.displayName}
         </span>
     );
@@ -26,8 +39,7 @@ export const NavigationItem = ({ entry }: Props) => {
     const onClick = () => {
         if (!entry.isEmpty) {
             setSelectedContentId(entry.id);
-            const newUrl = `${xpArchiveConfig.basePath}/${entry.id}/${entry.locale}`;
-            window.history.pushState({}, '', newUrl);
+            updateContentUrl(entry.id, entry.locale);
         }
     };
 

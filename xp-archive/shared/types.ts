@@ -1,3 +1,5 @@
+import { Locale } from 'client/contentTree/NavigationBar';
+
 export type ContentType = `${string}:${string}`;
 
 export type ContentTreeEntryData = {
@@ -64,4 +66,17 @@ export type Content = {
     };
     data: Record<string, unknown>;
     attachment?: Attachment;
+};
+
+export type SearchResponse = {
+    total: number;
+    query: string;
+    hits: {
+        _id: string;
+        _path: string;
+        layerLocale: Locale;
+        displayName: string;
+        type: string;
+    }[];
+    hasMore: boolean;
 };

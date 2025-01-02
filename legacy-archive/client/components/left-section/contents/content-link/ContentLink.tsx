@@ -3,7 +3,7 @@ import { CmsContentListItem } from '../../../../../shared/cms-documents/content'
 import { BodyShort, Link, Loader } from '@navikt/ds-react';
 import { useApiFetch } from '../../../../fetch/useApiFetch';
 import { useAppState } from '../../../../context/app-state/useAppState';
-import { classNames } from '../../../../utils/classNames';
+import { classNames } from '../../../../../../common/src/client/utils/classNames';
 
 import style from './ContentLink.module.css';
 
