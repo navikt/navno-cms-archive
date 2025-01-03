@@ -14,18 +14,6 @@ type SearchResultProps = {
 export const SearchResult = ({ isLoading, searchResult, closeSearchResult }: SearchResultProps) => {
     const { hits, query } = searchResult;
 
-    const nonFolderHits = hits.filter((hit) => hit.type !== 'base:folder');
-
-    const filteredHits = nonFolderHits.filter(
-        (hit) =>
-            hit.type === 'no.nav.navno:content-page-with-sidemenus' ||
-            hit.type === 'no.nav.navno:themed-article-page' ||
-            hit.type === 'no.nav.navno:situation-page' ||
-            hit.type === 'no.nav.navno:guide-page'
-    );
-
-    const otherHits = nonFolderHits.filter((hit) => !filteredHits.includes(hit));
-
     return (
         <div>
             {isLoading ? (
@@ -36,7 +24,7 @@ export const SearchResult = ({ isLoading, searchResult, closeSearchResult }: Sea
                         <div>
                             <div className={style.filteredHitsHeadingText}>
                                 <Heading size="small" level="2">
-                                    {`Treff for "${query}" i sidetyper: (${filteredHits.length})`}
+                                    {`Treff for "${query}" i sidetyper: (${hits.length})`}
                                 </Heading>
                                 <HelpText>
                                     Treff i sidetypene Produktside, Situasjonsside, Temaartikkel og
@@ -48,13 +36,7 @@ export const SearchResult = ({ isLoading, searchResult, closeSearchResult }: Sea
                             Lukk
                         </Button>
                     </div>
-                    {filteredHits.map((hit) => (
-                        <SearchResultItem hit={hit} key={hit._id + hit.layerLocale} />
-                    ))}
-                    <Heading size="small" level="2" className={style.otherHitsHeading}>
-                        {`Treff for "${query}" i filer og annet: (${otherHits.length})`}
-                    </Heading>
-                    {otherHits.map((hit) => (
+                    {hits.map((hit) => (
                         <SearchResultItem hit={hit} key={hit._id + hit.layerLocale} />
                     ))}
                 </div>
