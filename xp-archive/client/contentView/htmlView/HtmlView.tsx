@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import style from './HtmlView.module.css';
 import { ExpandIcon } from '@navikt/aksel-icons';
 import { xpArchiveConfig } from '@common/shared/siteConfigs';
-import { Button } from '@navikt/ds-react';
+import { Button, Loader } from '@navikt/ds-react';
 
 type Props = {
     versionId: string;
@@ -10,11 +10,23 @@ type Props = {
 };
 
 export const HtmlView = ({ versionId, locale }: Props) => {
+    const [isLoading, setIsLoading] = useState(true);
     const htmlPath = `${xpArchiveConfig.basePath}/html/${versionId}/${locale || ''}`;
 
     return (
         <div className={style.wrapper}>
-            <iframe title={'HTML-visning'} src={htmlPath} className={style.iframe} />
+            {isLoading && (
+                <div className={style.loaderWrapper}>
+                    Laster siden...
+                    <Loader size="xlarge" />
+                </div>
+            )}
+            <iframe
+                title={'HTML-visning'}
+                src={htmlPath}
+                className={style.iframe}
+                onLoad={() => setIsLoading(false)}
+            />
             <Button
                 as={'a'}
                 href={htmlPath}

@@ -20,7 +20,7 @@ function getRelevantViewVariants(isWebpage: boolean, hasAttachment: boolean): Vi
 }
 
 type Props = {
-    selectedView: ViewVariant;
+    selectedView?: ViewVariant;
     setSelectedView(selectedView: ViewVariant): void;
     hasAttachment: boolean;
     isWebpage: boolean;

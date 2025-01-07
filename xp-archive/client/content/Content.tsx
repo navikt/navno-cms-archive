@@ -32,26 +32,24 @@ export const Content = () => {
 
     useEffect(() => {
         setSelectedView(getDefaultView(isWebpage, hasAttachment));
-    }, [isWebpage, hasAttachment]);
+    }, [isWebpage, hasAttachment, selectedContentId]);
 
     return (
-        <>
-            {selectedContentId && selectedView ? (
-                <div className={style.content}>
-                    <div className={style.top}>
-                        <ViewSelector
-                            selectedView={selectedView}
-                            setSelectedView={setSelectedView}
-                            hasAttachment={hasAttachment}
-                            isWebpage={isWebpage}
-                        />
-                        <VersionSelector versions={data?.versions || []} />
-                    </div>
-                    <ContentView selectedView={selectedView} isLoading={isLoading} data={data} />
-                </div>
-            ) : (
-                <div>Ingenting å forhåndsvise</div>
-            )}
-        </>
+        <div className={style.content}>
+            <div className={style.top}>
+                <ViewSelector
+                    selectedView={selectedView}
+                    setSelectedView={setSelectedView}
+                    hasAttachment={hasAttachment}
+                    isWebpage={isWebpage}
+                />
+                <VersionSelector versions={data?.versions || []} />
+            </div>
+            <ContentView
+                selectedView={selectedView || getDefaultView(isWebpage, hasAttachment) || 'html'}
+                isLoading={isLoading}
+                data={data}
+            />
+        </div>
     );
 };
