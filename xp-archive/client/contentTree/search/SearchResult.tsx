@@ -37,8 +37,8 @@ export const SearchResult = ({ isLoading, searchResult, closeSearchResult }: Sea
                     ))}
                     {hasMore && (
                         <Detail>
-                            Viser de første 1000 treffene. Prøv å avgrens søket om du ikke fant det
-                            du lette etter.
+                            Viser kun de første 1000 treffene. Prøv å avgrens søket om du ikke fant
+                            det du lette etter.
                         </Detail>
                     )}
                 </div>
