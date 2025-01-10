@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Heading, Loader } from '@navikt/ds-react';
+import { BodyShort, Button, Detail, Heading, Loader } from '@navikt/ds-react';
 import { SearchResponse } from 'shared/types';
 import { SearchResultItem } from './SearchResultItem/SearchResultItem';
 
@@ -12,7 +12,7 @@ type SearchResultProps = {
 };
 
 export const SearchResult = ({ isLoading, searchResult, closeSearchResult }: SearchResultProps) => {
-    const { hits, query, total } = searchResult; //TODO legg til hasMore
+    const { hits, query, total, hasMore } = searchResult;
 
     return (
         <div>
@@ -35,6 +35,12 @@ export const SearchResult = ({ isLoading, searchResult, closeSearchResult }: Sea
                     {hits.map((hit) => (
                         <SearchResultItem hit={hit} key={hit._id + hit.layerLocale} />
                     ))}
+                    {hasMore && (
+                        <Detail>
+                            Viser de første 1000 treffene. Prøv å avgrens søket om du ikke fant det
+                            du lette etter.
+                        </Detail>
+                    )}
                 </div>
             )}
         </div>
