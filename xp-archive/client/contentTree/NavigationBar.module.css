@@ -8,3 +8,11 @@
 .search {
     margin-bottom: 1rem;
 }
+
+.radio {
+    :global(.navds-body-short) {
+        display: flex;
+        flex-direction: row;
+        gap: 0.5rem;
+    }
+}

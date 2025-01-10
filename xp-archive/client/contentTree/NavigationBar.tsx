@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Tabs, Search } from '@navikt/ds-react';
+import { Tabs, Search, RadioGroup, Radio, HelpText } from '@navikt/ds-react';
 import { LayerPanel } from './layerPanel/LayerPanel';
 import { useAppState } from 'client/context/appState/useAppState';
 import { fetchJson } from '@common/shared/fetchUtils';
@@ -67,6 +67,24 @@ export const NavigationBar = () => {
                     searchData();
                 }}
             >
+                <RadioGroup legend="Søk i...">
+                    <Radio className={style.radio} value="selected">
+                        Utvalgt innhold
+                        <HelpText>
+                            <ul>
+                                <li>Produktside</li>
+                                <li>Situasjonsside</li>
+                                <li>Temaartikkel</li>
+                                <li>Slik gjør du det</li>
+                                <li>Artikkel</li>
+                                <li>Aktuelt</li>
+                                <li>Intern lenke</li>
+                                <li>Ekstern lenke</li>
+                            </ul>
+                        </HelpText>
+                    </Radio>
+                    <Radio value="everything">Alt innhold</Radio>
+                </RadioGroup>
                 <Search
                     label={'Søk'}
                     value={searchQuery}

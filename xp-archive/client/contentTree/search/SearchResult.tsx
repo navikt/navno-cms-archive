@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Heading, HelpText, Loader } from '@navikt/ds-react';
+import { Button, Heading, Loader } from '@navikt/ds-react';
 import { SearchResponse } from 'shared/types';
 import { SearchResultItem } from './SearchResultItem/SearchResultItem';
 
@@ -12,7 +12,7 @@ type SearchResultProps = {
 };
 
 export const SearchResult = ({ isLoading, searchResult, closeSearchResult }: SearchResultProps) => {
-    const { hits, query } = searchResult;
+    const { hits, query, total } = searchResult; //TODO legg til hasMore
 
     return (
         <div>
@@ -24,12 +24,8 @@ export const SearchResult = ({ isLoading, searchResult, closeSearchResult }: Sea
                         <div>
                             <div className={style.filteredHitsHeadingText}>
                                 <Heading size="small" level="2">
-                                    {`Treff for "${query}" i sidetyper: (${hits.length})`}
+                                    {`Treff for "${query}": (${total})`}
                                 </Heading>
-                                <HelpText>
-                                    Treff i sidetypene Produktside, Situasjonsside, Temaartikkel og
-                                    Slik gjør du det.
-                                </HelpText>
                             </div>
                         </div>
                         <Button variant="tertiary" size="small" onClick={closeSearchResult}>
