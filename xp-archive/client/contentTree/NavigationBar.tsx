@@ -26,6 +26,7 @@ export const NavigationBar = () => {
     const [searchResultIsOpen, setSearchResultIsOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [searchType, setSearchType] = useState<'curated' | 'everything'>('curated');
     const [searchResult, setSearchResult] = useState<SearchResponse>({
         hits: [],
         total: 0,
@@ -67,9 +68,14 @@ export const NavigationBar = () => {
                     searchData();
                 }}
             >
-                <RadioGroup legend="Søk i...">
-                    <Radio className={style.radio} value="selected">
-                        Utvalgt innhold
+                <RadioGroup
+                    legend="Søk i..."
+                    size="small"
+                    onChange={setSearchType}
+                    value={searchType}
+                >
+                    <Radio className={style.radio} value="curated">
+                        Utvalgte innholdstyper
                         <HelpText>
                             <ul>
                                 <li>Produktside</li>
@@ -83,12 +89,13 @@ export const NavigationBar = () => {
                             </ul>
                         </HelpText>
                     </Radio>
-                    <Radio value="everything">Alt innhold</Radio>
+                    <Radio value="everything">Alle innholdstyper</Radio>
                 </RadioGroup>
                 <Search
                     label={'Søk'}
                     value={searchQuery}
                     onChange={(value) => setSearchQuery(value)}
+                    size="small"
                 />
             </form>
             {searchResultIsOpen ? (
