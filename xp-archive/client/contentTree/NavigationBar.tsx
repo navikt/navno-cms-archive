@@ -82,14 +82,14 @@ export const NavigationBar = () => {
                                 <li>Situasjonsside</li>
                                 <li>Temaartikkel</li>
                                 <li>Slik gjør du det</li>
-                                <li>Artikkel</li>
                                 <li>Aktuelt</li>
+                                <li>Artikkel</li>
                                 <li>Intern lenke</li>
                                 <li>Ekstern lenke</li>
                             </ul>
                         </HelpText>
                     </Radio>
-                    <Radio value="everything">Alle innholdstyper</Radio>
+                    <Radio value="other">Andre innholdstyper</Radio>
                 </RadioGroup>
                 <Search
                     label={'Søk'}

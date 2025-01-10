@@ -1,5 +1,5 @@
 import React from 'react';
-import { BodyShort, Button, Detail, Heading, Loader } from '@navikt/ds-react';
+import { Button, Detail, Heading, Loader } from '@navikt/ds-react';
 import { SearchResponse } from 'shared/types';
 import { SearchResultItem } from './SearchResultItem/SearchResultItem';
 
@@ -13,6 +13,24 @@ type SearchResultProps = {
 
 export const SearchResult = ({ isLoading, searchResult, closeSearchResult }: SearchResultProps) => {
     const { hits, query, total, hasMore } = searchResult;
+
+    const orderedHits = [...hits].sort((a, b) => {
+        const orderedTypes = [
+            'no.nav.navno:content-page-with-sidemenus',
+            'no.nav.navno:situation-page',
+            'no.nav.navno:themed-article-page',
+            'no.nav.navno:guide-page',
+            'no.nav.navno:current-topic-page',
+            'no.nav.navno:main-article',
+            'no.nav.navno:internal-link',
+            'no.nav.navno:external-link',
+        ];
+
+        const indexA = orderedTypes.indexOf(a.type);
+        const indexB = orderedTypes.indexOf(b.type);
+
+        return indexA - indexB;
+    });
 
     return (
         <div>
@@ -32,7 +50,7 @@ export const SearchResult = ({ isLoading, searchResult, closeSearchResult }: Sea
                             Lukk
                         </Button>
                     </div>
-                    {hits.map((hit) => (
+                    {orderedHits.map((hit) => (
                         <SearchResultItem hit={hit} key={hit._id + hit.layerLocale} />
                     ))}
                     {hasMore && (
