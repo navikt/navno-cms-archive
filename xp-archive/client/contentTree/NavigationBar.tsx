@@ -26,7 +26,7 @@ export const NavigationBar = () => {
     const [searchResultIsOpen, setSearchResultIsOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const [searchType, setSearchType] = useState<'curated' | 'everything'>('curated');
+    const [searchType, setSearchType] = useState<'curated' | 'other'>('curated');
     const [searchResult, setSearchResult] = useState<SearchResponse>({
         hits: [],
         total: 0,
@@ -39,7 +39,10 @@ export const NavigationBar = () => {
     const searchData = async () => {
         setIsLoading(true);
         const result = await fetchJson<SearchResponse>(SEARCH_API, {
-            params: { query: searchQuery },
+            params: {
+                query: searchQuery,
+                searchType,
+            },
         });
         if (result) {
             setSearchResult(result);
