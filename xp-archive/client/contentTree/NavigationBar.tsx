@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Tabs, Search } from '@navikt/ds-react';
+import { Tabs, Search, RadioGroup, Radio, HelpText } from '@navikt/ds-react';
 import { LayerPanel } from './layerPanel/LayerPanel';
 import { useAppState } from 'client/context/appState/useAppState';
 import { fetchJson } from '@common/shared/fetchUtils';
@@ -26,6 +26,7 @@ export const NavigationBar = () => {
     const [searchResultIsOpen, setSearchResultIsOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [searchType, setSearchType] = useState<'curated' | 'other'>('curated');
     const [searchResult, setSearchResult] = useState<SearchResponse>({
         hits: [],
         total: 0,
@@ -38,7 +39,10 @@ export const NavigationBar = () => {
     const searchData = async () => {
         setIsLoading(true);
         const result = await fetchJson<SearchResponse>(SEARCH_API, {
-            params: { query: searchQuery },
+            params: {
+                query: searchQuery,
+                searchType,
+            },
         });
         if (result) {
             setSearchResult(result);
@@ -67,10 +71,34 @@ export const NavigationBar = () => {
                     searchData();
                 }}
             >
+                <RadioGroup
+                    legend="Søk i..."
+                    size="small"
+                    onChange={setSearchType}
+                    value={searchType}
+                >
+                    <Radio className={style.radio} value="curated">
+                        Utvalgte innholdstyper
+                        <HelpText>
+                            <ul>
+                                <li>Produktside</li>
+                                <li>Situasjonsside</li>
+                                <li>Temaartikkel</li>
+                                <li>Slik gjør du det</li>
+                                <li>Aktuelt</li>
+                                <li>Artikkel</li>
+                                <li>Intern lenke</li>
+                                <li>Ekstern lenke</li>
+                            </ul>
+                        </HelpText>
+                    </Radio>
+                    <Radio value="other">Andre innholdstyper</Radio>
+                </RadioGroup>
                 <Search
                     label={'Søk'}
                     value={searchQuery}
                     onChange={(value) => setSearchQuery(value)}
+                    size="small"
                 />
             </form>
             {searchResultIsOpen ? (
