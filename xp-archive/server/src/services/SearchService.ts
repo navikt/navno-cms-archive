@@ -8,20 +8,20 @@ export class SearchService {
     private readonly SEARCH_API = xpServiceUrl('externalArchive/search');
 
     public getSearchHandler: RequestHandler = async (req, res) => {
-        if (!validateQuery(req.query, ['query'], [])) {
+        if (!validateQuery(req.query, ['query'], ['searchType'])) {
             return res.status(400).send('Missing or invalid parameters');
         }
 
-        const { query } = req.query;
-        const searchResponse = await this.search(query);
+        const { query, searchType } = req.query;
+        const searchResponse = await this.search(query, searchType);
 
         return res.status(200).json(searchResponse);
     };
 
-    private async search(query: string): Promise<SearchResponse | null> {
+    private async search(query: string, searchType?: string): Promise<SearchResponse | null> {
         const searchResponse = await fetchJson<SearchResponse>(this.SEARCH_API, {
             headers: { secret: process.env.SERVICE_SECRET },
-            params: { query },
+            params: { query, searchType },
         });
 
         return searchResponse;
