@@ -17,7 +17,6 @@ export const HtmlView = ({ versionId, locale }: Props) => {
         <div className={style.wrapper}>
             {isLoading && (
                 <div className={style.loaderWrapper}>
-                    Laster siden...
                     <Loader size="xlarge" />
                 </div>
             )}
