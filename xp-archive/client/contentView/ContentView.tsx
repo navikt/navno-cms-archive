@@ -26,7 +26,7 @@ type Props = {
 
 export const ContentView = ({ selectedView, isLoading, data }: Props) => {
     if (isLoading) {
-        return <Loader />;
+        return <Loader size="xlarge" />;
     }
     return <div className={style.main}>{getDisplayComponent(selectedView, data)}</div>;
 };
