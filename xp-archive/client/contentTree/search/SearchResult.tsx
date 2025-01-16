@@ -1,4 +1,5 @@
 import React from 'react';
+import { XMarkIcon } from '@navikt/aksel-icons';
 import { Button, Detail, Heading, Loader } from '@navikt/ds-react';
 import { SearchResponse } from 'shared/types';
 import { SearchResultItem } from './SearchResultItem/SearchResultItem';
@@ -56,8 +57,13 @@ export const SearchResult = ({ isLoading, searchResult, closeSearchResult }: Sea
                             det du lette etter.
                         </Detail>
                     )}
-                    <Button variant="tertiary" size="small" onClick={closeSearchResult}>
-                        Lukk
+                    <Button
+                        className={style.closeButton}
+                        variant="primary-neutral"
+                        icon={<XMarkIcon />}
+                        onClick={closeSearchResult}
+                    >
+                        Lukk søkeresultat
                     </Button>
                 </div>
             )}

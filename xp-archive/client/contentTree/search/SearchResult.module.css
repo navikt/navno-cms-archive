@@ -18,3 +18,10 @@
     align-items: center;
     gap: 0.5rem;
 }
+
+.closeButton {
+    width: fit-content;
+    border-radius: 99px;
+    background-color: var(--a-surface-inverted);
+    align-self: center;
+}
