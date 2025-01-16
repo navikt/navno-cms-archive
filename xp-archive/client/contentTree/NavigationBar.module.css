@@ -1,5 +1,3 @@
-@value transitionDuration: 200ms;
-
 .wrapper {
     border-right: 1px solid var(--a-border-divider);
     grid-area: left;
