@@ -46,9 +46,6 @@ export const SearchResult = ({ isLoading, searchResult, closeSearchResult }: Sea
                                 </Heading>
                             </div>
                         </div>
-                        <Button variant="tertiary" size="small" onClick={closeSearchResult}>
-                            Lukk
-                        </Button>
                     </div>
                     {orderedHits.map((hit) => (
                         <SearchResultItem hit={hit} key={hit._id + hit.layerLocale} />
@@ -59,6 +56,9 @@ export const SearchResult = ({ isLoading, searchResult, closeSearchResult }: Sea
                             det du lette etter.
                         </Detail>
                     )}
+                    <Button variant="tertiary" size="small" onClick={closeSearchResult}>
+                        Lukk
+                    </Button>
                 </div>
             )}
         </div>
