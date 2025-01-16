@@ -14,12 +14,8 @@
     gap: 0.5rem;
 }
 
-.searchSettingsChevron {
-    transition: transform ease-out transitionDuration;
-
-    &.open {
-        transform: rotateX(180deg);
-    }
+.chevronOpen {
+    transform: rotateX(180deg);
 }
 
 .radioGroupWrapper {

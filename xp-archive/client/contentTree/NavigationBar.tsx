@@ -85,14 +85,7 @@ export const NavigationBar = () => {
                 size={'xsmall'}
                 variant={'tertiary'}
                 className={style.toggle}
-                icon={
-                    <ChevronDownIcon
-                        className={classNames(
-                            style.searchSettingsChevron,
-                            searchSettingsIsOpen && style.open
-                        )}
-                    />
-                }
+                icon={<ChevronDownIcon className={searchSettingsIsOpen ? style.chevronOpen : ''} />}
                 onClick={() => setSearchSettingsIsOpen(!searchSettingsIsOpen)}
             >
                 {'Tilpass søket'}
