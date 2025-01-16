@@ -20,6 +20,10 @@
 }
 
 .closeButton {
+    position: sticky;
+    bottom: 1rem;
+    margin-top: 0.75rem;
+
     width: fit-content;
     border-radius: 99px;
     background-color: var(--a-surface-inverted);
