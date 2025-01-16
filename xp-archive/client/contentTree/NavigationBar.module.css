@@ -1,3 +1,5 @@
+@value transitionDuration: 200ms;
+
 .wrapper {
     border-right: 1px solid var(--a-border-divider);
     grid-area: left;
@@ -10,6 +12,14 @@
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+}
+
+.searchSettingsChevron {
+    transition: transform ease-out transitionDuration;
+
+    &.open {
+        transform: rotateX(180deg);
+    }
 }
 
 .radioGroupWrapper {

@@ -42,7 +42,7 @@ export const SearchResult = ({ isLoading, searchResult, closeSearchResult }: Sea
                         <div>
                             <div className={style.filteredHitsHeadingText}>
                                 <Heading size="small" level="2">
-                                    {`Treff for "${query}": (${total})`}
+                                    {`${total} treff på "${query}"`}
                                 </Heading>
                             </div>
                         </div>

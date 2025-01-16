@@ -26,6 +26,7 @@ const getLabel = (locale: Locale) => {
 export const NavigationBar = () => {
     const { setSelectedLocale } = useAppState();
     const [searchResultIsOpen, setSearchResultIsOpen] = useState(false);
+    const [searchSettingsIsOpen, setSearchSettingsIsOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [searchType, setSearchType] = useState<'curated' | 'other'>('curated');
@@ -84,27 +85,36 @@ export const NavigationBar = () => {
                 size={'xsmall'}
                 variant={'tertiary'}
                 className={style.toggle}
-                // onClick={() => setSearchSettingsIsOpen(!searchSettingsIsOpen)}
+                icon={
+                    <ChevronDownIcon
+                        className={classNames(
+                            style.searchSettingsChevron,
+                            searchSettingsIsOpen && style.open
+                        )}
+                    />
+                }
+                onClick={() => setSearchSettingsIsOpen(!searchSettingsIsOpen)}
             >
-                <ChevronDownIcon className={classNames(style.icon && style.open)} />
                 {'Tilpass søket'}
             </Button>
-            <div className={style.radioGroupWrapper}>
-                <RadioGroup
-                    legend="Treff i innholdstyper"
-                    size="small"
-                    onChange={setSearchType}
-                    value={searchType}
-                >
-                    <Radio
-                        value="curated"
-                        description="Produktside, Situasjonsside, Temaartikkel, Slik gjør du det, Aktuelt, Artikkel, Intern lenke, Ekstern lenke"
+            {searchSettingsIsOpen && (
+                <div className={style.radioGroupWrapper}>
+                    <RadioGroup
+                        legend="Treff i innholdstyper"
+                        size="small"
+                        onChange={setSearchType}
+                        value={searchType}
                     >
-                        Utvalgte
-                    </Radio>
-                    <Radio value="other">Andre</Radio>
-                </RadioGroup>
-            </div>
+                        <Radio
+                            value="curated"
+                            description="Produktside, Situasjonsside, Temaartikkel, Slik gjør du det, Aktuelt, Artikkel, Intern lenke, Ekstern lenke"
+                        >
+                            Utvalgte
+                        </Radio>
+                        <Radio value="other">Andre</Radio>
+                    </RadioGroup>
+                </div>
+            )}
             {searchResultIsOpen ? (
                 <SearchResult
                     isLoading={isLoading}
