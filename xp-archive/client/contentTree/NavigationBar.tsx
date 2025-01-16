@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Tabs, Search, RadioGroup, Radio, HelpText } from '@navikt/ds-react';
+import { Tabs, Search, RadioGroup, Radio, HelpText, Button } from '@navikt/ds-react';
 import { LayerPanel } from './layerPanel/LayerPanel';
 import { useAppState } from 'client/context/appState/useAppState';
 import { fetchJson } from '@common/shared/fetchUtils';
@@ -7,6 +7,8 @@ import { SearchResponse } from 'shared/types';
 import { SearchResult } from './search/SearchResult';
 
 import style from './NavigationBar.module.css';
+import { classNames } from '@common/client/utils/classNames';
+import { ChevronDownIcon } from '@navikt/aksel-icons';
 
 const locales = ['no', 'en', 'nn', 'se'] as const;
 export type Locale = (typeof locales)[number];
@@ -76,23 +78,33 @@ export const NavigationBar = () => {
                     value={searchQuery}
                     onChange={(value) => setSearchQuery(value)}
                 />
-                <div className={style.radioGroupWrapper}>
-                    <RadioGroup
-                        legend="Treff i innholdstyper"
-                        size="small"
-                        onChange={setSearchType}
-                        value={searchType}
-                    >
-                        <Radio
-                            value="curated"
-                            description="Produktside, Situasjonsside, Temaartikkel, Slik gjør du det, Aktuelt, Artikkel, Intern lenke, Ekstern lenke"
-                        >
-                            Utvalgte
-                        </Radio>
-                        <Radio value="other">Andre</Radio>
-                    </RadioGroup>
-                </div>
             </form>
+
+            <Button
+                size={'xsmall'}
+                variant={'tertiary'}
+                className={style.toggle}
+                // onClick={() => setSearchSettingsIsOpen(!searchSettingsIsOpen)}
+            >
+                <ChevronDownIcon className={classNames(style.icon && style.open)} />
+                {'Tilpass søket'}
+            </Button>
+            <div className={style.radioGroupWrapper}>
+                <RadioGroup
+                    legend="Treff i innholdstyper"
+                    size="small"
+                    onChange={setSearchType}
+                    value={searchType}
+                >
+                    <Radio
+                        value="curated"
+                        description="Produktside, Situasjonsside, Temaartikkel, Slik gjør du det, Aktuelt, Artikkel, Intern lenke, Ekstern lenke"
+                    >
+                        Utvalgte
+                    </Radio>
+                    <Radio value="other">Andre</Radio>
+                </RadioGroup>
+            </div>
             {searchResultIsOpen ? (
                 <SearchResult
                     isLoading={isLoading}
