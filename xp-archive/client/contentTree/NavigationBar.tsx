@@ -71,35 +71,27 @@ export const NavigationBar = () => {
                     searchData();
                 }}
             >
-                <RadioGroup
-                    legend="Søk i..."
-                    size="small"
-                    onChange={setSearchType}
-                    value={searchType}
-                >
-                    <Radio className={style.radio} value="curated">
-                        Utvalgte innholdstyper
-                        <HelpText>
-                            <ul>
-                                <li>Produktside</li>
-                                <li>Situasjonsside</li>
-                                <li>Temaartikkel</li>
-                                <li>Slik gjør du det</li>
-                                <li>Aktuelt</li>
-                                <li>Artikkel</li>
-                                <li>Intern lenke</li>
-                                <li>Ekstern lenke</li>
-                            </ul>
-                        </HelpText>
-                    </Radio>
-                    <Radio value="other">Andre innholdstyper</Radio>
-                </RadioGroup>
                 <Search
                     label={'Søk'}
                     value={searchQuery}
                     onChange={(value) => setSearchQuery(value)}
-                    size="small"
                 />
+                <div className={style.radioGroupWrapper}>
+                    <RadioGroup
+                        legend="Treff i innholdstyper"
+                        size="small"
+                        onChange={setSearchType}
+                        value={searchType}
+                    >
+                        <Radio
+                            value="curated"
+                            description="Produktside, Situasjonsside, Temaartikkel, Slik gjør du det, Aktuelt, Artikkel, Intern lenke, Ekstern lenke"
+                        >
+                            Utvalgte
+                        </Radio>
+                        <Radio value="other">Andre</Radio>
+                    </RadioGroup>
+                </div>
             </form>
             {searchResultIsOpen ? (
                 <SearchResult

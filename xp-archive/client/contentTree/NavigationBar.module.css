@@ -12,11 +12,9 @@
     gap: 0.5rem;
 }
 
-.radio {
-    :global(.navds-body-short) {
-        display: flex;
-        flex-direction: row;
-        gap: 0.5rem;
-        align-items: center;
-    }
+.radioGroupWrapper {
+    margin-top: 0.5rem;
+    padding: 0.75rem;
+    background-color: var(--a-surface-subtle);
+    border-radius: 0.5rem;
 }
