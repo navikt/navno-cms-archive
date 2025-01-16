@@ -4,6 +4,9 @@
     padding-top: 1rem;
     margin-top: 1rem;
     border-top: 1px solid var(--a-gray-300);
+
+    flex-grow: 1;
+    overflow-y: auto;
 }
 
 .heading {

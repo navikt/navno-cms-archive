@@ -79,7 +79,6 @@ export const NavigationBar = () => {
                     onChange={(value) => setSearchQuery(value)}
                 />
             </form>
-
             <Button
                 size={'xsmall'}
                 variant={'tertiary'}

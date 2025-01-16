@@ -34,11 +34,11 @@ export const SearchResult = ({ isLoading, searchResult, closeSearchResult }: Sea
     });
 
     return (
-        <div>
+        <div className={style.wrapper}>
             {isLoading ? (
                 <Loader size={'3xlarge'} />
             ) : (
-                <div className={style.wrapper}>
+                <>
                     <div className={style.heading}>
                         <div>
                             <div className={style.headingText}>
@@ -65,7 +65,7 @@ export const SearchResult = ({ isLoading, searchResult, closeSearchResult }: Sea
                     >
                         Lukk søkeresultat
                     </Button>
-                </div>
+                </>
             )}
         </div>
     );

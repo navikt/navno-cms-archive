@@ -1,6 +1,7 @@
 .hit {
     display: flex;
     align-items: center;
+    flex-shrink: 0;
     cursor: pointer;
     overflow: hidden;
     gap: 8px;
