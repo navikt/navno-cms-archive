@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Tabs, Search, RadioGroup, Radio, HelpText } from '@navikt/ds-react';
+import { ChevronDownIcon } from '@navikt/aksel-icons';
+import { Tabs, Search, RadioGroup, Radio, Button } from '@navikt/ds-react';
 import { LayerPanel } from './layerPanel/LayerPanel';
 import { useAppState } from 'client/context/appState/useAppState';
 import { fetchJson } from '@common/shared/fetchUtils';
@@ -24,6 +25,7 @@ const getLabel = (locale: Locale) => {
 export const NavigationBar = () => {
     const { setSelectedLocale } = useAppState();
     const [searchResultIsOpen, setSearchResultIsOpen] = useState(false);
+    const [searchSettingsIsOpen, setSearchSettingsIsOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [searchType, setSearchType] = useState<'curated' | 'other'>('curated');
@@ -71,36 +73,40 @@ export const NavigationBar = () => {
                     searchData();
                 }}
             >
-                <RadioGroup
-                    legend="Søk i..."
-                    size="small"
-                    onChange={setSearchType}
-                    value={searchType}
-                >
-                    <Radio className={style.radio} value="curated">
-                        Utvalgte innholdstyper
-                        <HelpText>
-                            <ul>
-                                <li>Produktside</li>
-                                <li>Situasjonsside</li>
-                                <li>Temaartikkel</li>
-                                <li>Slik gjør du det</li>
-                                <li>Aktuelt</li>
-                                <li>Artikkel</li>
-                                <li>Intern lenke</li>
-                                <li>Ekstern lenke</li>
-                            </ul>
-                        </HelpText>
-                    </Radio>
-                    <Radio value="other">Andre innholdstyper</Radio>
-                </RadioGroup>
                 <Search
                     label={'Søk'}
                     value={searchQuery}
                     onChange={(value) => setSearchQuery(value)}
-                    size="small"
                 />
             </form>
+
+            <Button
+                size={'xsmall'}
+                variant={'tertiary'}
+                className={style.toggle}
+                icon={<ChevronDownIcon className={searchSettingsIsOpen ? style.chevronOpen : ''} />}
+                onClick={() => setSearchSettingsIsOpen(!searchSettingsIsOpen)}
+            >
+                {'Tilpass søket'}
+            </Button>
+            {searchSettingsIsOpen && (
+                <div className={style.radioGroupWrapper}>
+                    <RadioGroup
+                        legend="Treff i innholdstyper"
+                        size="small"
+                        onChange={setSearchType}
+                        value={searchType}
+                    >
+                        <Radio
+                            value="curated"
+                            description="Produktside, Situasjonsside, Temaartikkel, Slik gjør du det, Aktuelt, Artikkel, Intern lenke, Ekstern lenke"
+                        >
+                            Utvalgte
+                        </Radio>
+                        <Radio value="other">Andre</Radio>
+                    </RadioGroup>
+                </div>
+            )}
             {searchResultIsOpen ? (
                 <SearchResult
                     isLoading={isLoading}

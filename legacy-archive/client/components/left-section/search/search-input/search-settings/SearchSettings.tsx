@@ -46,11 +46,16 @@ export const SearchSettings = () => {
                         variant={'tertiary'}
                         className={style.toggle}
                         onClick={() => setSearchSettingsIsOpen(!searchSettingsIsOpen)}
+                        icon={
+                            <ChevronDownIcon
+                                className={classNames(
+                                    style.icon,
+                                    searchSettingsIsOpen && style.open
+                                )}
+                            />
+                        }
                     >
                         {'Tilpass søket'}
-                        <ChevronDownIcon
-                            className={classNames(style.icon, searchSettingsIsOpen && style.open)}
-                        />
                     </Button>
                 </div>
             </div>

@@ -1,22 +1,20 @@
 .wrapper {
     display: flex;
     flex-direction: column;
+    padding-top: 1rem;
+    margin-top: 1rem;
+    border-top: 1px solid var(--a-gray-300);
 }
 
-.filteredHitsHeading {
+.heading {
     display: flex;
     justify-content: space-between;
     margin-bottom: 0.5rem;
 }
 
-.filteredHitsHeadingText {
+.headingText {
     display: flex;
     flex-direction: row;
     align-items: center;
     gap: 0.5rem;
-}
-
-.otherHitsHeading {
-    margin-top: 1.5rem;
-    margin-bottom: 0.5rem;
 }

@@ -38,11 +38,11 @@ export const SearchResult = ({ isLoading, searchResult, closeSearchResult }: Sea
                 <Loader size={'3xlarge'} />
             ) : (
                 <div className={style.wrapper}>
-                    <div className={style.filteredHitsHeading}>
+                    <div className={style.heading}>
                         <div>
-                            <div className={style.filteredHitsHeadingText}>
+                            <div className={style.headingText}>
                                 <Heading size="small" level="2">
-                                    {`Treff for "${query}": (${total})`}
+                                    {`${total} treff på "${query}"`}
                                 </Heading>
                             </div>
                         </div>
