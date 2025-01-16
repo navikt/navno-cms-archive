@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Tabs, Search, RadioGroup, Radio, HelpText, Button } from '@navikt/ds-react';
+import { ChevronDownIcon } from '@navikt/aksel-icons';
+import { Tabs, Search, RadioGroup, Radio, Button } from '@navikt/ds-react';
 import { LayerPanel } from './layerPanel/LayerPanel';
 import { useAppState } from 'client/context/appState/useAppState';
 import { fetchJson } from '@common/shared/fetchUtils';
@@ -7,8 +8,6 @@ import { SearchResponse } from 'shared/types';
 import { SearchResult } from './search/SearchResult';
 
 import style from './NavigationBar.module.css';
-import { classNames } from '@common/client/utils/classNames';
-import { ChevronDownIcon } from '@navikt/aksel-icons';
 
 const locales = ['no', 'en', 'nn', 'se'] as const;
 export type Locale = (typeof locales)[number];
