@@ -79,11 +79,10 @@ export const NavigationBar = () => {
                     onChange={(value) => setSearchQuery(value)}
                 />
             </form>
-
             <Button
                 size={'xsmall'}
                 variant={'tertiary'}
-                className={style.toggle}
+                className={style.toggleButton}
                 icon={<ChevronDownIcon className={searchSettingsIsOpen ? style.chevronOpen : ''} />}
                 onClick={() => setSearchSettingsIsOpen(!searchSettingsIsOpen)}
             >
