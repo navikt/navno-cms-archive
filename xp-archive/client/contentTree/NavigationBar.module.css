@@ -15,6 +15,10 @@
     gap: 0.5rem;
 }
 
+.toggleButton {
+    align-self: flex-start;
+}
+
 .chevronOpen {
     transform: rotateX(180deg);
 }
