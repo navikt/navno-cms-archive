@@ -12,7 +12,6 @@ type Props = {
 export const HtmlView = ({ versionId, locale }: Props) => {
     const [isLoading, setIsLoading] = useState(true);
     const htmlPath = `${xpArchiveConfig.basePath}/html/${versionId}/${locale || ''}`;
-
     return (
         <div className={style.wrapper}>
             {isLoading && (
@@ -24,7 +23,10 @@ export const HtmlView = ({ versionId, locale }: Props) => {
                 title={'HTML-visning'}
                 src={htmlPath}
                 className={style.iframe}
-                onLoad={() => setIsLoading(false)}
+                onLoad={(e) => {
+                    setIsLoading(false);
+                    disableLinksScriptsAndEventListeners(e.currentTarget);
+                }}
             />
             <Button
                 as={'a'}
@@ -40,4 +42,23 @@ export const HtmlView = ({ versionId, locale }: Props) => {
             </Button>
         </div>
     );
+};
+
+const disableLinksScriptsAndEventListeners = (iframeElement: HTMLIFrameElement | null) => {
+    const document = iframeElement?.contentDocument;
+    if (!document) {
+        console.error('Iframe document not found!');
+        return;
+    }
+
+    document.querySelectorAll('a, button').forEach((element) => {
+        element.addEventListener('click', (e) => {
+            e.stopPropagation();
+            e.preventDefault();
+        });
+    });
+
+    document.querySelectorAll('script').forEach((element) => {
+        element.remove();
+    });
 };
