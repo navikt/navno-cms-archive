@@ -5,13 +5,13 @@ import { xpArchiveConfig } from '@common/shared/siteConfigs';
 import { Button, Loader } from '@navikt/ds-react';
 
 type Props = {
-    versionId: string;
+    nodeId: string;
     locale: string;
 };
 
-export const HtmlView = ({ versionId, locale }: Props) => {
+export const HtmlView = ({ nodeId, locale }: Props) => {
     const [isLoading, setIsLoading] = useState(true);
-    const htmlPath = `${xpArchiveConfig.basePath}/html/${versionId}/${locale || ''}`;
+    const htmlPath = `${xpArchiveConfig.basePath}/html/${nodeId}/${locale || ''}`;
 
     return (
         <div className={style.wrapper}>
