@@ -6,6 +6,7 @@ import { VersionSelector } from 'client/versionSelector/VersionSelector';
 import { ContentView } from '../contentView/ContentView';
 
 import style from './Content.module.css';
+import { Loader } from '@navikt/ds-react';
 
 const getDefaultView = (isWebpage: boolean, hasAttachment: boolean): ViewVariant | undefined => {
     if (isWebpage) return 'html';
@@ -34,6 +35,12 @@ export const Content = () => {
         setSelectedView(getDefaultView(isWebpage, hasAttachment));
     }, [isWebpage, hasAttachment, selectedContentId]);
 
+    if (isLoading) {
+        return <Loader size="xlarge" />;
+    }
+    if (!data) {
+        return null;
+    }
     return (
         <div className={style.content}>
             <div className={style.top}>
@@ -47,7 +54,6 @@ export const Content = () => {
             </div>
             <ContentView
                 selectedView={selectedView || getDefaultView(isWebpage, hasAttachment) || 'html'}
-                isLoading={isLoading}
                 data={data}
             />
         </div>

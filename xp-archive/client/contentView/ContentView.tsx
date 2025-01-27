@@ -20,13 +20,9 @@ const getDisplayComponent = (viewVariant: ViewVariant, data?: ContentServiceResp
 
 type Props = {
     selectedView: ViewVariant;
-    isLoading: boolean;
     data?: ContentServiceResponse | null;
 };
 
-export const ContentView = ({ selectedView, isLoading, data }: Props) => {
-    if (isLoading) {
-        return <Loader size="xlarge" />;
-    }
+export const ContentView = ({ selectedView, data }: Props) => {
     return <div className={style.main}>{getDisplayComponent(selectedView, data)}</div>;
 };
