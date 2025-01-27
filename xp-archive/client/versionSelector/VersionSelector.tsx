@@ -4,6 +4,7 @@ import { VersionReference } from 'shared/types';
 import { pruneString } from '@common/shared/pruneString';
 import { formatTimestamp } from '@common/shared/timestamp';
 import { useAppState } from 'client/context/appState/useAppState';
+import { updateContentUrl } from 'client/contentTree/contentTreeEntry/NavigationItem';
 
 // function getOptions(versions: VersionReference[]): { label: string; value: string }[] {
 //     const sisteVersjon = { label: 'Siste versjon', value: 'Siste versjon' };
@@ -29,6 +30,7 @@ export const VersionSelector = ({ versions }: Props) => {
         const versionId = e.target.value;
         const nodeId = versions.find((v) => v.versionId === versionId)?.nodeId;
         setSelectedVersion({ nodeId, versionId });
+        updateContentUrl(nodeId ?? '', 'no', versionId); // TODO: fiks hardkodet locale
     };
 
     // const selectVersionC = (versionId: string) => {
