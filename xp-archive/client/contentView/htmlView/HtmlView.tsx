@@ -7,11 +7,12 @@ import { Button, Loader } from '@navikt/ds-react';
 type Props = {
     nodeId: string;
     locale: string;
+    versionId: string;
 };
 
-export const HtmlView = ({ nodeId, locale }: Props) => {
+export const HtmlView = ({ nodeId, locale, versionId }: Props) => {
     const [isLoading, setIsLoading] = useState(true);
-    const htmlPath = `${xpArchiveConfig.basePath}/html/${nodeId}/${locale || ''}`;
+    const htmlPath = `${xpArchiveConfig.basePath}/html/${nodeId}/${locale || ''}/${versionId || ''}`;
 
     return (
         <div className={style.wrapper}>
