@@ -11,7 +11,6 @@ import { validateQuery } from 'utils/params';
 // TODO: Flytt archiver til rot-mappe
 import archiver from 'archiver';
 import { ContentServiceResponse } from '../../../shared/types';
-import fs from 'node:fs/promises';
 
 const DEFAULT_WIDTH_PX = 1024;
 const MIN_WIDTH_PX = 400;
@@ -131,9 +130,9 @@ export class PdfService {
         try {
             const page = await this.browser.newPage();
 
-            await page.setViewport({ width: widthActual, height: 1024 });
+            await page.setViewport({ width: widthActual, height: 1024, deviceScaleFactor: 1 });
             await page.emulateMediaType('screen');
-            await page.setContent(html, { waitUntil: 'domcontentloaded' });
+            await page.setContent(html, { waitUntil: ['load', 'networkidle0'] });
 
             const pdf = await page.pdf({
                 printBackground: true,
