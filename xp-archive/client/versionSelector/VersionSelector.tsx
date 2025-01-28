@@ -21,16 +21,15 @@ type Props = {
 };
 
 export const VersionSelector = ({ versions }: Props) => {
-    const { selectedVersion, setSelectedVersion } = useAppState();
+    const { selectedContentId, setSelectedContentId, selectedVersion, setSelectedVersion } =
+        useAppState();
 
     const selectVersion = (e: ChangeEvent<HTMLSelectElement>) => {
-        if (!e.target.value) {
-            setSelectedVersion(undefined);
-        }
         const versionId = e.target.value;
         const nodeId = versions.find((v) => v.versionId === versionId)?.nodeId;
-        setSelectedVersion({ nodeId, versionId });
-        updateContentUrl(nodeId ?? '', 'no', versionId); // TODO: fiks hardkodet locale
+        if (nodeId) setSelectedContentId(nodeId);
+        updateContentUrl(selectedContentId ?? '', 'no', versionId); // TODO: fiks hardkodet locale
+        setSelectedVersion(versionId);
     };
 
     // const selectVersionC = (versionId: string) => {
@@ -50,11 +49,7 @@ export const VersionSelector = ({ versions }: Props) => {
                 options={getOptions(versions)}
                 clearButton={false}
             ></UNSAFE_Combobox> */}
-            <Select
-                label={'Versjoner'}
-                onChange={selectVersion}
-                value={selectedVersion?.versionId ?? ''}
-            >
+            <Select label={'Versjoner'} onChange={selectVersion} value={selectedVersion ?? ''}>
                 <option value={''}>Siste versjon</option>
                 {versions.map((version) => (
                     <option key={version.versionId} value={version.versionId}>

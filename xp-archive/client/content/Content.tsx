@@ -16,12 +16,10 @@ const getDefaultView = (isWebpage: boolean, hasAttachment: boolean): ViewVariant
 export const Content = () => {
     const { selectedContentId, selectedLocale, selectedVersion } = useAppState();
 
-    const fetchId = selectedVersion?.nodeId || selectedContentId;
-
     const { data, isLoading } = useFetchContent({
-        id: fetchId || '',
+        id: selectedContentId ?? '',
         locale: selectedLocale,
-        versionId: selectedVersion?.versionId ?? undefined,
+        versionId: selectedVersion ?? '',
     });
 
     const isWebpage = !!data?.html && !data.json.attachment;
