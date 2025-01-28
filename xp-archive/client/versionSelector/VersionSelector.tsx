@@ -21,14 +21,19 @@ type Props = {
 };
 
 export const VersionSelector = ({ versions }: Props) => {
-    const { selectedContentId, setSelectedContentId, selectedVersion, setSelectedVersion } =
-        useAppState();
+    const {
+        selectedContentId,
+        setSelectedContentId,
+        selectedVersion,
+        setSelectedVersion,
+        selectedLocale,
+    } = useAppState();
 
     const selectVersion = (e: ChangeEvent<HTMLSelectElement>) => {
         const versionId = e.target.value;
         const nodeId = versions.find((v) => v.versionId === versionId)?.nodeId;
         if (nodeId) setSelectedContentId(nodeId);
-        updateContentUrl(selectedContentId ?? '', 'no', versionId); // TODO: fiks hardkodet locale
+        updateContentUrl(selectedContentId ?? '', selectedLocale, versionId);
         setSelectedVersion(versionId);
     };
 
