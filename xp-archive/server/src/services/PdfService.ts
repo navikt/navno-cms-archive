@@ -138,7 +138,7 @@ export class PdfService {
 
             await page.setViewport({ width: widthActual, height: 1024 });
             await page.emulateMediaType('screen');
-            await page.setContent(html);
+            await page.setContent(html, { waitUntil: 'load' });
             console.info(`HTML-content: ${html}`);
 
             const pdf = await page.pdf({
