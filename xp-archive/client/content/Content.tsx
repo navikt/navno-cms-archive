@@ -14,7 +14,17 @@ const getDefaultView = (isWebpage: boolean, hasAttachment: boolean): ViewVariant
 };
 
 export const Content = () => {
-    const { selectedContentId, selectedLocale, selectedVersion } = useAppState();
+    const { selectedContentId, selectedLocale, selectedVersion, setSelectedVersion } =
+        useAppState();
+
+    useEffect(() => {
+        const pathSegments = window.location.pathname.split('/');
+        if (pathSegments.length >= 5) {
+            // URL format: /xp/{nodeId}/{locale}/{versionId}
+            const versionId = pathSegments[4];
+            setSelectedVersion(versionId);
+        }
+    }, []);
 
     const { data, isLoading } = useFetchContent({
         id: selectedContentId ?? '',
