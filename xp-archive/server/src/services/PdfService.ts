@@ -36,8 +36,8 @@ export class PdfService {
     }
 
     public generatePdfHandler: RequestHandler = async (req, res) => {
-        if (!validateQuery(req.query, ['versionIds', 'locale'])) {
-            return res.status(400).send('Parameters versionIds and locale are required');
+        if (!validateQuery(req.query, ['contentId', 'versionIds', 'locale'])) {
+            return res.status(400).send('Parameters contentId, versionIds and locale are required');
         }
 
         const versionIds = req.query.versionIds.split(',').map((v) => v.split(';'));
@@ -127,18 +127,12 @@ export class PdfService {
 
         const widthActual = width >= MIN_WIDTH_PX ? width : DEFAULT_WIDTH_PX;
 
-        // Ensures assets with relative urls are loaded from the correct origin
-        const htmlWithBase = html.replace(
-            '<head>',
-            `<head><base href="${process.env.APP_ORIGIN_INTERNAL}"/>`
-        );
-
         try {
             const page = await this.browser.newPage();
 
-            await page.setViewport({ width: widthActual, height: 1024 });
+            await page.setViewport({ width: widthActual, height: 1024, deviceScaleFactor: 1 });
             await page.emulateMediaType('screen');
-            await page.setContent(htmlWithBase);
+            await page.setContent(html, { waitUntil: ['load', 'networkidle0'] });
 
             const pdf = await page.pdf({
                 printBackground: true,

@@ -34,7 +34,7 @@ export const PdfExport = ({ versions }: Props) => {
                     className={style.button}
                     onClick={() =>
                         window.open(
-                            `${PDF_API}?contentId=${versions[0].nodeId}&versionIds=${versionsSelected.join(',')}&locale=no`
+                            `${PDF_API}?contentId=${versions[0].nodeId}&versionIds=${versionsSelected.join(',')}&locale=no` // TODO: fikse locale
                         )
                     }
                     icon={<DownloadIcon title="Last ned versjon(er)" />}
