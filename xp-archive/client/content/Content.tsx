@@ -24,7 +24,7 @@ export const Content = () => {
             const versionId = pathSegments[4];
             setSelectedVersion(versionId);
         }
-    }, []); // Run once on mount
+    }, []);
 
     const { data, isLoading } = useFetchContent({
         id: selectedContentId ?? '',
