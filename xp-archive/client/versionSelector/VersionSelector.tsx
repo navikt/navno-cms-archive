@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect } from 'react';
+import React, { ChangeEvent } from 'react';
 import { Select } from '@navikt/ds-react';
 import { VersionReference } from 'shared/types';
 import { pruneString } from '@common/shared/pruneString';
@@ -28,18 +28,6 @@ export const VersionSelector = ({ versions }: Props) => {
         setSelectedVersion,
         selectedLocale,
     } = useAppState();
-
-    useEffect(() => {
-        const params = new URLSearchParams(window.location.search);
-        const versionId = params.get('versionId');
-        if (versionId) {
-            const nodeId = versions.find((v) => v.versionId === versionId)?.nodeId;
-            if (nodeId) {
-                setSelectedContentId(nodeId);
-                setSelectedVersion(versionId);
-            }
-        }
-    }, [versions]);
 
     const selectVersion = (e: ChangeEvent<HTMLSelectElement>) => {
         const versionId = e.target.value;
