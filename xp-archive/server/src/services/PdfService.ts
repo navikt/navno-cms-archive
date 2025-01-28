@@ -133,9 +133,7 @@ export class PdfService {
 
             await page.setViewport({ width: widthActual, height: 1024 });
             await page.emulateMediaType('screen');
-            const htmlforpdf = await fs.readFile(html, 'utf-8');
-            await page.setContent(htmlforpdf, { waitUntil: 'domcontentloaded' });
-            console.info(`HTML-content: ${htmlforpdf}`);
+            await page.setContent(html, { waitUntil: 'domcontentloaded' });
 
             const pdf = await page.pdf({
                 printBackground: true,
