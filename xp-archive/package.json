@@ -13,9 +13,6 @@
         "start-local": "cp .env.prod-local .env && npm run build && npm run start --prefix server",
         "dev": "cp .env.development .env && npm run dev --prefix server"
     },
-    "dependencies": {
-        "@mui/material": "6.4.1",
-        "@mui/x-tree-view": "7.24.1"
-    },
+    "dependencies": {},
     "devDependencies": {}
 }

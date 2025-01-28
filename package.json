@@ -11,6 +11,9 @@
         "xp-archive/server"
     ],
     "dependencies": {
+        "@mui/material": "6.4.1",
+        "@mui/system": "6.4.1",
+        "@mui/x-tree-view": "7.24.1",
         "@navikt/aksel-icons": "7.10.0",
         "@navikt/ds-css": "7.10.0",
         "@navikt/ds-react": "7.10.0",
