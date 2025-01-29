@@ -12,7 +12,7 @@ type Props = {
 
 export const HtmlView = ({ nodeId, locale, versionId }: Props) => {
     const [isLoading, setIsLoading] = useState(true);
-    const htmlPath = `${xpArchiveConfig.basePath}/html/${nodeId}/${locale || ''}/${versionId || ''}`;
+    const htmlPath = `${xpArchiveConfig.basePath}/html/${nodeId}/${locale}/${versionId}`;
 
     return (
         <div className={style.wrapper}>
