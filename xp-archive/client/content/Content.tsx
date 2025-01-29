@@ -14,14 +14,22 @@ const getDefaultView = (isWebpage: boolean, hasAttachment: boolean): ViewVariant
 };
 
 export const Content = () => {
-    const { selectedContentId, selectedLocale, selectedVersion } = useAppState();
+    const { selectedContentId, selectedLocale, selectedVersion, setSelectedVersion } =
+        useAppState();
 
-    const fetchId = selectedVersion?.nodeId || selectedContentId;
+    useEffect(() => {
+        const pathSegments = window.location.pathname.split('/');
+        if (pathSegments.length >= 5) {
+            // URL format: /xp/{nodeId}/{locale}/{versionId}
+            const versionId = pathSegments[4];
+            setSelectedVersion(versionId);
+        }
+    }, []);
 
     const { data, isLoading } = useFetchContent({
-        id: fetchId || '',
+        id: selectedContentId ?? '',
         locale: selectedLocale,
-        versionId: selectedVersion?.versionId ?? undefined,
+        versionId: selectedVersion ?? '',
     });
 
     const isWebpage = !!data?.html && !data.json.attachment;

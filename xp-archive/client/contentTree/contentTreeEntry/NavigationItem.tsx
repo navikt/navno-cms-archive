@@ -13,8 +13,8 @@ type Props = {
 export const getContentIconUrl = (type: string) =>
     `${import.meta.env.VITE_APP_ORIGIN}/xp/api/contentIcon?type=${type}`;
 
-export const updateContentUrl = (id: string, locale: string) => {
-    const newUrl = `${xpArchiveConfig.basePath}/${id}/${locale}`;
+export const updateContentUrl = (nodeId: string, locale: string, versionId?: string) => {
+    const newUrl = `${xpArchiveConfig.basePath}/${nodeId}/${locale}/${versionId ?? ''}`;
     window.history.pushState({}, '', newUrl);
 };
 

@@ -6,15 +6,10 @@ type Props = {
     children: React.ReactNode;
 };
 
-export type SelectedVersion = {
-    versionId: string;
-    nodeId?: string;
-};
-
 export const AppStateProvider = ({ children }: Props) => {
     const [selectedContentId, setSelectedContentId] = useState<string>();
     const [selectedLocale, setSelectedLocale] = useState<Locale>('no');
-    const [selectedVersion, setSelectedVersion] = useState<SelectedVersion>();
+    const [selectedVersion, setSelectedVersion] = useState<string>();
 
     useEffect(() => {
         const path = window.location.pathname;
