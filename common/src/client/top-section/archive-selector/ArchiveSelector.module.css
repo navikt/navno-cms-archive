@@ -1,5 +1,9 @@
 .archiveSelector {
-    margin-left: 1rem;
+    margin-left: 20px;
+
+    :global(.navds-tabs__tab[aria-selected='true']) {
+        box-shadow: inset 0 -3px 0 0 #99c3ff;
+    }
 }
 
 .tab {
