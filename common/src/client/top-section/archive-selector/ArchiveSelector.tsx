@@ -1,5 +1,5 @@
 import React from 'react';
-import { Select } from '@navikt/ds-react';
+import { Tabs } from '@navikt/ds-react';
 import { siteConfigs } from '../../../shared/siteConfigs';
 
 import style from './ArchiveSelector.module.css';
@@ -10,21 +10,21 @@ type Props = {
 
 export const ArchiveSelector = ({ basePath }: Props) => {
     return (
-        <div className={style.archiveSelector}>
-            <label>{'Velg arkiv: '}</label>
-            <Select
-                label={'Velg arkiv'}
-                hideLabel={true}
-                defaultValue={basePath}
-                size={'small'}
-                onChange={(e) => window.location.assign(e.target.value)}
-            >
+        <Tabs
+            className={style.archiveSelector}
+            defaultValue={basePath}
+            onChange={(e) => window.location.assign(e)}
+        >
+            <Tabs.List>
                 {siteConfigs.map((config) => (
-                    <option value={config.basePath} key={config.name}>
-                        {config.name}
-                    </option>
+                    <Tabs.Tab
+                        className={style.tab}
+                        value={config.basePath}
+                        key={config.name}
+                        label={config.name}
+                    />
                 ))}
-            </Select>
-        </div>
+            </Tabs.List>
+        </Tabs>
     );
 };
