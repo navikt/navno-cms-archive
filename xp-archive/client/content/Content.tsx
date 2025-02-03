@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { SidebarRightIcon } from '@navikt/aksel-icons';
-import { Button, Detail, Heading } from '@navikt/ds-react';
+import { Button, Detail, Heading, Label } from '@navikt/ds-react';
 import { useFetchContent } from '../hooks/useFetchContent';
 import { useAppState } from '../context/appState/useAppState';
 import { ViewSelector, ViewVariant } from 'client/viewSelector/ViewSelector';
@@ -61,25 +61,28 @@ export const Content = () => {
                         isWebpage={isWebpage}
                     />
                 </div>
-                <Button
-                    className={style.versionButton}
-                    variant={'secondary'}
-                    icon={<SidebarRightIcon />}
-                    iconPosition={'right'}
-                    onClick={() => setIsVersionPanelOpen(true)}
-                >
-                    {selectedVersion && data?.versions
-                        ? formatTimestamp(
-                              data.versions.find((v) => v.versionId === selectedVersion)
-                                  ?.timestamp ?? ''
-                          )
-                        : 'Siste versjon'}
-                </Button>
-                <VersionSelector
-                    versions={data?.versions || []}
-                    isOpen={isVersionPanelOpen}
-                    onClose={() => setIsVersionPanelOpen(false)}
-                />
+                <div className={style.versionSelector}>
+                    <Label spacing>Versjoner</Label>
+                    <Button
+                        className={style.versionButton}
+                        variant={'secondary'}
+                        icon={<SidebarRightIcon />}
+                        iconPosition={'right'}
+                        onClick={() => setIsVersionPanelOpen(true)}
+                    >
+                        {selectedVersion && data?.versions
+                            ? formatTimestamp(
+                                  data.versions.find((v) => v.versionId === selectedVersion)
+                                      ?.timestamp ?? ''
+                              )
+                            : 'Siste versjon'}
+                    </Button>
+                    <VersionSelector
+                        versions={data?.versions || []}
+                        isOpen={isVersionPanelOpen}
+                        onClose={() => setIsVersionPanelOpen(false)}
+                    />
+                </div>
             </div>
             <ContentView
                 selectedView={selectedView || getDefaultView(isWebpage, hasAttachment) || 'html'}

@@ -13,6 +13,11 @@
     gap: 1.5rem;
 }
 
+.versionSelector {
+    display: flex;
+    flex-direction: column;
+}
+
 .versionButton {
     background-color: white;
 }
