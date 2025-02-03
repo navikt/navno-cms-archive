@@ -6,7 +6,7 @@
 .versionButton {
     color: var(--a-text-default);
     justify-content: space-between;
-    border-bottom: 1px solid var(--a-border-subtle);
+    position: relative;
 
     :global(.navds-label) {
         font-weight: var(--a-font-weight-regular);
@@ -16,8 +16,18 @@
         color: var(--a-icon-action-selected);
     }
 
-    &:last-child {
-        border-bottom: none;
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background-color: var(--a-border-divider);
+    }
+
+    &:last-child::after {
+        display: none;
     }
 }
 
