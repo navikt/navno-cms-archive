@@ -1,0 +1,27 @@
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: flex-end;
+    z-index: 1000;
+}
+
+.panel {
+    width: 400px;
+    height: 100vh;
+    background: var(--a-surface-default);
+    box-shadow: -4px 0 8px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    overflow-y: auto;
+    animation: slideIn 0.2s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
