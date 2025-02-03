@@ -1,11 +1,12 @@
-import React, { ChangeEvent } from 'react';
-import { Heading, Select } from '@navikt/ds-react';
+import React from 'react';
+import { Heading, Button } from '@navikt/ds-react';
 import { VersionReference } from 'shared/types';
-import { pruneString } from '@common/shared/pruneString';
 import { formatTimestamp } from '@common/shared/timestamp';
 import { useAppState } from 'client/context/appState/useAppState';
 import { updateContentUrl } from 'client/contentTree/contentTreeEntry/NavigationItem';
 import { SlidePanel } from '../components/SlidePanel';
+import { classNames } from '@common/client/utils/classNames';
+import style from './VersionSelector.module.css';
 
 type Props = {
     versions: VersionReference[];
@@ -22,8 +23,7 @@ export const VersionSelector = ({ versions, isOpen, onClose }: Props) => {
         selectedLocale,
     } = useAppState();
 
-    const selectVersion = (e: ChangeEvent<HTMLSelectElement>) => {
-        const versionId = e.target.value;
+    const selectVersion = (versionId: string) => {
         const nodeId = versions.find((v) => v.versionId === versionId)?.nodeId;
         if (nodeId) setSelectedContentId(nodeId);
         updateContentUrl(selectedContentId ?? '', selectedLocale, versionId);
@@ -36,14 +36,28 @@ export const VersionSelector = ({ versions, isOpen, onClose }: Props) => {
             <Heading size="medium" spacing>
                 Versjoner
             </Heading>
-            <Select label={'Versjoner'} onChange={selectVersion} value={selectedVersion ?? ''}>
-                <option value={''}>Siste versjon</option>
+            <div className={style.versionList}>
+                <Button
+                    variant="tertiary"
+                    className={classNames(style.versionButton, !selectedVersion && style.selected)}
+                    onClick={() => selectVersion('')}
+                >
+                    Siste versjon
+                </Button>
                 {versions.map((version) => (
-                    <option key={version.versionId} value={version.versionId}>
-                        {`${formatTimestamp(version.timestamp)} - ${pruneString(version.displayName, 100)}`}
-                    </option>
+                    <Button
+                        key={version.versionId}
+                        variant="tertiary"
+                        className={classNames(
+                            style.versionButton,
+                            version.versionId === selectedVersion && style.selected
+                        )}
+                        onClick={() => selectVersion(version.versionId)}
+                    >
+                        {formatTimestamp(version.timestamp)}
+                    </Button>
                 ))}
-            </Select>
+            </div>
         </SlidePanel>
     );
 };

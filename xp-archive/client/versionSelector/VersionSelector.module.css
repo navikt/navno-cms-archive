@@ -1,0 +1,17 @@
+.versionList {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.versionButton {
+    width: 100%;
+    justify-content: flex-start;
+    text-align: left;
+    padding: 0.5rem;
+}
+
+.selected {
+    background-color: var(--a-surface-selected);
+    color: var(--a-text-default);
+}
