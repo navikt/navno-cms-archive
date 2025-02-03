@@ -13,10 +13,7 @@ export const ArchiveSelector = ({ basePath }: Props) => {
         <Tabs
             className={style.archiveSelector}
             defaultValue={basePath}
-            onChange={(e) => {
-                console.log('Tab change event:', e);
-                window.location.assign(e);
-            }}
+            onChange={(e) => window.location.assign(e)}
         >
             <Tabs.List>
                 {siteConfigs.map((config) => (
