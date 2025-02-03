@@ -35,4 +35,4 @@ export const xpArchiveConfig: XpArchiveSiteConfig = {
     type: 'enonic-xp',
 } as const;
 
-export const siteConfigs: SiteConfig[] = [...legacyArchiveConfigs, xpArchiveConfig] as const;
+export const siteConfigs: SiteConfig[] = [xpArchiveConfig, ...legacyArchiveConfigs] as const;
