@@ -5,10 +5,7 @@
 
 .versionButton {
     color: var(--a-text-default);
-    width: 100%;
     justify-content: space-between;
-    text-align: left;
-    padding: 0.5rem;
 
     :global(.navds-button__icon) {
         color: var(--a-icon-action-selected);
