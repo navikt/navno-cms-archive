@@ -31,19 +31,3 @@ export const ArchiveSelector = ({ basePath }: Props) => {
         </Tabs>
     );
 };
-
-{
-    /* <Select
-                label={'Velg arkiv'}
-                hideLabel={true}
-                defaultValue={basePath}
-                size={'small'}
-                onChange={(e) => window.location.assign(e.target.value)}
-            >
-                {siteConfigs.map((config) => (
-                    <option value={config.basePath} key={config.name}>
-                        {config.name}
-                    </option>
-                ))}
-            </Select> */
-}
