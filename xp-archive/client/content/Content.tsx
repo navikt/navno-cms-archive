@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Detail, Heading } from '@navikt/ds-react';
+import { SidebarRightIcon } from '@navikt/aksel-icons';
+import { Button, Detail, Heading } from '@navikt/ds-react';
 import { useFetchContent } from '../hooks/useFetchContent';
 import { useAppState } from '../context/appState/useAppState';
 import { ViewSelector, ViewVariant } from 'client/viewSelector/ViewSelector';
@@ -58,7 +59,15 @@ export const Content = () => {
                         isWebpage={isWebpage}
                     />
                 </div>
-                <VersionSelector versions={data?.versions || []} />
+                {/* <VersionSelector versions={data?.versions || []} /> */}
+                <Button
+                    className={style.versionButton}
+                    variant={'secondary'}
+                    icon={<SidebarRightIcon />}
+                    iconPosition={'right'}
+                >
+                    Siste versjon
+                </Button>
             </div>
             <ContentView
                 selectedView={selectedView || getDefaultView(isWebpage, hasAttachment) || 'html'}
