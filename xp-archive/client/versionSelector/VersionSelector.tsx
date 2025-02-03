@@ -15,6 +15,24 @@ type Props = {
     onClose: () => void;
 };
 
+type VersionButtonProps = {
+    isSelected: boolean;
+    onClick: () => void;
+    children: React.ReactNode;
+};
+
+const VersionButton = ({ isSelected, onClick, children }: VersionButtonProps) => (
+    <Button
+        variant="tertiary"
+        className={classNames(style.versionButton, isSelected && style.selected)}
+        onClick={onClick}
+        icon={isSelected && <CheckmarkIcon />}
+        iconPosition="right"
+    >
+        {children}
+    </Button>
+);
+
 export const VersionSelector = ({ versions, isOpen, onClose }: Props) => {
     const {
         selectedContentId,
@@ -38,29 +56,17 @@ export const VersionSelector = ({ versions, isOpen, onClose }: Props) => {
                 Versjoner
             </Heading>
             <div className={style.versionList}>
-                <Button
-                    variant="tertiary"
-                    className={classNames(style.versionButton, !selectedVersion && style.selected)}
-                    onClick={() => selectVersion('')}
-                    icon={!selectedVersion && <CheckmarkIcon />}
-                    iconPosition="right"
-                >
+                <VersionButton isSelected={!selectedVersion} onClick={() => selectVersion('')}>
                     Siste versjon
-                </Button>
+                </VersionButton>
                 {versions.map((version) => (
-                    <Button
+                    <VersionButton
                         key={version.versionId}
-                        variant="tertiary"
-                        className={classNames(
-                            style.versionButton,
-                            version.versionId === selectedVersion && style.selected
-                        )}
+                        isSelected={version.versionId === selectedVersion}
                         onClick={() => selectVersion(version.versionId)}
-                        icon={version.versionId === selectedVersion && <CheckmarkIcon />}
-                        iconPosition="right"
                     >
                         {formatTimestamp(version.timestamp)}
-                    </Button>
+                    </VersionButton>
                 ))}
             </div>
         </SlidePanel>
