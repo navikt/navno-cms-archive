@@ -1,10 +1,12 @@
 .overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(0, 0, 0, 0);
     display: flex;
     justify-content: flex-end;
     z-index: 1000;
+    transition: background-color 0.2s ease-out;
+    animation: fadeIn 0.2s ease-out forwards;
 }
 
 .panel {
@@ -14,13 +16,17 @@
     box-shadow: -4px 0 8px rgba(0, 0, 0, 0.1);
     padding: 2rem;
     overflow-y: auto;
-    animation: slideIn 0.2s ease-out;
+    transform: translateX(100%);
+    animation: slideIn 0.2s ease-out forwards;
+}
+
+@keyframes fadeIn {
+    to {
+        background: rgba(0, 0, 0, 0.25);
+    }
 }
 
 @keyframes slideIn {
-    from {
-        transform: translateX(100%);
-    }
     to {
         transform: translateX(0);
     }
