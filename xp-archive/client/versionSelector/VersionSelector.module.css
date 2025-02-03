@@ -6,9 +6,14 @@
 .versionButton {
     color: var(--a-text-default);
     justify-content: space-between;
+    border-bottom: 1px solid var(--a-border-subtle);
 
     :global(.navds-button__icon) {
         color: var(--a-icon-action-selected);
+    }
+
+    &:last-child {
+        border-bottom: none;
     }
 }
 
