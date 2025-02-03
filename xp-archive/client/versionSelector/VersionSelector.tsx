@@ -7,6 +7,7 @@ import { updateContentUrl } from 'client/contentTree/contentTreeEntry/Navigation
 import { SlidePanel } from '../components/SlidePanel';
 import { classNames } from '@common/client/utils/classNames';
 import style from './VersionSelector.module.css';
+import { CheckmarkIcon } from '@navikt/aksel-icons';
 
 type Props = {
     versions: VersionReference[];
@@ -41,6 +42,8 @@ export const VersionSelector = ({ versions, isOpen, onClose }: Props) => {
                     variant="tertiary"
                     className={classNames(style.versionButton, !selectedVersion && style.selected)}
                     onClick={() => selectVersion('')}
+                    icon={!selectedVersion && <CheckmarkIcon />}
+                    iconPosition="right"
                 >
                     Siste versjon
                 </Button>
@@ -53,6 +56,8 @@ export const VersionSelector = ({ versions, isOpen, onClose }: Props) => {
                             version.versionId === selectedVersion && style.selected
                         )}
                         onClick={() => selectVersion(version.versionId)}
+                        icon={version.versionId === selectedVersion && <CheckmarkIcon />}
+                        iconPosition="right"
                     >
                         {formatTimestamp(version.timestamp)}
                     </Button>
