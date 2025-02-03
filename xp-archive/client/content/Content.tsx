@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Detail, Heading } from '@navikt/ds-react';
 import { useFetchContent } from '../hooks/useFetchContent';
 import { useAppState } from '../context/appState/useAppState';
 import { ViewSelector, ViewVariant } from 'client/viewSelector/ViewSelector';
@@ -45,12 +46,18 @@ export const Content = () => {
     return (
         <div className={style.content}>
             <div className={style.top}>
-                <ViewSelector
-                    selectedView={selectedView}
-                    setSelectedView={setSelectedView}
-                    hasAttachment={hasAttachment}
-                    isWebpage={isWebpage}
-                />
+                <div>
+                    <Detail spacing>{data?.json._path}</Detail>
+                    <Heading size={'medium'} level={'2'} spacing>
+                        {data?.json.displayName}
+                    </Heading>
+                    <ViewSelector
+                        selectedView={selectedView}
+                        setSelectedView={setSelectedView}
+                        hasAttachment={hasAttachment}
+                        isWebpage={isWebpage}
+                    />
+                </div>
                 <VersionSelector versions={data?.versions || []} />
             </div>
             <ContentView

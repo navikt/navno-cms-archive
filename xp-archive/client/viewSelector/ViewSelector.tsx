@@ -43,7 +43,6 @@ export const ViewSelector = ({
         <ToggleGroup
             className={style.datatheme}
             data-theme="viewSelector"
-            label={'Visning'}
             size={'small'}
             value={selectedView}
             onChange={updateSelectedView}
