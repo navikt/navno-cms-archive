@@ -14,7 +14,7 @@
     height: 100vh;
     background: var(--a-surface-default);
     box-shadow: -4px 0 8px rgba(0, 0, 0, 0.1);
-    padding: 2rem;
+    padding: 24px 20px;
     overflow-y: auto;
     transform: translateX(100%);
     animation: slideIn 0.2s ease-out forwards;
