@@ -8,6 +8,10 @@
     justify-content: space-between;
     border-bottom: 1px solid var(--a-border-subtle);
 
+    :global(.navds-label) {
+        font-weight: var(--a-font-weight-regular);
+    }
+
     :global(.navds-button__icon) {
         color: var(--a-icon-action-selected);
     }
@@ -19,4 +23,8 @@
 
 .selected {
     background-color: var(--a-surface-selected);
+
+    :global(.navds-label) {
+        font-weight: var(--a-font-weight-bold);
+    }
 }
