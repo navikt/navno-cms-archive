@@ -4,7 +4,7 @@ import { VersionReference } from 'shared/types';
 import { formatTimestamp } from '@common/shared/timestamp';
 import { useAppState } from 'client/context/appState/useAppState';
 import { updateContentUrl } from 'client/contentTree/contentTreeEntry/NavigationItem';
-import { SlidePanel } from '../components/SlidePanel';
+import { SlidePanel } from './SlidePanel/SlidePanel';
 import { classNames } from '@common/client/utils/classNames';
 import style from './VersionSelector.module.css';
 import { CheckmarkIcon } from '@navikt/aksel-icons';
