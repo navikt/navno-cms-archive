@@ -1,0 +1,41 @@
+.versionList {
+    display: flex;
+    flex-direction: column;
+    margin-top: 1rem;
+}
+
+.versionButton {
+    color: var(--a-text-default);
+    justify-content: space-between;
+    position: relative;
+
+    :global(.navds-label) {
+        font-weight: var(--a-font-weight-regular);
+    }
+
+    :global(.navds-button__icon) {
+        color: var(--a-icon-action-selected);
+    }
+
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background-color: var(--a-border-divider);
+    }
+
+    &:last-child::after {
+        display: none;
+    }
+}
+
+.selected {
+    background-color: var(--a-surface-selected);
+
+    :global(.navds-label) {
+        font-weight: var(--a-font-weight-bold);
+    }
+}
