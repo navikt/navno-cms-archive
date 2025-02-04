@@ -22,7 +22,7 @@ export const legacyArchiveConfigs: LegacyArchiveSiteConfig[] = [
         type: 'enonic-legacy',
     },
     {
-        name: 'Navet før 2019',
+        name: 'Navet (før 2019)',
         basePath: '/fss',
         indexPrefix: 'cmsfss',
         type: 'enonic-legacy',
