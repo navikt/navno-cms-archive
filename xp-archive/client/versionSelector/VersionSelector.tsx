@@ -43,12 +43,17 @@ export const VersionSelector = ({ versions, isOpen, onClose }: Props) => {
         selectedLocale,
     } = useAppState();
 
+    const handleClose = () => {
+        setSearchQuery('');
+        onClose();
+    };
+
     const selectVersion = (versionId: string) => {
         const nodeId = versions.find((v) => v.versionId === versionId)?.nodeId;
         if (nodeId) setSelectedContentId(nodeId);
         updateContentUrl(selectedContentId ?? '', selectedLocale, versionId);
         setSelectedVersion(versionId);
-        onClose();
+        handleClose();
     };
 
     const filteredVersions = versions.filter((version) =>
@@ -56,7 +61,7 @@ export const VersionSelector = ({ versions, isOpen, onClose }: Props) => {
     );
 
     return (
-        <SlidePanel isOpen={isOpen} onClose={onClose}>
+        <SlidePanel isOpen={isOpen} onClose={handleClose}>
             <Heading size="medium" spacing>
                 Versjoner
             </Heading>
