@@ -20,11 +20,19 @@ export const SlidePanel = ({ isOpen, onClose, children }: SlidePanelProps) => {
     if (!isOpen) return null;
 
     return createPortal(
-        <div className={style.overlay} onClick={onClose}>
-            <div className={style.panel} onClick={(e) => e.stopPropagation()}>
-                {children}
-            </div>
-        </div>,
+        <dialog
+            className={style.overlay}
+            open={isOpen}
+            onClose={onClose}
+            aria-label="Version selector"
+        >
+            <button
+                className={style.backdrop}
+                onClick={onClose}
+                aria-label="Close version selector"
+            />
+            <div className={style.panel}>{children}</div>
+        </dialog>,
         document.body
     );
 };
