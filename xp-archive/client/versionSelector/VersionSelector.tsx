@@ -67,7 +67,6 @@ export const VersionSelector = ({ versions, isOpen, onClose }: Props) => {
             </Heading>
             <Search
                 label="Søk i versjoner"
-                size="small"
                 variant="simple"
                 value={searchQuery}
                 onChange={setSearchQuery}
