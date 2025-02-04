@@ -1,5 +1,5 @@
-import React from 'react';
-import { Heading, Button } from '@navikt/ds-react';
+import React, { useState } from 'react';
+import { Heading, Button, Search } from '@navikt/ds-react';
 import { VersionReference } from 'shared/types';
 import { formatTimestamp } from '@common/shared/timestamp';
 import { useAppState } from 'client/context/appState/useAppState';
@@ -34,6 +34,7 @@ const VersionButton = ({ isSelected, onClick, children }: VersionButtonProps) =>
 );
 
 export const VersionSelector = ({ versions, isOpen, onClose }: Props) => {
+    const [searchQuery, setSearchQuery] = useState('');
     const {
         selectedContentId,
         setSelectedContentId,
@@ -50,16 +51,28 @@ export const VersionSelector = ({ versions, isOpen, onClose }: Props) => {
         onClose();
     };
 
+    const filteredVersions = versions.filter((version) =>
+        formatTimestamp(version.timestamp).toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
     return (
         <SlidePanel isOpen={isOpen} onClose={onClose}>
             <Heading size="medium" spacing>
                 Versjoner
             </Heading>
+            <Search
+                label="Søk i versjoner"
+                size="small"
+                variant="simple"
+                value={searchQuery}
+                onChange={setSearchQuery}
+                className={style.search}
+            />
             <div className={style.versionList}>
                 <VersionButton isSelected={!selectedVersion} onClick={() => selectVersion('')}>
                     Siste versjon
                 </VersionButton>
-                {versions.map((version) => (
+                {filteredVersions.map((version) => (
                     <VersionButton
                         key={version.versionId}
                         isSelected={version.versionId === selectedVersion}
