@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowUndoIcon, SidebarRightIcon } from '@navikt/aksel-icons';
-import { Button, Detail, Heading, Label, BodyShort } from '@navikt/ds-react';
+import { SidebarRightIcon } from '@navikt/aksel-icons';
+import { Button, Detail, Heading, Label } from '@navikt/ds-react';
 import { useFetchContent } from '../hooks/useFetchContent';
 import { useAppState } from '../context/appState/useAppState';
 import { ViewSelector, ViewVariant } from 'client/viewSelector/ViewSelector';
 import { VersionSelector } from 'client/versionSelector/VersionSelector';
 import { ContentView } from '../contentView/ContentView';
 import { formatTimestamp } from '@common/shared/timestamp';
+import { EmptyState } from '@common/shared/EmptyState/EmptyState';
 
 import style from './Content.module.css';
 
@@ -47,12 +48,7 @@ export const Content = () => {
     }, [isWebpage, hasAttachment, selectedContentId]);
 
     if (!selectedContentId) {
-        return (
-            <div className={style.emptyState}>
-                <ArrowUndoIcon fontSize={'1.5rem'} />
-                <BodyShort size={'large'}>Velg innhold i spalten til venstre</BodyShort>
-            </div>
-        );
+        return <EmptyState />;
     }
 
     return (

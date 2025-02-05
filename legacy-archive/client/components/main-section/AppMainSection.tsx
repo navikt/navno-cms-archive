@@ -1,9 +1,8 @@
 import React, { useEffect } from 'react';
 import { ContentView } from './content-view/ContentView';
 import { useAppState } from '../../context/app-state/useAppState';
-import { Heading } from '@navikt/ds-react';
-import { ArrowLeftIcon } from '@navikt/aksel-icons';
 import { useApiFetch } from '../../fetch/useApiFetch';
+import { EmptyState } from '@common/shared/EmptyState/EmptyState';
 
 import style from './AppMainSection.module.css';
 
@@ -27,14 +26,7 @@ export const AppMainSection = () => {
 
     return (
         <div className={style.mainContent}>
-            {selectedContent ? (
-                <ContentView content={selectedContent} />
-            ) : (
-                <Heading size={'medium'} level={'2'} className={style.emptyHeader}>
-                    <ArrowLeftIcon />
-                    {'Velg et innhold'}
-                </Heading>
-            )}
+            {selectedContent ? <ContentView content={selectedContent} /> : <EmptyState />}
         </div>
     );
 };

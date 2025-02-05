@@ -21,12 +21,3 @@
 .versionButton {
     background-color: white;
 }
-
-.emptyState {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    background-color: var(--a-surface-neutral);
-    color: white;
-}
