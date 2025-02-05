@@ -16,7 +16,7 @@ export type SiteConfig = LegacyArchiveSiteConfig | XpArchiveSiteConfig;
 
 export const legacyArchiveConfigs: LegacyArchiveSiteConfig[] = [
     {
-        name: 'Før 2019',
+        name: 'Nav.no (før 2019)',
         basePath: '/sbs',
         indexPrefix: 'cmssbs',
         type: 'enonic-legacy',
@@ -30,7 +30,7 @@ export const legacyArchiveConfigs: LegacyArchiveSiteConfig[] = [
 ] as const;
 
 export const xpArchiveConfig: XpArchiveSiteConfig = {
-    name: 'Etter 2019',
+    name: 'Nav.no (etter 2019)',
     basePath: '/xp',
     type: 'enonic-xp',
 } as const;
