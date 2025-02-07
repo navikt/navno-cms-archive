@@ -11,23 +11,23 @@
         "xp-archive/server"
     ],
     "dependencies": {
-        "@mui/material": "6.4.1",
-        "@mui/system": "6.4.1",
-        "@mui/x-tree-view": "7.24.1",
-        "@navikt/aksel-icons": "7.10.0",
-        "@navikt/ds-css": "7.10.0",
-        "@navikt/ds-react": "7.10.0",
+        "@mui/material": "6.4.3",
+        "@mui/system": "6.4.3",
+        "@mui/x-tree-view": "7.25.0",
+        "@navikt/aksel-icons": "7.12.2",
+        "@navikt/ds-css": "7.12.2",
+        "@navikt/ds-react": "7.12.2",
         "express": "4.21.2",
         "react": "19.0.0",
         "react-dom": "19.0.0",
-        "swr": "2.3.0"
+        "swr": "2.3.2"
     },
     "devDependencies": {
         "@types/express": "5.0.0",
         "@types/react": "19.0.8",
         "@types/react-dom": "19.0.3",
-        "@typescript-eslint/eslint-plugin": "8.21.0",
-        "@typescript-eslint/parser": "8.21.0",
+        "@typescript-eslint/eslint-plugin": "8.23.0",
+        "@typescript-eslint/parser": "8.23.0",
         "@vitejs/plugin-react": "4.3.4",
         "eslint": "9.19.0",
         "eslint-plugin-react": "7.37.4",
@@ -38,7 +38,7 @@
         "prettier": "3.4.2",
         "rollup-plugin-visualizer": "5.14.0",
         "typescript": "5.7.3",
-        "vite": "5.4.14",
+        "vite": "6.1.0",
         "vite-tsconfig-paths": "5.1.4"
     }
 }
