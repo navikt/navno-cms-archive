@@ -1,55 +1,55 @@
 name: Build and deploy legacy archive
 on:
-  workflow_dispatch:
-  push:
-    branches:
-      - master
-    paths:
-      - package*.json
-      - legacy-archive/**/*
-      - common/**/*
+    workflow_dispatch:
+    push:
+        branches:
+            - main
+        paths:
+            - package*.json
+            - legacy-archive/**/*
+            - common/**/*
 
 jobs:
-  build-and-deploy:
-    name: Build and deploy
-    runs-on: ubuntu-latest
-    environment: prod-legacy
-    permissions:
-      contents: "read"
-      id-token: "write"
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-      - name: Setup node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          registry-url: 'https://npm.pkg.github.com'
-          cache: 'npm'
-          cache-dependency-path: '**/package-lock.json'
-      - name: Install dependencies
-        run: npm ci --include-workspace-root --workspace=common --workspace=legacy-archive
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
-      - name: Build application
-        run: npm run build
-        working-directory: legacy-archive
-      - name: Build and push docker image
-        uses: nais/docker-build-push@v0
-        id: docker-push
-        with:
-          team: personbruker
-          project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
-          identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
-          dockerfile: Dockerfile_legacy
-      - name: Deploy OpenSearch
-        uses: nais/deploy/actions/deploy@v2
-        env:
-          CLUSTER: prod-gcp
-          RESOURCE: legacy-archive/.nais/openSearch.yml
-      - name: Deploy application
-        uses: nais/deploy/actions/deploy@v2
-        env:
-          CLUSTER: prod-gcp
-          RESOURCE: legacy-archive/.nais/config.yml
-          VAR: image=${{ steps.docker-push.outputs.image }}
+    build-and-deploy:
+        name: Build and deploy
+        runs-on: ubuntu-latest
+        environment: prod-legacy
+        permissions:
+            contents: 'read'
+            id-token: 'write'
+        steps:
+            - name: Checkout repo
+              uses: actions/checkout@v4
+            - name: Setup node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: '22'
+                  registry-url: 'https://npm.pkg.github.com'
+                  cache: 'npm'
+                  cache-dependency-path: '**/package-lock.json'
+            - name: Install dependencies
+              run: npm ci --include-workspace-root --workspace=common --workspace=legacy-archive
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+            - name: Build application
+              run: npm run build
+              working-directory: legacy-archive
+            - name: Build and push docker image
+              uses: nais/docker-build-push@v0
+              id: docker-push
+              with:
+                  team: personbruker
+                  project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
+                  identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
+                  dockerfile: Dockerfile_legacy
+            - name: Deploy OpenSearch
+              uses: nais/deploy/actions/deploy@v2
+              env:
+                  CLUSTER: prod-gcp
+                  RESOURCE: legacy-archive/.nais/openSearch.yml
+            - name: Deploy application
+              uses: nais/deploy/actions/deploy@v2
+              env:
+                  CLUSTER: prod-gcp
+                  RESOURCE: legacy-archive/.nais/config.yml
+                  VAR: image=${{ steps.docker-push.outputs.image }}
