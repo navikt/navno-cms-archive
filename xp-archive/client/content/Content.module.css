@@ -21,3 +21,8 @@
 .versionButton {
     background-color: white;
 }
+
+.fullscreenButton {
+    height: fit-content;
+    align-self: flex-end;
+}

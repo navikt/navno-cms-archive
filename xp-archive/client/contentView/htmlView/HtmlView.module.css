@@ -10,12 +10,6 @@
     border: none;
 }
 
-.fullscreenButton {
-    position: absolute;
-    bottom: 0.25rem;
-    right: 1.5rem;
-}
-
 .loaderWrapper {
     position: absolute;
     margin: 1rem;

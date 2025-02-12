@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import style from './HtmlView.module.css';
-import { ExpandIcon } from '@navikt/aksel-icons';
 import { xpArchiveConfig } from '@common/shared/siteConfigs';
-import { Button, Loader } from '@navikt/ds-react';
+import { Loader } from '@navikt/ds-react';
 
 type Props = {
     nodeId: string;

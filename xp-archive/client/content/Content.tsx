@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { SidebarRightIcon } from '@navikt/aksel-icons';
+import { ExternalLinkIcon, SidebarRightIcon } from '@navikt/aksel-icons';
 import { Button, Detail, Heading, Label } from '@navikt/ds-react';
 import { xpArchiveConfig } from '@common/shared/siteConfigs';
 import { useFetchContent } from '../hooks/useFetchContent';
@@ -74,6 +74,8 @@ export const Content = () => {
                 <Button
                     as={'a'}
                     href={htmlPath}
+                    icon={<ExternalLinkIcon />}
+                    iconPosition={'right'}
                     className={style.fullscreenButton}
                     onClick={(e) => {
                         e.preventDefault();
