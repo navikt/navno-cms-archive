@@ -64,26 +64,28 @@ export const Content = () => {
                     <Heading size={'medium'} level={'2'} spacing>
                         {data?.json.displayName ?? ''}
                     </Heading>
-                    <ViewSelector
-                        selectedView={selectedView}
-                        setSelectedView={setSelectedView}
-                        hasAttachment={hasAttachment}
-                        isWebpage={isWebpage}
-                    />
+                    <div className={style.viewSelectorWrapper}>
+                        <ViewSelector
+                            selectedView={selectedView}
+                            setSelectedView={setSelectedView}
+                            hasAttachment={hasAttachment}
+                            isWebpage={isWebpage}
+                        />
+                        <Button
+                            as={'a'}
+                            href={htmlPath}
+                            icon={<ExternalLinkIcon />}
+                            iconPosition={'right'}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                window.open(htmlPath, '_blank');
+                            }}
+                        >
+                            {'Åpne i nytt vindu'}
+                        </Button>
+                    </div>
                 </div>
-                <Button
-                    as={'a'}
-                    href={htmlPath}
-                    icon={<ExternalLinkIcon />}
-                    iconPosition={'right'}
-                    className={style.fullscreenButton}
-                    onClick={(e) => {
-                        e.preventDefault();
-                        window.open(htmlPath, '_blank');
-                    }}
-                >
-                    {'Åpne i nytt vindu'}
-                </Button>
+
                 <div className={style.versionSelector}>
                     <Label spacing>Versjoner</Label>
                     <Button
