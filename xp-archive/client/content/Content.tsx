@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { SidebarRightIcon } from '@navikt/aksel-icons';
 import { Button, Detail, Heading, Label } from '@navikt/ds-react';
+import { xpArchiveConfig } from '@common/shared/siteConfigs';
 import { useFetchContent } from '../hooks/useFetchContent';
 import { useAppState } from '../context/appState/useAppState';
 import { ViewSelector, ViewVariant } from 'client/viewSelector/ViewSelector';
@@ -47,6 +48,10 @@ export const Content = () => {
         setSelectedView(getDefaultView(isWebpage, hasAttachment));
     }, [isWebpage, hasAttachment, selectedContentId]);
 
+    const htmlPath = `${xpArchiveConfig.basePath}/html/${selectedContentId}/${selectedLocale}/${
+        data?.json._versionKey
+    }`;
+
     if (!selectedContentId) {
         return <EmptyState />;
     }
@@ -66,6 +71,17 @@ export const Content = () => {
                         isWebpage={isWebpage}
                     />
                 </div>
+                <Button
+                    as={'a'}
+                    href={htmlPath}
+                    className={style.fullscreenButton}
+                    onClick={(e) => {
+                        e.preventDefault();
+                        window.open(htmlPath, '_blank');
+                    }}
+                >
+                    {'Åpne i nytt vindu'}
+                </Button>
                 <div className={style.versionSelector}>
                     <Label spacing>Versjoner</Label>
                     <Button

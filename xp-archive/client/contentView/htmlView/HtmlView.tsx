@@ -30,18 +30,6 @@ export const HtmlView = ({ nodeId, locale, versionId }: Props) => {
                     disableLinksScriptsAndEventListeners(e.currentTarget);
                 }}
             />
-            <Button
-                as={'a'}
-                href={htmlPath}
-                className={style.fullscreenButton}
-                icon={<ExpandIcon />}
-                onClick={(e) => {
-                    e.preventDefault();
-                    window.open(htmlPath, '_blank');
-                }}
-            >
-                {'Åpne i nytt vindu'}
-            </Button>
         </div>
     );
 };
