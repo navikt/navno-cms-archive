@@ -80,7 +80,9 @@ export const Content = () => {
                                   data.versions.find((v) => v.versionId === selectedVersion)
                                       ?.timestamp ?? ''
                               )
-                            : 'Siste versjon'}
+                            : data?.versions?.[0]
+                              ? `${formatTimestamp(data.versions[0].timestamp, true)} (Siste versjon)`
+                              : 'Laster...'}
                     </Button>
                     <VersionSelector
                         versions={data?.versions || []}
