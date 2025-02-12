@@ -74,7 +74,9 @@ export const VersionSelector = ({ versions, isOpen, onClose }: Props) => {
             />
             <div className={style.versionList}>
                 <VersionButton isSelected={!selectedVersion} onClick={() => selectVersion('')}>
-                    Siste versjon
+                    {versions[0]
+                        ? `${formatTimestamp(versions[0].timestamp, true)} (Siste versjon)`
+                        : 'Laster...'}
                 </VersionButton>
                 {filteredVersions.map((version) => (
                     <VersionButton
