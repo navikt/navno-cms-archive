@@ -55,9 +55,9 @@ export const Content = () => {
         <div className={style.content}>
             <div className={style.top}>
                 <div>
-                    <Detail spacing>{data?.json._path}</Detail>
+                    <Detail spacing>{data?.json._path ?? ''}</Detail>
                     <Heading size={'medium'} level={'2'} spacing>
-                        {data?.json.displayName}
+                        {data?.json.displayName ?? ''}
                     </Heading>
                     <ViewSelector
                         selectedView={selectedView}

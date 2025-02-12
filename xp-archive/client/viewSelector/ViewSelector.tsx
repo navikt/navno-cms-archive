@@ -39,6 +39,10 @@ export const ViewSelector = ({
 
     const relevantViewVariants = getRelevantViewVariants(isWebpage, hasAttachment);
 
+    if (relevantViewVariants.length === 0) {
+        return null;
+    }
+
     return (
         <ToggleGroup
             className={style.datatheme}
