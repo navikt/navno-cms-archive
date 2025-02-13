@@ -48,8 +48,8 @@ export const Content = () => {
             updateContentUrl(selectedContentId ?? '', selectedLocale, selectedVersion);
         } else if (data?.versions?.[0]) {
             const latestVersionId = data.versions[0].versionId;
-            updateContentUrl(selectedContentId ?? '', selectedLocale, latestVersionId);
             setSelectedVersion(latestVersionId);
+            updateContentUrl(selectedContentId ?? '', selectedLocale, latestVersionId);
         }
     }, [data, selectedContentId, selectedLocale, selectedVersion]);
 
