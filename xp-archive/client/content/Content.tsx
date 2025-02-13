@@ -5,6 +5,7 @@ import { useFetchContent } from '../hooks/useFetchContent';
 import { useAppState } from '../context/appState/useAppState';
 import { ViewSelector, ViewVariant } from 'client/viewSelector/ViewSelector';
 import { VersionSelector } from 'client/versionSelector/VersionSelector';
+import { updateContentUrl } from 'client/contentTree/contentTreeEntry/NavigationItem';
 import { ContentView } from '../contentView/ContentView';
 import { formatTimestamp } from '@common/shared/timestamp';
 import { EmptyState } from '@common/shared/EmptyState/EmptyState';
@@ -35,6 +36,14 @@ export const Content = () => {
         locale: selectedLocale,
         versionId: selectedVersion ?? '',
     });
+
+    useEffect(() => {
+        if (data?.versions?.[0] && !selectedVersion) {
+            const latestVersionId = data.versions[0].versionId;
+            updateContentUrl(selectedContentId ?? '', selectedLocale, latestVersionId);
+            setSelectedVersion(latestVersionId);
+        }
+    }, [data, selectedContentId, selectedLocale, selectedVersion]);
 
     const isWebpage = !!data?.html && !data.json.attachment;
     const hasAttachment = !!data?.json.attachment;

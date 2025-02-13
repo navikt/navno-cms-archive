@@ -39,7 +39,6 @@ export const NavigationItem = ({ entry }: Props) => {
     const onClick = () => {
         if (!entry.isEmpty) {
             setSelectedContentId(entry.id);
-            updateContentUrl(entry.id, entry.locale);
         }
     };
 
