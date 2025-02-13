@@ -56,6 +56,15 @@ export const Content = () => {
         setSelectedView(getDefaultView(isWebpage, hasAttachment));
     }, [isWebpage, hasAttachment, selectedContentId]);
 
+    const getVersionDisplay = () => {
+        if (selectedVersion && data?.versions) {
+            return formatTimestamp(
+                data.versions.find((v) => v.versionId === selectedVersion)?.timestamp ?? ''
+            );
+        }
+        return 'Laster...';
+    };
+
     if (!selectedContentId) {
         return <EmptyState />;
     }
@@ -84,14 +93,7 @@ export const Content = () => {
                         iconPosition={'right'}
                         onClick={() => setIsVersionPanelOpen(true)}
                     >
-                        {selectedVersion && data?.versions
-                            ? formatTimestamp(
-                                  data.versions.find((v) => v.versionId === selectedVersion)
-                                      ?.timestamp ?? ''
-                              )
-                            : data?.versions?.[0]
-                              ? `${formatTimestamp(data.versions[0].timestamp, true)} (Siste versjon)`
-                              : 'Laster...'}
+                        {getVersionDisplay()}
                     </Button>
                     <VersionSelector
                         versions={data?.versions || []}
