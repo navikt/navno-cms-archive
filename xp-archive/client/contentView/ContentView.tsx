@@ -8,8 +8,8 @@ import { FilePreviewWrapper } from './filePreview/FilePreviewWrapper';
 
 import style from './ContentView.module.css';
 
-const getDisplayComponent = (viewVariant: ViewVariant, data?: ContentServiceResponse | null) => {
-    if (!data) return null;
+const getDisplayComponent = (viewVariant?: ViewVariant, data?: ContentServiceResponse | null) => {
+    if (!data || !viewVariant) return null;
     const components: Record<ViewVariant, React.ReactElement> = {
         html: (
             <HtmlView
@@ -25,7 +25,7 @@ const getDisplayComponent = (viewVariant: ViewVariant, data?: ContentServiceResp
 };
 
 type Props = {
-    selectedView: ViewVariant;
+    selectedView: ViewVariant | undefined;
     isLoading: boolean;
     data?: ContentServiceResponse | null;
 };
