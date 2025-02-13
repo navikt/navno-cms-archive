@@ -27,7 +27,6 @@ export const Content = () => {
     const { selectedContentId, selectedLocale, selectedVersion, setSelectedVersion } =
         useAppState();
 
-    //TODO: skal denne bort eller endres noe?
     useEffect(() => {
         const pathSegments = window.location.pathname.split('/');
         if (pathSegments.length >= 5) {
