@@ -9,8 +9,11 @@ type Props = {
     versionId: string;
 };
 
-export const HtmlView = ({ nodeId, locale, versionId }: Props) => {
+const localesToOverwrite = ['uk', 'ru'];
+
+export const HtmlView = ({ nodeId, locale: langLocale, versionId }: Props) => {
     const [isLoading, setIsLoading] = useState(true);
+    const locale = localesToOverwrite.includes(langLocale) ? 'no' : langLocale;
     const htmlPath = `${xpArchiveConfig.basePath}/html/${nodeId}/${locale}/${versionId}`;
 
     return (

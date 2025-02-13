@@ -1,9 +1,6 @@
 import { BodyShort, Detail } from '@navikt/ds-react';
 import { classNames } from '@common/client/utils/classNames';
-import {
-    updateContentUrl,
-    getContentIconUrl,
-} from 'client/contentTree/contentTreeEntry/NavigationItem';
+import { getContentIconUrl } from 'client/contentTree/contentTreeEntry/NavigationItem';
 import { useAppState } from 'client/context/appState/useAppState';
 import { SearchResponse } from 'shared/types';
 
@@ -31,7 +28,6 @@ export const SearchResultItem = ({
             onClick={() => {
                 setSelectedContentId(hit._id);
                 setSelectedLocale(hit.layerLocale);
-                updateContentUrl(hit._id, hit.layerLocale);
             }}
         >
             <img
