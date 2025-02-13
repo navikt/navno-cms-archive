@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { SidebarRightIcon } from '@navikt/aksel-icons';
+import { xpArchiveConfig } from '@common/shared/siteConfigs';
 import { Button, Detail, Heading, Label } from '@navikt/ds-react';
 import { useFetchContent } from '../hooks/useFetchContent';
 import { useAppState } from '../context/appState/useAppState';
@@ -15,6 +16,11 @@ const getDefaultView = (isWebpage: boolean, hasAttachment: boolean): ViewVariant
     if (isWebpage) return 'html';
     if (hasAttachment) return 'filepreview';
     return undefined;
+};
+
+const updateContentUrl = (nodeId: string, locale: string, versionId?: string) => {
+    const newUrl = `${xpArchiveConfig.basePath}/${nodeId}/${locale}/${versionId ?? ''}`;
+    window.history.pushState({}, '', newUrl);
 };
 
 export const Content = () => {
@@ -36,6 +42,16 @@ export const Content = () => {
         versionId: selectedVersion ?? '',
     });
 
+    useEffect(() => {
+        if (selectedVersion) {
+            updateContentUrl(selectedContentId ?? '', selectedLocale, selectedVersion);
+        } else if (data?.versions?.[0]) {
+            const latestVersionId = data.versions[0].versionId;
+            setSelectedVersion(latestVersionId);
+            updateContentUrl(selectedContentId ?? '', selectedLocale, latestVersionId);
+        }
+    }, [data, selectedContentId, selectedLocale, selectedVersion]);
+
     const isWebpage = !!data?.html && !data.json.attachment;
     const hasAttachment = !!data?.json.attachment;
     const [selectedView, setSelectedView] = useState<ViewVariant | undefined>(
@@ -46,6 +62,15 @@ export const Content = () => {
     useEffect(() => {
         setSelectedView(getDefaultView(isWebpage, hasAttachment));
     }, [isWebpage, hasAttachment, selectedContentId]);
+
+    const getVersionDisplay = () => {
+        if (selectedVersion && data?.versions) {
+            return formatTimestamp(
+                data.versions.find((v) => v.versionId === selectedVersion)?.timestamp ?? ''
+            );
+        }
+        return 'Laster...';
+    };
 
     if (!selectedContentId) {
         return <EmptyState />;
@@ -75,14 +100,7 @@ export const Content = () => {
                         iconPosition={'right'}
                         onClick={() => setIsVersionPanelOpen(true)}
                     >
-                        {selectedVersion && data?.versions
-                            ? formatTimestamp(
-                                  data.versions.find((v) => v.versionId === selectedVersion)
-                                      ?.timestamp ?? ''
-                              )
-                            : data?.versions?.[0]
-                              ? `${formatTimestamp(data.versions[0].timestamp, true)} (Siste versjon)`
-                              : 'Laster...'}
+                        {getVersionDisplay()}
                     </Button>
                     <VersionSelector
                         versions={data?.versions || []}

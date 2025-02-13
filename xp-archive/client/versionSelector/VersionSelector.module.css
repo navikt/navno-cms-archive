@@ -11,6 +11,7 @@
 
     :global(.navds-label) {
         font-weight: var(--a-font-weight-regular);
+        text-align: left;
     }
 
     :global(.navds-button__icon) {
