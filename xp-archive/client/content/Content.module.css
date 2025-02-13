@@ -11,6 +11,7 @@
     display: flex;
     justify-content: space-between;
     gap: 1.5rem;
+    align-items: flex-end;
 }
 
 .versionSelector {
@@ -20,4 +21,9 @@
 
 .versionButton {
     background-color: white;
+}
+
+.viewSelectorWrapper {
+    display: flex;
+    gap: 1rem;
 }

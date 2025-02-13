@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { SidebarRightIcon } from '@navikt/aksel-icons';
+import { ExternalLinkIcon, SidebarRightIcon } from '@navikt/aksel-icons';
 import { xpArchiveConfig } from '@common/shared/siteConfigs';
 import { Button, Detail, Heading, Label } from '@navikt/ds-react';
 import { useFetchContent } from '../hooks/useFetchContent';
@@ -63,6 +63,10 @@ export const Content = () => {
         setSelectedView(getDefaultView(isWebpage, hasAttachment));
     }, [isWebpage, hasAttachment, selectedContentId]);
 
+    const htmlPath = `${xpArchiveConfig.basePath}/html/${selectedContentId}/${selectedLocale}/${
+        data?.json._versionKey
+    }`;
+
     const getVersionDisplay = () => {
         if (selectedVersion && data?.versions) {
             return formatTimestamp(
@@ -84,13 +88,28 @@ export const Content = () => {
                     <Heading size={'medium'} level={'2'} spacing>
                         {data?.json.displayName ?? ''}
                     </Heading>
-                    <ViewSelector
-                        selectedView={selectedView}
-                        setSelectedView={setSelectedView}
-                        hasAttachment={hasAttachment}
-                        isWebpage={isWebpage}
-                    />
+                    <div className={style.viewSelectorWrapper}>
+                        <ViewSelector
+                            selectedView={selectedView}
+                            setSelectedView={setSelectedView}
+                            hasAttachment={hasAttachment}
+                            isWebpage={isWebpage}
+                        />
+                        <Button
+                            as={'a'}
+                            href={htmlPath}
+                            icon={<ExternalLinkIcon />}
+                            iconPosition={'right'}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                window.open(htmlPath, '_blank');
+                            }}
+                        >
+                            {'Åpne i nytt vindu'}
+                        </Button>
+                    </div>
                 </div>
+
                 <div className={style.versionSelector}>
                     <Label spacing>Versjoner</Label>
                     <Button
