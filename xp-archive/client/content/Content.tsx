@@ -92,7 +92,7 @@ export const Content = () => {
                 </div>
             </div>
             <ContentView
-                selectedView={selectedView || getDefaultView(isWebpage, hasAttachment) || 'html'}
+                selectedView={selectedView || getDefaultView(isWebpage, hasAttachment)}
                 isLoading={isLoading}
                 data={data}
             />
