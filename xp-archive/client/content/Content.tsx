@@ -27,6 +27,7 @@ export const Content = () => {
     const { selectedContentId, selectedLocale, selectedVersion, setSelectedVersion } =
         useAppState();
 
+    //TODO: skal denne bort eller endres noe?
     useEffect(() => {
         const pathSegments = window.location.pathname.split('/');
         if (pathSegments.length >= 5) {
@@ -43,7 +44,9 @@ export const Content = () => {
     });
 
     useEffect(() => {
-        if (data?.versions?.[0] && !selectedVersion) {
+        if (selectedVersion) {
+            updateContentUrl(selectedContentId ?? '', selectedLocale, selectedVersion);
+        } else if (data?.versions?.[0]) {
             const latestVersionId = data.versions[0].versionId;
             updateContentUrl(selectedContentId ?? '', selectedLocale, latestVersionId);
             setSelectedVersion(latestVersionId);
