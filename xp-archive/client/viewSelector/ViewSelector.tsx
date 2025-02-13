@@ -38,6 +38,9 @@ export const ViewSelector = ({
     };
 
     const relevantViewVariants = getRelevantViewVariants(isWebpage, hasAttachment);
+    if (!relevantViewVariants.length || !selectedView) {
+        return null;
+    }
 
     if (relevantViewVariants.length === 0) {
         return null;
