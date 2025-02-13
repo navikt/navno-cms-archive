@@ -73,13 +73,16 @@ export const VersionSelector = ({ versions, isOpen, onClose }: Props) => {
                 className={style.search}
             />
             <div className={style.versionList}>
-                {filteredVersions.map((version) => (
+                {filteredVersions.map((version, index) => (
                     <VersionButton
                         key={version.versionId}
                         isSelected={version.versionId === selectedVersion}
                         onClick={() => selectVersion(version.versionId)}
                     >
                         {formatTimestamp(version.timestamp)}
+                        {index === 0 && (
+                            <span style={{ fontWeight: 'normal' }}> (Siste versjon)</span>
+                        )}
                     </VersionButton>
                 ))}
             </div>
