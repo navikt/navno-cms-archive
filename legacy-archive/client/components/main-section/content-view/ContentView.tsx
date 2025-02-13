@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
+import { ExternalLinkIcon } from '@navikt/aksel-icons';
+import { useAppState } from 'client/context/app-state/useAppState';
 import { CmsContent } from '../../../../shared/cms-documents/content';
 import { XmlView } from './xml-view/XmlView';
 import { HtmlView } from './html-view/HtmlView';
 import { FilesView } from './files-view/FilesView';
 import { ViewSelector, ViewState } from '../view-selector/ViewSelector';
 import { VersionSelector } from './version-selector/VersionSelector';
-import { Heading } from '@navikt/ds-react';
+import { Button, Heading } from '@navikt/ds-react';
 import { CategoriesPath } from '../../common/categories-path/CategoriesPath';
 import { PdfExporter } from './pdf-exporter/PdfExporter';
 
@@ -23,6 +25,9 @@ export const ContentView = ({ content }: Props) => {
         setViewState(getDefaultViewState(content));
     }, [content]);
 
+    const { appContext } = useAppState();
+    const fullscreenPath = `${appContext.basePath}/html/${versionKey}`;
+
     return (
         <>
             <CategoriesPath path={content.path} className={style.path} />
@@ -31,11 +36,28 @@ export const ContentView = ({ content }: Props) => {
                     <Heading size={'medium'} level={'2'} className={style.header}>
                         {content.displayName}
                     </Heading>
-                    <ViewSelector
-                        content={content}
-                        viewState={viewState}
-                        setViewState={setViewState}
-                    />
+                    <div className={style.viewSelectorWrapper}>
+                        <ViewSelector
+                            content={content}
+                            viewState={viewState}
+                            setViewState={setViewState}
+                        />
+                        <Button
+                            size={'small'}
+                            variant={'primary'}
+                            as={'a'}
+                            href={fullscreenPath}
+                            className={style.fullscreenButton}
+                            icon={<ExternalLinkIcon />}
+                            iconPosition={'right'}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                window.open(fullscreenPath, '_blank');
+                            }}
+                        >
+                            {'Åpne i nytt vindu'}
+                        </Button>
+                    </div>
                 </div>
                 <VersionSelector content={content} />
             </div>

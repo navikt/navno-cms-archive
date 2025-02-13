@@ -1,8 +1,5 @@
 import React, { useRef } from 'react';
 import { classNames } from '../../../../../../common/src/client/utils/classNames';
-import { Button } from '@navikt/ds-react';
-import { useAppState } from '../../../../context/app-state/useAppState';
-import { ExpandIcon } from '@navikt/aksel-icons';
 
 import style from './HtmlView.module.css';
 
@@ -15,25 +12,8 @@ type Props = {
 export const HtmlView = ({ html, versionKey, hidden }: Props) => {
     const ref = useRef<HTMLIFrameElement>(null);
 
-    const { appContext } = useAppState();
-    const fullscreenPath = `${appContext.basePath}/html/${versionKey}`;
-
     return (
         <div className={classNames(style.wrapper, hidden && style.hidden)}>
-            <Button
-                size={'small'}
-                variant={'primary'}
-                as={'a'}
-                href={fullscreenPath}
-                className={style.fullscreenButton}
-                icon={<ExpandIcon />}
-                onClick={(e) => {
-                    e.preventDefault();
-                    window.open(fullscreenPath, '_blank');
-                }}
-            >
-                {'Åpne i nytt vindu'}
-            </Button>
             <iframe
                 srcDoc={html}
                 className={classNames(style.htmlFrame)}

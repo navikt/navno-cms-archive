@@ -16,3 +16,8 @@
 .header {
     margin-bottom: 0.25rem;
 }
+
+.viewSelectorWrapper {
+    display: flex;
+    gap: 1rem;
+}
