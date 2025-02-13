@@ -1,6 +1,5 @@
 import React from 'react';
 import { ContentTreeEntryData } from '../../../shared/types';
-import { xpArchiveConfig } from '@common/shared/siteConfigs';
 import { useAppState } from '../../context/appState/useAppState';
 import { TreeItem } from '@mui/x-tree-view';
 import { useContentTree } from 'client/hooks/useContentTree';
@@ -12,11 +11,6 @@ type Props = {
 
 export const getContentIconUrl = (type: string) =>
     `${import.meta.env.VITE_APP_ORIGIN}/xp/api/contentIcon?type=${type}`;
-
-export const updateContentUrl = (nodeId: string, locale: string, versionId?: string) => {
-    const newUrl = `${xpArchiveConfig.basePath}/${nodeId}/${locale}/${versionId ?? ''}`;
-    window.history.pushState({}, '', newUrl);
-};
 
 export const NavigationItem = ({ entry }: Props) => {
     const { setSelectedContentId } = useAppState();
