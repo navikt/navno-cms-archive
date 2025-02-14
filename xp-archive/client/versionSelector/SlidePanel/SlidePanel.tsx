@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import style from './SlidePanel.module.css';
 
@@ -9,21 +9,27 @@ type SlidePanelProps = {
 };
 
 export const SlidePanel = ({ isOpen, onClose, children }: SlidePanelProps) => {
+    const dialogRef = useRef<HTMLDialogElement>(null);
+
     useEffect(() => {
-        const handleEscape = (e: KeyboardEvent) => {
-            if (e.key === 'Escape') onClose();
-        };
-        document.addEventListener('keydown', handleEscape);
-        return () => document.removeEventListener('keydown', handleEscape);
-    }, [onClose]);
+        const dialog = dialogRef.current;
+        if (!dialog) return;
+
+        if (isOpen) {
+            dialog.showModal();
+        } else {
+            dialog.close();
+        }
+    }, [isOpen]);
 
     if (!isOpen) return null;
 
     return createPortal(
         <dialog
+            ref={dialogRef}
             className={style.overlay}
-            open={isOpen}
             onClose={onClose}
+            aria-modal="true"
             aria-label="Version selector"
         >
             <button
