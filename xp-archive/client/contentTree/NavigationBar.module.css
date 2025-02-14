@@ -9,13 +9,18 @@
 }
 
 .search {
-    margin-bottom: 1rem;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    margin-left: 1rem;
+    margin-right: 1rem;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
 }
 
 .toggleButton {
+    margin-bottom: 0.5rem;
+    margin-left: 1rem;
     align-self: flex-start;
 }
 

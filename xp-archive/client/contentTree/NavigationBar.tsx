@@ -75,6 +75,7 @@ export const NavigationBar = () => {
             >
                 <Search
                     label={'Søk'}
+                    hideLabel={false}
                     value={searchQuery}
                     onChange={(value) => setSearchQuery(value)}
                 />
