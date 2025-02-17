@@ -16,6 +16,7 @@ const getDisplayComponent = (viewVariant?: ViewVariant, data?: ContentServiceRes
                 nodeId={data.json._id}
                 locale={data.json.language}
                 versionId={data.json._versionKey}
+                originalContentTypeName={data.json.originalContentTypeName}
             />
         ),
         filepreview: <FilePreviewWrapper content={data.json} />,
@@ -34,5 +35,6 @@ export const ContentView = ({ selectedView, isLoading, data }: Props) => {
     if (isLoading) {
         return <Loader size="xlarge" />;
     }
+
     return <div className={style.main}>{getDisplayComponent(selectedView, data)}</div>;
 };

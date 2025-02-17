@@ -66,6 +66,7 @@ export type Content = {
     };
     data: Record<string, unknown>;
     attachment?: Attachment;
+    originalContentTypeName?: string;
 };
 
 export type SearchResponse = {
