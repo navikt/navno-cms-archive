@@ -15,7 +15,7 @@
         "compression": "1.7.5",
         "csp-header": "6.0.0",
         "dotenv": "16.4.5",
-        "puppeteer": "23.8.0"
+        "puppeteer": "24.2.1"
     },
     "devDependencies": {
         "@types/archiver": "6.0.3",
