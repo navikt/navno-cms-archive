@@ -24,9 +24,9 @@ export const HtmlView = ({
 
     return (
         <div className={style.wrapper}>
-            {originalContentTypeName ?? (
+            {originalContentTypeName ? (
                 <Alert variant="warning">{`Obs! Denne siden var opprinnelig en "${originalContentTypeName}" og inneholder versjonshistorikk.`}</Alert>
-            )}
+            ) : null}
             {isLoading && (
                 <div className={style.loaderWrapper}>
                     <Loader size="xlarge" />
