@@ -43,7 +43,7 @@ const disableLinksScriptsAndEventListeners = (iframeElement: HTMLIFrameElement |
         return;
     }
 
-    document.querySelectorAll('a, button').forEach((element) => {
+    document.querySelectorAll('a').forEach((element) => {
         element.addEventListener('click', (e) => {
             e.stopPropagation();
             e.preventDefault();
