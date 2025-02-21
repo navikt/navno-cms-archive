@@ -1,13 +1,8 @@
 name: Build and deploy XP archive to prod
 on:
-    workflow_dispatch:
     push:
         branches:
             - main
-        paths:
-            - package*.json
-            - xp-archive/**/*
-            - common/**/*
 
 jobs:
     build-and-deploy:
