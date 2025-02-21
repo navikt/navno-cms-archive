@@ -58,6 +58,10 @@ npm run start-local -C xp-archive
 
 Hvis iframes ikke vises, sjekk om du får cors-issues i srcdoc. Disse vil oppstå hvis du kjører nav-enonicxp-frontend i dev-modus og ikke i prod-modus.
 
+## Prodsetting
+
+Lag en PR til main, og merge inn etter godkjenning (En automatisk release vil oppstå ved deploy til main)
+
 ## <a name="enonic-legacy"></a> Enonic CMS legacy arkiv (2006-2019)
 
 Dette er et arkiv av innhold fra Enonic CMS, som Nav benyttet fra 2006-2019. Arkivet har to deler: SBS (nav.no og annet åpent innhold) og FSS (intranett).
