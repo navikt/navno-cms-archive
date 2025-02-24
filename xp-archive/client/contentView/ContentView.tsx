@@ -10,16 +10,21 @@ import style from './ContentView.module.css';
 
 const getDisplayComponent = (viewVariant?: ViewVariant, data?: ContentServiceResponse | null) => {
     if (!data || !viewVariant) return null;
+
+    const { json: content } = data;
+
     const components: Record<ViewVariant, React.ReactElement> = {
         html: (
             <HtmlView
-                nodeId={data.json._id}
-                locale={data.json.language}
-                versionId={data.json._versionKey}
-                originalContentTypeName={data.json.originalContentTypeName}
+                nodeId={content._id}
+                locale={
+                    data.versions.find((v) => v.versionId === content._versionKey)?.locale || 'no'
+                }
+                versionId={content._versionKey}
+                originalContentTypeName={content.originalContentTypeName}
             />
         ),
-        filepreview: <FilePreviewWrapper content={data.json} />,
+        filepreview: <FilePreviewWrapper content={content} />,
         pdf: <PdfExport versions={data.versions} />,
     };
     return components[viewVariant];
