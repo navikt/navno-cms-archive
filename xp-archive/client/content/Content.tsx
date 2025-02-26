@@ -102,6 +102,7 @@ export const Content = () => {
                         />
                     </div>
                     <div>
+                        <Label spacing>Visning</Label>
                         <div className={style.viewSelectorWrapper}>
                             <ViewSelector
                                 selectedView={selectedView}
@@ -126,7 +127,7 @@ export const Content = () => {
                 </div>
 
                 <div className={style.titleAndUrl}>
-                    <Heading size={'medium'} level={'2'} spacing>
+                    <Heading size={'medium'} level={'2'}>
                         {data?.json.displayName ?? ''}
                     </Heading>
                     <div className={style.url}>
