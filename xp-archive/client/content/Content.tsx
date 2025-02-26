@@ -84,7 +84,9 @@ export const Content = () => {
         <div className={style.content}>
             <div className={style.top}>
                 <div>
-                    <Detail spacing>{data?.json._path ?? ''}</Detail>
+                    <div className={style.pathWrapper}>
+                        <Detail>{data?.json._path ?? ''}</Detail>
+                    </div>
                     <Heading size={'medium'} level={'2'} spacing>
                         {data?.json.displayName ?? ''}
                     </Heading>
