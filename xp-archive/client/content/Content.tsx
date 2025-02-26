@@ -83,51 +83,59 @@ export const Content = () => {
     return (
         <div className={style.content}>
             <div className={style.top}>
-                <div>
-                    <Detail spacing>{data?.json._path ?? ''}</Detail>
-                    <Heading size={'medium'} level={'2'} spacing>
-                        {data?.json.displayName ?? ''}
-                    </Heading>
-                    <div className={style.viewSelectorWrapper}>
-                        <ViewSelector
-                            selectedView={selectedView}
-                            setSelectedView={setSelectedView}
-                            hasAttachment={hasAttachment}
-                            isWebpage={isWebpage}
-                        />
+                <div className={style.versionAndViewWrapper}>
+                    <div className={style.versionSelector}>
+                        <Label className={style.label}>Versjoner</Label>
                         <Button
-                            as={'a'}
-                            href={htmlPath}
-                            icon={<ExternalLinkIcon />}
+                            className={style.versionButton}
+                            variant={'secondary'}
+                            icon={<SidebarRightIcon />}
                             iconPosition={'right'}
-                            onClick={(e) => {
-                                e.preventDefault();
-                                window.open(htmlPath, '_blank');
-                            }}
+                            onClick={() => setIsVersionPanelOpen(true)}
                         >
-                            {'Åpne i nytt vindu'}
+                            {getVersionDisplay()}
                         </Button>
+                        <VersionSelector
+                            versions={data?.versions || []}
+                            isOpen={isVersionPanelOpen}
+                            onClose={() => setIsVersionPanelOpen(false)}
+                        />
+                    </div>
+                    <div className={style.viewSelector}>
+                        <Label className={style.label}>Visning</Label>
+                        <div className={style.viewSelectorWrapper}>
+                            <ViewSelector
+                                selectedView={selectedView}
+                                setSelectedView={setSelectedView}
+                                hasAttachment={hasAttachment}
+                                isWebpage={isWebpage}
+                            />
+                            <Button
+                                as={'a'}
+                                href={htmlPath}
+                                icon={<ExternalLinkIcon />}
+                                iconPosition={'right'}
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    window.open(htmlPath, '_blank');
+                                }}
+                            >
+                                {'Åpne i nytt vindu'}
+                            </Button>
+                        </div>
                     </div>
                 </div>
 
-                <div className={style.versionSelector}>
-                    <Label spacing>Versjoner</Label>
-                    <Button
-                        className={style.versionButton}
-                        variant={'secondary'}
-                        icon={<SidebarRightIcon />}
-                        iconPosition={'right'}
-                        onClick={() => setIsVersionPanelOpen(true)}
-                    >
-                        {getVersionDisplay()}
-                    </Button>
-                    <VersionSelector
-                        versions={data?.versions || []}
-                        isOpen={isVersionPanelOpen}
-                        onClose={() => setIsVersionPanelOpen(false)}
-                    />
+                <div className={style.titleAndUrl}>
+                    <Heading size={'medium'} level={'2'}>
+                        {data?.json.displayName ?? ''}
+                    </Heading>
+                    <div className={style.url}>
+                        <Detail>{data?.json._path ?? ''}</Detail>
+                    </div>
                 </div>
             </div>
+
             <ContentView
                 selectedView={selectedView || getDefaultView(isWebpage, hasAttachment)}
                 isLoading={isLoading}
