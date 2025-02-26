@@ -85,7 +85,7 @@ export const Content = () => {
             <div className={style.top}>
                 <div className={style.versionAndViewWrapper}>
                     <div className={style.versionSelector}>
-                        <Label spacing>Versjoner</Label>
+                        <Label className={style.label}>Versjoner</Label>
                         <Button
                             className={style.versionButton}
                             variant={'secondary'}
@@ -101,8 +101,8 @@ export const Content = () => {
                             onClose={() => setIsVersionPanelOpen(false)}
                         />
                     </div>
-                    <div>
-                        <Label spacing>Visning</Label>
+                    <div className={style.viewSelector}>
+                        <Label className={style.label}>Visning</Label>
                         <div className={style.viewSelectorWrapper}>
                             <ViewSelector
                                 selectedView={selectedView}

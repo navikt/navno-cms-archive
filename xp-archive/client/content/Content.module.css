@@ -12,6 +12,10 @@
     justify-content: space-between;
 }
 
+.label {
+    margin-bottom: 0.5rem;
+}
+
 .versionSelector {
     display: flex;
     flex-direction: column;
@@ -30,6 +34,11 @@
     padding-bottom: 0.25rem;
     width: 100%;
     justify-content: space-between;
+}
+
+.viewSelector {
+    display: flex;
+    flex-direction: column;
 }
 
 .viewSelectorWrapper {
