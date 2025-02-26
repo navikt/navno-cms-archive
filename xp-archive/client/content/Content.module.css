@@ -28,7 +28,12 @@
     gap: 1rem;
 }
 
-.pathWrapper {
+.titleAndUrl {
+    display: flex;
+    gap: 1rem;
+}
+
+.url {
     background-color: var(--a-deepblue-100);
     padding: 0.25rem 0.75rem;
     border-radius: 10rem;
