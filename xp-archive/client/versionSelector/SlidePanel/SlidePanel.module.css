@@ -13,7 +13,7 @@
     border: none;
     margin: 0;
     display: flex;
-    justify-content: flex-end;
+    justify-content: flex-start;
 }
 
 .panel {
@@ -22,10 +22,10 @@
     width: 400px;
     height: 100vh;
     background: var(--a-surface-default);
-    box-shadow: -4px 0 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 4px 0 8px rgba(0, 0, 0, 0.1);
     padding: 24px 20px;
     overflow-y: auto;
-    transform: translateX(100%);
+    transform: translateX(-100%);
     animation: slideIn 0.2s ease-out forwards;
     margin: 0;
 }
