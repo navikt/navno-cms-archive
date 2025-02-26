@@ -30,7 +30,7 @@ export const setupSite = async (router: Router) => {
 const setupApiRoutes = async (router: Router) => {
     // const browser = await puppeteer.launch({
 
-    //     args: ['--no-sandbox', '--disable-setuid-sandbox', '--user-data-dir=/tmp/.chromium'],
+    //     args: [],
     // });
 
     const browser = await puppeteer.launch({
@@ -41,6 +41,10 @@ const setupApiRoutes = async (router: Router) => {
             '--allow-running-insecure-content',
             // Increase memory allocation if needed
             '--disable-dev-shm-usage',
+            // Old args
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--user-data-dir=/tmp/.chromium',
         ],
     });
 
