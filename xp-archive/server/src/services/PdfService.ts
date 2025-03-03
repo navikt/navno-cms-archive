@@ -132,13 +132,12 @@ export class PdfService {
 
             await page.setViewport({ width: widthActual, height: 1024, deviceScaleFactor: 1 });
             await page.emulateMediaType('screen');
-            await page.setContent(html, { waitUntil: ['load', 'networkidle0'] });
+            await page.setContent(html);
 
             const pdf = await page.pdf({
                 printBackground: true,
                 format: 'A4',
                 scale: pixelWidthToA4Scale(widthActual),
-                displayHeaderFooter: true,
                 footerTemplate: generatePdfFooter(content),
                 margin: {
                     top: '4px',

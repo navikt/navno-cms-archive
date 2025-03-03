@@ -23,6 +23,7 @@ spec:
         - application: {{ xpFrontendApp }}
       external:
         - host: {{ xpHost }}
+        - host: cdn.nav.no
   envFrom:
     - secret: {{ secret }}
   replicas:
