@@ -28,24 +28,8 @@ export const setupSite = async (router: Router) => {
 };
 
 const setupApiRoutes = async (router: Router) => {
-    // const browser = await puppeteer.launch({
-
-    //     args: [],
-    // });
-
     const browser = await puppeteer.launch({
-        // headless: 'new',
-        args: [
-            // Allow any CDN connections
-            '--disable-web-security',
-            '--allow-running-insecure-content',
-            // Increase memory allocation if needed
-            '--disable-dev-shm-usage',
-            // Old args
-            '--no-sandbox',
-            '--disable-setuid-sandbox',
-            '--user-data-dir=/tmp/.chromium',
-        ],
+        args: ['--no-sandbox', '--disable-setuid-sandbox', '--user-data-dir=/tmp/.chromium'],
     });
 
     const contentService = new ContentService();
