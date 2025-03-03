@@ -133,9 +133,9 @@ export class PdfService {
             await page.setViewport({ width: widthActual, height: 1024, deviceScaleFactor: 1 });
             await page.emulateMediaType('screen');
             await page.setContent(html);
-            await page.waitForFunction(
-                'document.querySelectorAll("link[href^=\'https://cdn.nav.no\']") !== null'
-            );
+            // await page.waitForFunction(
+            //     'document.querySelectorAll("link[href^=\'https://cdn.nav.no\']") !== null'
+            // );
 
             const pdf = await page.pdf({
                 printBackground: true,
