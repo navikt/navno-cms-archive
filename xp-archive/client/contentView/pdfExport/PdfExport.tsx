@@ -16,6 +16,7 @@ export const PdfExport = ({ versions }: Props) => {
     const handleChange = (selectedVersions: string[]) => {
         setVersionsSelected(selectedVersions);
     };
+    console.log('versionsSelected', versionsSelected);
 
     return (
         <>
