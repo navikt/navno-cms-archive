@@ -130,8 +130,8 @@ export class PdfService {
         try {
             const page = await this.browser.newPage();
 
-            const htmlWithoutHeaderAndFooter = html.replace(
-                /(<header([^;]*)<\/header>|<decorator-footer([^;]*)<\/decorator-footer>)/,
+            const htmlWithoutHeaderAndFooter = html.replaceAll(
+                /(<header([^;]*)<\/header>|<footer([^;]*)<\/footer>)/,
                 ''
             );
 
