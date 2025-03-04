@@ -131,7 +131,7 @@ export class PdfService {
             const page = await this.browser.newPage();
 
             const htmlWithoutHeaderAndFooter = html.replaceAll(
-                /(<header([^;]*)<\/header>|<footer([^;]*)<\/footer>)/,
+                /(<header([^;]*)<\/header>|<footer([^;]*)<\/footer>)/g,
                 ''
             );
 
