@@ -130,6 +130,7 @@ export class PdfService {
         try {
             const page = await this.browser.newPage();
 
+            // Remove header and footer in print
             const htmlWithoutHeaderAndFooter = html.replaceAll(
                 /(<header([^;]*)<\/header>|<footer([^;]*)<\/footer>)/g,
                 ''
