@@ -14,15 +14,15 @@
         "dev": "cp .env.development .env && npm run dev --prefix server"
     },
     "dependencies": {
-        "@mui/material": "5.16.7",
-        "@mui/system": "5.16.7",
-        "@mui/x-tree-view": "6.17.0",
+        "@mui/material": "6.4.7",
+        "@mui/system": "6.4.7",
+        "@mui/x-tree-view": "7.26.0",
         "js-cookie": "3.0.5",
         "lodash.debounce": "4.0.8",
-        "react-xml-viewer": "2.0.2"
+        "react-xml-viewer": "2.0.5"
     },
     "devDependencies": {
         "@types/js-cookie": "3.0.6",
-        "@types/lodash": "4.17.10"
+        "@types/lodash": "4.17.16"
     }
 }
