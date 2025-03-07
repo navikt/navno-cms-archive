@@ -130,9 +130,15 @@ export class PdfService {
         try {
             const page = await this.browser.newPage();
 
+            // Remove header and footer in print
+            const htmlWithoutHeaderAndFooter = html.replaceAll(
+                /(<header([^;]*)<\/header>|<footer([^;]*)<\/footer>)/g,
+                ''
+            );
+
             await page.setViewport({ width: widthActual, height: 1024, deviceScaleFactor: 1 });
             await page.emulateMediaType('screen');
-            await page.setContent(html);
+            await page.setContent(htmlWithoutHeaderAndFooter);
 
             const pdf = await page.pdf({
                 printBackground: true,
