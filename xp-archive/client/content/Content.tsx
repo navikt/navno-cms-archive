@@ -9,6 +9,10 @@ import { VersionSelector } from 'client/versionSelector/VersionSelector';
 import { ContentView } from '../contentView/ContentView';
 import { formatTimestamp } from '@common/shared/timestamp';
 import { EmptyState } from '@common/shared/EmptyState/EmptyState';
+import {
+    setCachedVersionSelector,
+    getCachedVersionSelector,
+} from 'client/versionSelector/VersionSelectorCache';
 
 import style from './Content.module.css';
 
@@ -58,40 +62,28 @@ export const Content = () => {
         getDefaultView(isWebpage, hasAttachment)
     );
 
-    // Initialize version panel state from localStorage
-    const [isVersionPanelOpen, setIsVersionPanelOpen] = useState(() => {
-        try {
-            const savedState = localStorage.getItem(STORAGE_KEY);
-            if (savedState) {
-                const { keepOpen } = JSON.parse(savedState);
-                return !!keepOpen;
-            }
-        } catch (e) {
-            console.error('Failed to load version selector state', e);
-        }
-        return false;
+    // Get cached state or initialize
+    const [versionSelectorCache, setVersionSelectorCache] = useState(() => {
+        const cache = getCachedVersionSelector();
+        return {
+            component: cache.component,
+            versions: cache.versions,
+            isOpen: cache.isOpen,
+        };
     });
 
-    // Check localStorage when data changes to see if we should keep panel open
+    // Update the cache when versions change
     useEffect(() => {
-        if (data) {
-            try {
-                const savedState = localStorage.getItem(STORAGE_KEY);
-                if (savedState) {
-                    const { keepOpen } = JSON.parse(savedState);
-                    if (keepOpen) {
-                        setIsVersionPanelOpen(true);
-                        // Clear the keepOpen flag after opening
-                        const updatedState = JSON.parse(savedState);
-                        updatedState.keepOpen = false;
-                        localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedState));
-                    }
-                }
-            } catch (e) {
-                console.error('Failed to load version selector state', e);
+        if (data?.versions && data.versions.length > 0) {
+            // Only update versions in cache if we don't have any yet
+            if (versionSelectorCache.versions.length === 0) {
+                setVersionSelectorCache((prev) => ({
+                    ...prev,
+                    versions: data.versions,
+                }));
             }
         }
-    }, [data]);
+    }, [data?.versions]);
 
     useEffect(() => {
         setSelectedView(getDefaultView(isWebpage, hasAttachment));
@@ -125,15 +117,43 @@ export const Content = () => {
                             variant={'secondary'}
                             icon={<SidebarRightIcon />}
                             iconPosition={'right'}
-                            onClick={() => setIsVersionPanelOpen(true)}
+                            onClick={() => {
+                                setVersionSelectorCache((prev) => ({
+                                    ...prev,
+                                    isOpen: true,
+                                }));
+                            }}
                         >
                             {getVersionDisplay()}
                         </Button>
-                        <VersionSelector
-                            versions={data?.versions || []}
-                            isOpen={isVersionPanelOpen}
-                            onClose={() => setIsVersionPanelOpen(false)}
-                        />
+
+                        {/* Use the cached component if available */}
+                        {versionSelectorCache.component || (
+                            <VersionSelector
+                                versions={
+                                    versionSelectorCache.versions.length > 0
+                                        ? versionSelectorCache.versions
+                                        : data?.versions || []
+                                }
+                                isOpen={versionSelectorCache.isOpen}
+                                onClose={() => {
+                                    setVersionSelectorCache((prev) => ({
+                                        ...prev,
+                                        isOpen: false,
+                                    }));
+                                }}
+                                onMount={(component) => {
+                                    // Cache the rendered component
+                                    setCachedVersionSelector(
+                                        component,
+                                        versionSelectorCache.versions.length > 0
+                                            ? versionSelectorCache.versions
+                                            : data?.versions || [],
+                                        versionSelectorCache.isOpen
+                                    );
+                                }}
+                            />
+                        )}
                     </div>
                     <div className={style.viewSelector}>
                         <Label className={style.label}>Visning</Label>

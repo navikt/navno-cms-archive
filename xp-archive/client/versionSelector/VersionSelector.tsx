@@ -12,6 +12,7 @@ type Props = {
     versions: VersionReference[];
     isOpen: boolean;
     onClose: () => void;
+    onMount?: (component: React.ReactNode) => void;
 };
 
 type VersionButtonProps = {
@@ -35,7 +36,7 @@ const VersionButton = ({ isSelected, onClick, children }: VersionButtonProps) =>
 // Storage key for persisting version selector state
 const STORAGE_KEY = 'versionSelector_state';
 
-export const VersionSelector = ({ versions, isOpen, onClose }: Props) => {
+export const VersionSelector = ({ versions, isOpen, onClose, onMount }: Props) => {
     const [searchQuery, setSearchQuery] = useState('');
     const { setSelectedContentId, selectedVersion, setSelectedVersion } = useAppState();
 
@@ -102,6 +103,42 @@ export const VersionSelector = ({ versions, isOpen, onClose }: Props) => {
         formatTimestamp(version.timestamp).toLowerCase().includes(searchQuery.toLowerCase())
     );
 
+    // Call onMount with the rendered component
+    useEffect(() => {
+        if (onMount) {
+            const component = (
+                <SlidePanel isOpen={isOpen} onClose={handleClose}>
+                    <Heading size="medium" spacing>
+                        Versjoner
+                    </Heading>
+                    <Search
+                        label="Søk i versjoner"
+                        variant="simple"
+                        value={searchQuery}
+                        onChange={setSearchQuery}
+                        className={style.search}
+                    />
+                    <div className={style.versionList}>
+                        {filteredVersions.map((version, index) => (
+                            <VersionButton
+                                key={version.versionId}
+                                isSelected={version.versionId === selectedVersion}
+                                onClick={() => selectVersion(version.versionId)}
+                            >
+                                {formatTimestamp(version.timestamp)}
+                                {index === 0 && (
+                                    <span style={{ fontWeight: 'normal' }}> (Siste versjon)</span>
+                                )}
+                            </VersionButton>
+                        ))}
+                    </div>
+                </SlidePanel>
+            );
+            onMount(component);
+        }
+    }, [versions, isOpen, searchQuery, selectedVersion]);
+
+    // Return the same component
     return (
         <SlidePanel isOpen={isOpen} onClose={handleClose}>
             <Heading size="medium" spacing>
