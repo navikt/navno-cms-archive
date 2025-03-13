@@ -48,13 +48,12 @@ export const Content = () => {
     });
 
     useEffect(() => {
-        if (selectedVersion) {
-            const newUrl = `${xpArchiveConfig.basePath}/${selectedContentId}/${selectedLocale}/${selectedVersion}`;
-            window.history.replaceState({}, '', newUrl);
-        } else if (data?.versions?.[0]) {
-            const latestVersionId = data.versions[0].versionId;
-            setSelectedVersion(latestVersionId);
-            const newUrl = `${xpArchiveConfig.basePath}/${selectedContentId}/${selectedLocale}/${latestVersionId}`;
+        const versionId = selectedVersion ?? data?.versions?.[0]?.versionId;
+        if (versionId) {
+            if (!selectedVersion) {
+                setSelectedVersion(versionId);
+            }
+            const newUrl = `${xpArchiveConfig.basePath}/${selectedContentId}/${selectedLocale}/${versionId}`;
             window.history.replaceState({}, '', newUrl);
         }
     }, [data, selectedContentId, selectedLocale, selectedVersion]);
