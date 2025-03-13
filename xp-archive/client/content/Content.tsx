@@ -146,8 +146,10 @@ export const Content = () => {
                             {getVersionDisplay()}
                         </Button>
 
-                        {/* Use the cached component if available */}
-                        {versionSelectorCache.component || (
+                        {/* Render either the cached component or a new VersionSelector */}
+                        {versionSelectorCache.component ? (
+                            versionSelectorCache.component
+                        ) : (
                             <VersionSelector
                                 versions={
                                     versionSelectorCache.versions.length > 0
