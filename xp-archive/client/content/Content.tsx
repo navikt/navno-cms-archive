@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { ExternalLinkIcon, SidebarRightIcon } from '@navikt/aksel-icons';
 import { xpArchiveConfig } from '@common/shared/siteConfigs';
 import { Button, Detail, Heading, Label } from '@navikt/ds-react';
 import { useFetchContent } from '../hooks/useFetchContent';
 import { useAppState } from '../context/appState/useAppState';
 import { ViewSelector, ViewVariant } from 'client/viewSelector/ViewSelector';
-import { VersionSelector } from 'client/versionSelector/VersionSelector';
+import { MemoizedVersionSelector } from 'client/versionSelector/MemoizedVersionSelector';
 import { ContentView } from '../contentView/ContentView';
 import { formatTimestamp } from '@common/shared/timestamp';
 import { EmptyState } from '@common/shared/EmptyState/EmptyState';
@@ -36,6 +36,9 @@ export const Content = () => {
         locale: selectedLocale,
         versionId: selectedVersion ?? '',
     });
+
+    // Memoize the versions array to prevent unnecessary re-renders
+    const versions = useMemo(() => data?.versions || [], [data?.versions]);
 
     // Effect to set the initial version if none is selected
     useEffect(() => {
@@ -101,8 +104,8 @@ export const Content = () => {
                         >
                             {getVersionDisplay()}
                         </Button>
-                        <VersionSelector
-                            versions={data?.versions || []}
+                        <MemoizedVersionSelector
+                            versions={versions}
                             isOpen={isVersionPanelOpen}
                             onClose={() => setIsVersionPanelOpen(false)}
                         />

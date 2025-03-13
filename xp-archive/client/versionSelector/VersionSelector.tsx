@@ -43,7 +43,6 @@ export const VersionSelector = ({ versions, isOpen, onClose }: Props) => {
 
     const selectVersion = (versionId: string) => {
         // Just update the state, don't modify the URL here
-        // The URL update will be handled by the effect in Content.tsx
         setSelectedVersion(versionId);
     };
 
