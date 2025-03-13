@@ -18,10 +18,8 @@ const getDefaultView = (isWebpage: boolean, hasAttachment: boolean): ViewVariant
     return undefined;
 };
 
-const updateContentUrl = (nodeId: string, locale: string, versionId?: string) => {
-    const newUrl = `${xpArchiveConfig.basePath}/${nodeId}/${locale}/${versionId ?? ''}`;
-    window.history.pushState({}, '', newUrl);
-};
+// Storage key for persisting version selector state
+const STORAGE_KEY = 'versionSelector_state';
 
 export const Content = () => {
     const { selectedContentId, selectedLocale, selectedVersion, setSelectedVersion } =
@@ -44,11 +42,13 @@ export const Content = () => {
 
     useEffect(() => {
         if (selectedVersion) {
-            updateContentUrl(selectedContentId ?? '', selectedLocale, selectedVersion);
+            const newUrl = `${xpArchiveConfig.basePath}/${selectedContentId}/${selectedLocale}/${selectedVersion}`;
+            window.history.replaceState({}, '', newUrl);
         } else if (data?.versions?.[0]) {
             const latestVersionId = data.versions[0].versionId;
             setSelectedVersion(latestVersionId);
-            updateContentUrl(selectedContentId ?? '', selectedLocale, latestVersionId);
+            const newUrl = `${xpArchiveConfig.basePath}/${selectedContentId}/${selectedLocale}/${latestVersionId}`;
+            window.history.replaceState({}, '', newUrl);
         }
     }, [data, selectedContentId, selectedLocale, selectedVersion]);
 
@@ -57,7 +57,41 @@ export const Content = () => {
     const [selectedView, setSelectedView] = useState<ViewVariant | undefined>(
         getDefaultView(isWebpage, hasAttachment)
     );
-    const [isVersionPanelOpen, setIsVersionPanelOpen] = useState(false);
+
+    // Initialize version panel state from localStorage
+    const [isVersionPanelOpen, setIsVersionPanelOpen] = useState(() => {
+        try {
+            const savedState = localStorage.getItem(STORAGE_KEY);
+            if (savedState) {
+                const { keepOpen } = JSON.parse(savedState);
+                return !!keepOpen;
+            }
+        } catch (e) {
+            console.error('Failed to load version selector state', e);
+        }
+        return false;
+    });
+
+    // Check localStorage when data changes to see if we should keep panel open
+    useEffect(() => {
+        if (data) {
+            try {
+                const savedState = localStorage.getItem(STORAGE_KEY);
+                if (savedState) {
+                    const { keepOpen } = JSON.parse(savedState);
+                    if (keepOpen) {
+                        setIsVersionPanelOpen(true);
+                        // Clear the keepOpen flag after opening
+                        const updatedState = JSON.parse(savedState);
+                        updatedState.keepOpen = false;
+                        localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedState));
+                    }
+                }
+            } catch (e) {
+                console.error('Failed to load version selector state', e);
+            }
+        }
+    }, [data]);
 
     useEffect(() => {
         setSelectedView(getDefaultView(isWebpage, hasAttachment));

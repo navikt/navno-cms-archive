@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Heading, Button, Search } from '@navikt/ds-react';
 import { VersionReference } from 'shared/types';
 import { formatTimestamp } from '@common/shared/timestamp';
@@ -32,12 +32,49 @@ const VersionButton = ({ isSelected, onClick, children }: VersionButtonProps) =>
     </Button>
 );
 
+// Storage key for persisting version selector state
+const STORAGE_KEY = 'versionSelector_state';
+
 export const VersionSelector = ({ versions, isOpen, onClose }: Props) => {
     const [searchQuery, setSearchQuery] = useState('');
     const { setSelectedContentId, selectedVersion, setSelectedVersion } = useAppState();
 
+    // Load search query from localStorage on mount
+    useEffect(() => {
+        if (isOpen) {
+            try {
+                const savedState = localStorage.getItem(STORAGE_KEY);
+                if (savedState) {
+                    const { searchQuery: savedQuery } = JSON.parse(savedState);
+                    if (savedQuery) {
+                        setSearchQuery(savedQuery);
+                    }
+                }
+            } catch (e) {
+                console.error('Failed to load version selector state', e);
+            }
+        }
+    }, [isOpen]);
+
+    // Save state to localStorage when it changes
+    useEffect(() => {
+        if (isOpen) {
+            try {
+                localStorage.setItem(
+                    STORAGE_KEY,
+                    JSON.stringify({
+                        searchQuery,
+                        selectedVersion,
+                    })
+                );
+            } catch (e) {
+                console.error('Failed to save version selector state', e);
+            }
+        }
+    }, [isOpen, searchQuery, selectedVersion]);
+
     const handleClose = () => {
-        setSearchQuery('');
+        // Don't clear search query when closing
         onClose();
     };
 
@@ -45,7 +82,20 @@ export const VersionSelector = ({ versions, isOpen, onClose }: Props) => {
         const nodeId = versions.find((v) => v.versionId === versionId)?.nodeId;
         if (nodeId) setSelectedContentId(nodeId);
         setSelectedVersion(versionId);
-        handleClose();
+
+        // Save selected version to localStorage
+        try {
+            localStorage.setItem(
+                STORAGE_KEY,
+                JSON.stringify({
+                    searchQuery,
+                    selectedVersion: versionId,
+                    keepOpen: true, // Flag to keep panel open
+                })
+            );
+        } catch (e) {
+            console.error('Failed to save version selection', e);
+        }
     };
 
     const filteredVersions = versions.filter((version) =>
