@@ -30,6 +30,8 @@ export const Content = () => {
     const { selectedContentId, selectedLocale, selectedVersion, setSelectedVersion } =
         useAppState();
 
+    const prevContentIdRef = React.useRef(selectedContentId);
+
     useEffect(() => {
         const pathSegments = window.location.pathname.split('/');
         if (pathSegments.length >= 5) {
@@ -76,13 +78,11 @@ export const Content = () => {
     // Update this effect to clear the cache immediately when content ID changes
     useEffect(() => {
         // Clear the cache for the previous content ID when it changes
-        const prevContentId = React.useRef(selectedContentId);
-
-        if (prevContentId.current && prevContentId.current !== selectedContentId) {
-            clearCachedVersionSelector(prevContentId.current);
+        if (prevContentIdRef.current && prevContentIdRef.current !== selectedContentId) {
+            clearCachedVersionSelector(prevContentIdRef.current);
         }
 
-        prevContentId.current = selectedContentId;
+        prevContentIdRef.current = selectedContentId;
 
         // Also reset the local cache state when content ID changes
         if (data?.versions && selectedContentId) {
