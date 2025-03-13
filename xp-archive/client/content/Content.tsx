@@ -12,6 +12,7 @@ import { EmptyState } from '@common/shared/EmptyState/EmptyState';
 import {
     setCachedVersionSelector,
     getCachedVersionSelector,
+    clearCachedVersionSelector,
 } from 'client/versionSelector/VersionSelectorCache';
 
 import style from './Content.module.css';
@@ -64,13 +65,23 @@ export const Content = () => {
 
     // Get cached state or initialize
     const [versionSelectorCache, setVersionSelectorCache] = useState(() => {
-        const cache = getCachedVersionSelector();
+        const cache = getCachedVersionSelector(selectedContentId || '');
         return {
             component: cache.component,
             versions: cache.versions,
             isOpen: cache.isOpen,
         };
     });
+
+    // Clear cache when content changes
+    useEffect(() => {
+        // When content ID changes, reset the cache for the previous content
+        return () => {
+            if (selectedContentId) {
+                clearCachedVersionSelector(selectedContentId);
+            }
+        };
+    }, [selectedContentId]);
 
     // Update the cache when versions change
     useEffect(() => {
@@ -143,8 +154,9 @@ export const Content = () => {
                                     }));
                                 }}
                                 onMount={(component) => {
-                                    // Cache the rendered component
+                                    // Cache the rendered component with the content ID
                                     setCachedVersionSelector(
+                                        selectedContentId || '',
                                         component,
                                         versionSelectorCache.versions.length > 0
                                             ? versionSelectorCache.versions

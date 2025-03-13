@@ -34,17 +34,19 @@ const VersionButton = ({ isSelected, onClick, children }: VersionButtonProps) =>
 );
 
 // Storage key for persisting version selector state
-const STORAGE_KEY = 'versionSelector_state';
+const getStorageKey = (contentId: string) => `versionSelector_state_${contentId}`;
 
 export const VersionSelector = ({ versions, isOpen, onClose, onMount }: Props) => {
     const [searchQuery, setSearchQuery] = useState('');
-    const { setSelectedContentId, selectedVersion, setSelectedVersion } = useAppState();
+    const { setSelectedContentId, selectedVersion, setSelectedVersion, selectedContentId } =
+        useAppState();
+    const storageKey = getStorageKey(selectedContentId || '');
 
     // Load search query from localStorage on mount
     useEffect(() => {
         if (isOpen) {
             try {
-                const savedState = localStorage.getItem(STORAGE_KEY);
+                const savedState = localStorage.getItem(storageKey);
                 if (savedState) {
                     const { searchQuery: savedQuery } = JSON.parse(savedState);
                     if (savedQuery) {
@@ -55,14 +57,14 @@ export const VersionSelector = ({ versions, isOpen, onClose, onMount }: Props) =
                 console.error('Failed to load version selector state', e);
             }
         }
-    }, [isOpen]);
+    }, [isOpen, storageKey]);
 
     // Save state to localStorage when it changes
     useEffect(() => {
         if (isOpen) {
             try {
                 localStorage.setItem(
-                    STORAGE_KEY,
+                    storageKey,
                     JSON.stringify({
                         searchQuery,
                         selectedVersion,
@@ -72,7 +74,7 @@ export const VersionSelector = ({ versions, isOpen, onClose, onMount }: Props) =
                 console.error('Failed to save version selector state', e);
             }
         }
-    }, [isOpen, searchQuery, selectedVersion]);
+    }, [isOpen, searchQuery, selectedVersion, storageKey]);
 
     const handleClose = () => {
         // Don't clear search query when closing
@@ -87,7 +89,7 @@ export const VersionSelector = ({ versions, isOpen, onClose, onMount }: Props) =
         // Save selected version to localStorage
         try {
             localStorage.setItem(
-                STORAGE_KEY,
+                storageKey,
                 JSON.stringify({
                     searchQuery,
                     selectedVersion: versionId,
