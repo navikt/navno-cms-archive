@@ -44,16 +44,16 @@ export const Content = () => {
         versionId: selectedVersion ?? '',
     });
 
+    // Simplified version ID and URL handling
     useEffect(() => {
-        const versionId = selectedVersion ?? data?.versions?.[0]?.versionId;
-        if (versionId) {
-            if (!selectedVersion) {
-                setSelectedVersion(versionId);
-            }
-            const newUrl = `${xpArchiveConfig.basePath}/${selectedContentId}/${selectedLocale}/${versionId}`;
+        if (!selectedVersion && data?.versions?.[0]) {
+            setSelectedVersion(data.versions[0].versionId);
+        }
+        if (selectedContentId && selectedLocale && selectedVersion) {
+            const newUrl = `${xpArchiveConfig.basePath}/${selectedContentId}/${selectedLocale}/${selectedVersion}`;
             window.history.replaceState({}, '', newUrl);
         }
-    }, [data, selectedContentId, selectedLocale, selectedVersion]);
+    }, [data?.versions, selectedContentId, selectedLocale, selectedVersion]);
 
     const isWebpage = !!data?.html && !data.json.attachment;
     const hasAttachment = !!data?.json.attachment;
@@ -71,7 +71,7 @@ export const Content = () => {
         };
     });
 
-    // Update cache when content ID changes or new versions arrive
+    // Single effect for cache management
     useEffect(() => {
         if (prevContentIdRef.current && prevContentIdRef.current !== selectedContentId) {
             clearCachedVersionSelector(prevContentIdRef.current);
@@ -81,7 +81,7 @@ export const Content = () => {
             setVersionSelectorCache((prev) => ({
                 component: null,
                 versions: data.versions,
-                isOpen: prev.isOpen, // Always preserve open state
+                isOpen: prev.isOpen,
             }));
         }
 
@@ -130,16 +130,11 @@ export const Content = () => {
                             {getVersionDisplay()}
                         </Button>
 
-                        {/* Render either the cached component or a new VersionSelector */}
                         {versionSelectorCache.component ? (
                             versionSelectorCache.component
                         ) : (
                             <VersionSelector
-                                versions={
-                                    versionSelectorCache.versions.length > 0
-                                        ? versionSelectorCache.versions
-                                        : data?.versions || []
-                                }
+                                versions={data?.versions || []}
                                 isOpen={versionSelectorCache.isOpen}
                                 onClose={() => {
                                     setVersionSelectorCache((prev) => ({
@@ -148,13 +143,10 @@ export const Content = () => {
                                     }));
                                 }}
                                 onMount={(component) => {
-                                    // Cache the rendered component with the content ID
                                     setCachedVersionSelector(
                                         selectedContentId || '',
                                         component,
-                                        versionSelectorCache.versions.length > 0
-                                            ? versionSelectorCache.versions
-                                            : data?.versions || [],
+                                        data?.versions || [],
                                         versionSelectorCache.isOpen
                                     );
                                 }}
