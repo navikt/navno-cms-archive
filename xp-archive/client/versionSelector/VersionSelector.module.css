@@ -40,3 +40,14 @@
         font-weight: var(--a-font-weight-bold);
     }
 }
+
+.closeButton {
+    position: sticky;
+    bottom: 1rem;
+    margin-top: 1.75rem;
+
+    width: fit-content;
+    border-radius: 99px;
+    background-color: var(--a-surface-inverted);
+    align-self: center;
+}

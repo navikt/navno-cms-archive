@@ -6,7 +6,7 @@ import { useAppState } from 'client/context/appState/useAppState';
 import { SlidePanel } from './SlidePanel/SlidePanel';
 import { classNames } from '@common/client/utils/classNames';
 import style from './VersionSelector.module.css';
-import { CheckmarkIcon } from '@navikt/aksel-icons';
+import { CheckmarkIcon, XMarkIcon } from '@navikt/aksel-icons';
 
 type Props = {
     versions: VersionReference[];
@@ -45,7 +45,6 @@ export const VersionSelector = ({ versions, isOpen, onClose }: Props) => {
         const nodeId = versions.find((v) => v.versionId === versionId)?.nodeId;
         if (nodeId) setSelectedContentId(nodeId);
         setSelectedVersion(versionId);
-        handleClose();
     };
 
     const filteredVersions = versions.filter((version) =>
@@ -78,6 +77,14 @@ export const VersionSelector = ({ versions, isOpen, onClose }: Props) => {
                     </VersionButton>
                 ))}
             </div>
+            <Button
+                className={style.closeButton}
+                variant="primary-neutral"
+                icon={<XMarkIcon />}
+                onClick={handleClose}
+            >
+                Lukk versjonsvelger
+            </Button>
         </SlidePanel>
     );
 };
