@@ -18,11 +18,6 @@ const getDefaultView = (isWebpage: boolean, hasAttachment: boolean): ViewVariant
     return undefined;
 };
 
-const updateContentUrl = (nodeId: string, locale: string, versionId?: string) => {
-    const newUrl = `${xpArchiveConfig.basePath}/${nodeId}/${locale}/${versionId ?? ''}`;
-    window.history.pushState({}, '', newUrl);
-};
-
 export const Content = () => {
     const { selectedContentId, selectedLocale, selectedVersion, setSelectedVersion } =
         useAppState();
@@ -42,15 +37,26 @@ export const Content = () => {
         versionId: selectedVersion ?? '',
     });
 
+    // Effect to set the initial version if none is selected
     useEffect(() => {
-        if (selectedVersion) {
-            updateContentUrl(selectedContentId ?? '', selectedLocale, selectedVersion);
-        } else if (data?.versions?.[0]) {
+        if (!selectedVersion && data?.versions?.[0]) {
             const latestVersionId = data.versions[0].versionId;
             setSelectedVersion(latestVersionId);
-            updateContentUrl(selectedContentId ?? '', selectedLocale, latestVersionId);
         }
     }, [data, selectedContentId, selectedLocale, selectedVersion]);
+
+    // Separate effect for URL updates that doesn't trigger component reloads
+    useEffect(() => {
+        if (selectedContentId && selectedLocale) {
+            const versionPart = selectedVersion ? `/${selectedVersion}` : '';
+            const newUrl = `${xpArchiveConfig.basePath}/${selectedContentId}/${selectedLocale}${versionPart}`;
+
+            // Only update if URL is different to avoid unnecessary history entries
+            if (window.location.pathname !== newUrl) {
+                window.history.replaceState({}, '', newUrl);
+            }
+        }
+    }, [selectedContentId, selectedLocale, selectedVersion]);
 
     const isWebpage = !!data?.html && !data.json.attachment;
     const hasAttachment = !!data?.json.attachment;

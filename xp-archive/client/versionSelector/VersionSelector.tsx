@@ -34,7 +34,7 @@ const VersionButton = ({ isSelected, onClick, children }: VersionButtonProps) =>
 
 export const VersionSelector = ({ versions, isOpen, onClose }: Props) => {
     const [searchQuery, setSearchQuery] = useState('');
-    const { setSelectedContentId, selectedVersion, setSelectedVersion } = useAppState();
+    const { setSelectedVersion, selectedVersion } = useAppState();
 
     const handleClose = () => {
         setSearchQuery('');
@@ -42,8 +42,8 @@ export const VersionSelector = ({ versions, isOpen, onClose }: Props) => {
     };
 
     const selectVersion = (versionId: string) => {
-        const nodeId = versions.find((v) => v.versionId === versionId)?.nodeId;
-        if (nodeId) setSelectedContentId(nodeId);
+        // Just update the state, don't modify the URL here
+        // The URL update will be handled by the effect in Content.tsx
         setSelectedVersion(versionId);
     };
 
