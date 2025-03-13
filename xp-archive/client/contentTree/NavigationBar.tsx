@@ -99,7 +99,7 @@ export const NavigationBar = () => {
                     >
                         <Radio
                             value="curated"
-                            description="Produktside, Situasjonsside, Temaartikkel, Slik gjør du det, Aktuelt, Artikkel, Intern lenke, Ekstern lenke, Produktdetaljer, Saksbehandlingstider, Utbetalingsdatoer"
+                            description="Produktside, Slik gjør du det, Artikkel, Intern lenke, Ekstern lenke, Aktuelt, Produktdetaljer, Saksbehandlingstider"
                         >
                             Utvalgte
                         </Radio>
