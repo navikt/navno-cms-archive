@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import style from './SlidePanel.module.css';
 
@@ -10,6 +10,15 @@ type SlidePanelProps = {
 
 export const SlidePanel = ({ isOpen, onClose, children }: SlidePanelProps) => {
     const dialogRef = useRef<HTMLDialogElement>(null);
+    // Keep a local copy of children to prevent unmounting
+    const [cachedChildren, setCachedChildren] = useState<React.ReactNode>(children);
+
+    // Update cached children only when isOpen changes from false to true
+    useEffect(() => {
+        if (isOpen) {
+            setCachedChildren(children);
+        }
+    }, [isOpen, children]);
 
     useEffect(() => {
         const dialog = dialogRef.current;
@@ -22,8 +31,7 @@ export const SlidePanel = ({ isOpen, onClose, children }: SlidePanelProps) => {
         }
     }, [isOpen]);
 
-    if (!isOpen) return null;
-
+    // Always render the dialog, but control its visibility with the dialog API
     return createPortal(
         <dialog
             ref={dialogRef}
@@ -37,7 +45,10 @@ export const SlidePanel = ({ isOpen, onClose, children }: SlidePanelProps) => {
                 onClick={onClose}
                 aria-label="Close version selector"
             />
-            <div className={style.panel}>{children}</div>
+            <div className={style.panel}>
+                {/* Always use the cached children */}
+                {cachedChildren}
+            </div>
         </dialog>,
         document.body
     );

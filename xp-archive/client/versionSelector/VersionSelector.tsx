@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Heading, Button, Search } from '@navikt/ds-react';
 import { VersionReference } from 'shared/types';
 import { formatTimestamp } from '@common/shared/timestamp';
@@ -36,15 +36,21 @@ export const VersionSelector = ({ versions, isOpen, onClose }: Props) => {
     const [searchQuery, setSearchQuery] = useState('');
     const { setSelectedVersion, selectedVersion } = useAppState();
 
-    const handleClose = () => {
+    const handleClose = useCallback(() => {
         setSearchQuery('');
         onClose();
-    };
+    }, [onClose]);
 
-    const selectVersion = (versionId: string) => {
-        // Just update the state, don't modify the URL here
-        setSelectedVersion(versionId);
-    };
+    const selectVersion = useCallback(
+        (versionId: string) => {
+            setSelectedVersion(versionId);
+        },
+        [setSelectedVersion]
+    );
+
+    const handleSearchChange = useCallback((value: string) => {
+        setSearchQuery(value);
+    }, []);
 
     const filteredVersions = versions.filter((version) =>
         formatTimestamp(version.timestamp).toLowerCase().includes(searchQuery.toLowerCase())
@@ -59,7 +65,7 @@ export const VersionSelector = ({ versions, isOpen, onClose }: Props) => {
                 label="Søk i versjoner"
                 variant="simple"
                 value={searchQuery}
-                onChange={setSearchQuery}
+                onChange={handleSearchChange}
                 className={style.search}
             />
             <div className={style.versionList}>
