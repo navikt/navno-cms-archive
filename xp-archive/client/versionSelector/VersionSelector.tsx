@@ -140,6 +140,18 @@ export const VersionSelector = ({ versions, isOpen, onClose, onMount }: Props) =
         }
     }, [versions, isOpen, searchQuery, selectedVersion]);
 
+    // Add a useEffect to update the filtered versions when the input versions change
+    useEffect(() => {
+        // Reset search query when versions change completely (different content)
+        if (
+            versions.length > 0 &&
+            filteredVersions.length > 0 &&
+            versions[0].nodeId !== filteredVersions[0].nodeId
+        ) {
+            setSearchQuery('');
+        }
+    }, [versions]);
+
     // Return the same component
     return (
         <SlidePanel isOpen={isOpen} onClose={handleClose}>

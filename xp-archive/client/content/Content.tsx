@@ -73,28 +73,26 @@ export const Content = () => {
         };
     });
 
-    // Clear cache when content changes
+    // Update this effect to clear the cache immediately when content ID changes
     useEffect(() => {
-        // When content ID changes, reset the cache for the previous content
-        return () => {
-            if (selectedContentId) {
-                clearCachedVersionSelector(selectedContentId);
-            }
-        };
-    }, [selectedContentId]);
+        // Clear the cache for the previous content ID when it changes
+        const prevContentId = React.useRef(selectedContentId);
 
-    // Update the cache when versions change
-    useEffect(() => {
-        if (data?.versions && data.versions.length > 0) {
-            // Only update versions in cache if we don't have any yet
-            if (versionSelectorCache.versions.length === 0) {
-                setVersionSelectorCache((prev) => ({
-                    ...prev,
-                    versions: data.versions,
-                }));
-            }
+        if (prevContentId.current && prevContentId.current !== selectedContentId) {
+            clearCachedVersionSelector(prevContentId.current);
         }
-    }, [data?.versions]);
+
+        prevContentId.current = selectedContentId;
+
+        // Also reset the local cache state when content ID changes
+        if (data?.versions && selectedContentId) {
+            setVersionSelectorCache({
+                component: null,
+                versions: data.versions,
+                isOpen: false,
+            });
+        }
+    }, [selectedContentId, data?.versions]);
 
     useEffect(() => {
         setSelectedView(getDefaultView(isWebpage, hasAttachment));

@@ -17,6 +17,13 @@ export const setCachedVersionSelector = (
     versions: VersionReference[],
     isOpen: boolean
 ) => {
+    // Clear all other caches first to prevent stale data
+    Object.keys(contentCache).forEach((key) => {
+        if (key !== contentId) {
+            delete contentCache[key];
+        }
+    });
+
     contentCache[contentId] = {
         component,
         versions,
