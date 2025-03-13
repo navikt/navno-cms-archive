@@ -34,7 +34,7 @@ const VersionButton = ({ isSelected, onClick, children }: VersionButtonProps) =>
 
 export const VersionSelector = ({ versions, isOpen, onClose }: Props) => {
     const [searchQuery, setSearchQuery] = useState('');
-    const { selectedVersion, setSelectedVersion } = useAppState();
+    const { setSelectedContentId, selectedVersion, setSelectedVersion } = useAppState();
 
     const handleClose = () => {
         setSearchQuery('');
@@ -42,11 +42,9 @@ export const VersionSelector = ({ versions, isOpen, onClose }: Props) => {
     };
 
     const selectVersion = (versionId: string) => {
+        const nodeId = versions.find((v) => v.versionId === versionId)?.nodeId;
+        if (nodeId) setSelectedContentId(nodeId);
         setSelectedVersion(versionId);
-
-        // Update URL without page reload
-        const newUrl = `${window.location.pathname.split('/').slice(0, 4).join('/')}/${versionId}`;
-        window.history.pushState({}, '', newUrl);
     };
 
     const filteredVersions = versions.filter((version) =>
