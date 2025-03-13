@@ -71,34 +71,22 @@ export const Content = () => {
         };
     });
 
-    // Update this effect to clear the cache immediately when content ID changes
+    // Update cache when content ID changes or new versions arrive
     useEffect(() => {
-        // Clear the cache for the previous content ID when it changes
         if (prevContentIdRef.current && prevContentIdRef.current !== selectedContentId) {
             clearCachedVersionSelector(prevContentIdRef.current);
         }
 
-        prevContentIdRef.current = selectedContentId;
-
-        // Also reset the local cache state when content ID changes, but preserve isOpen state
         if (data?.versions && selectedContentId) {
             setVersionSelectorCache((prev) => ({
                 component: null,
                 versions: data.versions,
-                isOpen: prev.isOpen, // Preserve the open state
+                isOpen: prev.isOpen, // Always preserve open state
             }));
         }
-    }, [selectedContentId, data?.versions]);
 
-    // Add a separate effect to handle data loading without affecting panel state
-    useEffect(() => {
-        if (data?.versions && selectedContentId) {
-            setVersionSelectorCache((prev) => ({
-                ...prev,
-                versions: data.versions,
-            }));
-        }
-    }, [data?.versions, selectedContentId]);
+        prevContentIdRef.current = selectedContentId;
+    }, [selectedContentId, data?.versions]);
 
     useEffect(() => {
         setSelectedView(getDefaultView(isWebpage, hasAttachment));

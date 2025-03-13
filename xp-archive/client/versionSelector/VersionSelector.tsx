@@ -51,44 +51,8 @@ export const VersionSelector = ({ versions, isOpen, onClose, onMount }: Props) =
         formatTimestamp(version.timestamp).toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    // Call onMount with the rendered component
+    // Reset search when versions change completely
     useEffect(() => {
-        if (onMount) {
-            const component = (
-                <SlidePanel isOpen={isOpen} onClose={handleClose}>
-                    <Heading size="medium" spacing>
-                        Versjoner
-                    </Heading>
-                    <Search
-                        label="Søk i versjoner"
-                        variant="simple"
-                        value={searchQuery}
-                        onChange={setSearchQuery}
-                        className={style.search}
-                    />
-                    <div className={style.versionList}>
-                        {filteredVersions.map((version, index) => (
-                            <VersionButton
-                                key={version.versionId}
-                                isSelected={version.versionId === selectedVersion}
-                                onClick={() => selectVersion(version.versionId)}
-                            >
-                                {formatTimestamp(version.timestamp)}
-                                {index === 0 && (
-                                    <span style={{ fontWeight: 'normal' }}> (Siste versjon)</span>
-                                )}
-                            </VersionButton>
-                        ))}
-                    </div>
-                </SlidePanel>
-            );
-            onMount(component);
-        }
-    }, [versions, isOpen, searchQuery, selectedVersion]);
-
-    // Add a useEffect to update the filtered versions when the input versions change
-    useEffect(() => {
-        // Reset search query when versions change completely (different content)
         if (
             versions.length > 0 &&
             filteredVersions.length > 0 &&
@@ -98,8 +62,7 @@ export const VersionSelector = ({ versions, isOpen, onClose, onMount }: Props) =
         }
     }, [versions]);
 
-    // Return the same component
-    return (
+    const component = (
         <SlidePanel isOpen={isOpen} onClose={handleClose}>
             <Heading size="medium" spacing>
                 Versjoner
@@ -127,4 +90,13 @@ export const VersionSelector = ({ versions, isOpen, onClose, onMount }: Props) =
             </div>
         </SlidePanel>
     );
+
+    // Call onMount with the component
+    useEffect(() => {
+        if (onMount) {
+            onMount(component);
+        }
+    }, [versions, isOpen, searchQuery, selectedVersion]);
+
+    return component;
 };
