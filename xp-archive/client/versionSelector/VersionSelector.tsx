@@ -33,51 +33,11 @@ const VersionButton = ({ isSelected, onClick, children }: VersionButtonProps) =>
     </Button>
 );
 
-// Storage key for persisting version selector state
-const getStorageKey = (contentId: string) => `versionSelector_state_${contentId}`;
-
 export const VersionSelector = ({ versions, isOpen, onClose, onMount }: Props) => {
     const [searchQuery, setSearchQuery] = useState('');
-    const { setSelectedContentId, selectedVersion, setSelectedVersion, selectedContentId } =
-        useAppState();
-    const storageKey = getStorageKey(selectedContentId || '');
-
-    // Load search query from localStorage on mount
-    useEffect(() => {
-        if (isOpen) {
-            try {
-                const savedState = localStorage.getItem(storageKey);
-                if (savedState) {
-                    const { searchQuery: savedQuery } = JSON.parse(savedState);
-                    if (savedQuery) {
-                        setSearchQuery(savedQuery);
-                    }
-                }
-            } catch (e) {
-                console.error('Failed to load version selector state', e);
-            }
-        }
-    }, [isOpen, storageKey]);
-
-    // Save state to localStorage when it changes
-    useEffect(() => {
-        if (isOpen) {
-            try {
-                localStorage.setItem(
-                    storageKey,
-                    JSON.stringify({
-                        searchQuery,
-                        selectedVersion,
-                    })
-                );
-            } catch (e) {
-                console.error('Failed to save version selector state', e);
-            }
-        }
-    }, [isOpen, searchQuery, selectedVersion, storageKey]);
+    const { setSelectedContentId, selectedVersion, setSelectedVersion } = useAppState();
 
     const handleClose = () => {
-        // Don't clear search query when closing
         onClose();
     };
 
@@ -85,20 +45,6 @@ export const VersionSelector = ({ versions, isOpen, onClose, onMount }: Props) =
         const nodeId = versions.find((v) => v.versionId === versionId)?.nodeId;
         if (nodeId) setSelectedContentId(nodeId);
         setSelectedVersion(versionId);
-
-        // Save selected version to localStorage
-        try {
-            localStorage.setItem(
-                storageKey,
-                JSON.stringify({
-                    searchQuery,
-                    selectedVersion: versionId,
-                    keepOpen: true, // Flag to keep panel open
-                })
-            );
-        } catch (e) {
-            console.error('Failed to save version selection', e);
-        }
     };
 
     const filteredVersions = versions.filter((version) =>

@@ -23,9 +23,6 @@ const getDefaultView = (isWebpage: boolean, hasAttachment: boolean): ViewVariant
     return undefined;
 };
 
-// Storage key for persisting version selector state
-const STORAGE_KEY = 'versionSelector_state';
-
 export const Content = () => {
     const { selectedContentId, selectedLocale, selectedVersion, setSelectedVersion } =
         useAppState();
