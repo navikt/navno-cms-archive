@@ -12,15 +12,15 @@
     },
     "dependencies": {
         "archiver": "7.0.1",
-        "compression": "1.7.5",
-        "csp-header": "6.0.0",
-        "dotenv": "16.4.5",
-        "puppeteer": "24.2.1"
+        "compression": "1.8.0",
+        "csp-header": "6.0.1",
+        "dotenv": "16.4.7",
+        "puppeteer": "24.4.0"
     },
     "devDependencies": {
         "@types/archiver": "6.0.3",
         "@types/compression": "1.7.5",
-        "nodemon": "3.1.7"
+        "nodemon": "3.1.9"
     },
     "nodemonConfig": {
         "delay": 500
