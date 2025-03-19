@@ -36,14 +36,14 @@ export const Category = ({ category }: Props) => {
     return (
         <TreeItem
             key={key}
-            itemId={key}
+            nodeId={key}
             label={
                 <Tooltip content={`Nøkkel: ${key}`} placement={'left'} delay={1000}>
                     <div>{`${title}${isEmpty ? ' (tom)' : ''}`}</div>
                 </Tooltip>
             }
             disabled={isEmpty}
-            slots={{ icon: isEmpty ? CircleSlashIcon: undefined}}
+            icon={isEmpty ? <CircleSlashIcon /> : undefined}
             classes={classesOverride}
         >
             {isLoading ? (
@@ -57,8 +57,8 @@ export const Category = ({ category }: Props) => {
             ) : null}
             {hasContent && (
                 <TreeItem
-                    itemId={`contents-${key}`}
-                    slots={{ icon: ArrowForwardIcon }}
+                    nodeId={`contents-${key}`}
+                    icon={<ArrowForwardIcon />}
                     label={`Åpne innholdsvelger (${contentCount})`}
                     classes={classesOverride}
                     onClick={(e) => {
