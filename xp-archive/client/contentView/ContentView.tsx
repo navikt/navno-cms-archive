@@ -16,12 +16,10 @@ const getDisplayComponent = (viewVariant?: ViewVariant, data?: ContentServiceRes
     const components: Record<ViewVariant, React.ReactElement> = {
         html: (
             <HtmlView
-                nodeId={content._id}
+                content={content}
                 locale={
                     data.versions.find((v) => v.versionId === content._versionKey)?.locale || 'no'
                 }
-                versionId={content._versionKey}
-                originalContentTypeName={content.originalContentTypeName}
             />
         ),
         filepreview: <FilePreviewWrapper content={content} />,
