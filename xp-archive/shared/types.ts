@@ -65,10 +65,10 @@ export type Content = {
         to?: string;
     };
     data: Record<string, unknown>;
-    x: {
-        'no-nav-navno': {
-            redirectToLayer: {
-                locale: string;
+    x?: {
+        'no-nav-navno'?: {
+            redirectToLayer?: {
+                locale?: string;
             };
         };
     };

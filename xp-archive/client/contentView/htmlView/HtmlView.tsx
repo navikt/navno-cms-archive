@@ -24,7 +24,7 @@ export const HtmlView = ({ content, locale }: Props) => {
             {content.originalContentTypeName ? (
                 <Alert variant="warning">{`Obs! Denne siden var opprinnelig en "${content.originalContentTypeName}" og inneholder versjonshistorikk.`}</Alert>
             ) : null}
-            {content.x['no-nav-navno'].redirectToLayer.locale ? (
+            {content.x?.['no-nav-navno']?.redirectToLayer?.locale ? (
                 <Alert variant="warning">{`Obs! Denne siden er satt som redirect til språkversjonen for "${localeNames[content.x['no-nav-navno'].redirectToLayer.locale]}". Husk å velge riktig språkversjon for å se korrekt historikk.`}</Alert>
             ) : null}
             {isLoading && (
