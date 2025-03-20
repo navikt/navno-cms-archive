@@ -51,7 +51,6 @@ export const VersionSelector = ({ versions, isOpen, onClose, onMount }: Props) =
         formatTimestamp(version.timestamp).toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    // Reset search when versions change completely
     useEffect(() => {
         if (
             versions.length > 0 &&
@@ -91,7 +90,6 @@ export const VersionSelector = ({ versions, isOpen, onClose, onMount }: Props) =
         </SlidePanel>
     );
 
-    // Call onMount with the component
     useEffect(() => {
         if (onMount) {
             onMount(component);

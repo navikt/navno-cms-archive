@@ -61,9 +61,8 @@ export const Content = () => {
         getDefaultView(isWebpage, hasAttachment)
     );
 
-    // Get cached state or initialize
     const [versionSelectorCache, setVersionSelectorCache] = useState(() => {
-        const cache = getCachedVersionSelector(selectedContentId || '');
+        const cache = getCachedVersionSelector(selectedContentId ?? '');
         return {
             component: cache.component,
             versions: cache.versions,
@@ -71,7 +70,6 @@ export const Content = () => {
         };
     });
 
-    // Update cache when content ID changes or new versions arrive
     useEffect(() => {
         if (prevContentIdRef.current && prevContentIdRef.current !== selectedContentId) {
             clearCachedVersionSelector(prevContentIdRef.current);
@@ -81,7 +79,7 @@ export const Content = () => {
             setVersionSelectorCache((prev) => ({
                 component: null,
                 versions: data.versions,
-                isOpen: prev.isOpen, // Always preserve open state
+                isOpen: prev.isOpen,
             }));
         }
 
@@ -130,7 +128,6 @@ export const Content = () => {
                             {getVersionDisplay()}
                         </Button>
 
-                        {/* Render either the cached component or a new VersionSelector */}
                         {versionSelectorCache.component ? (
                             versionSelectorCache.component
                         ) : (
@@ -148,9 +145,8 @@ export const Content = () => {
                                     }));
                                 }}
                                 onMount={(component) => {
-                                    // Cache the rendered component with the content ID
                                     setCachedVersionSelector(
-                                        selectedContentId || '',
+                                        selectedContentId ?? '',
                                         component,
                                         versionSelectorCache.versions.length > 0
                                             ? versionSelectorCache.versions
