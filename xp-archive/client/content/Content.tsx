@@ -95,6 +95,17 @@ export const Content = () => {
     }`;
 
     const getVersionDisplay = () => {
+        // First check if we have the version in our cache
+        if (selectedVersion && versionSelectorCache.versions.length > 0) {
+            const cachedVersion = versionSelectorCache.versions.find(
+                (v) => v.versionId === selectedVersion
+            );
+            if (cachedVersion?.timestamp) {
+                return formatTimestamp(cachedVersion.timestamp);
+            }
+        }
+
+        // Fall back to data if cache doesn't have it
         if (selectedVersion && data?.versions) {
             return formatTimestamp(
                 data.versions.find((v) => v.versionId === selectedVersion)?.timestamp ?? ''
