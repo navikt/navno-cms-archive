@@ -70,14 +70,13 @@ export const Content = () => {
         };
     });
 
-    // Add view type to cached display data
+    // Add this new state to cache display values
     const [cachedDisplayData, setCachedDisplayData] = useState({
         displayName: '',
         path: '',
-        view: undefined as ViewVariant | undefined,
     });
 
-    // Update this useEffect to also cache display data and view when data loads
+    // Update this useEffect to also cache display data when data loads
     useEffect(() => {
         if (prevContentIdRef.current && prevContentIdRef.current !== selectedContentId) {
             clearCachedVersionSelector(prevContentIdRef.current);
@@ -92,39 +91,19 @@ export const Content = () => {
 
             // Cache display data when it's available
             if (data.json?.displayName || data.json?._path) {
-                setCachedDisplayData((prev) => ({
-                    displayName: data.json?.displayName || '',
-                    path: data.json?._path || '',
-                    view: prev.view, // Keep existing view
-                }));
+                setCachedDisplayData({
+                    displayName: data.json.displayName || '',
+                    path: data.json._path || '',
+                });
             }
         }
 
         prevContentIdRef.current = selectedContentId;
     }, [selectedContentId, data?.versions, data?.json]);
 
-    // Update view selector effect to store the selected view in cache
     useEffect(() => {
-        const newView = getDefaultView(isWebpage, hasAttachment);
-        setSelectedView(newView);
-
-        // Cache the view
-        setCachedDisplayData((prev) => ({
-            ...prev,
-            view: newView,
-        }));
+        setSelectedView(getDefaultView(isWebpage, hasAttachment));
     }, [isWebpage, hasAttachment, selectedContentId]);
-
-    // Add handler to update cached view
-    const handleViewChange = (view: ViewVariant) => {
-        setSelectedView(view);
-
-        // Update cached view
-        setCachedDisplayData((prev) => ({
-            ...prev,
-            view,
-        }));
-    };
 
     const htmlPath = `${xpArchiveConfig.basePath}/html/${selectedContentId}/${selectedLocale}/${
         data?.json._versionKey
@@ -218,7 +197,7 @@ export const Content = () => {
                         <div className={style.viewSelectorWrapper}>
                             <ViewSelector
                                 selectedView={selectedView}
-                                setSelectedView={handleViewChange}
+                                setSelectedView={setSelectedView}
                                 hasAttachment={hasAttachment}
                                 isWebpage={isWebpage}
                             />
