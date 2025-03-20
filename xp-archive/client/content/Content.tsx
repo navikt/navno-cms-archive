@@ -55,64 +55,55 @@ export const Content = () => {
         }
     }, [data, selectedContentId, selectedLocale, selectedVersion]);
 
-    const isWebpage = !!data?.html && !data.json.attachment;
-    const hasAttachment = !!data?.json.attachment;
-    const [selectedView, setSelectedView] = useState<ViewVariant | undefined>(
+    // Calculate derived properties
+    const isWebpage = !!data?.html && !data?.json?.attachment;
+    const hasAttachment = !!data?.json?.attachment;
+
+    // State for view selector
+    const [selectedView, setSelectedView] = useState<ViewVariant | undefined>(() =>
         getDefaultView(isWebpage, hasAttachment)
     );
 
-    const [versionSelectorCache, setVersionSelectorCache] = useState(() => {
-        const cache = getCachedVersionSelector(selectedContentId ?? '');
-        return {
-            component: cache.component,
-            versions: cache.versions,
-            isOpen: cache.isOpen,
-        };
-    });
+    // Update view when content type changes
+    useEffect(() => {
+        setSelectedView(getDefaultView(isWebpage, hasAttachment));
+    }, [isWebpage, hasAttachment, selectedContentId]);
 
-    // Add this new state to cache display values
-    const [cachedDisplayData, setCachedDisplayData] = useState({
+    // Single cache for content-related data
+    const [contentCache, setContentCache] = useState(() => ({
+        // Version selector
+        versions: getCachedVersionSelector(selectedContentId ?? '').versions,
+        versionComponent: getCachedVersionSelector(selectedContentId ?? '').component,
+        isVersionPanelOpen: getCachedVersionSelector(selectedContentId ?? '').isOpen,
+
+        // Display data
         displayName: '',
         path: '',
-    });
+    }));
 
-    // Update this useEffect to also cache display data when data loads
+    // Update cache when content changes
     useEffect(() => {
         if (prevContentIdRef.current && prevContentIdRef.current !== selectedContentId) {
             clearCachedVersionSelector(prevContentIdRef.current);
         }
 
         if (data?.versions && selectedContentId) {
-            setVersionSelectorCache((prev) => ({
-                component: null,
+            setContentCache((prev) => ({
+                ...prev,
                 versions: data.versions,
-                isOpen: prev.isOpen,
+                versionComponent: null,
+                displayName: data.json?.displayName || prev.displayName,
+                path: data.json?._path || prev.path,
             }));
-
-            // Cache display data when it's available
-            if (data.json?.displayName || data.json?._path) {
-                setCachedDisplayData({
-                    displayName: data.json.displayName || '',
-                    path: data.json._path || '',
-                });
-            }
         }
 
         prevContentIdRef.current = selectedContentId;
     }, [selectedContentId, data?.versions, data?.json]);
 
-    useEffect(() => {
-        setSelectedView(getDefaultView(isWebpage, hasAttachment));
-    }, [isWebpage, hasAttachment, selectedContentId]);
-
-    const htmlPath = `${xpArchiveConfig.basePath}/html/${selectedContentId}/${selectedLocale}/${
-        data?.json._versionKey
-    }`;
-
+    // Helper functions to get data with fallbacks
     const getVersionDisplay = () => {
-        // First check if we have the version in our cache
-        if (selectedVersion && versionSelectorCache.versions.length > 0) {
-            const cachedVersion = versionSelectorCache.versions.find(
+        if (selectedVersion && contentCache.versions.length > 0) {
+            const cachedVersion = contentCache.versions.find(
                 (v) => v.versionId === selectedVersion
             );
             if (cachedVersion?.timestamp) {
@@ -120,23 +111,21 @@ export const Content = () => {
             }
         }
 
-        // Fall back to data if cache doesn't have it
         if (selectedVersion && data?.versions) {
             return formatTimestamp(
                 data.versions.find((v) => v.versionId === selectedVersion)?.timestamp ?? ''
             );
         }
+
         return 'Laster...';
     };
 
-    // Add helper functions to get title and URL with fallbacks
-    const getDisplayName = () => {
-        return data?.json.displayName || cachedDisplayData.displayName || 'Laster...';
-    };
+    const getDisplayName = () => data?.json?.displayName || contentCache.displayName || 'Laster...';
+    const getPath = () => data?.json?._path || contentCache.path || '';
 
-    const getPath = () => {
-        return data?.json._path || cachedDisplayData.path || '';
-    };
+    const htmlPath = `${xpArchiveConfig.basePath}/html/${selectedContentId}/${selectedLocale}/${
+        data?.json._versionKey
+    }`;
 
     if (!selectedContentId) {
         return <EmptyState />;
@@ -154,40 +143,45 @@ export const Content = () => {
                             icon={<SidebarRightIcon />}
                             iconPosition={'right'}
                             onClick={() => {
-                                setVersionSelectorCache((prev) => ({
+                                setContentCache((prev) => ({
                                     ...prev,
-                                    isOpen: true,
+                                    isVersionPanelOpen: true,
                                 }));
                             }}
                         >
                             {getVersionDisplay()}
                         </Button>
 
-                        {versionSelectorCache.component ? (
-                            versionSelectorCache.component
+                        {contentCache.versionComponent ? (
+                            contentCache.versionComponent
                         ) : (
                             <VersionSelector
                                 versions={
-                                    versionSelectorCache.versions.length > 0
-                                        ? versionSelectorCache.versions
+                                    contentCache.versions.length > 0
+                                        ? contentCache.versions
                                         : data?.versions || []
                                 }
-                                isOpen={versionSelectorCache.isOpen}
+                                isOpen={contentCache.isVersionPanelOpen}
                                 onClose={() => {
-                                    setVersionSelectorCache((prev) => ({
+                                    setContentCache((prev) => ({
                                         ...prev,
-                                        isOpen: false,
+                                        isVersionPanelOpen: false,
                                     }));
                                 }}
                                 onMount={(component) => {
                                     setCachedVersionSelector(
                                         selectedContentId ?? '',
                                         component,
-                                        versionSelectorCache.versions.length > 0
-                                            ? versionSelectorCache.versions
+                                        contentCache.versions.length > 0
+                                            ? contentCache.versions
                                             : data?.versions || [],
-                                        versionSelectorCache.isOpen
+                                        contentCache.isVersionPanelOpen
                                     );
+
+                                    setContentCache((prev) => ({
+                                        ...prev,
+                                        versionComponent: component,
+                                    }));
                                 }}
                             />
                         )}
