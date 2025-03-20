@@ -55,8 +55,8 @@ export const Content = () => {
         }
     }, [data, selectedContentId, selectedLocale, selectedVersion]);
 
-    const isWebpage = !!data?.html && !data.json.attachment;
-    const hasAttachment = !!data?.json.attachment;
+    const isWebpage = !!data?.html && !data?.json?.attachment;
+    const hasAttachment = !!data?.json?.attachment;
     const [selectedView, setSelectedView] = useState<ViewVariant | undefined>(
         getDefaultView(isWebpage, hasAttachment)
     );
@@ -131,11 +131,11 @@ export const Content = () => {
 
     // Add helper functions to get title and URL with fallbacks
     const getDisplayName = () => {
-        return data?.json.displayName || cachedDisplayData.displayName || 'Laster...';
+        return data?.json?.displayName || cachedDisplayData.displayName || 'Laster...';
     };
 
     const getPath = () => {
-        return data?.json._path || cachedDisplayData.path || '';
+        return data?.json?._path || cachedDisplayData.path || '';
     };
 
     if (!selectedContentId) {
