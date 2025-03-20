@@ -70,13 +70,11 @@ export const Content = () => {
         };
     });
 
-    // Add this new state to cache display values
     const [cachedDisplayData, setCachedDisplayData] = useState({
         displayName: '',
         path: '',
     });
 
-    // Update this useEffect to also cache display data when data loads
     useEffect(() => {
         if (prevContentIdRef.current && prevContentIdRef.current !== selectedContentId) {
             clearCachedVersionSelector(prevContentIdRef.current);
@@ -89,7 +87,6 @@ export const Content = () => {
                 isOpen: prev.isOpen,
             }));
 
-            // Cache display data when it's available
             if (data.json?.displayName || data.json?._path) {
                 setCachedDisplayData({
                     displayName: data.json.displayName || '',
@@ -110,7 +107,6 @@ export const Content = () => {
     }`;
 
     const getVersionDisplay = () => {
-        // First check if we have the version in our cache
         if (selectedVersion && versionSelectorCache.versions.length > 0) {
             const cachedVersion = versionSelectorCache.versions.find(
                 (v) => v.versionId === selectedVersion
@@ -120,7 +116,6 @@ export const Content = () => {
             }
         }
 
-        // Fall back to data if cache doesn't have it
         if (selectedVersion && data?.versions) {
             return formatTimestamp(
                 data.versions.find((v) => v.versionId === selectedVersion)?.timestamp ?? ''
@@ -129,7 +124,6 @@ export const Content = () => {
         return 'Laster...';
     };
 
-    // Add helper functions to get title and URL with fallbacks
     const getDisplayName = () => {
         return data?.json?.displayName || cachedDisplayData.displayName || 'Laster...';
     };
