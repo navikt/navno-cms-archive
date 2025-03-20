@@ -70,6 +70,13 @@ export const Content = () => {
         };
     });
 
+    // Add this new state to cache display values
+    const [cachedDisplayData, setCachedDisplayData] = useState({
+        displayName: '',
+        path: '',
+    });
+
+    // Update this useEffect to also cache display data when data loads
     useEffect(() => {
         if (prevContentIdRef.current && prevContentIdRef.current !== selectedContentId) {
             clearCachedVersionSelector(prevContentIdRef.current);
@@ -81,10 +88,18 @@ export const Content = () => {
                 versions: data.versions,
                 isOpen: prev.isOpen,
             }));
+
+            // Cache display data when it's available
+            if (data.json?.displayName || data.json?._path) {
+                setCachedDisplayData({
+                    displayName: data.json.displayName || '',
+                    path: data.json._path || '',
+                });
+            }
         }
 
         prevContentIdRef.current = selectedContentId;
-    }, [selectedContentId, data?.versions]);
+    }, [selectedContentId, data?.versions, data?.json]);
 
     useEffect(() => {
         setSelectedView(getDefaultView(isWebpage, hasAttachment));
@@ -112,6 +127,15 @@ export const Content = () => {
             );
         }
         return 'Laster...';
+    };
+
+    // Add helper functions to get title and URL with fallbacks
+    const getDisplayName = () => {
+        return data?.json.displayName || cachedDisplayData.displayName || 'Laster...';
+    };
+
+    const getPath = () => {
+        return data?.json._path || cachedDisplayData.path || '';
     };
 
     if (!selectedContentId) {
@@ -195,10 +219,10 @@ export const Content = () => {
 
                 <div className={style.titleAndUrl}>
                     <Heading size={'medium'} level={'2'}>
-                        {data?.json.displayName ?? ''}
+                        {getDisplayName()}
                     </Heading>
                     <div className={style.url}>
-                        <Detail>{data?.json._path ?? ''}</Detail>
+                        <Detail>{getPath()}</Detail>
                     </div>
                 </div>
             </div>
