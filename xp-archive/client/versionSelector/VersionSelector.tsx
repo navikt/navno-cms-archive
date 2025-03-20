@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { CheckmarkIcon, XMarkIcon } from '@navikt/aksel-icons';
 import { Heading, Button, Search } from '@navikt/ds-react';
 import { VersionReference } from 'shared/types';
 import { formatTimestamp } from '@common/shared/timestamp';
@@ -6,7 +7,6 @@ import { useAppState } from 'client/context/appState/useAppState';
 import { SlidePanel } from './SlidePanel/SlidePanel';
 import { classNames } from '@common/client/utils/classNames';
 import style from './VersionSelector.module.css';
-import { CheckmarkIcon } from '@navikt/aksel-icons';
 
 type Props = {
     versions: VersionReference[];
@@ -87,6 +87,14 @@ export const VersionSelector = ({ versions, isOpen, onClose, onMount }: Props) =
                     </VersionButton>
                 ))}
             </div>
+            <Button
+                className={style.closeButton}
+                variant="primary-neutral"
+                icon={<XMarkIcon />}
+                onClick={handleClose}
+            >
+                Lukk versjonsvelger
+            </Button>
         </SlidePanel>
     );
 
