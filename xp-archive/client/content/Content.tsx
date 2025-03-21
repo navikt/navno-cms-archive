@@ -157,34 +157,39 @@ export const Content = () => {
                             {getVersionDisplay()}
                         </Button>
 
-                        {versionSelectorCache.component ? (
-                            versionSelectorCache.component
-                        ) : (
-                            <VersionSelector
-                                versions={
-                                    versionSelectorCache.versions.length > 0
-                                        ? versionSelectorCache.versions
-                                        : data?.versions || []
-                                }
-                                isOpen={versionSelectorCache.isOpen}
-                                onClose={() => {
-                                    setVersionSelectorCache((prev) => ({
-                                        ...prev,
-                                        isOpen: false,
-                                    }));
-                                }}
-                                onMount={(component) => {
-                                    setCachedVersionSelector(
-                                        selectedContentId ?? '',
-                                        component,
-                                        versionSelectorCache.versions.length > 0
-                                            ? versionSelectorCache.versions
-                                            : data?.versions || [],
-                                        versionSelectorCache.isOpen
-                                    );
-                                }}
-                            />
-                        )}
+                        {versionSelectorCache.component
+                            ? versionSelectorCache.component
+                            : (() => {
+                                  const versionSelectorVersions =
+                                      versionSelectorCache.versions.length > 0
+                                          ? versionSelectorCache.versions
+                                          : data?.versions || [];
+
+                                  const handleClose = () => {
+                                      setVersionSelectorCache((prev) => ({
+                                          ...prev,
+                                          isOpen: false,
+                                      }));
+                                  };
+
+                                  const handleMount = (component: React.ReactNode) => {
+                                      setCachedVersionSelector(
+                                          selectedContentId ?? '',
+                                          component,
+                                          versionSelectorVersions,
+                                          versionSelectorCache.isOpen
+                                      );
+                                  };
+
+                                  return (
+                                      <VersionSelector
+                                          versions={versionSelectorVersions}
+                                          isOpen={versionSelectorCache.isOpen}
+                                          onClose={handleClose}
+                                          onMount={handleMount}
+                                      />
+                                  );
+                              })()}
                     </div>
                     <div className={style.viewSelector}>
                         <Label className={style.label}>Visning</Label>
