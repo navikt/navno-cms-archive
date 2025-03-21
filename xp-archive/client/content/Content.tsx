@@ -124,14 +124,6 @@ export const Content = () => {
         return 'Laster...';
     };
 
-    const getDisplayName = () => {
-        return data?.json?.displayName || cachedDisplayData.displayName || 'Laster...';
-    };
-
-    const getPath = () => {
-        return data?.json?._path || cachedDisplayData.path || '';
-    };
-
     if (!selectedContentId) {
         return <EmptyState />;
     }
@@ -218,10 +210,10 @@ export const Content = () => {
 
                 <div className={style.titleAndUrl}>
                     <Heading size={'medium'} level={'2'}>
-                        {getDisplayName()}
+                        {data?.json?.displayName || cachedDisplayData.displayName || 'Laster...'}
                     </Heading>
                     <div className={style.url}>
-                        <Detail>{getPath()}</Detail>
+                        <Detail>{data?.json?._path || cachedDisplayData.path || ''}</Detail>
                     </div>
                 </div>
             </div>
