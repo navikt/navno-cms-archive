@@ -38,6 +38,7 @@ export const VersionSelector = ({ versions, isOpen, onClose, onMount }: Props) =
     const { setSelectedContentId, selectedVersion, setSelectedVersion } = useAppState();
 
     const handleClose = () => {
+        setSearchQuery('');
         onClose();
     };
 
@@ -50,16 +51,6 @@ export const VersionSelector = ({ versions, isOpen, onClose, onMount }: Props) =
     const filteredVersions = versions.filter((version) =>
         formatTimestamp(version.timestamp).toLowerCase().includes(searchQuery.toLowerCase())
     );
-
-    useEffect(() => {
-        if (
-            versions.length > 0 &&
-            filteredVersions.length > 0 &&
-            versions[0].nodeId !== filteredVersions[0].nodeId
-        ) {
-            setSearchQuery('');
-        }
-    }, [versions]);
 
     const component = (
         <SlidePanel isOpen={isOpen} onClose={handleClose}>
