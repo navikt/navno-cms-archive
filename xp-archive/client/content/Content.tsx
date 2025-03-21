@@ -51,7 +51,7 @@ export const Content = () => {
                 setSelectedVersion(versionId);
             }
             const newUrl = `${xpArchiveConfig.basePath}/${selectedContentId}/${selectedLocale}/${versionId}`;
-            window.history.replaceState({}, '', newUrl);
+            window.history.pushState({}, '', newUrl);
         }
     }, [data, selectedContentId, selectedLocale, selectedVersion]);
 
