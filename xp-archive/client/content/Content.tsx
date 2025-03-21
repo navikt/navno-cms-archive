@@ -9,6 +9,11 @@ import { VersionSelector } from 'client/versionSelector/VersionSelector';
 import { ContentView } from '../contentView/ContentView';
 import { formatTimestamp } from '@common/shared/timestamp';
 import { EmptyState } from '@common/shared/EmptyState/EmptyState';
+import {
+    setCachedVersionSelector,
+    getCachedVersionSelector,
+    clearCachedVersionSelector,
+} from 'client/versionSelector/VersionSelectorCache';
 
 import style from './Content.module.css';
 
@@ -18,14 +23,11 @@ const getDefaultView = (isWebpage: boolean, hasAttachment: boolean): ViewVariant
     return undefined;
 };
 
-const updateContentUrl = (nodeId: string, locale: string, versionId?: string) => {
-    const newUrl = `${xpArchiveConfig.basePath}/${nodeId}/${locale}/${versionId ?? ''}`;
-    window.history.pushState({}, '', newUrl);
-};
-
 export const Content = () => {
     const { selectedContentId, selectedLocale, selectedVersion, setSelectedVersion } =
         useAppState();
+
+    const prevContentIdRef = React.useRef(selectedContentId);
 
     useEffect(() => {
         const pathSegments = window.location.pathname.split('/');
@@ -43,21 +45,58 @@ export const Content = () => {
     });
 
     useEffect(() => {
-        if (selectedVersion) {
-            updateContentUrl(selectedContentId ?? '', selectedLocale, selectedVersion);
-        } else if (data?.versions?.[0]) {
-            const latestVersionId = data.versions[0].versionId;
-            setSelectedVersion(latestVersionId);
-            updateContentUrl(selectedContentId ?? '', selectedLocale, latestVersionId);
+        const versionId = selectedVersion ?? data?.versions?.[0]?.versionId;
+        if (versionId) {
+            if (!selectedVersion) {
+                setSelectedVersion(versionId);
+            }
+            const newUrl = `${xpArchiveConfig.basePath}/${selectedContentId}/${selectedLocale}/${versionId}`;
+            window.history.pushState({}, '', newUrl);
         }
     }, [data, selectedContentId, selectedLocale, selectedVersion]);
 
-    const isWebpage = !!data?.html && !data.json.attachment;
-    const hasAttachment = !!data?.json.attachment;
+    const isWebpage = !!data?.html && !data?.json?.attachment;
+    const hasAttachment = !!data?.json?.attachment;
     const [selectedView, setSelectedView] = useState<ViewVariant | undefined>(
         getDefaultView(isWebpage, hasAttachment)
     );
-    const [isVersionPanelOpen, setIsVersionPanelOpen] = useState(false);
+
+    const [versionSelectorCache, setVersionSelectorCache] = useState(() => {
+        const cache = getCachedVersionSelector(selectedContentId ?? '');
+        return {
+            component: cache.component,
+            versions: cache.versions,
+            isOpen: cache.isOpen,
+        };
+    });
+
+    const [cachedDisplayData, setCachedDisplayData] = useState({
+        displayName: '',
+        path: '',
+    });
+
+    useEffect(() => {
+        if (prevContentIdRef.current && prevContentIdRef.current !== selectedContentId) {
+            clearCachedVersionSelector(prevContentIdRef.current);
+        }
+
+        if (data?.versions && selectedContentId) {
+            setVersionSelectorCache((prev) => ({
+                component: null,
+                versions: data.versions,
+                isOpen: prev.isOpen,
+            }));
+
+            if (data.json?.displayName || data.json?._path) {
+                setCachedDisplayData({
+                    displayName: data.json.displayName || '',
+                    path: data.json._path || '',
+                });
+            }
+        }
+
+        prevContentIdRef.current = selectedContentId;
+    }, [selectedContentId, data?.versions, data?.json]);
 
     useEffect(() => {
         setSelectedView(getDefaultView(isWebpage, hasAttachment));
@@ -68,6 +107,15 @@ export const Content = () => {
     }`;
 
     const getVersionDisplay = () => {
+        if (selectedVersion && versionSelectorCache.versions.length > 0) {
+            const cachedVersion = versionSelectorCache.versions.find(
+                (v) => v.versionId === selectedVersion
+            );
+            if (cachedVersion?.timestamp) {
+                return formatTimestamp(cachedVersion.timestamp);
+            }
+        }
+
         if (selectedVersion && data?.versions) {
             return formatTimestamp(
                 data.versions.find((v) => v.versionId === selectedVersion)?.timestamp ?? ''
@@ -91,15 +139,49 @@ export const Content = () => {
                             variant={'secondary'}
                             icon={<SidebarRightIcon />}
                             iconPosition={'right'}
-                            onClick={() => setIsVersionPanelOpen(true)}
+                            onClick={() => {
+                                setVersionSelectorCache((prev) => ({
+                                    ...prev,
+                                    isOpen: true,
+                                }));
+                            }}
                         >
                             {getVersionDisplay()}
                         </Button>
-                        <VersionSelector
-                            versions={data?.versions || []}
-                            isOpen={isVersionPanelOpen}
-                            onClose={() => setIsVersionPanelOpen(false)}
-                        />
+
+                        {versionSelectorCache.component
+                            ? versionSelectorCache.component
+                            : (() => {
+                                  const versionSelectorVersions =
+                                      versionSelectorCache.versions.length > 0
+                                          ? versionSelectorCache.versions
+                                          : data?.versions || [];
+
+                                  const handleClose = () => {
+                                      setVersionSelectorCache((prev) => ({
+                                          ...prev,
+                                          isOpen: false,
+                                      }));
+                                  };
+
+                                  const handleMount = (component: React.ReactNode) => {
+                                      setCachedVersionSelector(
+                                          selectedContentId ?? '',
+                                          component,
+                                          versionSelectorVersions,
+                                          versionSelectorCache.isOpen
+                                      );
+                                  };
+
+                                  return (
+                                      <VersionSelector
+                                          versions={versionSelectorVersions}
+                                          isOpen={versionSelectorCache.isOpen}
+                                          onClose={handleClose}
+                                          onMount={handleMount}
+                                      />
+                                  );
+                              })()}
                     </div>
                     <div className={style.viewSelector}>
                         <Label className={style.label}>Visning</Label>
@@ -128,10 +210,10 @@ export const Content = () => {
 
                 <div className={style.titleAndUrl}>
                     <Heading size={'medium'} level={'2'}>
-                        {data?.json.displayName ?? ''}
+                        {data?.json?.displayName || cachedDisplayData.displayName || 'Laster...'}
                     </Heading>
                     <div className={style.url}>
-                        <Detail>{data?.json._path ?? ''}</Detail>
+                        <Detail>{data?.json?._path || cachedDisplayData.path || ''}</Detail>
                     </div>
                 </div>
             </div>
