@@ -1,14 +1,19 @@
 import React from 'react';
 import { VersionReference } from 'shared/types';
 
-const contentCache: Record<
-    string,
-    {
-        component: React.ReactNode | null;
-        versions: VersionReference[];
-        isOpen: boolean;
-    }
-> = {};
+type VersionSelectorCacheItem = {
+    component: React.ReactNode | null;
+    versions: VersionReference[];
+    isOpen: boolean;
+};
+
+const DEFAULT_CACHE: VersionSelectorCacheItem = {
+    component: null,
+    versions: [],
+    isOpen: false,
+};
+
+const contentCache: Record<string, VersionSelectorCacheItem> = {};
 
 export const setCachedVersionSelector = (
     contentId: string,
@@ -29,17 +34,11 @@ export const setCachedVersionSelector = (
     };
 };
 
-export const getCachedVersionSelector = (contentId: string) => {
-    return (
-        contentCache[contentId] || {
-            component: null,
-            versions: [],
-            isOpen: false,
-        }
-    );
+export const getCachedVersionSelector = (contentId: string): VersionSelectorCacheItem => {
+    return contentCache[contentId] || DEFAULT_CACHE;
 };
 
-export const clearCachedVersionSelector = (contentId: string) => {
+export const clearCachedVersionSelector = (contentId: string): void => {
     if (contentId in contentCache) {
         delete contentCache[contentId];
     }
