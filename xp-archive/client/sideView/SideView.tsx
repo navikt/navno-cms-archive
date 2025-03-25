@@ -13,9 +13,10 @@ export const SideView = ({ versions }: { versions: VersionReference[] }) => {
         <div className={style.wrapper}>
             {versionViewOpen ? (
                 <VersionSelector versions={versions} onClose={() => setVersionViewOpen(false)} />
-            ) : (
+            ) : null}
+            <div style={versionViewOpen ? { display: 'none' } : {}}>
                 <NavigationBar />
-            )}
+            </div>
         </div>
     );
 };
