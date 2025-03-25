@@ -4,6 +4,7 @@ export type ContentType = `${string}:${string}`;
 
 export type ContentTreeEntryData = {
     id: string;
+    versionId: string;
     path: string;
     name: string;
     displayName: string;

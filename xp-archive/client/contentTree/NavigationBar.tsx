@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { ChevronDownIcon } from '@navikt/aksel-icons';
 import { Tabs, Search, RadioGroup, Radio, Button } from '@navikt/ds-react';
 import { LayerPanel } from './layerPanel/LayerPanel';
-import { useAppState } from 'client/context/appState/useAppState';
 import { fetchJson } from '@common/shared/fetchUtils';
 import { SearchResponse } from 'shared/types';
 import { SearchResult } from './search/SearchResult';
@@ -23,7 +22,6 @@ const getLabel = (locale: Locale) => {
 };
 
 export const NavigationBar = () => {
-    const { setSelectedLocale } = useAppState();
     const [searchResultIsOpen, setSearchResultIsOpen] = useState(false);
     const [searchSettingsIsOpen, setSearchSettingsIsOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
@@ -60,7 +58,7 @@ export const NavigationBar = () => {
     };
 
     return (
-        <div className={style.wrapper}>
+        <>
             <form
                 className={style.search}
                 role={'search'}
@@ -114,7 +112,7 @@ export const NavigationBar = () => {
                     closeSearchResult={closeSearchResult}
                 />
             ) : (
-                <Tabs defaultValue="no" onChange={(locale) => setSelectedLocale(locale as Locale)}>
+                <Tabs defaultValue="no">
                     <Tabs.List>
                         {locales.map((locale) => (
                             <Tabs.Tab key={locale} value={locale} label={getLabel(locale)} />
@@ -127,6 +125,6 @@ export const NavigationBar = () => {
                     ))}
                 </Tabs>
             )}
-        </div>
+        </>
     );
 };

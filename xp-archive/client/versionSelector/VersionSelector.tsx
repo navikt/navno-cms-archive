@@ -1,19 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { CheckmarkIcon, XMarkIcon } from '@navikt/aksel-icons';
 import { Heading, Button, Search } from '@navikt/ds-react';
 import { VersionReference } from 'shared/types';
 import { formatTimestamp } from '@common/shared/timestamp';
 import { useAppState } from 'client/context/appState/useAppState';
-import { SlidePanel } from './SlidePanel/SlidePanel';
 import { classNames } from '@common/client/utils/classNames';
 import style from './VersionSelector.module.css';
-
-type Props = {
-    versions: VersionReference[];
-    isOpen: boolean;
-    onClose: () => void;
-    onMount?: (component: React.ReactNode) => void;
-};
 
 type VersionButtonProps = {
     isSelected: boolean;
@@ -33,9 +25,14 @@ const VersionButton = ({ isSelected, onClick, children }: VersionButtonProps) =>
     </Button>
 );
 
-export const VersionSelector = ({ versions, isOpen, onClose, onMount }: Props) => {
+type Props = {
+    versions: VersionReference[];
+    onClose: () => void;
+};
+
+export const VersionSelector = ({ versions, onClose }: Props) => {
     const [searchQuery, setSearchQuery] = useState('');
-    const { setSelectedContentId, selectedVersion, setSelectedVersion } = useAppState();
+    const { selectedVersion, updateSelectedContent } = useAppState();
 
     const handleClose = () => {
         setSearchQuery('');
@@ -43,17 +40,22 @@ export const VersionSelector = ({ versions, isOpen, onClose, onMount }: Props) =
     };
 
     const selectVersion = (versionId: string) => {
-        const nodeId = versions.find((v) => v.versionId === versionId)?.nodeId;
-        if (nodeId) setSelectedContentId(nodeId);
-        setSelectedVersion(versionId);
+        const node = versions.find((v) => v.versionId === versionId);
+        if (node) {
+            updateSelectedContent({
+                contentId: node.nodeId,
+                versionId: versionId,
+                locale: node.locale,
+            });
+        }
     };
 
     const filteredVersions = versions.filter((version) =>
         formatTimestamp(version.timestamp).toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    const component = (
-        <SlidePanel isOpen={isOpen} onClose={handleClose}>
+    return (
+        <>
             <Heading size="medium" spacing>
                 Versjoner
             </Heading>
@@ -86,14 +88,6 @@ export const VersionSelector = ({ versions, isOpen, onClose, onMount }: Props) =
             >
                 Lukk versjonsvelger
             </Button>
-        </SlidePanel>
+        </>
     );
-
-    useEffect(() => {
-        if (onMount) {
-            onMount(component);
-        }
-    }, [versions, isOpen, searchQuery, selectedVersion]);
-
-    return component;
 };

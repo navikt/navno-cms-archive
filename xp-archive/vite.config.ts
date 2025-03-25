@@ -26,5 +26,10 @@ export default defineConfig(() => {
                 'swr',
             ],
         },
+        css: {
+            modules: {
+                generateScopedName: '[name]_[local]_[hash:base64:5]',
+            },
+        },
     };
 });

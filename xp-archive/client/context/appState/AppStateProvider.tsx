@@ -1,49 +1,45 @@
-import React, { useCallback, useMemo, useState, useEffect } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { AppStateContext } from './AppStateContext';
-import { Locale } from 'client/contentTree/NavigationBar';
+import { xpArchiveConfig } from '../../../../common/src/shared/siteConfigs';
 
 type Props = {
     children: React.ReactNode;
 };
 
+export type SelectedContent = {
+    contentId: string;
+    locale: string;
+    versionId: string;
+};
+
 export const AppStateProvider = ({ children }: Props) => {
-    const [selectedContentId, setSelectedContentId] = useState<string>();
-    const [selectedLocale, setSelectedLocale] = useState<Locale>('no');
-    const [selectedVersion, setSelectedVersion] = useState<string>();
-
-    useEffect(() => {
-        const path = window.location.pathname;
-        const matches = /\/xp\/([^/]+)\/([^/]+)/.exec(path);
-
-        if (matches) {
-            const [, contentId, locale] = matches;
-            setSelectedContentId(contentId);
-            setSelectedLocale(locale as Locale);
-        }
-    }, []);
+    const [selectedContent, setSelectedContent] = useState<SelectedContent>();
+    const [versionViewOpen, setVersionViewOpen] = useState(false);
 
     const updateSelectedContent = useCallback(
-        (selectedContent: string) => {
-            setSelectedContentId(selectedContent);
-            setSelectedVersion(undefined);
+        (newSelectedContent: SelectedContent) => {
+            setSelectedContent(newSelectedContent);
+            const newUrl = `${xpArchiveConfig.basePath}/${newSelectedContent.contentId}/${newSelectedContent.locale}/${newSelectedContent.versionId}`;
+            window.history.pushState({}, '', newUrl);
         },
-        [setSelectedContentId]
+        [setSelectedContent]
     );
 
-    const setSelectedLocaleMemoized = useCallback(setSelectedLocale, [setSelectedLocale]);
-
-    const setSelectedVersionMemoized = useCallback(setSelectedVersion, [setSelectedVersion]);
-    const selectedVersionMemoized = useMemo(() => selectedVersion, [selectedVersion]);
+    const selectedVersionMemoized = useMemo(
+        () => selectedContent?.versionId,
+        [selectedContent?.versionId]
+    );
+    const setVersionViewOpenMemoized = useCallback(setVersionViewOpen, [setVersionViewOpen]);
 
     return (
         <AppStateContext.Provider
             value={{
-                selectedContentId,
-                setSelectedContentId: updateSelectedContent,
+                selectedContentId: selectedContent?.contentId,
                 selectedVersion: selectedVersionMemoized,
-                setSelectedVersion: setSelectedVersionMemoized,
-                selectedLocale,
-                setSelectedLocale: setSelectedLocaleMemoized,
+                selectedLocale: selectedContent?.locale,
+                updateSelectedContent,
+                versionViewOpen,
+                setVersionViewOpen: setVersionViewOpenMemoized,
             }}
         >
             {children}

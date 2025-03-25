@@ -1,18 +1,17 @@
 import { createContext } from 'react';
-import { Locale } from 'client/contentTree/NavigationBar';
+import { SelectedContent } from './AppStateProvider';
 
 export type AppState = {
     selectedContentId?: string;
-    setSelectedContentId: (contentId: string) => void;
-    selectedLocale: Locale;
-    setSelectedLocale: (locale: Locale) => void;
+    selectedLocale?: string;
     selectedVersion?: string;
-    setSelectedVersion: (versionId: string) => void;
+    updateSelectedContent: (selectedContent: SelectedContent) => void;
+    versionViewOpen: boolean;
+    setVersionViewOpen: (open: boolean) => void;
 };
 
 export const AppStateContext = createContext<AppState>({
-    setSelectedContentId: () => ({}),
-    selectedLocale: 'no',
-    setSelectedLocale: () => ({}),
-    setSelectedVersion: () => ({}),
+    updateSelectedContent: () => ({}),
+    versionViewOpen: false,
+    setVersionViewOpen: () => ({}),
 });
