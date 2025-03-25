@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { SideView } from '../sideView/SideView';
 import { Content } from '../content/Content';
 import { useFetchContent } from '../hooks/useFetchContent';
@@ -12,12 +12,9 @@ export const AppDataComponent = () => {
         versionId: selectedVersion ?? '',
     });
 
-    const cacheVersions = useRef(data?.versions);
-    const versions = isLoading ? cacheVersions.current : data?.versions;
-
     return (
         <>
-            <SideView versions={versions || []} />
+            <SideView versions={data?.versions || []} />
             <Content data={data} isLoading={isLoading} />
         </>
     );
