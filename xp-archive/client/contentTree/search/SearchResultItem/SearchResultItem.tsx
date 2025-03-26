@@ -29,7 +29,7 @@ export const SearchResultItem = ({
                 updateSelectedContent({
                     contentId: hit._id,
                     locale: hit.layerLocale,
-                    versionId: '',
+                    versionId: undefined,
                 });
             }}
         >

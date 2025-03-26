@@ -33,6 +33,7 @@ type Props = {
 export const VersionSelector = ({ versions, onClose }: Props) => {
     const [searchQuery, setSearchQuery] = useState('');
     const { selectedVersion, updateSelectedContent } = useAppState();
+    const versionSelected = selectedVersion || versions[0].versionId;
 
     const handleClose = () => {
         setSearchQuery('');
@@ -70,7 +71,7 @@ export const VersionSelector = ({ versions, onClose }: Props) => {
                 {filteredVersions.map((version, index) => (
                     <VersionButton
                         key={version.versionId}
-                        isSelected={version.versionId === selectedVersion}
+                        isSelected={version.versionId === versionSelected}
                         onClick={() => selectVersion(version.versionId)}
                     >
                         {formatTimestamp(version.timestamp)}

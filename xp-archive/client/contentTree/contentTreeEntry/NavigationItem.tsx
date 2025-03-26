@@ -34,7 +34,7 @@ export const NavigationItem = ({ entry }: Props) => {
         if (!entry.isEmpty) {
             updateSelectedContent({
                 contentId: entry.id,
-                versionId: entry.versionId,
+                versionId: undefined,
                 locale: entry.locale,
             });
         }

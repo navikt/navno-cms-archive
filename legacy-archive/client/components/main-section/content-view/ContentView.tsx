@@ -47,7 +47,6 @@ export const ContentView = ({ content }: Props) => {
                             variant={'primary'}
                             as={'a'}
                             href={fullscreenPath}
-                            className={style.fullscreenButton}
                             icon={<ExternalLinkIcon />}
                             iconPosition={'right'}
                             onClick={(e) => {

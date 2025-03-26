@@ -9,7 +9,7 @@ type Props = {
 export type SelectedContent = {
     contentId: string;
     locale: string;
-    versionId: string;
+    versionId: string | undefined;
 };
 
 export const AppStateProvider = ({ children }: Props) => {
@@ -19,7 +19,7 @@ export const AppStateProvider = ({ children }: Props) => {
     const updateSelectedContent = useCallback(
         (newSelectedContent: SelectedContent) => {
             setSelectedContent(newSelectedContent);
-            const newUrl = `${xpArchiveConfig.basePath}/${newSelectedContent.contentId}/${newSelectedContent.locale}/${newSelectedContent.versionId}`;
+            const newUrl = `${xpArchiveConfig.basePath}/${newSelectedContent.contentId}/${newSelectedContent.locale}/${newSelectedContent.versionId || ''}`;
             window.history.pushState({}, '', newUrl);
         },
         [setSelectedContent]
