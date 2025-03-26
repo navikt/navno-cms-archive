@@ -17,6 +17,10 @@ const getDefaultView = (isWebpage: boolean, hasAttachment: boolean): ViewVariant
     return undefined;
 };
 
+/**
+ * 1.søket undefined versjon
+ *
+ */
 export const Content = ({
     data,
     isLoading,
@@ -24,8 +28,13 @@ export const Content = ({
     data: ContentServiceResponse | null | undefined;
     isLoading: boolean;
 }) => {
-    const { selectedContentId, selectedLocale, selectedVersion, setVersionViewOpen } =
-        useAppState();
+    const {
+        selectedContentId,
+        selectedLocale,
+        selectedVersion,
+        setVersionViewOpen,
+        updateSelectedContent,
+    } = useAppState();
 
     const isWebpage = !!data?.html && !data?.json?.attachment;
     const hasAttachment = !!data?.json?.attachment;
@@ -38,13 +47,21 @@ export const Content = ({
     }`;
 
     const getVersionDisplay = () => {
-        if (selectedVersion && data?.versions) {
+        if (selectedVersion && data?.versions && !isLoading) {
             return formatTimestamp(
                 data.versions.find((v) => v.versionId === selectedVersion)?.timestamp ?? ''
             );
         }
         return 'Laster...';
     };
+
+    if (data?.versions && !selectedVersion) {
+        updateSelectedContent({
+            contentId: data.json._id,
+            versionId: data.json._versionKey,
+            locale: data.json.language,
+        });
+    }
 
     if (!selectedContentId) {
         return <EmptyState />;
