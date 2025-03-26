@@ -6,13 +6,13 @@ import { Content } from '../../../shared/types';
 
 type Props = {
     content: Content;
-    locale: string;
 };
 
-export const FilePreviewWrapper = ({ content, locale }: Props) => {
+export const FilePreviewWrapper = ({ content }: Props) => {
     const name = content.attachment?.name;
     const id = content._id;
     const versionId = content._versionKey;
+    const locale = content.locale;
 
     const { data, isLoading } = useFetchAttachment({
         id,

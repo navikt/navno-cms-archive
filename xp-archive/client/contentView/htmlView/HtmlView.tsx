@@ -6,8 +6,8 @@ import { Content } from '../../../shared/types';
 
 type Props = {
     content: Content;
-    locale: string;
 };
+
 const localeNames: Record<string, string> = {
     no: 'norsk (bokmål)',
     nn: 'nynorsk',
@@ -15,9 +15,9 @@ const localeNames: Record<string, string> = {
     se: 'samisk',
 };
 
-export const HtmlView = ({ content, locale }: Props) => {
+export const HtmlView = ({ content }: Props) => {
     const [isLoading, setIsLoading] = useState(true);
-    const htmlPath = `${xpArchiveConfig.basePath}/html/${content._id}/${locale}/${content._versionKey}`;
+    const htmlPath = `${xpArchiveConfig.basePath}/html/${content._id}/${content.locale}/${content._versionKey}`;
 
     return (
         <div className={style.wrapper}>

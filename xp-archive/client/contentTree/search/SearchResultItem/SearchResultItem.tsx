@@ -26,7 +26,11 @@ export const SearchResultItem = ({
             )}
             key={key}
             onClick={() => {
-                updateSelectedContent({ contentId: hit._id, locale: hit.layerLocale });
+                updateSelectedContent({
+                    contentId: hit._id,
+                    locale: hit.layerLocale,
+                    versionId: '',
+                });
             }}
         >
             <img

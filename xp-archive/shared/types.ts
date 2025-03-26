@@ -58,6 +58,7 @@ export type Content = {
     displayName: string;
     type: ContentType;
     language: string;
+    locale: string;
     createdTime: string;
     modifiedTime: string;
     publish?: {

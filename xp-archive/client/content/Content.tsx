@@ -59,7 +59,7 @@ export const Content = ({
         updateSelectedContent({
             contentId: data.json._id,
             versionId: data.json._versionKey,
-            locale: data.json.language,
+            locale: data.json.locale,
         });
     }
 
