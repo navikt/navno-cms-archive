@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { AppStateContext } from './AppStateContext';
 import { xpArchiveConfig } from '../../../../common/src/shared/siteConfigs';
 
@@ -15,6 +15,17 @@ export type SelectedContent = {
 export const AppStateProvider = ({ children }: Props) => {
     const [selectedContent, setSelectedContent] = useState<SelectedContent>();
     const [versionViewOpen, setVersionViewOpen] = useState(false);
+
+    useEffect(() => {
+        const path = window.location.pathname;
+        const matches = /\/xp\/([^/]+)\/([^/]+)\/([^/]+)?/.exec(path);
+
+        if (matches) {
+            const [, contentId, locale, versionId] = matches;
+            updateSelectedContent({ contentId, locale, versionId: versionId || undefined });
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const updateSelectedContent = useCallback(
         (newSelectedContent: SelectedContent) => {

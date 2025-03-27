@@ -76,6 +76,7 @@ export const NavigationBar = () => {
                     hideLabel={false}
                     value={searchQuery}
                     onChange={(value) => setSearchQuery(value)}
+                    onClear={closeSearchResult}
                 />
             </form>
             <Button
@@ -106,11 +107,7 @@ export const NavigationBar = () => {
                 </div>
             )}
             {searchResultIsOpen ? (
-                <SearchResult
-                    isLoading={isLoading}
-                    searchResult={searchResult}
-                    closeSearchResult={closeSearchResult}
-                />
+                <SearchResult isLoading={isLoading} searchResult={searchResult} />
             ) : (
                 <Tabs defaultValue="no">
                     <Tabs.List>
