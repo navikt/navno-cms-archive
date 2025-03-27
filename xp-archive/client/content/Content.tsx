@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ExternalLinkIcon, SidebarRightIcon } from '@navikt/aksel-icons';
 import { xpArchiveConfig } from '@common/shared/siteConfigs';
 import { Button, Detail, Heading, Label } from '@navikt/ds-react';
@@ -32,6 +32,10 @@ export const Content = ({
     const [selectedView, setSelectedView] = useState<ViewVariant | undefined>(
         getDefaultView(isWebpage, hasAttachment)
     );
+
+    useEffect(() => {
+        setSelectedView(getDefaultView(isWebpage, hasAttachment));
+    }, [isWebpage, hasAttachment, selectedContentId]);
 
     const htmlPath = `${xpArchiveConfig.basePath}/html/${data?.json._id}/${selectedLocale}/${
         data?.json._versionKey
