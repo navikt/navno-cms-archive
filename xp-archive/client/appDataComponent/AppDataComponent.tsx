@@ -16,7 +16,8 @@ export const AppDataComponent = () => {
         if (contentId && contentId !== selectedContentId) {
             updateSelectedContent({ contentId, locale, versionId: versionId || undefined });
         }
-    }, [selectedContentId]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
     const { data, isLoading } = useFetchContent({
         id: selectedContentId ?? '',
         locale: selectedLocale ?? 'no',
