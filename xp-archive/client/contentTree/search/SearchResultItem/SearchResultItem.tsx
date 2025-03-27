@@ -41,7 +41,15 @@ export const SearchResultItem = ({
                 alt={''}
             />
             <div className={style.hitTextWrapper}>
-                <BodyShort className={style.hitText}>{hit.displayName}</BodyShort>
+                <div className={style.textAndLanguage}>
+                    <BodyShort className={style.hitText} truncate>
+                        {hit.displayName}
+                    </BodyShort>
+                    {hit.language ? (
+                        <span className={style.languageTag}>{hit.language}</span>
+                    ) : null}
+                </div>
+
                 <Detail className={style.hitText}>{hit._path}</Detail>
             </div>
         </button>
