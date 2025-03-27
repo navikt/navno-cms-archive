@@ -49,7 +49,7 @@ const setupApiRoutes = async (router: Router) => {
 const setupBrowserRoutes = async (router: Router, htmlRenderer: HtmlRenderer) => {
     const contentService = new ContentService();
 
-    router.get('/html/:contentId/:locale/:versionId', async (req, res, next) => {
+    router.get('/html/:contentId/:locale/:versionId?', async (req, res, next) => {
         const { contentId, locale, versionId } = req.params;
 
         const content = await contentService.fetchContent(contentId, locale, versionId);
@@ -64,7 +64,7 @@ const setupBrowserRoutes = async (router: Router, htmlRenderer: HtmlRenderer) =>
         return res.send(content.html);
     });
 
-    router.get('/:contentId/:locale/:versionId', async (req, res, next) => {
+    router.get('/:contentId/:locale/:versionId?', async (req, res, next) => {
         const { contentId, locale, versionId } = req.params;
 
         const content = await contentService.fetchContent(contentId, locale, versionId);

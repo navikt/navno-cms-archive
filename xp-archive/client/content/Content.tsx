@@ -1,19 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ExternalLinkIcon, SidebarRightIcon } from '@navikt/aksel-icons';
 import { xpArchiveConfig } from '@common/shared/siteConfigs';
 import { Button, Detail, Heading, Label } from '@navikt/ds-react';
-import { useFetchContent } from '../hooks/useFetchContent';
 import { useAppState } from '../context/appState/useAppState';
 import { ViewSelector, ViewVariant } from 'client/viewSelector/ViewSelector';
-import { VersionSelector } from 'client/versionSelector/VersionSelector';
 import { ContentView } from '../contentView/ContentView';
+import { ContentServiceResponse } from '../../shared/types';
 import { formatTimestamp } from '@common/shared/timestamp';
 import { EmptyState } from '@common/shared/EmptyState/EmptyState';
-import {
-    setCachedVersionSelector,
-    getCachedVersionSelector,
-    clearCachedVersionSelector,
-} from 'client/versionSelector/VersionSelectorCache';
 
 import style from './Content.module.css';
 
@@ -23,37 +17,15 @@ const getDefaultView = (isWebpage: boolean, hasAttachment: boolean): ViewVariant
     return undefined;
 };
 
-export const Content = () => {
-    const { selectedContentId, selectedLocale, selectedVersion, setSelectedVersion } =
+export const Content = ({
+    data,
+    isLoading,
+}: {
+    data: ContentServiceResponse | null | undefined;
+    isLoading: boolean;
+}) => {
+    const { selectedContentId, selectedLocale, selectedVersion, setVersionViewOpen } =
         useAppState();
-
-    const prevContentIdRef = React.useRef(selectedContentId);
-
-    useEffect(() => {
-        const pathSegments = window.location.pathname.split('/');
-        if (pathSegments.length >= 5) {
-            // URL format: /xp/{nodeId}/{locale}/{versionId}
-            const versionId = pathSegments[4];
-            setSelectedVersion(versionId);
-        }
-    }, []);
-
-    const { data, isLoading } = useFetchContent({
-        id: selectedContentId ?? '',
-        locale: selectedLocale,
-        versionId: selectedVersion ?? '',
-    });
-
-    useEffect(() => {
-        const versionId = selectedVersion ?? data?.versions?.[0]?.versionId;
-        if (versionId) {
-            if (!selectedVersion) {
-                setSelectedVersion(versionId);
-            }
-            const newUrl = `${xpArchiveConfig.basePath}/${selectedContentId}/${selectedLocale}/${versionId}`;
-            window.history.pushState({}, '', newUrl);
-        }
-    }, [data, selectedContentId, selectedLocale, selectedVersion]);
 
     const isWebpage = !!data?.html && !data?.json?.attachment;
     const hasAttachment = !!data?.json?.attachment;
@@ -61,67 +33,22 @@ export const Content = () => {
         getDefaultView(isWebpage, hasAttachment)
     );
 
-    const [versionSelectorCache, setVersionSelectorCache] = useState(() => {
-        const cache = getCachedVersionSelector(selectedContentId ?? '');
-        return {
-            component: cache.component,
-            versions: cache.versions,
-            isOpen: cache.isOpen,
-        };
-    });
-
-    const [cachedDisplayData, setCachedDisplayData] = useState({
-        displayName: '',
-        path: '',
-    });
-
-    useEffect(() => {
-        if (prevContentIdRef.current && prevContentIdRef.current !== selectedContentId) {
-            clearCachedVersionSelector(prevContentIdRef.current);
-        }
-
-        if (data?.versions && selectedContentId) {
-            setVersionSelectorCache((prev) => ({
-                component: null,
-                versions: data.versions,
-                isOpen: prev.isOpen,
-            }));
-
-            if (data.json?.displayName || data.json?._path) {
-                setCachedDisplayData({
-                    displayName: data.json.displayName || '',
-                    path: data.json._path || '',
-                });
-            }
-        }
-
-        prevContentIdRef.current = selectedContentId;
-    }, [selectedContentId, data?.versions, data?.json]);
-
     useEffect(() => {
         setSelectedView(getDefaultView(isWebpage, hasAttachment));
     }, [isWebpage, hasAttachment, selectedContentId]);
 
-    const htmlPath = `${xpArchiveConfig.basePath}/html/${selectedContentId}/${selectedLocale}/${
+    const htmlPath = `${xpArchiveConfig.basePath}/html/${data?.json._id}/${selectedLocale}/${
         data?.json._versionKey
     }`;
 
     const getVersionDisplay = () => {
-        if (selectedVersion && versionSelectorCache.versions.length > 0) {
-            const cachedVersion = versionSelectorCache.versions.find(
-                (v) => v.versionId === selectedVersion
-            );
-            if (cachedVersion?.timestamp) {
-                return formatTimestamp(cachedVersion.timestamp);
-            }
-        }
+        if (isLoading) return 'Laster...';
+        if (data?.versions.length === 0 || !data) return 'Ingen versjoner';
+        if (!selectedVersion) return formatTimestamp(data.versions[0].timestamp);
 
-        if (selectedVersion && data?.versions) {
-            return formatTimestamp(
-                data.versions.find((v) => v.versionId === selectedVersion)?.timestamp ?? ''
-            );
-        }
-        return 'Laster...';
+        return formatTimestamp(
+            data.versions.find((v) => v.versionId === selectedVersion)?.timestamp ?? ''
+        );
     };
 
     if (!selectedContentId) {
@@ -139,49 +66,10 @@ export const Content = () => {
                             variant={'secondary'}
                             icon={<SidebarRightIcon />}
                             iconPosition={'right'}
-                            onClick={() => {
-                                setVersionSelectorCache((prev) => ({
-                                    ...prev,
-                                    isOpen: true,
-                                }));
-                            }}
+                            onClick={() => setVersionViewOpen(true)} // TODO: Possibly add toggle to this?
                         >
                             {getVersionDisplay()}
                         </Button>
-
-                        {versionSelectorCache.component
-                            ? versionSelectorCache.component
-                            : (() => {
-                                  const versionSelectorVersions =
-                                      versionSelectorCache.versions.length > 0
-                                          ? versionSelectorCache.versions
-                                          : data?.versions || [];
-
-                                  const handleClose = () => {
-                                      setVersionSelectorCache((prev) => ({
-                                          ...prev,
-                                          isOpen: false,
-                                      }));
-                                  };
-
-                                  const handleMount = (component: React.ReactNode) => {
-                                      setCachedVersionSelector(
-                                          selectedContentId ?? '',
-                                          component,
-                                          versionSelectorVersions,
-                                          versionSelectorCache.isOpen
-                                      );
-                                  };
-
-                                  return (
-                                      <VersionSelector
-                                          versions={versionSelectorVersions}
-                                          isOpen={versionSelectorCache.isOpen}
-                                          onClose={handleClose}
-                                          onMount={handleMount}
-                                      />
-                                  );
-                              })()}
                     </div>
                     <div className={style.viewSelector}>
                         <Label className={style.label}>Visning</Label>
@@ -210,10 +98,10 @@ export const Content = () => {
 
                 <div className={style.titleAndUrl}>
                     <Heading size={'medium'} level={'2'}>
-                        {data?.json?.displayName || cachedDisplayData.displayName || 'Laster...'}
+                        {data?.json?.displayName || 'Laster...'}
                     </Heading>
                     <div className={style.url}>
-                        <Detail>{data?.json?._path || cachedDisplayData.path || ''}</Detail>
+                        <Detail>{data?.json?._path || ''}</Detail>
                     </div>
                 </div>
             </div>

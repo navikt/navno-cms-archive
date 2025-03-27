@@ -13,7 +13,7 @@ export const getContentIconUrl = (type: string) =>
     `${import.meta.env.VITE_APP_ORIGIN}/xp/api/contentIcon?type=${type}`;
 
 export const NavigationItem = ({ entry }: Props) => {
-    const { setSelectedContentId } = useAppState();
+    const { updateSelectedContent } = useAppState();
 
     const label = (
         <span style={{ display: 'flex', alignItems: 'center' }}>
@@ -32,7 +32,11 @@ export const NavigationItem = ({ entry }: Props) => {
 
     const onClick = () => {
         if (!entry.isEmpty) {
-            setSelectedContentId(entry.id);
+            updateSelectedContent({
+                contentId: entry.id,
+                versionId: undefined,
+                locale: entry.locale,
+            });
         }
     };
 

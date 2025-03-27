@@ -6,17 +6,17 @@ export const useAppState = () => {
         selectedContentId,
         selectedVersion,
         selectedLocale,
-        setSelectedLocale,
-        setSelectedContentId,
-        setSelectedVersion,
+        updateSelectedContent,
+        versionViewOpen,
+        setVersionViewOpen,
     } = useContext(AppStateContext);
 
     return {
         selectedContentId,
         selectedVersion,
         selectedLocale,
-        setSelectedLocale,
-        setSelectedContentId,
-        setSelectedVersion,
+        updateSelectedContent,
+        versionViewOpen,
+        setVersionViewOpen,
     };
 };

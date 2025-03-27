@@ -1,3 +1,4 @@
+import React from 'react';
 import { BodyShort, Detail } from '@navikt/ds-react';
 import { classNames } from '@common/client/utils/classNames';
 import { getContentIconUrl } from 'client/contentTree/contentTreeEntry/NavigationItem';
@@ -13,8 +14,7 @@ export const SearchResultItem = ({
     hit: SearchResponse['hits'][number];
     key: string;
 }) => {
-    const { setSelectedContentId, selectedContentId, setSelectedLocale, selectedLocale } =
-        useAppState();
+    const { updateSelectedContent, selectedContentId, selectedLocale } = useAppState();
 
     return (
         <button
@@ -26,8 +26,11 @@ export const SearchResultItem = ({
             )}
             key={key}
             onClick={() => {
-                setSelectedContentId(hit._id);
-                setSelectedLocale(hit.layerLocale);
+                updateSelectedContent({
+                    contentId: hit._id,
+                    locale: hit.layerLocale,
+                    versionId: undefined,
+                });
             }}
         >
             <img
