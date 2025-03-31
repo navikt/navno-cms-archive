@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { ExternalLinkIcon, SidebarRightIcon } from '@navikt/aksel-icons';
+import { ExternalLinkIcon } from '@navikt/aksel-icons';
+import { VersionIcon } from '../versionSelector/VersionIcon';
 import { xpArchiveConfig } from '@common/shared/siteConfigs';
 import { Button, Detail, Heading, Label } from '@navikt/ds-react';
 import { useAppState } from '../context/appState/useAppState';
@@ -24,8 +25,13 @@ export const Content = ({
     data: ContentServiceResponse | null | undefined;
     isLoading: boolean;
 }) => {
-    const { selectedContentId, selectedLocale, selectedVersion, setVersionViewOpen } =
-        useAppState();
+    const {
+        selectedContentId,
+        selectedLocale,
+        selectedVersion,
+        versionViewOpen,
+        setVersionViewOpen,
+    } = useAppState();
 
     const isWebpage = !!data?.html && !data?.json?.attachment;
     const hasAttachment = !!data?.json?.attachment;
@@ -62,11 +68,12 @@ export const Content = ({
                     <div className={style.versionSelector}>
                         <Label className={style.label}>Versjoner</Label>
                         <Button
-                            className={style.versionButton}
+                            className={
+                                versionViewOpen ? style.activeVersionButton : style.versionButton
+                            }
                             variant={'secondary'}
-                            icon={<SidebarRightIcon />}
-                            iconPosition={'right'}
-                            onClick={() => setVersionViewOpen(true)} // TODO: Possibly add toggle to this?
+                            icon={<VersionIcon isOpen={versionViewOpen} />}
+                            onClick={() => setVersionViewOpen(!versionViewOpen)}
                         >
                             {getVersionDisplay()}
                         </Button>
