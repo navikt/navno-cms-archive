@@ -36,6 +36,7 @@
 
 .textAndLanguage {
     display: flex;
+    max-width: 100%;
 }
 
 .languageTag {
