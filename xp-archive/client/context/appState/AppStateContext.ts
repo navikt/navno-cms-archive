@@ -7,7 +7,7 @@ export type AppState = {
     selectedVersion?: string;
     updateSelectedContent: (selectedContent: SelectedContent) => void;
     versionViewOpen: boolean;
-    setVersionViewOpen: (open: boolean) => void;
+    setVersionViewOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export const AppStateContext = createContext<AppState>({

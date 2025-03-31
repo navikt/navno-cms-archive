@@ -37,9 +37,7 @@ export const ViewSelector = ({
         setSelectedView(viewVariant);
     };
 
-    console.log(selectedView);
     const relevantViewVariants = getRelevantViewVariants(isWebpage, hasAttachment);
-    console.log(relevantViewVariants);
     if (!relevantViewVariants.length || !selectedView) {
         return null;
     }

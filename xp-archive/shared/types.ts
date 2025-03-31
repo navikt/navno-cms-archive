@@ -85,6 +85,7 @@ export type SearchResponse = {
         _id: string;
         _path: string;
         layerLocale: Locale;
+        language?: string;
         displayName: string;
         type: string;
     }[];

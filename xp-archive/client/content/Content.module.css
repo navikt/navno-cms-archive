@@ -25,6 +25,18 @@
     background-color: white;
 }
 
+.activeVersionButton {
+    color: var(
+        --ac-button-secondary-active-text,
+        var(--__ac-button-secondary-active-text, var(--a-text-on-action))
+    );
+    background-color: var(
+        --ac-button-secondary-active-bg,
+        var(--__ac-button-secondary-active-bg, var(--a-surface-action-active))
+    );
+    box-shadow: none;
+}
+
 .versionAndViewWrapper {
     display: flex;
     gap: 1rem;

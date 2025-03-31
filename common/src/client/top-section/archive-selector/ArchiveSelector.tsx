@@ -10,11 +10,7 @@ type Props = {
 
 export const ArchiveSelector = ({ basePath }: Props) => {
     return (
-        <Tabs
-            className={style.archiveSelector}
-            defaultValue={basePath}
-            onChange={(e) => window.location.assign(e)}
-        >
+        <Tabs defaultValue={basePath} onChange={(e) => window.location.assign(e)}>
             <Tabs.List>
                 {siteConfigs.map((config) => (
                     <Tabs.Tab

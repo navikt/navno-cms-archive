@@ -57,16 +57,25 @@ export const VersionSelector = ({ versions, onClose }: Props) => {
 
     return (
         <>
-            <Heading size="medium" spacing>
-                Versjoner
-            </Heading>
-            <Search
-                label="Søk i versjoner"
-                variant="simple"
-                value={searchQuery}
-                onChange={setSearchQuery}
-                className={style.search}
-            />
+            <div className={style.headingAndFilter}>
+                <div className={style.heading}>
+                    <Heading size="xsmall" spacing>
+                        Versjoner
+                    </Heading>
+                    <Button
+                        variant="tertiary-neutral"
+                        icon={<XMarkIcon />}
+                        onClick={handleClose}
+                    ></Button>
+                </div>
+                <Search
+                    label="Søk i versjoner"
+                    variant="simple"
+                    value={searchQuery}
+                    onChange={setSearchQuery}
+                    className={style.search}
+                />
+            </div>
             <div className={style.versionList}>
                 {filteredVersions.map((version, index) => (
                     <VersionButton
@@ -81,14 +90,6 @@ export const VersionSelector = ({ versions, onClose }: Props) => {
                     </VersionButton>
                 ))}
             </div>
-            <Button
-                className={style.closeButton}
-                variant="primary-neutral"
-                icon={<XMarkIcon />}
-                onClick={handleClose}
-            >
-                Lukk versjonsvelger
-            </Button>
         </>
     );
 };
