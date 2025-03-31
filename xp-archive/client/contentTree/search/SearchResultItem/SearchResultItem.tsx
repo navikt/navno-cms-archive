@@ -7,13 +7,7 @@ import { SearchResponse } from 'shared/types';
 
 import style from './SearchResultItem.module.css';
 
-export const SearchResultItem = ({
-    hit,
-    key,
-}: {
-    hit: SearchResponse['hits'][number];
-    key: string;
-}) => {
+export const SearchResultItem = ({ hit }: { hit: SearchResponse['hits'][number] }) => {
     const { updateSelectedContent, selectedContentId, selectedLocale } = useAppState();
 
     return (
@@ -24,7 +18,6 @@ export const SearchResultItem = ({
                     hit.layerLocale === selectedLocale &&
                     style.hitSelected
             )}
-            key={key}
             onClick={() => {
                 updateSelectedContent({
                     contentId: hit._id,
