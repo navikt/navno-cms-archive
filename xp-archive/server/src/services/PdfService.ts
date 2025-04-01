@@ -8,7 +8,6 @@ import {
 } from 'utils/pdf-utils';
 import { RequestHandler, Response } from 'express';
 import { validateQuery } from 'utils/params';
-// TODO: Flytt archiver til rot-mappe
 import archiver from 'archiver';
 import { ContentServiceResponse } from '../../../shared/types';
 
@@ -76,6 +75,8 @@ export class PdfService {
     }
 
     private createPdfZip(pdfs: PdfResult[], res: Response) {
+        console.log('Creating zip');
+
         const newestVersion = pdfs[0];
         const oldestVersion = pdfs[pdfs.length - 1];
 
@@ -109,6 +110,9 @@ export class PdfService {
         }
 
         archive.finalize();
+        console.log('Finalized zip');
+
+        return res;
     }
 
     private async generateContentPdf(
