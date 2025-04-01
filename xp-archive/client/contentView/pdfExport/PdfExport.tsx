@@ -7,10 +7,11 @@ import style from './PdfExport.module.css';
 
 type Props = {
     versions: VersionReference[];
+    locale: string;
 };
 const PDF_API = `${import.meta.env.VITE_APP_ORIGIN}/xp/api/pdf`;
 
-export const PdfExport = ({ versions }: Props) => {
+export const PdfExport = ({ versions, locale }: Props) => {
     const [versionsSelected, setVersionsSelected] = useState<string[]>([]);
     const [prevClickedIndex, setPrevClickedIndex] = useState(0);
 
@@ -55,7 +56,7 @@ export const PdfExport = ({ versions }: Props) => {
                     className={style.button}
                     onClick={() =>
                         window.open(
-                            `${PDF_API}?contentId=${versions[0].nodeId}&versionIds=${versionsSelected.join(',')}&locale=no` // TODO: fikse locale
+                            `${PDF_API}?versionIds=${versionsSelected.join(',')}&locale=${locale}`
                         )
                     }
                     icon={<DownloadIcon title="Last ned versjon(er)" />}

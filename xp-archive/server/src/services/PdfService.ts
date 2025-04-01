@@ -36,8 +36,8 @@ export class PdfService {
     }
 
     public generatePdfHandler: RequestHandler = async (req, res) => {
-        if (!validateQuery(req.query, ['contentId', 'versionIds', 'locale'])) {
-            return res.status(400).send('Parameters contentId, versionIds and locale are required');
+        if (!validateQuery(req.query, ['versionIds', 'locale'])) {
+            return res.status(400).send('Parameters versionIds and locale are required');
         }
 
         const versionIds = req.query.versionIds.split(',').map((v) => v.split(';'));
