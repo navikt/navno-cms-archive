@@ -22,7 +22,7 @@ export const PdfExport = ({ versions, locale }: Props) => {
                 const length = Math.abs(clickedIndex - prevClickedIndex) + 1;
                 const newSelected = versions
                     .slice(startIndex, startIndex + length)
-                    .map((v) => `${v.nodeId};${v.versionId}`);
+                    .map((v) => `${v.nodeId}:${v.versionId}`);
                 const allSelectedUnique = new Set([...versionsSelected, ...newSelected]);
                 setVersionsSelected([...allSelectedUnique]);
             } else {
@@ -41,9 +41,9 @@ export const PdfExport = ({ versions, locale }: Props) => {
                 <CheckboxGroup legend="Versjoner" value={versionsSelected}>
                     {versions.map((v, i) => (
                         <Checkbox
-                            onClick={onCheckboxClick(`${v.nodeId};${v.versionId}`, i)}
+                            onClick={onCheckboxClick(`${v.nodeId}:${v.versionId}`, i)}
                             key={v.versionId}
-                            value={`${v.nodeId};${v.versionId}`}
+                            value={`${v.nodeId}:${v.versionId}`}
                         >
                             {v.displayName} {formatTimestamp(v.timestamp)}{' '}
                         </Checkbox>

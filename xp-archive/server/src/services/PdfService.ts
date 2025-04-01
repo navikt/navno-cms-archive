@@ -40,7 +40,8 @@ export class PdfService {
             return res.status(400).send('Parameters versionIds and locale are required');
         }
 
-        const versionIds = req.query.versionIds.split(',').map((v) => v.split(';'));
+        const versionIds = req.query.versionIds.split(',').map((v) => v.split(':'));
+        console.log(`PDF for ${versionIds}`);
         const { locale } = req.query;
 
         if (versionIds.length === 0) {

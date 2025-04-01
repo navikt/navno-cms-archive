@@ -25,6 +25,7 @@ export class ContentService {
         locale: string,
         versionId?: string
     ): Promise<ContentServiceResponse | null> {
+        console.log(`fetching content for id ${contentId}, locale ${locale}, version ${versionId}`);
         const xpResponse = await fetchJson<XPContentServiceResponse>(this.CONTENT_PROPS_API, {
             headers: { secret: process.env.SERVICE_SECRET },
             params: { id: contentId, locale, versionId },
