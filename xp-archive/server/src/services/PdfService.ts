@@ -123,6 +123,7 @@ export class PdfService {
         console.log('Finalize');
 
         archive.finalize();
+        console.log('Finalized');
     }
 
     private async generateContentPdf(
