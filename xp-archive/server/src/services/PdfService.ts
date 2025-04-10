@@ -82,6 +82,8 @@ export class PdfService {
 
         const zipFilename = `${newestVersion.filename}_${oldestVersion.timestamp}-${newestVersion.timestamp}.zip`;
 
+        console.log('Set header');
+
         res.setHeader(
             'Content-Disposition',
             `attachment; filename="${encodeURIComponent(zipFilename)}"`
@@ -91,9 +93,12 @@ export class PdfService {
 
         const archive = archiver('zip');
 
+        console.log('Write data');
+
         archive.on('data', (chunk) => {
             res.write(chunk);
         });
+        console.log(' On end');
 
         archive.on('end', () => {
             res.end();
@@ -101,13 +106,17 @@ export class PdfService {
 
         for (const pdf of pdfs) {
             if (!res.headersSent) {
+                console.log('Append content length header');
+
                 // Set an estimate for content-length, which allows clients to track the download progress
                 // This header is not according to spec for chunked responses, but browsers seem to respect it
                 res.setHeader('Content-Length', pdf.data.length * pdfs.length);
             }
+            console.log('Append pdf');
 
             archive.append(pdf.data, { name: pdf.filename });
         }
+        console.log('Finalize');
 
         archive.finalize();
     }
