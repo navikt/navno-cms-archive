@@ -110,9 +110,6 @@ export class PdfService {
         }
 
         archive.finalize();
-        console.log('Finalized zip');
-
-        return res;
     }
 
     private async generateContentPdf(
