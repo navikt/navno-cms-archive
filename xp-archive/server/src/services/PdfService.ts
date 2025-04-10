@@ -62,7 +62,11 @@ export class PdfService {
             return this.singlePdf(allPdfs[0], res);
         }
 
-        return this.createPdfZip(allPdfs, res);
+        try {
+            return this.createPdfZip(allPdfs, res);
+        } catch (e) {
+            console.log('Something happens', e);
+        }
     };
 
     private singlePdf(content: PdfResult, res: Response) {
