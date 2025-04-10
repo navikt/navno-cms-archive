@@ -78,7 +78,7 @@ export class PdfService {
             .send(data);
     }
 
-    private createPdfZip(pdfs: PdfResult[], res: Response) {
+    private async createPdfZip(pdfs: PdfResult[], res: Response) {
         console.log('Creating zip');
 
         const newestVersion = pdfs[0];
@@ -108,18 +108,21 @@ export class PdfService {
             res.end();
         });
 
-        for (const pdf of pdfs) {
-            if (!res.headersSent) {
-                console.log('Append content length header');
+        const addPdfs = async () => {
+            for (const pdf of pdfs) {
+                if (!res.headersSent) {
+                    console.log('Append content length header');
 
-                // Set an estimate for content-length, which allows clients to track the download progress
-                // This header is not according to spec for chunked responses, but browsers seem to respect it
-                res.setHeader('Content-Length', pdf.data.length * pdfs.length);
+                    // Set an estimate for content-length, which allows clients to track the download progress
+                    // This header is not according to spec for chunked responses, but browsers seem to respect it
+                    res.setHeader('Content-Length', pdf.data.length * pdfs.length);
+                }
+                console.log('Append pdf');
+
+                archive.append(pdf.data, { name: pdf.filename });
             }
-            console.log('Append pdf');
-
-            archive.append(pdf.data, { name: pdf.filename });
-        }
+        };
+        await addPdfs();
         console.log('Finalize');
 
         archive.finalize();
