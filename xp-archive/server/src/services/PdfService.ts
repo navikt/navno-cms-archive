@@ -110,13 +110,6 @@ export class PdfService {
 
         const addPdfs = async () => {
             for (const pdf of pdfs) {
-                if (!res.headersSent) {
-                    console.log('Append content length header');
-
-                    // Set an estimate for content-length, which allows clients to track the download progress
-                    // This header is not according to spec for chunked responses, but browsers seem to respect it
-                    res.setHeader('Content-Length', pdf.data.length * pdfs.length);
-                }
                 console.log('Append pdf');
 
                 archive.append(pdf.data, { name: pdf.filename });
