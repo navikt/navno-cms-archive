@@ -121,13 +121,13 @@ export class PdfGenerator {
         const widthActual = width >= MIN_WIDTH_PX ? width : DEFAULT_WIDTH_PX;
 
         // Remove header and footer in print
-        const htmlWithoutHeaderAndFooter = html.replaceAll(
-            /(<header([^;]*)<\/header>|<footer([^;]*)<\/footer>)/g,
-            ''
-        );
+        // const htmlWithoutHeaderAndFooter = html.replaceAll(
+        //     /(<header([^;]*)<\/header>|<footer([^;]*)<\/footer>)/g,
+        //     ''
+        // );
 
         // Ensures assets with relative urls are loaded from the correct origin
-        const htmlWithBase = htmlWithoutHeaderAndFooter.replace(
+        const htmlWithBase = html.replace(
             '<head>',
             `<head><base href="${process.env.APP_ORIGIN_INTERNAL}"/>`
         );
