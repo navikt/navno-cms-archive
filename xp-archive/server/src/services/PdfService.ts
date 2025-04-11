@@ -40,7 +40,6 @@ export class PdfService {
         }
 
         const versionIds = req.query.versionIds.split(',').map((v) => v.split(':'));
-        console.log(`PDF for ${versionIds}`);
         const { locale } = req.query;
 
         if (versionIds.length === 0) {
@@ -62,11 +61,7 @@ export class PdfService {
             return this.singlePdf(allPdfs[0], res);
         }
 
-        try {
-            return this.createPdfZip(allPdfs, res);
-        } catch (e) {
-            console.log('Something happens', e);
-        }
+        return this.createPdfZip(allPdfs, res);
     };
 
     private singlePdf(content: PdfResult, res: Response) {
@@ -79,14 +74,10 @@ export class PdfService {
     }
 
     private async createPdfZip(pdfs: PdfResult[], res: Response) {
-        console.log('Creating zip');
-
         const newestVersion = pdfs[0];
         const oldestVersion = pdfs[pdfs.length - 1];
 
         const zipFilename = `${newestVersion.filename}_${oldestVersion.timestamp}-${newestVersion.timestamp}.zip`;
-
-        console.log('Set header');
 
         res.setHeader(
             'Content-Disposition',
@@ -97,12 +88,9 @@ export class PdfService {
 
         const archive = archiver('zip');
 
-        console.log('Write data');
-
         archive.on('data', (chunk) => {
             res.write(chunk);
         });
-        console.log(' On end');
 
         archive.on('end', () => {
             res.end();
@@ -110,16 +98,12 @@ export class PdfService {
 
         const addPdfs = async () => {
             for (const pdf of pdfs) {
-                console.log('Append pdf');
-
                 archive.append(pdf.data, { name: pdf.filename });
             }
         };
         await addPdfs();
-        console.log('Finalize');
 
         archive.finalize();
-        console.log('Finalized');
     }
 
     private async generateContentPdf(
