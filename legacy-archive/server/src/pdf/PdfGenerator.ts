@@ -82,12 +82,6 @@ export class PdfGenerator {
             }
 
             await this.generateContentPdf(content, width).then((result) => {
-                if (!res.headersSent) {
-                    // Set an estimate for content-length, which allows clients to track the download progress
-                    // This header is not according to spec for chunked responses, but browsers seem to respect it
-                    res.setHeader('Content-Length', result.data.length * contentVersions.length);
-                }
-
                 archive.append(result.data, { name: result.filename });
             });
         }

@@ -16,7 +16,7 @@ const getDisplayComponent = (viewVariant?: ViewVariant, data?: ContentServiceRes
     const components: Record<ViewVariant, React.ReactElement> = {
         html: <HtmlView content={content} />,
         filepreview: <FilePreviewWrapper content={content} />,
-        pdf: <PdfExport versions={data.versions} />,
+        pdf: <PdfExport versions={data.versions} locale={content.locale} />,
     };
     return components[viewVariant];
 };
