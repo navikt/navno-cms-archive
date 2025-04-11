@@ -126,15 +126,15 @@ export class PdfService {
         try {
             const page = await this.browser.newPage();
 
-            // Remove header and footer in print
-            const htmlWithoutHeaderAndFooter = html.replaceAll(
-                /(<header([^;]*)<\/header>|<footer([^;]*)<\/footer>)/g,
+            // Remove decorator-code in print
+            const htmlWithoutDecorator = html.replaceAll(
+                /(<decorator-header([^;]*)<\/decorator-header>|<decorator-footer([^;]*)<\/decorator-footer>|<decorator-footer([^;]*)<\/decorator-footer>)/g,
                 ''
             );
 
             await page.setViewport({ width: widthActual, height: 1024, deviceScaleFactor: 1 });
             await page.emulateMediaType('screen');
-            await page.setContent(htmlWithoutHeaderAndFooter);
+            await page.setContent(htmlWithoutDecorator);
 
             const pdf = await page.pdf({
                 printBackground: true,
