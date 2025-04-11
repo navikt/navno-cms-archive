@@ -3,7 +3,7 @@ import { ContentService } from './ContentService';
 import {
     generateErrorFilename,
     generatePdfFilename,
-    generatePdfFooter,
+    generatePdfInfo,
     pixelWidthToA4Scale,
 } from 'utils/pdf-utils';
 import { RequestHandler, Response } from 'express';
@@ -140,7 +140,9 @@ export class PdfService {
                 printBackground: true,
                 format: 'A4',
                 scale: pixelWidthToA4Scale(widthActual),
-                footerTemplate: generatePdfFooter(content),
+                displayHeaderFooter: true,
+                headerTemplate: generatePdfInfo(content),
+                footerTemplate: generatePdfInfo(content),
                 margin: {
                     top: '4px',
                     right: '4px',

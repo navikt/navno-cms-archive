@@ -12,7 +12,7 @@ const MAX_SCALE = 2;
 export const pixelWidthToA4Scale = (pxWidth: number) =>
     Math.max(MIN_SCALE, Math.min(MAX_SCALE, (1 / pxWidth) * SCALE_FACTOR));
 
-export const generatePdfFooter = (content: ContentServiceResponse) => `
+export const generatePdfInfo = (content: ContentServiceResponse) => `
     <div style="font-size: 10px; margin-bottom:-16px; padding: 4px; width: 100%; display: flex; justify-content: space-between; white-space: nowrap">
         <div style="overflow-x: hidden; text-overflow: ellipsis">${pruneString(content.json.displayName, 110)}</div>
         <div>
