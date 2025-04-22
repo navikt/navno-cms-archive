@@ -52,7 +52,7 @@ export const PdfExport = ({ versions, locale }: Props) => {
                     <Heading size="xsmall"> Versjoner</Heading>
                     <HelpText title={'Tips!'}>
                         {
-                            'Du kan velge et spenn av versjoner med ett klikk ved å holde inne "shift"-knappen'
+                            'Ved å holde inne ‘shift’-knappen, kan du markere flere versjoner samtidig.'
                         }
                     </HelpText>
                 </div>
