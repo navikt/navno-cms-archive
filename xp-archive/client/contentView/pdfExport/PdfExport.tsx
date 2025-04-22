@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { DownloadIcon } from '@navikt/aksel-icons';
-import { Button, Checkbox, CheckboxGroup, Heading, HelpText } from '@navikt/ds-react';
+import { Button, Checkbox, CheckboxGroup, ErrorSummary, Heading, HelpText } from '@navikt/ds-react';
 import { VersionReference } from 'shared/types';
 import { formatTimestamp } from '@common/shared/timestamp';
 import style from './PdfExport.module.css';
+import { ErrorSummaryItem } from '@navikt/ds-react/ErrorSummary';
 
 type Props = {
     versions: VersionReference[];
@@ -14,6 +15,7 @@ const PDF_API = `${import.meta.env.VITE_APP_ORIGIN}/xp/api/pdf`;
 export const PdfExport = ({ versions, locale }: Props) => {
     const [versionsSelected, setVersionsSelected] = useState<string[]>([]);
     const [prevClickedIndex, setPrevClickedIndex] = useState(0);
+    const [showError, setShowError] = useState(false);
 
     const onCheckboxClick =
         (versionId: string, clickedIndex: number) => (e: React.MouseEvent<HTMLInputElement>) => {
@@ -31,9 +33,18 @@ export const PdfExport = ({ versions, locale }: Props) => {
                     : [...versionsSelected, versionId];
                 setVersionsSelected(selected);
             }
+            if (showError) setShowError(false);
 
             setPrevClickedIndex(clickedIndex);
         };
+
+    const onDownloadButtonClick = () => {
+        if (versionsSelected.length === 0) {
+            setShowError(true);
+        } else {
+            window.open(`${PDF_API}?versionIds=${versionsSelected.join(',')}&locale=${locale}`);
+        }
+    };
 
     return (
         <>
@@ -46,7 +57,12 @@ export const PdfExport = ({ versions, locale }: Props) => {
                         }
                     </HelpText>
                 </div>
-                <CheckboxGroup legend="Versjoner" value={versionsSelected} hideLegend>
+                <CheckboxGroup
+                    legend="Versjoner"
+                    value={versionsSelected}
+                    error={showError ? 'Du må velge minimum en versjon' : undefined}
+                    hideLegend
+                >
                     {versions.map((v, i) => (
                         <Checkbox
                             onClick={onCheckboxClick(`${v.nodeId}:${v.versionId}`, i)}
@@ -62,11 +78,7 @@ export const PdfExport = ({ versions, locale }: Props) => {
                 <Button
                     variant="secondary-neutral"
                     className={style.button}
-                    onClick={() =>
-                        window.open(
-                            `${PDF_API}?versionIds=${versionsSelected.join(',')}&locale=${locale}`
-                        )
-                    }
+                    onClick={onDownloadButtonClick}
                     icon={<DownloadIcon title="Last ned versjon(er)" />}
                 >
                     {'Last ned valgte versjoner '}
