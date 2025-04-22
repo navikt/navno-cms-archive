@@ -1,10 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { DownloadIcon } from '@navikt/aksel-icons';
-import { Button, Checkbox, CheckboxGroup, ErrorSummary, Heading, HelpText } from '@navikt/ds-react';
+import { Button, Checkbox, CheckboxGroup, Heading, HelpText } from '@navikt/ds-react';
 import { VersionReference } from 'shared/types';
 import { formatTimestamp } from '@common/shared/timestamp';
 import style from './PdfExport.module.css';
-import { ErrorSummaryItem } from '@navikt/ds-react/ErrorSummary';
 
 type Props = {
     versions: VersionReference[];
