@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { DownloadIcon } from '@navikt/aksel-icons';
-import { Button, Checkbox, CheckboxGroup } from '@navikt/ds-react';
+import { Button, Checkbox, CheckboxGroup, Heading, HelpText } from '@navikt/ds-react';
 import { VersionReference } from 'shared/types';
 import { formatTimestamp } from '@common/shared/timestamp';
 import style from './PdfExport.module.css';
@@ -38,7 +38,15 @@ export const PdfExport = ({ versions, locale }: Props) => {
     return (
         <>
             <div className={style.wrapper}>
-                <CheckboxGroup legend="Versjoner" value={versionsSelected}>
+                <div className={style.checkboxHeading}>
+                    <Heading size="xsmall"> Versjoner</Heading>
+                    <HelpText title={'Tips!'}>
+                        {
+                            'Du kan velge et spenn av versjoner med ett klikk ved å holde inne "shift"-knappen'
+                        }
+                    </HelpText>
+                </div>
+                <CheckboxGroup legend="Versjoner" value={versionsSelected} hideLegend>
                     {versions.map((v, i) => (
                         <Checkbox
                             onClick={onCheckboxClick(`${v.nodeId}:${v.versionId}`, i)}
