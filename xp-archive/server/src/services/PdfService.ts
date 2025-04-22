@@ -142,11 +142,10 @@ export class PdfService {
                 scale: pixelWidthToA4Scale(widthActual),
                 displayHeaderFooter: true,
                 headerTemplate: generatePdfInfo(content),
-                footerTemplate: generatePdfInfo(content),
                 margin: {
-                    top: '4px',
+                    top: '24px',
                     right: '4px',
-                    bottom: '24px',
+                    bottom: '4px',
                     left: '4px',
                 },
             });
