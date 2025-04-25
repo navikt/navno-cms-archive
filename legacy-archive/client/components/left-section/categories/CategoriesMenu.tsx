@@ -1,7 +1,6 @@
 import React from 'react';
 import { CmsCategoryListItem } from '../../../../shared/cms-documents/category';
-import { ChevronDownIcon, ChevronRightIcon } from '@navikt/aksel-icons';
-import { TreeView } from '@mui/x-tree-view';
+import { SimpleTreeView } from '@mui/x-tree-view';
 import { RootCategory } from './root-category/RootCategory';
 import { CheckboxGroup } from '@navikt/ds-react';
 import { useSearchState } from '../../../context/search-state/useSearchState';
@@ -15,9 +14,7 @@ export const CategoriesMenu = ({ rootCategories, className }: Props) => {
     const { updateSearchParams, searchParams } = useSearchState();
 
     return (
-        <TreeView
-            defaultExpandIcon={<ChevronRightIcon />}
-            defaultCollapseIcon={<ChevronDownIcon />}
+        <SimpleTreeView
             classes={{
                 root: className,
             }}
@@ -32,6 +29,6 @@ export const CategoriesMenu = ({ rootCategories, className }: Props) => {
                     <RootCategory category={category} key={category.key} />
                 ))}
             </CheckboxGroup>
-        </TreeView>
+        </SimpleTreeView>
     );
 };
