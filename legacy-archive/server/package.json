@@ -11,7 +11,7 @@
         "dev": "npm-run-all -p build-and-watch nodemon-start"
     },
     "dependencies": {
-        "@opensearch-project/opensearch": "2.12.0",
+        "@opensearch-project/opensearch": "2.13.0",
         "archiver": "7.0.1",
         "compression": "1.8.0",
         "csp-header": "6.1.0",
