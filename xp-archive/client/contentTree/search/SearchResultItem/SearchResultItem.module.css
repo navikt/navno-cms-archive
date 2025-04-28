@@ -34,6 +34,14 @@
     text-align: left;
 }
 
-.hitPath {
-    color: var(--a-text-subtle);
+.textAndLanguage {
+    display: flex;
+    max-width: 100%;
+}
+
+.languageTag {
+    border-radius: var(--a-border-radius-full);
+    background-color: var(--a-surface-selected);
+    padding: var(--a-spacing-1) 0.6rem;
+    margin-left: var(--a-spacing-1);
 }

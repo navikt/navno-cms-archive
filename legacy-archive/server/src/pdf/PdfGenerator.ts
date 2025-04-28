@@ -82,12 +82,6 @@ export class PdfGenerator {
             }
 
             await this.generateContentPdf(content, width).then((result) => {
-                if (!res.headersSent) {
-                    // Set an estimate for content-length, which allows clients to track the download progress
-                    // This header is not according to spec for chunked responses, but browsers seem to respect it
-                    res.setHeader('Content-Length', result.data.length * contentVersions.length);
-                }
-
                 archive.append(result.data, { name: result.filename });
             });
         }
@@ -121,13 +115,13 @@ export class PdfGenerator {
         const widthActual = width >= MIN_WIDTH_PX ? width : DEFAULT_WIDTH_PX;
 
         // Remove header and footer in print
-        const htmlWithoutHeaderAndFooter = html.replaceAll(
-            /(<header([^;]*)<\/header>|<footer([^;]*)<\/footer>)/g,
-            ''
-        );
+        // const htmlWithoutHeaderAndFooter = html.replaceAll(
+        //     /(<header([^;]*)<\/header>|<footer([^;]*)<\/footer>)/g,
+        //     ''
+        // );
 
         // Ensures assets with relative urls are loaded from the correct origin
-        const htmlWithBase = htmlWithoutHeaderAndFooter.replace(
+        const htmlWithBase = html.replace(
             '<head>',
             `<head><base href="${process.env.APP_ORIGIN_INTERNAL}"/>`
         );

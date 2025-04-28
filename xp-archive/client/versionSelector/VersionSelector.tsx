@@ -1,18 +1,11 @@
 import React, { useState } from 'react';
+import { CheckmarkIcon, XMarkIcon } from '@navikt/aksel-icons';
 import { Heading, Button, Search } from '@navikt/ds-react';
 import { VersionReference } from 'shared/types';
 import { formatTimestamp } from '@common/shared/timestamp';
 import { useAppState } from 'client/context/appState/useAppState';
-import { SlidePanel } from './SlidePanel/SlidePanel';
 import { classNames } from '@common/client/utils/classNames';
 import style from './VersionSelector.module.css';
-import { CheckmarkIcon } from '@navikt/aksel-icons';
-
-type Props = {
-    versions: VersionReference[];
-    isOpen: boolean;
-    onClose: () => void;
-};
 
 type VersionButtonProps = {
     isSelected: boolean;
@@ -32,9 +25,15 @@ const VersionButton = ({ isSelected, onClick, children }: VersionButtonProps) =>
     </Button>
 );
 
-export const VersionSelector = ({ versions, isOpen, onClose }: Props) => {
+type Props = {
+    versions: VersionReference[];
+    onClose: () => void;
+};
+
+export const VersionSelector = ({ versions, onClose }: Props) => {
     const [searchQuery, setSearchQuery] = useState('');
-    const { setSelectedContentId, selectedVersion, setSelectedVersion } = useAppState();
+    const { selectedVersion, updateSelectedContent } = useAppState();
+    const versionSelected = selectedVersion || versions[0].versionId;
 
     const handleClose = () => {
         setSearchQuery('');
@@ -42,10 +41,14 @@ export const VersionSelector = ({ versions, isOpen, onClose }: Props) => {
     };
 
     const selectVersion = (versionId: string) => {
-        const nodeId = versions.find((v) => v.versionId === versionId)?.nodeId;
-        if (nodeId) setSelectedContentId(nodeId);
-        setSelectedVersion(versionId);
-        handleClose();
+        const node = versions.find((v) => v.versionId === versionId);
+        if (node) {
+            updateSelectedContent({
+                contentId: node.nodeId,
+                versionId: versionId,
+                locale: node.locale,
+            });
+        }
     };
 
     const filteredVersions = versions.filter((version) =>
@@ -53,22 +56,31 @@ export const VersionSelector = ({ versions, isOpen, onClose }: Props) => {
     );
 
     return (
-        <SlidePanel isOpen={isOpen} onClose={handleClose}>
-            <Heading size="medium" spacing>
-                Versjoner
-            </Heading>
-            <Search
-                label="Søk i versjoner"
-                variant="simple"
-                value={searchQuery}
-                onChange={setSearchQuery}
-                className={style.search}
-            />
+        <>
+            <div className={style.headingAndFilter}>
+                <div className={style.heading}>
+                    <Heading size="xsmall" spacing>
+                        Versjoner
+                    </Heading>
+                    <Button
+                        variant="tertiary-neutral"
+                        icon={<XMarkIcon />}
+                        onClick={handleClose}
+                    ></Button>
+                </div>
+                <Search
+                    label="Søk i versjoner"
+                    variant="simple"
+                    value={searchQuery}
+                    onChange={setSearchQuery}
+                    className={style.search}
+                />
+            </div>
             <div className={style.versionList}>
                 {filteredVersions.map((version, index) => (
                     <VersionButton
                         key={version.versionId}
-                        isSelected={version.versionId === selectedVersion}
+                        isSelected={version.versionId === versionSelected}
                         onClick={() => selectVersion(version.versionId)}
                     >
                         {formatTimestamp(version.timestamp)}
@@ -78,6 +90,6 @@ export const VersionSelector = ({ versions, isOpen, onClose }: Props) => {
                     </VersionButton>
                 ))}
             </div>
-        </SlidePanel>
+        </>
     );
 };

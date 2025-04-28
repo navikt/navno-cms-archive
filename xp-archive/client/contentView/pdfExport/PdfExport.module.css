@@ -4,6 +4,11 @@
     padding: 1rem;
 }
 
+.checkboxHeading {
+    display: flex;
+    gap: 0.5rem;
+}
+
 .downloadBar {
     position: fixed;
     bottom: 0;

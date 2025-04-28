@@ -13,17 +13,17 @@
     "dependencies": {
         "@opensearch-project/opensearch": "2.12.0",
         "archiver": "7.0.1",
-        "compression": "1.7.4",
-        "csp-header": "5.2.1",
-        "dotenv": "16.4.5",
-        "mime-types": "2.1.35",
+        "compression": "1.8.0",
+        "csp-header": "6.1.0",
+        "dotenv": "16.5.0",
+        "mime-types": "3.0.1",
         "node-cache": "5.1.2",
-        "puppeteer": "23.5.1"
+        "puppeteer": "24.7.1"
     },
     "devDependencies": {
-        "@types/archiver": "6.0.2",
+        "@types/archiver": "6.0.3",
         "@types/compression": "1.7.5",
-        "nodemon": "3.1.7"
+        "nodemon": "3.1.9"
     },
     "nodemonConfig": {
         "delay": 500

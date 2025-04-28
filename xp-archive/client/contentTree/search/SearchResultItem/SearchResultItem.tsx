@@ -1,3 +1,4 @@
+import React from 'react';
 import { BodyShort, Detail } from '@navikt/ds-react';
 import { classNames } from '@common/client/utils/classNames';
 import { getContentIconUrl } from 'client/contentTree/contentTreeEntry/NavigationItem';
@@ -6,15 +7,8 @@ import { SearchResponse } from 'shared/types';
 
 import style from './SearchResultItem.module.css';
 
-export const SearchResultItem = ({
-    hit,
-    key,
-}: {
-    hit: SearchResponse['hits'][number];
-    key: string;
-}) => {
-    const { setSelectedContentId, selectedContentId, setSelectedLocale, selectedLocale } =
-        useAppState();
+export const SearchResultItem = ({ hit }: { hit: SearchResponse['hits'][number] }) => {
+    const { updateSelectedContent, selectedContentId, selectedLocale } = useAppState();
 
     return (
         <button
@@ -24,10 +18,12 @@ export const SearchResultItem = ({
                     hit.layerLocale === selectedLocale &&
                     style.hitSelected
             )}
-            key={key}
             onClick={() => {
-                setSelectedContentId(hit._id);
-                setSelectedLocale(hit.layerLocale);
+                updateSelectedContent({
+                    contentId: hit._id,
+                    locale: hit.layerLocale,
+                    versionId: undefined,
+                });
             }}
         >
             <img
@@ -38,7 +34,15 @@ export const SearchResultItem = ({
                 alt={''}
             />
             <div className={style.hitTextWrapper}>
-                <BodyShort className={style.hitText}>{hit.displayName}</BodyShort>
+                <div className={style.textAndLanguage}>
+                    <BodyShort className={style.hitText} truncate>
+                        {hit.displayName}
+                    </BodyShort>
+                    {hit.language ? (
+                        <span className={style.languageTag}>{hit.language}</span>
+                    ) : null}
+                </div>
+
                 <Detail className={style.hitText}>{hit._path}</Detail>
             </div>
         </button>

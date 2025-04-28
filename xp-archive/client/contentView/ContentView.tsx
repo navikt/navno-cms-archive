@@ -14,18 +14,9 @@ const getDisplayComponent = (viewVariant?: ViewVariant, data?: ContentServiceRes
     const { json: content } = data;
 
     const components: Record<ViewVariant, React.ReactElement> = {
-        html: (
-            <HtmlView
-                nodeId={content._id}
-                locale={
-                    data.versions.find((v) => v.versionId === content._versionKey)?.locale || 'no'
-                }
-                versionId={content._versionKey}
-                originalContentTypeName={content.originalContentTypeName}
-            />
-        ),
+        html: <HtmlView content={content} />,
         filepreview: <FilePreviewWrapper content={content} />,
-        pdf: <PdfExport versions={data.versions} />,
+        pdf: <PdfExport versions={data.versions} locale={content.locale} />,
     };
     return components[viewVariant];
 };

@@ -1,5 +1,5 @@
 import { fetchJson } from '@common/shared/fetchUtils';
-import useSWRImmutable from 'swr/immutable';
+import useSWR from 'swr';
 import { ContentServiceResponse } from '../../shared/types';
 
 const CONTENT_API = `${import.meta.env.VITE_APP_ORIGIN}/xp/api/content`;
@@ -14,5 +14,12 @@ const fetchContent = async (params: FetchContentParams) => {
 };
 
 export const useFetchContent = ({ id, locale, versionId }: FetchContentParams) => {
-    return useSWRImmutable({ id, locale, versionId }, fetchContent);
+    return useSWR({ id, locale, versionId }, fetchContent, {
+        revalidateOnFocus: false,
+        revalidateOnReconnect: false,
+        revalidateIfStale: false,
+        keepPreviousData: true,
+        // Only revalidate when you want to
+        revalidateOnMount: true,
+    });
 };

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { MouseEvent } from 'react';
 import { ContentTreeEntryData } from '../../../shared/types';
 import { useAppState } from '../../context/appState/useAppState';
 import { TreeItem } from '@mui/x-tree-view';
@@ -13,7 +13,7 @@ export const getContentIconUrl = (type: string) =>
     `${import.meta.env.VITE_APP_ORIGIN}/xp/api/contentIcon?type=${type}`;
 
 export const NavigationItem = ({ entry }: Props) => {
-    const { setSelectedContentId } = useAppState();
+    const { updateSelectedContent } = useAppState();
 
     const label = (
         <span style={{ display: 'flex', alignItems: 'center' }}>
@@ -30,9 +30,14 @@ export const NavigationItem = ({ entry }: Props) => {
 
     const entryLocalized = entry.isLocalized || entry.hasLocalizedDescendants;
 
-    const onClick = () => {
+    const onClick = (e: MouseEvent) => {
+        e.stopPropagation();
         if (!entry.isEmpty) {
-            setSelectedContentId(entry.id);
+            updateSelectedContent({
+                contentId: entry.id,
+                versionId: undefined,
+                locale: entry.locale,
+            });
         }
     };
 

@@ -1,12 +1,3 @@
-.archiveSelector {
-    margin-left: 20px;
-
-    :global(.navds-tabs__tab[aria-selected='true']) {
-        background-color: var(--a-purple-400);
-        box-shadow: none;
-    }
-}
-
 .tab {
     color: white !important;
 

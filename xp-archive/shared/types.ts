@@ -4,6 +4,7 @@ export type ContentType = `${string}:${string}`;
 
 export type ContentTreeEntryData = {
     id: string;
+    versionId: string;
     path: string;
     name: string;
     displayName: string;
@@ -57,6 +58,7 @@ export type Content = {
     displayName: string;
     type: ContentType;
     language: string;
+    locale: string;
     createdTime: string;
     modifiedTime: string;
     publish?: {
@@ -65,6 +67,13 @@ export type Content = {
         to?: string;
     };
     data: Record<string, unknown>;
+    x?: {
+        'no-nav-navno'?: {
+            redirectToLayer?: {
+                locale?: string;
+            };
+        };
+    };
     attachment?: Attachment;
     originalContentTypeName?: string;
 };
@@ -76,6 +85,7 @@ export type SearchResponse = {
         _id: string;
         _path: string;
         layerLocale: Locale;
+        language?: string;
         displayName: string;
         type: string;
     }[];

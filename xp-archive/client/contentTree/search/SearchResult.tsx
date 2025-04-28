@@ -1,6 +1,5 @@
 import React from 'react';
-import { XMarkIcon } from '@navikt/aksel-icons';
-import { Button, Detail, Heading, Loader } from '@navikt/ds-react';
+import { Detail, Heading, Loader } from '@navikt/ds-react';
 import { SearchResponse } from 'shared/types';
 import { SearchResultItem } from './SearchResultItem/SearchResultItem';
 
@@ -9,10 +8,9 @@ import style from './SearchResult.module.css';
 type SearchResultProps = {
     isLoading: boolean;
     searchResult: SearchResponse;
-    closeSearchResult: () => void;
 };
 
-export const SearchResult = ({ isLoading, searchResult, closeSearchResult }: SearchResultProps) => {
+export const SearchResult = ({ isLoading, searchResult }: SearchResultProps) => {
     const { hits, query, total, hasMore } = searchResult;
 
     const orderedHits = [...hits].sort((a, b) => {
@@ -57,14 +55,6 @@ export const SearchResult = ({ isLoading, searchResult, closeSearchResult }: Sea
                             det du lette etter.
                         </Detail>
                     )}
-                    <Button
-                        className={style.closeButton}
-                        variant="primary-neutral"
-                        icon={<XMarkIcon />}
-                        onClick={closeSearchResult}
-                    >
-                        Lukk søkeresultat
-                    </Button>
                 </>
             )}
         </div>

@@ -1,3 +1,16 @@
+.headingAndFilter {
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    margin-left: 1rem;
+    margin-right: 1rem;
+}
+
+.heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
 .versionList {
     display: flex;
     flex-direction: column;
@@ -39,4 +52,15 @@
     :global(.navds-label) {
         font-weight: var(--a-font-weight-bold);
     }
+}
+
+.closeButton {
+    position: sticky;
+    bottom: 1rem;
+    margin-top: 1.75rem;
+
+    width: fit-content;
+    border-radius: 99px;
+    background-color: var(--a-surface-inverted);
+    align-self: center;
 }

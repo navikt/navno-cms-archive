@@ -3,12 +3,11 @@ import { ContentService } from './ContentService';
 import {
     generateErrorFilename,
     generatePdfFilename,
-    generatePdfFooter,
+    generatePdfInfo,
     pixelWidthToA4Scale,
 } from 'utils/pdf-utils';
 import { RequestHandler, Response } from 'express';
 import { validateQuery } from 'utils/params';
-// TODO: Flytt archiver til rot-mappe
 import archiver from 'archiver';
 import { ContentServiceResponse } from '../../../shared/types';
 
@@ -36,11 +35,11 @@ export class PdfService {
     }
 
     public generatePdfHandler: RequestHandler = async (req, res) => {
-        if (!validateQuery(req.query, ['contentId', 'versionIds', 'locale'])) {
-            return res.status(400).send('Parameters contentId, versionIds and locale are required');
+        if (!validateQuery(req.query, ['versionIds', 'locale'])) {
+            return res.status(400).send('Parameters versionIds and locale are required');
         }
 
-        const versionIds = req.query.versionIds.split(',').map((v) => v.split(';'));
+        const versionIds = req.query.versionIds.split(',').map((v) => v.split(':'));
         const { locale } = req.query;
 
         if (versionIds.length === 0) {
@@ -74,7 +73,7 @@ export class PdfService {
             .send(data);
     }
 
-    private createPdfZip(pdfs: PdfResult[], res: Response) {
+    private async createPdfZip(pdfs: PdfResult[], res: Response) {
         const newestVersion = pdfs[0];
         const oldestVersion = pdfs[pdfs.length - 1];
 
@@ -97,15 +96,12 @@ export class PdfService {
             res.end();
         });
 
-        for (const pdf of pdfs) {
-            if (!res.headersSent) {
-                // Set an estimate for content-length, which allows clients to track the download progress
-                // This header is not according to spec for chunked responses, but browsers seem to respect it
-                res.setHeader('Content-Length', pdf.data.length * pdfs.length);
+        const addPdfs = async () => {
+            for (const pdf of pdfs) {
+                archive.append(pdf.data, { name: pdf.filename });
             }
-
-            archive.append(pdf.data, { name: pdf.filename });
-        }
+        };
+        await addPdfs();
 
         archive.finalize();
     }
@@ -130,25 +126,26 @@ export class PdfService {
         try {
             const page = await this.browser.newPage();
 
-            // Remove header and footer in print
-            const htmlWithoutHeaderAndFooter = html.replaceAll(
-                /(<header([^;]*)<\/header>|<footer([^;]*)<\/footer>)/g,
+            // Remove decorator-code in print
+            const htmlWithoutDecorator = html.replaceAll(
+                /(<decorator-header([^;]*)<\/decorator-header>|<decorator-footer([^;]*)<\/decorator-footer>|<decorator-footer([^;]*)<\/decorator-footer>)/g,
                 ''
             );
 
             await page.setViewport({ width: widthActual, height: 1024, deviceScaleFactor: 1 });
             await page.emulateMediaType('screen');
-            await page.setContent(htmlWithoutHeaderAndFooter);
+            await page.setContent(htmlWithoutDecorator);
 
             const pdf = await page.pdf({
                 printBackground: true,
                 format: 'A4',
                 scale: pixelWidthToA4Scale(widthActual),
-                footerTemplate: generatePdfFooter(content),
+                displayHeaderFooter: true,
+                headerTemplate: generatePdfInfo(content),
                 margin: {
-                    top: '4px',
+                    top: '24px',
                     right: '4px',
-                    bottom: '24px',
+                    bottom: '4px',
                     left: '4px',
                 },
             });

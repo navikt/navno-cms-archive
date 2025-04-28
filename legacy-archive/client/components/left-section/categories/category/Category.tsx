@@ -1,12 +1,11 @@
 import React from 'react';
 import { CmsCategoryListItem } from '../../../../../shared/cms-documents/category';
 import { Tooltip } from '@navikt/ds-react';
-import { TreeItem } from '@mui/x-tree-view';
+import { TreeItem, TreeItemClasses } from '@mui/x-tree-view';
 import { CategoriesList } from '../CategoriesList';
 import { ArrowForwardIcon, CircleSlashIcon } from '@navikt/aksel-icons';
 import { useFetchCategories } from '../../../../fetch/useFetchCategories';
 import { ContentLoader } from '../../../common/loader/ContentLoader';
-import { TreeItemClasses } from '@mui/x-tree-view/TreeItem/treeItemClasses';
 import { useAppState } from '../../../../context/app-state/useAppState';
 
 import style from './Category.module.css';
@@ -36,14 +35,14 @@ export const Category = ({ category }: Props) => {
     return (
         <TreeItem
             key={key}
-            nodeId={key}
+            itemId={key}
             label={
                 <Tooltip content={`Nøkkel: ${key}`} placement={'left'} delay={1000}>
                     <div>{`${title}${isEmpty ? ' (tom)' : ''}`}</div>
                 </Tooltip>
             }
             disabled={isEmpty}
-            icon={isEmpty ? <CircleSlashIcon /> : undefined}
+            slots={{ icon: isEmpty ? CircleSlashIcon : undefined }}
             classes={classesOverride}
         >
             {isLoading ? (
@@ -57,12 +56,13 @@ export const Category = ({ category }: Props) => {
             ) : null}
             {hasContent && (
                 <TreeItem
-                    nodeId={`contents-${key}`}
-                    icon={<ArrowForwardIcon />}
+                    itemId={`contents-${key}`}
+                    slots={{ icon: ArrowForwardIcon }}
                     label={`Åpne innholdsvelger (${contentCount})`}
                     classes={classesOverride}
                     onClick={(e) => {
                         e.preventDefault();
+                        e.stopPropagation();
                         setSelectedCategory(category);
                         setContentSelectorOpen(true);
                     }}
