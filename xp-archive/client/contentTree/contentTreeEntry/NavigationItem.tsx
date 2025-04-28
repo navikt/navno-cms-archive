@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { MouseEvent } from 'react';
 import { ContentTreeEntryData } from '../../../shared/types';
 import { useAppState } from '../../context/appState/useAppState';
 import { TreeItem } from '@mui/x-tree-view';
@@ -30,7 +30,8 @@ export const NavigationItem = ({ entry }: Props) => {
 
     const entryLocalized = entry.isLocalized || entry.hasLocalizedDescendants;
 
-    const onClick = () => {
+    const onClick = (e: MouseEvent) => {
+        e.stopPropagation();
         if (!entry.isEmpty) {
             updateSelectedContent({
                 contentId: entry.id,
