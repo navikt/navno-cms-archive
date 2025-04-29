@@ -17,7 +17,8 @@
         "express": "4.21.2",
         "react": "19.1.0",
         "react-dom": "19.1.0",
-        "swr": "2.3.3"
+        "swr": "2.3.3",
+        "vite": "6.3.3"
     },
     "devDependencies": {
         "@types/express": "5.0.1",
@@ -35,7 +36,6 @@
         "prettier": "3.5.3",
         "rollup-plugin-visualizer": "5.14.0",
         "typescript": "5.8.3",
-        "vite": "6.3.3",
         "vite-tsconfig-paths": "5.1.4"
     }
 }
