@@ -2,7 +2,7 @@ import { CmsArchiveOpenSearchClient } from '../opensearch/CmsArchiveOpenSearchCl
 import express, { Express, Response, Router } from 'express';
 import { CmsArchiveContentService } from './CmsArchiveContentService';
 import { parseNumberParam, parseQueryParamsList } from '../utils/queryParams';
-import mime from 'mime';
+import { lookup } from 'mime-types';
 import { transformQueryToContentSearchParams } from '../opensearch/queries/contentSearch';
 import { CmsArchiveCategoriesService } from './CmsArchiveCategoriesService';
 import { cspMiddleware } from '../routing/csp';
@@ -265,7 +265,7 @@ export class CmsArchiveSite {
     ) {
         return res
             .setHeader('Content-Disposition', contentDisposition)
-            .setHeader('Content-Type', mime.lookup(filename, 'application/octet-stream'))
+            .setHeader('Content-Type', lookup(filename) || 'application/octet-stream')
             .send(Buffer.from(base64Data, 'base64'));
     }
 }
