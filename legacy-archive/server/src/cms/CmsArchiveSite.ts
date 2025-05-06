@@ -265,7 +265,7 @@ export class CmsArchiveSite {
     ) {
         return res
             .setHeader('Content-Disposition', contentDisposition)
-            .setHeader('Content-Type', lookup(filename) || 'application/octet-stream')
+            .setHeader('Content-Type', lookup(filename) ?? 'application/octet-stream')
             .send(Buffer.from(base64Data, 'base64'));
     }
 }
