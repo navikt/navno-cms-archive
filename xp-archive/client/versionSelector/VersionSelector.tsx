@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { CheckmarkIcon, XMarkIcon } from '@navikt/aksel-icons';
-import { Heading, Button, Search } from '@navikt/ds-react';
+import { Heading, Button, TextField } from '@navikt/ds-react';
 import { VersionReference } from 'shared/types';
 import { formatTimestamp } from '@common/shared/timestamp';
 import { useAppState } from 'client/context/appState/useAppState';
@@ -68,12 +68,12 @@ export const VersionSelector = ({ versions, onClose }: Props) => {
                         onClick={handleClose}
                     ></Button>
                 </div>
-                <Search
+                <TextField
                     label="Søk i versjoner"
-                    variant="simple"
                     value={searchQuery}
-                    onChange={setSearchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
                     className={style.search}
+                    hideLabel
                 />
             </div>
             <div className={style.versionList}>

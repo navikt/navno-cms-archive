@@ -10,7 +10,7 @@ export const SideView = ({ versions }: { versions: VersionReference[] }) => {
     const { versionViewOpen, setVersionViewOpen } = useAppState();
 
     return (
-        <div className={style.wrapper}>
+        <div className={`${style.wrapper} ${versionViewOpen ? style.versionView : ''}`}>
             {versionViewOpen ? (
                 <VersionSelector versions={versions} onClose={() => setVersionViewOpen(false)} />
             ) : null}
