@@ -9,6 +9,21 @@
     gap: 0.5rem;
 }
 
+.selectDeselectAllBox {
+    padding: 0.5rem 0;
+    border-bottom: solid 1px var(--a-border-divider);
+    width: 100%;
+}
+
+.checkboxGroup {
+    width: 100%;
+    border-radius: var(--a-border-radius-medium);
+}
+
+.checkboxGroup:nth-child(even) {
+    background-color: var(--a-surface-subtle);
+}
+
 .downloadBar {
     position: fixed;
     bottom: 0;
