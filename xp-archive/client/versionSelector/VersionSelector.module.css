@@ -7,6 +7,11 @@
 
 .heading {
     display: flex;
+    gap: 0.5rem;
+}
+
+.top {
+    display: flex;
     justify-content: space-between;
     align-items: flex-end;
 }

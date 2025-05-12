@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { CheckmarkIcon, XMarkIcon } from '@navikt/aksel-icons';
-import { Heading, Button, TextField } from '@navikt/ds-react';
+import { Heading, Button, HelpText, TextField } from '@navikt/ds-react';
 import { VersionReference } from 'shared/types';
 import { formatTimestamp } from '@common/shared/timestamp';
 import { useAppState } from 'client/context/appState/useAppState';
@@ -58,10 +58,17 @@ export const VersionSelector = ({ versions, onClose }: Props) => {
     return (
         <>
             <div className={style.headingAndFilter}>
-                <div className={style.heading}>
-                    <Heading size="xsmall" spacing>
-                        Versjoner
-                    </Heading>
+                <div className={style.top}>
+                    <span className={style.heading}>
+                        <Heading size="xsmall" spacing>
+                            Versjoner
+                        </Heading>
+                        <HelpText title={'Tips!'}>
+                            {
+                                '«Versjoner» viser kun innholdet for den valgte siden. For å søke på en annen side, må du først nullstille versjonssøket ved å klikke på krysset ved siden av «Versjoner».'
+                            }
+                        </HelpText>
+                    </span>
                     <Button
                         variant="tertiary-neutral"
                         icon={<XMarkIcon />}
