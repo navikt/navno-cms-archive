@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { CheckmarkIcon, XMarkIcon } from '@navikt/aksel-icons';
-import { Heading, Button, Search, HelpText, TextField } from '@navikt/ds-react';
+import { Heading, Button, HelpText, TextField } from '@navikt/ds-react';
 import { VersionReference } from 'shared/types';
 import { formatTimestamp } from '@common/shared/timestamp';
 import { useAppState } from 'client/context/appState/useAppState';
