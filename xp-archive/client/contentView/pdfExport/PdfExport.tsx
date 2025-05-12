@@ -16,6 +16,12 @@ export const PdfExport = ({ versions, locale }: Props) => {
     const [prevClickedIndex, setPrevClickedIndex] = useState(0);
     const [showError, setShowError] = useState(false);
 
+    const onSelectOrDeselectAll = () => {
+        versionsSelected.length === versions.length
+            ? setVersionsSelected([])
+            : setVersionsSelected(versions.map((v) => `${v.nodeId}:${v.versionId}`));
+    };
+
     const onCheckboxClick =
         (versionId: string, clickedIndex: number) => (e: React.MouseEvent<HTMLInputElement>) => {
             if (e.shiftKey) {
@@ -49,13 +55,16 @@ export const PdfExport = ({ versions, locale }: Props) => {
         <>
             <div className={style.wrapper}>
                 <div className={style.checkboxHeading}>
-                    <Heading size="xsmall"> Versjoner</Heading>
+                    <Heading size="medium"> Versjoner</Heading>
                     <HelpText title={'Tips!'}>
                         {
                             'Ved å holde inne ‘shift’-knappen, kan du markere flere versjoner samtidig.'
                         }
                     </HelpText>
                 </div>
+                <Checkbox onClick={onSelectOrDeselectAll} className={style.selectDeselectAllBox}>
+                    {versionsSelected.length === versions.length ? 'Nullstill valg' : 'Velg alle'}
+                </Checkbox>
                 <CheckboxGroup
                     legend="Versjoner"
                     value={versionsSelected}
@@ -67,6 +76,7 @@ export const PdfExport = ({ versions, locale }: Props) => {
                             onClick={onCheckboxClick(`${v.nodeId}:${v.versionId}`, i)}
                             key={v.versionId}
                             value={`${v.nodeId}:${v.versionId}`}
+                            className={style.checkboxGroup}
                         >
                             {v.displayName} {formatTimestamp(v.timestamp)}{' '}
                         </Checkbox>
