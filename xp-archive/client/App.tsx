@@ -6,7 +6,7 @@ import { AppDataComponent } from './appDataComponent/AppDataComponent';
 
 export const App = () => {
     return (
-        <AppLayout basePath={xpArchiveConfig.basePath} showUnderDevAlert>
+        <AppLayout basePath={xpArchiveConfig.basePath}>
             <AppStateProvider>
                 <AppDataComponent />
             </AppStateProvider>

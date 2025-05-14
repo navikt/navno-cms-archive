@@ -6,13 +6,12 @@ import style from './AppLayout.module.css';
 type Props = {
     basePath: string;
     children: React.ReactNode;
-    showUnderDevAlert?: boolean;
 };
 
-export const AppLayout = ({ basePath, children, showUnderDevAlert = false }: Props) => {
+export const AppLayout = ({ basePath, children }: Props) => {
     return (
         <div className={style.root}>
-            <AppTopSection basePath={basePath} showUnderDevAlert={showUnderDevAlert} />
+            <AppTopSection basePath={basePath} />
             {children}
         </div>
     );
