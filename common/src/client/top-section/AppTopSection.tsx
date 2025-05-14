@@ -6,23 +6,15 @@ import style from './AppTopSection.module.css';
 
 type Props = {
     basePath: string;
-    showUnderDevAlert: boolean;
 };
 
-export const AppTopSection = ({ basePath, showUnderDevAlert }: Props) => {
+export const AppTopSection = ({ basePath }: Props) => {
     return (
         <div className={style.header}>
             <InternalHeader className={style.header}>
                 <InternalHeader.Title>{`CMS-arkiv`}</InternalHeader.Title>
                 <ArchiveSelector basePath={basePath} />
             </InternalHeader>
-            {showUnderDevAlert ? (
-                <Alert variant={'warning'} className={style.devAlert} fullWidth>
-                    {
-                        'Obs! Denne delen av arkivet er fortsatt under utvikling og er IKKE klar til bruk.'
-                    }
-                </Alert>
-            ) : null}
         </div>
     );
 };
