@@ -3,7 +3,7 @@ import { CmsArchiveSite } from '../cms/CmsArchiveSite';
 import { CmsArchiveOpenSearchClient } from '../opensearch/CmsArchiveOpenSearchClient';
 import { render } from '../_ssr-dist/main-server';
 import puppeteer from 'puppeteer';
-import { xpArchiveConfig } from '@common/shared/siteConfigs';
+import { legacyArchiveConfigs } from '@common/shared/siteConfigs';
 import { buildHtmlRenderer } from '@common/server/ssr/initRenderer';
 import { setupErrorHandlers } from '@common/server/routing/errorHandlers';
 
@@ -34,7 +34,7 @@ export const setupSites = async (expressApp: Express) => {
     await Promise.all(sites.map((site) => site.init()));
 
     expressApp.get('/', (req, res) => {
-        return res.redirect(xpArchiveConfig.basePath);
+        return res.redirect(legacyArchiveConfigs[0].basePath);
     });
 
     setupErrorHandlers(expressApp);
