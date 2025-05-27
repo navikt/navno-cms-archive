@@ -18,12 +18,12 @@
         "dotenv": "16.5.0",
         "mime-types": "3.0.1",
         "node-cache": "5.1.2",
-        "puppeteer": "24.7.1"
+        "puppeteer": "24.9.0"
     },
     "devDependencies": {
         "@types/archiver": "6.0.3",
-        "@types/compression": "1.7.5",
-        "nodemon": "3.1.9"
+        "@types/compression": "1.8.0",
+        "nodemon": "3.1.10"
     },
     "nodemonConfig": {
         "delay": 500
