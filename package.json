@@ -14,7 +14,7 @@
         "@navikt/aksel-icons": "7.22.0",
         "@navikt/ds-css": "7.22.0",
         "@navikt/ds-react": "7.22.0",
-        "express": "4.21.2",
+        "express": "5.1.0",
         "react": "19.1.0",
         "react-dom": "19.1.0",
         "swr": "2.3.3",
