@@ -57,7 +57,7 @@ jobs:
               run: npm run build
               working-directory: xp-archive
             - name: Prune dependencies
-              run: npm prune --production
+              run: npm prune --omit=dev
               working-directory: xp-archive
             - name: Build and push docker image
               uses: nais/docker-build-push@v0
