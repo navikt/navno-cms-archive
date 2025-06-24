@@ -1,8 +1,4 @@
-import {
-    QueryDslQueryContainer,
-    SearchRequest,
-    SearchSort,
-} from '@opensearch-project/opensearch/api/types';
+import type { Types, API } from '@opensearch-project/opensearch';
 import {
     ContentSearchParams,
     ContentSearchSort,
@@ -23,7 +19,7 @@ const isValidSort = (sort: string): sort is ContentSearchSort =>
 const isValidType = (type: string): type is ContentSearchType =>
     typeParamsSet.has(type as ContentSearchType);
 
-const sortParams: Record<ContentSearchSort, SearchSort> = {
+const sortParams: Record<ContentSearchSort, Types.Common.SortOptions> = {
     score: {
         _score: 'desc',
     },
@@ -55,7 +51,7 @@ const includedFields = ['contentKey', 'versionKey', 'displayName', 'category.key
 export const buildContentSearchParams = (
     contentSearchParams: ContentSearchParams,
     categoriesService: CmsArchiveCategoriesService
-): SearchRequest => {
+): API.Search_Request => {
     const {
         query,
         from,
@@ -66,7 +62,7 @@ export const buildContentSearchParams = (
         withChildCategories,
     } = contentSearchParams;
 
-    const must: QueryDslQueryContainer[] = [
+    const must: Types.Common_QueryDsl.QueryContainer[] = [
         {
             term: {
                 isCurrentVersion: {
@@ -84,7 +80,6 @@ export const buildContentSearchParams = (
                 prefix: {
                     'locations.menuItemPath': {
                         value: decodeURIComponent(pathname),
-                        // @ts-expect-error (this is a valid field, not yet part of the library type def)
                         case_insensitive: true,
                     },
                 },

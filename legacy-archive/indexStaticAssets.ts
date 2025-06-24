@@ -3,7 +3,6 @@ import dotenv from 'dotenv';
 dotenv.config({ path: '.env' });
 
 import { Client } from '@opensearch-project/opensearch';
-import type { Client as ClientTypeNew } from '@opensearch-project/opensearch/api/new';
 import path from 'path';
 import fs from 'fs';
 import { randomUUID } from 'node:crypto';
@@ -19,8 +18,7 @@ type AssetDocument = {
 
 type CmsInstance = 'fss' | 'sbs';
 
-const { OPEN_SEARCH_URI, OPEN_SEARCH_USERNAME, OPEN_SEARCH_PASSWORD } =
-    process.env;
+const { OPEN_SEARCH_URI, OPEN_SEARCH_USERNAME, OPEN_SEARCH_PASSWORD } = process.env;
 
 const client = new Client({
     node: OPEN_SEARCH_URI,
@@ -28,14 +26,12 @@ const client = new Client({
         username: OPEN_SEARCH_USERNAME as string,
         password: OPEN_SEARCH_PASSWORD as string,
     },
-}) as unknown as ClientTypeNew;
+});
 
 const createIndex = async (instance: CmsInstance) => {
     const indexName = `cms${instance}_assets`;
 
-    const indexExists = await client.indices
-        .exists({ index: indexName })
-        .then((res) => res.body);
+    const indexExists = await client.indices.exists({ index: indexName }).then((res) => res.body);
 
     if (indexExists) {
         console.log(`Index ${indexName} already exists`);
@@ -100,11 +96,7 @@ const enumerateFiles = (systemBaseDir: string, dirname: string): string[] => {
     return files;
 };
 
-const indexFile = async (
-    indexName: string,
-    baseDir: string,
-    filePath: string
-) => {
+const indexFile = async (indexName: string, baseDir: string, filePath: string) => {
     const fullPath = path.join(baseDir, filePath);
     const fileData = fs.readFileSync(fullPath);
     const fileStats = fs.lstatSync(fullPath);

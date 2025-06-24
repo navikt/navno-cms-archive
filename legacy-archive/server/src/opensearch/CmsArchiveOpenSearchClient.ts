@@ -1,10 +1,12 @@
 import { Client, errors } from '@opensearch-project/opensearch';
-import { GetRequest, MgetRequest, SearchRequest } from '@opensearch-project/opensearch/api/types';
-// The more thorough type definition for the client are officially "not finished" as of v2.5
-// but are good enough for our use
-import type { Client as ClientTypeNew } from '@opensearch-project/opensearch/api/new';
+import {
+    Get_Request,
+    Mget_Request,
+    Mget_Response,
+    Search_Request,
+} from '@opensearch-project/opensearch/api/index.js';
 
-type DocumentWithScore<Document> = Document & { _score?: number };
+type DocumentWithScore<Document> = Document & { _score?: number | string };
 
 export type SearchResult<Document> = {
     hits: Array<DocumentWithScore<Document>>;
@@ -22,7 +24,7 @@ const logException = (e: unknown) => {
 };
 
 export class CmsArchiveOpenSearchClient {
-    private readonly openSearchClient: ClientTypeNew;
+    private readonly openSearchClient: Client;
 
     constructor() {
         const { OPEN_SEARCH_URI, OPEN_SEARCH_USERNAME, OPEN_SEARCH_PASSWORD } = process.env;
@@ -33,12 +35,12 @@ export class CmsArchiveOpenSearchClient {
                 username: OPEN_SEARCH_USERNAME,
                 password: OPEN_SEARCH_PASSWORD,
             },
-        }) as unknown as ClientTypeNew;
+        });
     }
 
-    public async search<Document>(params: SearchRequest): Promise<SearchResult<Document> | null> {
+    public async search<Document>(params: Search_Request): Promise<SearchResult<Document> | null> {
         return this.openSearchClient
-            .search<Document>(params)
+            .search(params)
             .then((result) => {
                 if (result.statusCode !== 200) {
                     console.error(`Error response from search: ${result.statusCode}`, result);
@@ -49,7 +51,7 @@ export class CmsArchiveOpenSearchClient {
                     (acc, hit) => {
                         const { _source, _score } = hit;
                         if (_source) {
-                            acc.push({ ..._source, _score });
+                            acc.push({ ...(_source as Document), _score });
                         }
 
                         return acc;
@@ -57,11 +59,11 @@ export class CmsArchiveOpenSearchClient {
                     []
                 );
 
-                const total = result.body.hits.total;
+                const total = result.body.hits.total ?? 0;
 
                 return {
                     hits,
-                    total: typeof total === 'number' ? total : total.value,
+                    total: typeof total === 'number' ? total : total?.value,
                 };
             })
             .catch((e: unknown) => {
@@ -70,16 +72,16 @@ export class CmsArchiveOpenSearchClient {
             });
     }
 
-    public async getDocument<Document>(params: GetRequest): Promise<Document | null> {
+    public async getDocument<Document>(params: Get_Request): Promise<Document | null> {
         return this.openSearchClient
-            .get<Document>(params)
+            .get(params)
             .then((result) => {
                 if (result.statusCode !== 200) {
                     console.error(`Error response from get document: ${result.statusCode}`, result);
                     return null;
                 }
 
-                return result.body._source || null;
+                return (result.body._source as Document) || null;
             })
             .catch((e: unknown) => {
                 logException(e);
@@ -87,18 +89,19 @@ export class CmsArchiveOpenSearchClient {
             });
     }
 
-    public async getDocuments<Document>(params: MgetRequest): Promise<Document[] | null> {
+    public async getDocuments<Document>(params: Mget_Request): Promise<Document[] | null> {
         return this.openSearchClient
-            .mget<Document>(params)
-            .then((result) => {
+            .mget(params)
+            .then((result: Mget_Response) => {
                 if (result.statusCode !== 200) {
                     console.error(`Error response from get document: ${result.statusCode}`, result);
                     return null;
                 }
 
-                return result.body.docs.reduce<Document[]>((acc, { _source }) => {
-                    if (_source) {
-                        acc.push(_source);
+                return result.body.docs.reduce<Document[]>((acc, res) => {
+                    if ('_source' in res && res._source) {
+                        const doc = res._source as Document;
+                        acc.push(doc);
                     }
 
                     return acc;

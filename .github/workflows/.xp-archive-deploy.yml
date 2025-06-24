@@ -56,9 +56,6 @@ jobs:
             - name: Build application
               run: npm run build
               working-directory: xp-archive
-            - name: Prune dependencies
-              run: npm prune --production
-              working-directory: xp-archive
             - name: Build and push docker image
               uses: nais/docker-build-push@v0
               id: docker-push
@@ -67,6 +64,8 @@ jobs:
                   project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
                   identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
                   dockerfile: Dockerfile_xp
+                  cache_from: '' # Disable cache
+                  cache_to: '' # Disable cache
                   image_suffix: ${{ inputs.naisEnv }}
             - name: Deploy application
               uses: nais/deploy/actions/deploy@v2
