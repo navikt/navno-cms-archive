@@ -70,7 +70,7 @@ Lag en PR til main, og merge inn etter godkjenning (En automatisk release vil op
 
 Dette er et arkiv av innhold fra Enonic CMS, som Nav benyttet fra 2006-2019. Arkivet har to deler: SBS (nav.no og annet åpent innhold) og FSS (intranett).
 
-Innholdet ble migrert til en Opensearch-database: https://opensearch-personbruker-enonic-cms-archive-nav-prod.a.aivencloud.com
+Innholdet ble migrert til en Opensearch-database: https://opensearch-navno-enonic-cms-archive-nav-prod.a.aivencloud.com
 
 Migrerings-applikasjonen finnes her: https://github.com/navikt/enonic-cms-site-extractor
 

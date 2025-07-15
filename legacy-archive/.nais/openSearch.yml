@@ -26,4 +26,4 @@ spec:
   project: nav-prod
   integrationType: prometheus
   destinationEndpointId: 76685598-1048-4f56-b34a-9769ef747a92
-  sourceServiceName: opensearch-personbruker-enonic-cms-archive
+  sourceServiceName: opensearch-navno-enonic-cms-archive
