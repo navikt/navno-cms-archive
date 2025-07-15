@@ -97,7 +97,7 @@ Be om tilgang til aiven-prod i naisdevice.
 Åpne secret:
 
 ```
-kubectl edit secret -n personbruker aiven-personbruker-cms-archive-<id> //Bytt ut <id> med id fra lista
+kubectl edit secret -n personbruker aiven-navno-cms-archive-<id> //Bytt ut <id> med id fra lista
 ```
 
 Dekod OPEN_SEARCH_URI, OPEN_SEARCH_USERNAME og OPEN_SEARCH_PASSWORD fra base64:
