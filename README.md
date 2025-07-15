@@ -78,7 +78,7 @@ Logger for migreringsjobbene finnes i Opensearch-databasen, under index'ene `cms
 
 ### Oppsett for utvikling
 
-Credentials for opensearch må legges inn i .env filer lokalt. Disse kan hentes ut fra kubernetes secret `aiven-navno-cms-archive-*`.
+Credentials for opensearch må legges inn i .env filer lokalt. Disse kan hentes ut fra kubernetes secret `aiven-personbruker-cms-archive-*`.
 
 Sett context til prod-gcp:
 
