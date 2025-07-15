@@ -3,7 +3,7 @@ kind: OpenSearch
 metadata:
   labels:
     team: navno
-  name: opensearch-personbruker-enonic-cms-archive
+  name: opensearch-navno-enonic-cms-archive
   namespace: navno
 spec:
   plan: startup-8
@@ -20,10 +20,10 @@ kind: ServiceIntegration
 metadata:
   labels:
     team: navno
-  name: opensearch-personbruker-enonic-cms-archive
+  name: opensearch-navno-enonic-cms-archive
   namespace: navno
 spec:
   project: nav-prod
   integrationType: prometheus
   destinationEndpointId: 76685598-1048-4f56-b34a-9769ef747a92
-  sourceServiceName: opensearch-personbruker-enonic-cms-archive
+  sourceServiceName: opensearch-navno-enonic-cms-archive
