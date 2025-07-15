@@ -9,6 +9,7 @@ https://cms-arkiv.intern.nav.no
 For å kjøre opp applikasjonene må man gjøre følgende:
 
 1. Installere avhengigheter
+
    Både i rot men også inne i de to respektive applikasjonene. Avhengigheter i common-mappa blir installert fra rot da det er definert som et workspace.
 
 ```
@@ -23,6 +24,7 @@ npm run build -C xp-archive
 ```
 
 3. (Kun første gang) Kopiere .env-template.
+
    Husk å endre NODE_ENV=production i .env.prod-local filen.
 
 ```
@@ -38,6 +40,7 @@ Sett NODE_ENV=production i xp-archive/.env.prod-local og legacy-archive/.env.pro
 For legacy arkivet trenger du også credentials for open-search, se [Enonic CMS legacy arkiv](#enonic-cms-legacy-arkiv-2006-2019)
 
 4. Starte applikasjon i dev-modus
+
    For legacy-archive må man logge på aiven-prod i naisdevice.
 
 ```
@@ -46,6 +49,7 @@ npm run dev -C xp-archive
 ```
 
 5. Relaterte applikasjoner
+
    Vi bruker tjenester i nav-enonicxp for å hente ut innholdsinformasjon og nav-enonicxp-frontend for å rendre innholdet, så de må kjøres opp lokalt for å få hentet informasjon.
 
 ### Troubleshooting
