@@ -117,7 +117,7 @@ export class CmsArchiveSite {
 
     private setupSiteRoutes(router: Router, htmlRenderer: HtmlRenderer) {
         // Redirect from internal urls
-        router.get('*splat', (req, res, next) => {
+        router.get('/*splat', (req, res, next) => {
             const { hostname, protocol, originalUrl } = req;
 
             if (hostname.endsWith(HOST_SUFFIX_INTERNAL)) {
