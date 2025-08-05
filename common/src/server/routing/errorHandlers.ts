@@ -21,7 +21,7 @@ export const setupErrorHandlers = (router: Router) => {
         return res.status(statusCode).end();
     };
 
-    router.use('*', notFoundHandler);
+    router.use('/{*splat}', notFoundHandler);
 
     router.use(serverErrorHandler);
 };
