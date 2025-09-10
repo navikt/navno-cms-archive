@@ -10,6 +10,7 @@ import { RequestHandler, Response } from 'express';
 import { validateQuery } from 'utils/params';
 import archiver from 'archiver';
 import { ContentServiceResponse } from '../../../shared/types';
+import { formatTimestampForPDF } from '../../../../common/src/shared/timestamp';
 
 const DEFAULT_WIDTH_PX = 1024;
 const MIN_WIDTH_PX = 400;
@@ -77,7 +78,7 @@ export class PdfService {
         const newestVersion = pdfs[0];
         const oldestVersion = pdfs[pdfs.length - 1];
 
-        const zipFilename = `${newestVersion.filename}_${oldestVersion.timestamp}-${newestVersion.timestamp}.zip`;
+        const zipFilename = `${newestVersion.filename}_${formatTimestampForPDF(oldestVersion.timestamp)}-${formatTimestampForPDF(newestVersion.timestamp)}.zip`;
 
         res.setHeader(
             'Content-Disposition',
