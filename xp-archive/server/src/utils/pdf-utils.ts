@@ -1,4 +1,4 @@
-import { formatTimestamp } from '@common/shared/timestamp';
+import { formatTimestamp, formatTimestampForPDF } from '@common/shared/timestamp';
 import { pruneString } from '@common/shared/pruneString';
 import { ContentServiceResponse } from '../../../shared/types';
 
@@ -21,7 +21,7 @@ export const generatePdfInfo = (content: ContentServiceResponse) => `
     </div>`;
 
 const generateFilename = (content: ContentServiceResponse) =>
-    `${content.json.modifiedTime}_${content.json.displayName}_${content.json._versionKey}`;
+    `${formatTimestampForPDF(content.json.modifiedTime)}_${content.json.displayName}_${content.json._versionKey}`;
 
 export const generatePdfFilename = (content: ContentServiceResponse) =>
     `${generateFilename(content)}.pdf`;
