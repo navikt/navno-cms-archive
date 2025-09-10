@@ -21,7 +21,7 @@ export const generatePdfInfo = (content: ContentServiceResponse) => `
     </div>`;
 
 const generateFilename = (content: ContentServiceResponse) =>
-    `${content.json.modifiedTime}_${content.json.displayName}_${content.json._id}-${content.json._versionKey}`;
+    `${content.json.modifiedTime}_${content.json.displayName}_${content.json._versionKey}`;
 
 export const generatePdfFilename = (content: ContentServiceResponse) =>
     `${generateFilename(content)}.pdf`;
