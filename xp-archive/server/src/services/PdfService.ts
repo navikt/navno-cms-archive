@@ -78,7 +78,7 @@ export class PdfService {
         const newestVersion = pdfs[0];
         const oldestVersion = pdfs[pdfs.length - 1];
 
-        const zipFilename = `${newestVersion.filename}_${formatTimestampForPDF(oldestVersion.timestamp)}-${formatTimestampForPDF(newestVersion.timestamp)}.zip`;
+        const zipFilename = `${newestVersion.filename.replace('.pdf', '').slice(0, 40)}_${formatTimestampForPDF(oldestVersion.timestamp)}-${formatTimestampForPDF(newestVersion.timestamp)}.zip`;
 
         res.setHeader(
             'Content-Disposition',
