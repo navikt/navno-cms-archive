@@ -2,9 +2,9 @@ apiVersion: aiven.io/v1alpha1
 kind: OpenSearch
 metadata:
   labels:
-    team: personbruker
-  name: opensearch-personbruker-enonic-cms-archive
-  namespace: personbruker
+    team: navno
+  name: opensearch-navno-enonic-cms-archive
+  namespace: navno
 spec:
   plan: startup-8
   project: nav-prod
@@ -19,11 +19,11 @@ apiVersion: aiven.io/v1alpha1
 kind: ServiceIntegration
 metadata:
   labels:
-    team: personbruker
-  name: opensearch-personbruker-enonic-cms-archive
-  namespace: personbruker
+    team: navno
+  name: opensearch-navno-enonic-cms-archive
+  namespace: navno
 spec:
   project: nav-prod
   integrationType: prometheus
   destinationEndpointId: 76685598-1048-4f56-b34a-9769ef747a92
-  sourceServiceName: opensearch-personbruker-enonic-cms-archive
+  sourceServiceName: opensearch-navno-enonic-cms-archive
