@@ -91,17 +91,22 @@ export class PdfGenerator {
 
     public async generatePdfFromVersion(
         versionKey: string,
-        width: number = DEFAULT_WIDTH_PX
+        width: number = DEFAULT_WIDTH_PX,
+        req?: Request
     ): Promise<PdfResult | null> {
         const content = await this.contentService.getContentVersion(versionKey);
         if (!content?.html) {
             return null;
         }
 
-        return this.generateContentPdf(content, width);
+        return this.generateContentPdf(content, width, req);
     }
 
-    private async generateContentPdf(content: CmsContent, width: number): Promise<PdfResult> {
+    private async generateContentPdf(
+        content: CmsContent,
+        width: number,
+        req?: Express.Request
+    ): Promise<PdfResult> {
         const { html, versionKey } = content;
         if (!html) {
             return {
@@ -126,10 +131,34 @@ export class PdfGenerator {
             `<head><base href="${process.env.APP_ORIGIN_INTERNAL}"/>`
         );
 
-        console.log(htmlWithBase)
+        console.log(htmlWithBase);
 
         try {
             const page = await this.browser.newPage();
+
+            if (req) {
+                // Forward cookies
+                if (req.headers.cookie) {
+                    const cookies = req.headers.cookie.split(';').map((cookieStr) => {
+                        const [name, ...rest] = cookieStr.trim().split('=');
+                        return {
+                            name,
+                            value: rest.join('='),
+                            domain: req.hostname, // adjust if needed
+                        };
+                    });
+                    await page.setCookie(...cookies);
+                }
+                // Forward headers (e.g., Authorization)
+                const extraHeaders: Record<string, string> = {};
+                if (req.headers.authorization) {
+                    extraHeaders['authorization'] = req.headers.authorization;
+                }
+                // Add more headers as needed
+                if (Object.keys(extraHeaders).length > 0) {
+                    await page.setExtraHTTPHeaders(extraHeaders);
+                }
+            }
 
             await page.setViewport({ width: widthActual, height: 1024 });
             await page.emulateMediaType('screen');
