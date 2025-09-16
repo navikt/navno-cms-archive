@@ -36,6 +36,7 @@ spec:
     outbound:
       external:
         - host: cms-arkiv.intern.nav.no
+        - host: cms-arkiv.ansatt.nav.no
   replicas:
     min: 1
     max: 1
