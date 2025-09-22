@@ -14,9 +14,9 @@
         "dev": "cp .env.development .env && npm run dev --prefix server"
     },
     "dependencies": {
-        "@mui/material": "7.3.0",
-        "@mui/system": "7.3.0",
-        "@mui/x-tree-view": "8.9.2",
+        "@mui/material": "7.3.2",
+        "@mui/system": "7.3.2",
+        "@mui/x-tree-view": "8.11.3",
         "js-cookie": "3.0.5",
         "lodash.debounce": "4.0.8",
         "react-xml-viewer": "3.0.1"
