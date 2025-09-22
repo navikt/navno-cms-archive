@@ -35,10 +35,8 @@ cp xp-archive/.env-template xp-archive/.env.prod-local
 
 Sett NODE_ENV=production i xp-archive/.env.prod-local og legacy-archive/.env.prod-local
 
-For legacy arkivet trenger du også credentials for open-search, se [Enonic CMS legacy arkiv](#enonic-cms-legacy-arkiv-2006-2019)
-
 4. Starte applikasjon i dev-modus
-   For legacy-archive må man logge på aiven-prod i naisdevice.
+   For legacy arkivet trenger du også credentials for open-search, se [Enonic CMS legacy arkiv](#enonic-cms-legacy-arkiv-2006-2019), og så må man logge på aiven-prod i naisdevice. Brukernavn og passord roterer, så disse må oppdateres med jevne mellomrom.
 
 ```
 npm run dev -C legacy-archive
@@ -50,6 +48,8 @@ npm run dev -C xp-archive
 
 ### Troubleshooting
 
+#### CSS + JS laster ikke
+
 Hvis du har problemer med at css og js ikke laster ved første oppstart i dev-modus, prøv å start appen i prod-modus en gang og se om det løser problemet.
 
 ```
@@ -58,11 +58,15 @@ npm run start-local -C xp-archive
 
 Hvis iframes ikke vises, sjekk om du får cors-issues i srcdoc. Disse vil oppstå hvis du kjører nav-enonicxp-frontend i dev-modus og ikke i prod-modus.
 
+#### OpenSearch error: Response Error ved oppstart av legacy-arkiv
+
+Antageligvis er du enten ikke koblet til aiven-prod eller så har du ikke oppdatert brukernavn og passord til opensearch, se [Oppsett for lokal utvikling](#oppsett-for-utvikling).
+
 ## Prodsetting
 
 Lag en PR til main, og merge inn etter godkjenning (En automatisk release vil oppstå ved deploy til main)
 
-## <a name="enonic-legacy"></a> Enonic CMS legacy arkiv (2006-2019)
+## Enonic CMS legacy arkiv (2006-2019)
 
 Dette er et arkiv av innhold fra Enonic CMS, som Nav benyttet fra 2006-2019. Arkivet har to deler: SBS (nav.no og annet åpent innhold) og FSS (intranett).
 
@@ -93,7 +97,7 @@ Be om tilgang til aiven-prod i naisdevice.
 Åpne secret:
 
 ```
-kubectl edit secret -n personbruker aiven-navno-cms-archive-<id> //Bytt ut <id> med id fra lista
+kubectl edit secret -n personbruker aiven-opensearch-navno-cms-archive-<id> //Bytt ut <id> med id fra lista
 ```
 
 Dekod OPEN_SEARCH_URI, OPEN_SEARCH_USERNAME og OPEN_SEARCH_PASSWORD fra base64:

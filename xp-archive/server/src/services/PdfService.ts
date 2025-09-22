@@ -10,6 +10,7 @@ import { RequestHandler, Response } from 'express';
 import { validateQuery } from 'utils/params';
 import archiver from 'archiver';
 import { ContentServiceResponse } from '../../../shared/types';
+import { formatTimestampForPDF } from '../../../../common/src/shared/timestamp';
 
 const DEFAULT_WIDTH_PX = 1024;
 const MIN_WIDTH_PX = 400;
@@ -18,6 +19,7 @@ type PdfResult = {
     data: Buffer;
     timestamp: string;
     filename: string;
+    displayName: string;
 };
 
 type PdfServiceProps = {
@@ -77,7 +79,7 @@ export class PdfService {
         const newestVersion = pdfs[0];
         const oldestVersion = pdfs[pdfs.length - 1];
 
-        const zipFilename = `${newestVersion.filename}_${oldestVersion.timestamp}-${newestVersion.timestamp}.zip`;
+        const zipFilename = `${newestVersion.displayName.slice(0, 50)}.zip`;
 
         res.setHeader(
             'Content-Disposition',
@@ -118,6 +120,7 @@ export class PdfService {
                 ),
                 timestamp: json.createdTime,
                 filename: generateErrorFilename(content),
+                displayName: json.displayName,
             };
         }
 
@@ -156,6 +159,7 @@ export class PdfService {
                 data: Buffer.from(pdf),
                 timestamp: json.createdTime,
                 filename: generatePdfFilename(content),
+                displayName: json.displayName,
             };
         } catch (e) {
             const msg = `Error while generating PDF for content version ${json._versionKey} - ${e}`;
@@ -164,6 +168,7 @@ export class PdfService {
                 data: Buffer.from(msg),
                 timestamp: json.createdTime,
                 filename: generateErrorFilename(content),
+                displayName: json.displayName,
             };
         }
     }

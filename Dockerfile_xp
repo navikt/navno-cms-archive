@@ -14,7 +14,7 @@ ENV XDG_CACHE_HOME=/tmp/.chromium
 COPY node_modules /app/node_modules/
 COPY .cache/puppeteer /app/.puppeteer-cache/
 COPY xp-archive/.env /app/xp-archive/
-COPY xp-archive/node_modules /app/xp-archive/node_modules/
+COPY xp-archive/node_modules* /app/xp-archive/node_modules/
 COPY xp-archive/server/dist /app/xp-archive/server/dist/
 COPY xp-archive/server/package.json /app/xp-archive/server/
 

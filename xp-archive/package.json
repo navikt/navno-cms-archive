@@ -14,9 +14,9 @@
         "dev": "cp .env.development .env && npm run dev --prefix server"
     },
     "dependencies": {
-        "@mui/material": "7.0.2",
-        "@mui/x-tree-view": "8.1.0",
-        "react-json-view-lite": "2.4.1"
+        "@mui/material": "7.3.2",
+        "@mui/x-tree-view": "8.11.3",
+        "react-json-view-lite": "2.5.0"
     },
     "devDependencies": {}
 }

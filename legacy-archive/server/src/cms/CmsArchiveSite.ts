@@ -117,7 +117,7 @@ export class CmsArchiveSite {
 
     private setupSiteRoutes(router: Router, htmlRenderer: HtmlRenderer) {
         // Redirect from internal urls
-        router.get('*', (req, res, next) => {
+        router.get('/*splat', (req, res, next) => {
             const { hostname, protocol, originalUrl } = req;
 
             if (hostname.endsWith(HOST_SUFFIX_INTERNAL)) {
@@ -128,7 +128,7 @@ export class CmsArchiveSite {
             return next();
         });
 
-        router.get('/:versionKey?', cspMiddleware, async (req, res) => {
+        router.get('/{:versionKey}', cspMiddleware, async (req, res) => {
             const rootCategories = this.categoriesService.getRootCategories();
 
             const appContext = {
@@ -215,7 +215,7 @@ export class CmsArchiveSite {
             return this.cmsBinaryResponse(file.filename, file.data, 'inline', res);
         });
 
-        router.use('/*/_image/:contentKey.:extension', async (req, res, next) => {
+        router.use('/*splat/_image/:contentKey.:extension', async (req, res, next) => {
             const content = await this.contentService.getContent(req.params.contentKey);
             if (!content) {
                 return next();
@@ -235,7 +235,7 @@ export class CmsArchiveSite {
             return this.cmsBinaryResponse(binary.filename, binary.data, 'inline', res);
         });
 
-        router.use('/*/_image/:contentKey/label/:label.:extension', async (req, res, next) => {
+        router.use('/*splat/_image/:contentKey/label/:label.:extension', async (req, res, next) => {
             const content = await this.contentService.getContent(req.params.contentKey);
             if (!content) {
                 return next();

@@ -28,7 +28,7 @@ spec:
     - name: APP_BASEPATH
       value: "/"
     - name: APP_ORIGIN_INTERNAL
-      value: "https://cms-arkiv.intern.nav.no"
+      value: "https://cms-arkiv.ansatt.nav.no"
   openSearch:
     access: read
     instance: enonic-cms-archive
@@ -36,6 +36,9 @@ spec:
     outbound:
       external:
         - host: cms-arkiv.intern.nav.no
+        - host: cms-arkiv.ansatt.nav.no
+        - host: www.nav.no
+        - host: beta.nav.no
   replicas:
     min: 1
     max: 1

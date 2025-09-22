@@ -49,7 +49,22 @@ const setupApiRoutes = async (router: Router) => {
 const setupBrowserRoutes = async (router: Router, htmlRenderer: HtmlRenderer) => {
     const contentService = new ContentService();
 
-    router.get('/html/:contentId/:locale/:versionId?', async (req, res, next) => {
+    router.get('/html/:contentId/:locale', async (req, res, next) => {
+        const { contentId, locale } = req.params;
+
+        const content = await contentService.fetchContent(contentId, locale);
+        if (!content) {
+            return next();
+        }
+
+        if (!content.html) {
+            return res.status(406).send('This content does not have an html representation.');
+        }
+
+        return res.send(content.html);
+    });
+
+    router.get('/html/:contentId/:locale/:versionId', async (req, res, next) => {
         const { contentId, locale, versionId } = req.params;
 
         const content = await contentService.fetchContent(contentId, locale, versionId);
@@ -64,7 +79,24 @@ const setupBrowserRoutes = async (router: Router, htmlRenderer: HtmlRenderer) =>
         return res.send(content.html);
     });
 
-    router.get('/:contentId/:locale/:versionId?', async (req, res, next) => {
+    router.get('/:contentId/:locale', async (req, res, next) => {
+        const { contentId, locale } = req.params;
+
+        const content = await contentService.fetchContent(contentId, locale);
+        if (!content) {
+            return next();
+        }
+
+        const contextContent = {
+            ...content,
+            html: undefined,
+        };
+
+        const html = await htmlRenderer(req.url, { content: contextContent });
+        return res.send(html);
+    });
+
+    router.get('/:contentId/:locale/:versionId', async (req, res, next) => {
         const { contentId, locale, versionId } = req.params;
 
         const content = await contentService.fetchContent(contentId, locale, versionId);
