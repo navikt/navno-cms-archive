@@ -56,7 +56,7 @@ export class PdfGenerator {
         const newestVersion = contentVersions[0];
         const oldestVersion = contentVersions[contentVersions.length - 1];
 
-        const zipFilename = `${newestVersion.name}_${oldestVersion.meta.timestamp}-${newestVersion.meta.timestamp}.zip`;
+        const zipFilename = `${newestVersion.name.slice(0, 50)}.zip`;
 
         res.setHeader(
             'Content-Disposition',
