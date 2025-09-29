@@ -70,7 +70,7 @@ Lag en PR til main, og merge inn etter godkjenning (En automatisk release vil op
 
 Dette er et arkiv av innhold fra Enonic CMS, som Nav benyttet fra 2006-2019. Arkivet har to deler: SBS (nav.no og annet åpent innhold) og FSS (intranett).
 
-Innholdet ble migrert til en Opensearch-database: https://opensearch-navno-enonic-cms-archive-nav-prod.a.aivencloud.com
+Innholdet ble migrert til en Opensearch-database: https://opensearch-personbruker-enonic-cms-archive-nav-prod.a.aivencloud.com
 
 Migrerings-applikasjonen finnes her: https://github.com/navikt/enonic-cms-site-extractor
 
@@ -78,7 +78,7 @@ Logger for migreringsjobbene finnes i Opensearch-databasen, under index'ene `cms
 
 ### Oppsett for utvikling
 
-Credentials for opensearch må legges inn i .env filer lokalt. Disse kan hentes ut fra kubernetes secret `aiven-navno-cms-archive-*`.
+Credentials for opensearch må legges inn i .env filer lokalt. Disse kan hentes ut fra kubernetes secret `aiven-personbruker-cms-archive-*`.
 
 Sett context til prod-gcp:
 
@@ -89,7 +89,7 @@ kubectl config use-context prod-gcp
 List ut secrets:
 
 ```
-kubectl get secret -n navno
+kubectl get secret -n personbruker
 ```
 
 Be om tilgang til aiven-prod i naisdevice.
@@ -97,7 +97,7 @@ Be om tilgang til aiven-prod i naisdevice.
 Åpne secret:
 
 ```
-kubectl edit secret -n navno aiven-opensearch-navno-cms-archive-<id> //Bytt ut <id> med id fra lista
+kubectl edit secret -n personbruker aiven-opensearch-personbruker-cms-archive-<id> //Bytt ut <id> med id fra lista
 ```
 
 Dekod OPEN_SEARCH_URI, OPEN_SEARCH_USERNAME og OPEN_SEARCH_PASSWORD fra base64:
