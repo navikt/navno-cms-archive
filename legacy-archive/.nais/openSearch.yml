@@ -1,29 +1,28 @@
 apiVersion: aiven.io/v1alpha1
 kind: OpenSearch
 metadata:
-  labels:
-    team: personbruker
-  name: opensearch-personbruker-enonic-cms-archive
-  namespace: personbruker
+    labels:
+        team: personbruker
+    name: opensearch-personbruker-enonic-cms-archive
+    namespace: personbruker
 spec:
-  plan: startup-8
-  project: nav-prod
-  disk_space: 755GiB
-  userConfig:
-    opensearch:
-      http_max_content_length: 2147483647
+    plan: startup-8
+    project: nav-prod
+    disk_space: 755GiB
+    userConfig:
+        opensearch:
+            http_max_content_length: 2147483647
 
 ---
-
 apiVersion: aiven.io/v1alpha1
 kind: ServiceIntegration
 metadata:
-  labels:
-    team: personbruker
-  name: opensearch-personbruker-enonic-cms-archive
-  namespace: personbruker
+    labels:
+        team: personbruker
+    name: opensearch-personbruker-enonic-cms-archive
+    namespace: personbruker
 spec:
-  project: nav-prod
-  integrationType: prometheus
-  destinationEndpointId: 76685598-1048-4f56-b34a-9769ef747a92
-  sourceServiceName: opensearch-personbruker-enonic-cms-archive
+    project: nav-prod
+    integrationType: prometheus
+    destinationEndpointId: 76685598-1048-4f56-b34a-9769ef747a92
+    sourceServiceName: opensearch-personbruker-enonic-cms-archive
