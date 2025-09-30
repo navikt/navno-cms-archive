@@ -81,6 +81,8 @@ export class PdfGenerator {
                 continue;
             }
 
+            console.log(JSON.stringify(content, null, 2));
+
             await this.generateContentPdf(content, width).then((result) => {
                 archive.append(result.data, { name: result.filename });
             });
