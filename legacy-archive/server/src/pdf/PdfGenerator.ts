@@ -125,7 +125,7 @@ export class PdfGenerator {
         // Ensures assets with relative urls are loaded from the correct origin
         const htmlWithBase = html.replace(
             '<head>',
-            `<head><base href="${process.env.APP_ORIGIN_INTERNAL.replace('ansatt', 'intern')}"/>`
+            `<head><base href="${process.env.APP_ORIGIN_INTERNAL}"/>`
         );
 
         console.log('html', html);
