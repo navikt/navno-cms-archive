@@ -128,6 +128,7 @@ export class PdfGenerator {
             `<head><base href="${process.env.APP_ORIGIN_INTERNAL}"/>`
         );
 
+        console.log('html', html);
         console.log('htmlWithBase', htmlWithBase);
 
         try {
