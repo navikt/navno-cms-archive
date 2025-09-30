@@ -81,8 +81,6 @@ export class PdfGenerator {
                 continue;
             }
 
-            console.log(JSON.stringify(content, null, 2));
-
             await this.generateContentPdf(content, width).then((result) => {
                 archive.append(result.data, { name: result.filename });
             });
@@ -125,11 +123,8 @@ export class PdfGenerator {
         // Ensures assets with relative urls are loaded from the correct origin
         const htmlWithBase = html.replace(
             '<head>',
-            `<head><base href="https://cms-arkiv.intern.nav.no"/>`
+            `<head><base href="${process.env.APP_ORIGIN_INTERNAL}"/>`
         );
-
-        console.log('html', html);
-        console.log('htmlWithBase', htmlWithBase);
 
         try {
             const page = await this.browser.newPage();
