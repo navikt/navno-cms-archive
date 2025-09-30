@@ -120,6 +120,7 @@ export class CmsArchiveSite {
         router.get('/*splat', (req, res, next) => {
             const { hostname, protocol, originalUrl, url } = req;
 
+            console.log('url', url, 'originalUrl', originalUrl, 'host', hostname);
             if (hostname.endsWith(HOST_SUFFIX_INTERNAL) && !url.includes('/_public/')) {
                 const externalUrl = `${protocol}://${hostname.replace(HOST_SUFFIX_INTERNAL, HOST_SUFFIX_EXTERNAL)}${originalUrl}`;
                 return res.redirect(externalUrl);
