@@ -3,9 +3,9 @@ apiVersion: nais.io/v1alpha1
 kind: Application
 metadata:
   name: navno-cms-archive
-  namespace: navno
+  namespace: personbruker
   labels:
-    team: navno
+    team: personbruker
 spec:
   image: {{image}}
   port: 3399
@@ -32,7 +32,6 @@ spec:
   openSearch:
     access: read
     instance: enonic-cms-archive
-    namespace: personbruker
   accessPolicy:
     outbound:
       external:
