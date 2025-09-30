@@ -125,7 +125,7 @@ export class PdfGenerator {
         // Ensures assets with relative urls are loaded from the correct origin
         const htmlWithBase = html.replace(
             '<head>',
-            `<head><base href="${process.env.APP_ORIGIN_INTERNAL}"/>`
+            `<head><base href="https://cms-arkiv.intern.nav.no"/>`
         );
 
         console.log('html', html);

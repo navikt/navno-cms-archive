@@ -117,16 +117,16 @@ export class CmsArchiveSite {
 
     private setupSiteRoutes(router: Router, htmlRenderer: HtmlRenderer) {
         // Redirect from internal urls
-        router.get('/*splat', (req, res, next) => {
-            const { hostname, protocol, originalUrl } = req;
+        // router.get('/*splat', (req, res, next) => {
+        //     const { hostname, protocol, originalUrl } = req;
 
-            if (hostname.endsWith(HOST_SUFFIX_INTERNAL)) {
-                const externalUrl = `${protocol}://${hostname.replace(HOST_SUFFIX_INTERNAL, HOST_SUFFIX_EXTERNAL)}${originalUrl}`;
-                return res.redirect(externalUrl);
-            }
+        //     // if (hostname.endsWith(HOST_SUFFIX_INTERNAL)) {
+        //     //     const externalUrl = `${protocol}://${hostname.replace(HOST_SUFFIX_INTERNAL, HOST_SUFFIX_EXTERNAL)}${originalUrl}`;
+        //     //     return res.redirect(externalUrl);
+        //     // }
 
-            return next();
-        });
+        //     return next();
+        // });
 
         router.get('/{:versionKey}', cspMiddleware, async (req, res) => {
             const rootCategories = this.categoriesService.getRootCategories();
