@@ -114,12 +114,6 @@ export class PdfGenerator {
 
         const widthActual = width >= MIN_WIDTH_PX ? width : DEFAULT_WIDTH_PX;
 
-        // Remove header and footer in print
-        // const htmlWithoutHeaderAndFooter = html.replaceAll(
-        //     /(<header([^;]*)<\/header>|<footer([^;]*)<\/footer>)/g,
-        //     ''
-        // );
-
         // Ensures assets with relative urls are loaded from the correct origin
         const htmlWithBase = html.replace(
             '<head>',
@@ -131,7 +125,19 @@ export class PdfGenerator {
 
             await page.setViewport({ width: widthActual, height: 1024 });
             await page.emulateMediaType('screen');
-            await page.setContent(htmlWithBase);
+
+            console.log(htmlWithBase);
+            
+            // Wait for all network requests to complete after setting content
+            await page.setContent(htmlWithBase, { 
+                waitUntil: 'networkidle0',
+                timeout: 30000 // 30 second timeout
+            });
+
+            // Additional wait to ensure all CSS and assets are fully loaded and rendered
+            await page.evaluateHandle('document.fonts.ready'); // Wait for fonts to load
+            await page.waitForTimeout(2000); // Give extra time for any remaining resources
+
 
             const pdf = await page.pdf({
                 printBackground: true,
