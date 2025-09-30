@@ -120,25 +120,60 @@ export class PdfGenerator {
             `<head><base href="${process.env.APP_ORIGIN_INTERNAL}"/>`
         );
 
+        let page;
         try {
-            const page = await this.browser.newPage();
+            console.log(`Starting PDF generation for version ${versionKey}`);
+            
+            // Step 1: Create page
+            console.log(`Creating new page for version ${versionKey}`);
+            page = await this.browser.newPage();
+            console.log(`Page created successfully for version ${versionKey}`);
 
+            // Step 2: Set viewport and media type
+            console.log(`Setting viewport and media type for version ${versionKey}`);
             await page.setViewport({ width: widthActual, height: 1024 });
             await page.emulateMediaType('screen');
+            console.log(`Viewport and media type set for version ${versionKey}`);
 
             console.log(htmlWithBase);
             
-            // Wait for all network requests to complete after setting content
-            await page.setContent(htmlWithBase, { 
-                waitUntil: 'networkidle0',
-                timeout: 30000 // 30 second timeout
-            });
+            // Step 3: Set content with timeout handling
+            console.log(`Setting page content for version ${versionKey}`);
+            try {
+                await page.setContent(htmlWithBase, { 
+                    waitUntil: 'networkidle0',
+                    timeout: 30000 // 30 second timeout
+                });
+                console.log(`Page content set successfully for version ${versionKey}`);
+            } catch (contentError) {
+                console.error(`Timeout/error setting content for version ${versionKey}:`, contentError);
+                // Try with a more lenient wait condition
+                console.log(`Retrying with domcontentloaded for version ${versionKey}`);
+                await page.setContent(htmlWithBase, { 
+                    waitUntil: 'domcontentloaded',
+                    timeout: 15000
+                });
+                console.log(`Page content set with domcontentloaded for version ${versionKey}`);
+            }
 
-            // Additional wait to ensure all CSS and assets are fully loaded and rendered
-            await page.evaluateHandle('document.fonts.ready'); // Wait for fonts to load
-            await page.waitForTimeout(2000); // Give extra time for any remaining resources
+            // Step 4: Wait for fonts and additional resources
+            console.log(`Waiting for fonts and additional resources for version ${versionKey}`);
+            try {
+                await Promise.race([
+                    page.evaluateHandle('document.fonts.ready'),
+                    page.waitForTimeout(5000) // Max 5 seconds for fonts
+                ]);
+                console.log(`Fonts loaded for version ${versionKey}`);
+            } catch (fontError) {
+                console.warn(`Font loading timeout for version ${versionKey}:`, fontError);
+            }
 
+            // Give a bit more time for rendering
+            await page.waitForTimeout(1000);
+            console.log(`Additional render time completed for version ${versionKey}`);
 
+            // Step 5: Generate PDF
+            console.log(`Generating PDF for version ${versionKey}`);
             const pdf = await page.pdf({
                 printBackground: true,
                 format: 'A4',
@@ -152,8 +187,7 @@ export class PdfGenerator {
                     left: '4px',
                 },
             });
-
-            await page.close();
+            console.log(`PDF generated successfully for version ${versionKey}`);
 
             return {
                 data: Buffer.from(pdf),
@@ -162,10 +196,22 @@ export class PdfGenerator {
         } catch (e) {
             const msg = `Error while generating PDF for content version ${versionKey} - ${e}`;
             console.error(msg);
+            console.error('Full error stack:', e);
             return {
                 data: Buffer.from(msg),
                 filename: generateErrorFilename(content),
             };
+        } finally {
+            // Ensure page is always closed
+            if (page) {
+                try {
+                    console.log(`Closing page for version ${versionKey}`);
+                    await page.close();
+                    console.log(`Page closed successfully for version ${versionKey}`);
+                } catch (closeError) {
+                    console.error(`Error closing page for version ${versionKey}:`, closeError);
+                }
+            }
         }
     }
 }
