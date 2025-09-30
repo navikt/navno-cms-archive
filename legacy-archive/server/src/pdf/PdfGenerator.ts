@@ -101,6 +101,15 @@ export class PdfGenerator {
         return this.generateContentPdf(content, width);
     }
 
+    private stripScriptTags(html: string): string {
+        // Remove all script and iframe tags including their content
+        return html
+            .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+            .replace(/<script\b[^>]*\/>/gi, '') // Handle self-closing script tags
+            .replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, '')
+            .replace(/<iframe\b[^>]*\/>/gi, ''); // Handle self-closing iframe tags
+    }
+
     private async generateContentPdf(content: CmsContent, width: number): Promise<PdfResult> {
         const { html, versionKey } = content;
         if (!html) {
@@ -114,8 +123,11 @@ export class PdfGenerator {
 
         const widthActual = width >= MIN_WIDTH_PX ? width : DEFAULT_WIDTH_PX;
 
+        // Strip script tags and accessible megamenu panels from HTML
+        const htmlCleaned = this.stripScriptTags(html);
+
         // Ensures assets with relative urls are loaded from the correct origin
-        const htmlWithBase = html.replace(
+        const htmlWithBase = htmlCleaned.replace(
             '<head>',
             `<head><base href="${process.env.APP_ORIGIN_INTERNAL}"/>`
         );
@@ -124,55 +136,139 @@ export class PdfGenerator {
         try {
             console.log(`Starting PDF generation for version ${versionKey}`);
             
-            // Step 1: Create page
-            console.log(`Creating new page for version ${versionKey}`);
             page = await this.browser.newPage();
+            
+            // Enable request interception to debug network issues
+            await page.setRequestInterception(true);
+            
+            // Log Page events for debugging should generation fail
+            page.on('request', (request) => {
+                console.log(`[${versionKey}] Request: ${request.method()} ${request.url()}`);
+                request.continue();
+            });
+            
+            page.on('requestfailed', (request) => {
+                console.error(`[${versionKey}] Request failed: ${request.url()} - ${request.failure()?.errorText}`);
+            });
+            
+            page.on('response', (response) => {
+                console.log(`[${versionKey}] Response: ${response.status()} ${response.url()}`);
+            });
+            
+            page.on('console', (msg) => {
+                console.log(`[${versionKey}] Browser console: ${msg.type()} - ${msg.text()}`);
+            });
+            
+            page.on('pageerror', (error) => {
+                console.error(`[${versionKey}] Page error:`, error);
+            });
+            
             console.log(`Page created successfully for version ${versionKey}`);
 
-            // Step 2: Set viewport and media type
-            console.log(`Setting viewport and media type for version ${versionKey}`);
             await page.setViewport({ width: widthActual, height: 1024 });
             await page.emulateMediaType('screen');
-            console.log(`Viewport and media type set for version ${versionKey}`);
+ 
+            let contentSet = false;
 
-            console.log(htmlWithBase);
-            
-            // Step 3: Set content with timeout handling
-            console.log(`Setting page content for version ${versionKey}`);
-            try {
+            await page.setContent(htmlWithBase, { 
+                waitUntil: 'networkidle0',
+                timeout: 30000 // 30 second timeout
+            });
+            console.log(`Page content set successfully with networkidle0 for version ${versionKey}`);
+
+
+            /* try {
                 await page.setContent(htmlWithBase, { 
                     waitUntil: 'networkidle0',
                     timeout: 30000 // 30 second timeout
                 });
-                console.log(`Page content set successfully for version ${versionKey}`);
+                console.log(`Page content set successfully with networkidle0 for version ${versionKey}`);
+                contentSet = true;
             } catch (contentError) {
-                console.error(`Timeout/error setting content for version ${versionKey}:`, contentError);
+                console.error(`Timeout/error setting content with networkidle0 for version ${versionKey}:`, contentError);
                 // Try with a more lenient wait condition
-                console.log(`Retrying with domcontentloaded for version ${versionKey}`);
-                await page.setContent(htmlWithBase, { 
-                    waitUntil: 'domcontentloaded',
-                    timeout: 15000
-                });
-                console.log(`Page content set with domcontentloaded for version ${versionKey}`);
+                try {
+                    console.log(`Retrying with load for version ${versionKey}`);
+                    await page.setContent(htmlWithBase, { 
+                        waitUntil: 'load',
+                        timeout: 15000
+                    });
+                    console.log(`Page content set with load for version ${versionKey}`);
+                    contentSet = true;
+                } catch (loadError) {
+                    console.error(`Error with load for version ${versionKey}:`, loadError);
+                    // Last resort - set without waiting
+                    console.log(`Final attempt without wait condition for version ${versionKey}`);
+                    await page.setContent(htmlWithBase);
+                    contentSet = true;
+                }
             }
 
-            // Step 4: Wait for fonts and additional resources
-            console.log(`Waiting for fonts and additional resources for version ${versionKey}`);
+            */
+
+            /* // Check loaded stylesheets
+            const stylesheetInfo = await page.evaluate(() => {
+                const sheets = Array.from(document.styleSheets);
+                return sheets.map(sheet => {
+                    try {
+                        return {
+                            href: sheet.href,
+                            disabled: sheet.disabled,
+                            rules: sheet.cssRules ? sheet.cssRules.length : 'Cannot access',
+                            ownerNode: sheet.ownerNode ? sheet.ownerNode.tagName : 'Unknown'
+                        };
+                    } catch (e) {
+                        return {
+                            href: sheet.href,
+                            error: e.message
+                        };
+                    }
+                });
+            });
+
+            console.log(`Stylesheets for version ${versionKey}:`, JSON.stringify(stylesheetInfo, null, 2));
+            */
+
+            // Check computed styles
+            /* const computedStyles = await page.evaluate(() => {
+                const body = document.body;
+                if (!body) return 'No body element';
+                const styles = window.getComputedStyle(body);
+                return {
+                    backgroundColor: styles.backgroundColor,
+                    color: styles.color,
+                    fontSize: styles.fontSize,
+                    fontFamily: styles.fontFamily,
+                    display: styles.display,
+                    visibility: styles.visibility
+                };
+            });
+
+            */
+            // console.log(`Computed styles for version ${versionKey}:`, JSON.stringify(computedStyles, null, 2));
+
+            // Wait for fonts
             try {
-                await Promise.race([
-                    page.evaluateHandle('document.fonts.ready'),
-                    page.waitForNetworkIdle({ idleTime: 2000})
-                ]);
-                console.log(`Fonts loaded for version ${versionKey}`);
+                await page.evaluateHandle('document.fonts.ready');
             } catch (fontError) {
                 console.warn(`Font loading timeout for version ${versionKey}:`, fontError);
             }
 
-            // Give a bit more time for rendering
-            await page.waitForTimeout(1000);
-            console.log(`Additional render time completed for version ${versionKey}`);
 
-            // Step 5: Generate PDF
+            // Take screenshot for debugging
+            // console.log(`Taking screenshot for debugging version ${versionKey}`);
+            // const screenshot = await page.screenshot({ fullPage: true });
+            // console.log(`Screenshot taken for version ${versionKey}, size: ${screenshot.length} bytes`);
+            // Optionally save screenshot for debugging:
+            // const fs = require('fs');
+            // fs.writeFileSync(`debug-${versionKey}.png`, screenshot);
+
+            await page.addStyleTag({
+            content: `
+                div.panel-wrapper { display: none !important; }
+            `,
+            });
+
             console.log(`Generating PDF for version ${versionKey}`);
             const pdf = await page.pdf({
                 printBackground: true,
@@ -187,7 +283,7 @@ export class PdfGenerator {
                     left: '4px',
                 },
             });
-            console.log(`PDF generated successfully for version ${versionKey}`);
+            console.log(`PDF generated for version ${versionKey}, size: ${pdf.length} bytes`);
 
             return {
                 data: Buffer.from(pdf),
