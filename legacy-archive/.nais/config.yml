@@ -10,7 +10,6 @@ spec:
   image: {{image}}
   port: 3399
   ingresses:
-     - https://cms-arkiv.intern.nav.no
      - https://cms-arkiv.ansatt.nav.no
   liveness:
     path: /internal/isAlive
@@ -28,14 +27,13 @@ spec:
     - name: APP_BASEPATH
       value: "/"
     - name: APP_ORIGIN_INTERNAL
-      value: "https://cms-arkiv.intern.nav.no"
+      value: "https://cms-arkiv.ansatt.nav.no"
   openSearch:
     access: read
     instance: enonic-cms-archive
   accessPolicy:
     outbound:
       external:
-        - host: cms-arkiv.intern.nav.no
         - host: cms-arkiv.ansatt.nav.no
         - host: www.nav.no
   replicas:
