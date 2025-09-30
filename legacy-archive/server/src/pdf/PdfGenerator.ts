@@ -161,7 +161,7 @@ export class PdfGenerator {
             try {
                 await Promise.race([
                     page.evaluateHandle('document.fonts.ready'),
-                    page.waitForTimeout(5000) // Max 5 seconds for fonts
+                    page.waitForNetworkIdle({ idleTime: 2000})
                 ]);
                 console.log(`Fonts loaded for version ${versionKey}`);
             } catch (fontError) {
