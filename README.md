@@ -2,7 +2,7 @@
 
 Frontend for CMS-arkivet. Den er delt i to applikasjoner, en som viser arkivinnhold fra 2006-2019 (CMS legacy arkiv) og en som viser innhold fra 2019 som kommer fra Enonic XP.
 
-https://cms-arkiv.intern.nav.no
+https://cms-arkiv.ansatt.nav.no
 
 ## Lokal utvikling
 
