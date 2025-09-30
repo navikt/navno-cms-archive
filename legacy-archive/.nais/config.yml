@@ -38,6 +38,10 @@ spec:
         - host: cms-arkiv.intern.nav.no
         - host: cms-arkiv.ansatt.nav.no
         - host: www.nav.no
+    inbound:
+      external:
+        - host: cms-arkiv.ansatt.nav.no
+        - host: www.nav.no
   replicas:
     min: 1
     max: 1
