@@ -11,7 +11,6 @@ spec:
   port: 3399
   ingresses:
      - https://cms-arkiv.intern.nav.no
-     - https://cms-arkiv.ansatt.nav.no
   liveness:
     path: /internal/isAlive
     initialDelay: 10
@@ -32,7 +31,7 @@ spec:
     - name: APP_BASEPATH
       value: "/"
     - name: APP_ORIGIN_INTERNAL
-      value: "https://cms-arkiv.ansatt.nav.no"
+      value: "https://cms-arkiv.intern.nav.no"
   openSearch:
     access: read
     instance: enonic-cms-archive
@@ -40,7 +39,6 @@ spec:
     outbound:
       external:
         - host: cms-arkiv.intern.nav.no
-        - host: cms-arkiv.ansatt.nav.no
         - host: www.nav.no
   replicas:
     min: 1
