@@ -10,7 +10,7 @@ jobs:
         permissions:
             contents: read
             id-token: write
-        uses: ./.github/workflows/internal-build-and-deploy-xp.yml
+        uses: /.github/workflows/internal_xp-archive-build-and-deploy.yml
         with:
             naisEnv: prod
             VITE_APP_ORIGIN: https://cms-arkiv.ansatt.nav.no
