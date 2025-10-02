@@ -14,11 +14,6 @@ runs:
     using: composite
     steps:
         - name: Checkout repo
-          runs-on: ubuntu-latest
-          environment: ${{ inputs.naisEnv }}-xp
-          permissions:
-            contents: read
-            id-token: write
           uses: actions/checkout@v4
         - name: Setup node.js
           uses: actions/setup-node@v4
@@ -28,6 +23,7 @@ runs:
               cache: npm
               cache-dependency-path: '**/package-lock.json'
         - name: Install dependencies
+          shell: bash
           run: npm ci --include-workspace-root --workspace=common --workspace=xp-archive
           env:
               NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
@@ -50,6 +46,7 @@ runs:
               EOF
 
         - name: Build application
+          shell: bash
           working-directory: xp-archive
           run: npm run build
 

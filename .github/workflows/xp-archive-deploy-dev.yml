@@ -13,6 +13,7 @@ jobs:
     build-and-deploy:
         name: Build and deploy to dev
         runs-on: ubuntu-latest
+        environment: dev-xp
         permissions:
             contents: read
             id-token: write
