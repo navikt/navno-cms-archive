@@ -129,6 +129,28 @@ export class PdfService {
         try {
             const page = await this.browser.newPage();
 
+            // Log Page events for debugging should generation fail
+            page.on('request', (request) => {
+                console.log(`Puppeteer: Request: ${request.method()} ${request.url()}`);
+                request.continue();
+            });
+            
+            page.on('requestfailed', (request) => {
+                console.error(`Puppeteer: Request failed: ${request.url()} - ${request.failure()?.errorText}`);
+            });
+            
+            page.on('response', (response) => {
+                console.log(`Puppeteer: Response: ${response.status()} ${response.url()}`);
+            });
+            
+            page.on('console', (msg) => {
+                console.log(`Puppeteer: Browser console: ${msg.type()} - ${msg.text()}`);
+            });
+            
+            page.on('pageerror', (error) => {
+                console.error(`Puppeteer: Page error:`, error);
+            });
+
             // Remove decorator-code in print
             const htmlWithoutDecorator = html.replaceAll(
                 /(<decorator-header([^;]*)<\/decorator-header>|<decorator-footer([^;]*)<\/decorator-footer>|<decorator-footer([^;]*)<\/decorator-footer>)/g,

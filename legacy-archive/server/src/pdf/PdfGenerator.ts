@@ -143,24 +143,24 @@ export class PdfGenerator {
             
             // Log Page events for debugging should generation fail
             page.on('request', (request) => {
-                console.log(`[${versionKey}] Request: ${request.method()} ${request.url()}`);
+                console.log(`Puppeteer: [${versionKey}] Request: ${request.method()} ${request.url()}`);
                 request.continue();
             });
             
             page.on('requestfailed', (request) => {
-                console.error(`[${versionKey}] Request failed: ${request.url()} - ${request.failure()?.errorText}`);
+                console.error(`Puppeteer: [${versionKey}] Request failed: ${request.url()} - ${request.failure()?.errorText}`);
             });
             
             page.on('response', (response) => {
-                console.log(`[${versionKey}] Response: ${response.status()} ${response.url()}`);
+                console.log(`Puppeteer: [${versionKey}] Response: ${response.status()} ${response.url()}`);
             });
             
             page.on('console', (msg) => {
-                console.log(`[${versionKey}] Browser console: ${msg.type()} - ${msg.text()}`);
+                console.log(`Puppeteer: [${versionKey}] Browser console: ${msg.type()} - ${msg.text()}`);
             });
             
             page.on('pageerror', (error) => {
-                console.error(`[${versionKey}] Page error:`, error);
+                console.error(`Puppeteer: [${versionKey}] Page error:`, error);
             });
             
             console.log(`Page created successfully for version ${versionKey}`);
