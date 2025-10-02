@@ -15,7 +15,7 @@ jobs:
         permissions:
             contents: read
             id-token: write
-        uses: internal_build-and-deploy-xp.yml
+        uses: internal-build-and-deploy-xp.yml
         with:
             naisEnv: dev
             VITE_APP_ORIGIN: https://cms-arkiv.ansatt.dev.nav.no
