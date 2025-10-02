@@ -12,15 +12,18 @@ on:
 jobs:
     build-and-deploy:
         name: Build and deploy to dev
+        runs-on: ubuntu-latest
         permissions:
             contents: read
             id-token: write
-        uses: ./.github/actions/internal-xp-archive-build-and-deploy.yml
-        with:
-            naisEnv: dev
-            VITE_APP_ORIGIN: https://cms-arkiv.ansatt.dev.nav.no
-            XP_ORIGIN: https://www.dev.nav.no
-            HTML_RENDER_API: http://nav-enonicxp-frontend-dev1/render-from-props
-        secrets:
-            READER_TOKEN: ${{ secrets.READER_TOKEN }}
-            NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
+        steps:
+            - uses: ./.github/actions/internal-xp-archive-build-and-deploy.yml
+              with:
+                  naisEnv: dev
+                  VITE_APP_ORIGIN: https://cms-arkiv.ansatt.dev.nav.no
+                  XP_ORIGIN: https://www.dev.nav.no
+                  HTML_RENDER_API: http://nav-enonicxp-frontend-dev1/render-from-props
+              env:
+                  READER_TOKEN: ${{ secrets.READER_TOKEN }}
+                  NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
+                  NAIS_MANAGEMENT_PROJECT_ID: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}

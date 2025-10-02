@@ -1,41 +1,46 @@
 name: Build and deploy XP archive to prod
 on:
-    push:
-        branches:
-            - main
+  push:
+    branches:
+      - main
 
 jobs:
-    build-and-deploy:
-        name: Build and deploy to prod
-        permissions:
-            contents: read
-            id-token: write
-        uses: ./.github/actions/internal-xp-archive-build-and-deploy.yml
-        with:
-            naisEnv: prod
-            VITE_APP_ORIGIN: https://cms-arkiv.ansatt.nav.no
-            XP_ORIGIN: https://www.nav.no
-            HTML_RENDER_API: http://nav-enonicxp-frontend/render-from-props
-        secrets:
-            READER_TOKEN: ${{ secrets.READER_TOKEN }}
-            NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
+  build-and-deploy:
+    name: Build and deploy to prod
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    environment: prod-xp
 
-    release:
-        name: Create a new release
-        needs: build-and-deploy
-        runs-on: ubuntu-latest
-        permissions:
-            contents: write
-            id-token: write
-        steps:
-            - name: Generate unique tag name
-              run: echo "TAG_NAME=$(date +%s)" >> $GITHUB_ENV
-            - name: Create GitHub Release
-              uses: softprops/action-gh-release@v2
-              with:
-                  target_commitish: main
-                  tag_name: release/prod@${{ env.TAG_NAME }} # Generates a unique tag using timestamp
-                  name: Release ${{ github.ref_name }}
-                  generate_release_notes: true
-              env:
-                  GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }} # This is a PAT with repo permissions
+    steps:
+      - uses: ./.github/actions/internal-xp-archive-build-and-deploy.yml
+        with:
+          naisEnv: prod
+          VITE_APP_ORIGIN: https://cms-arkiv.ansatt.nav.no
+          XP_ORIGIN: https://www.nav.no
+          HTML_RENDER_API: http://nav-enonicxp-frontend/render-from-props
+        env:
+          READER_TOKEN: ${{ secrets.READER_TOKEN }}
+          NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
+          NAIS_MANAGEMENT_PROJECT_ID: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
+
+  release:
+    name: Create a new release
+    needs: build-and-deploy
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - name: Generate unique tag name
+        run: echo "TAG_NAME=$(date +%s)" >> $GITHUB_ENV
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          target_commitish: main
+          tag_name: release/prod@${{ env.TAG_NAME }} # Generates a unique tag using timestamp
+          name: Release ${{ github.ref_name }}
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }} # This is a PAT with repo permissions

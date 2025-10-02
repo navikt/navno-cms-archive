@@ -1,80 +1,74 @@
-name: Build and deploy XP archive
-on:
-    workflow_call:
-        inputs:
-            naisEnv:
-                required: true
-                type: string
-            VITE_APP_ORIGIN:
-                required: true
-                type: string
-            XP_ORIGIN:
-                required: true
-                type: string
-            HTML_RENDER_API:
-                required: true
-                type: string
-        secrets:
-            READER_TOKEN:
-                required: true
-            NAIS_WORKLOAD_IDENTITY_PROVIDER:
-                required: true
+name: Build and deploy XP archive (internal action)
+inputs:
+    naisEnv:
+        required: true
+        type: string
+    VITE_APP_ORIGIN:
+        required: true
+    XP_ORIGIN:
+        required: true
+    HTML_RENDER_API:
+        required: true
 
-jobs:
-    build-and-deploy:
-        name: Build and deploy
-        runs-on: ubuntu-latest
-        environment: ${{ inputs.naisEnv }}-xp
-        permissions:
+runs:
+    using: composite
+    steps:
+        - name: Checkout repo
+          runs-on: ubuntu-latest
+          environment: ${{ inputs.naisEnv }}-xp
+          permissions:
             contents: read
             id-token: write
-        steps:
-            - name: Checkout repo
-              uses: actions/checkout@v4
-            - name: Setup node.js
-              uses: actions/setup-node@v4
-              with:
-                  node-version: 22
-                  registry-url: 'https://npm.pkg.github.com'
-                  cache: 'npm'
-                  cache-dependency-path: '**/package-lock.json'
-            - name: Install dependencies
-              run: npm ci --include-workspace-root --workspace=common --workspace=xp-archive
-              env:
-                  NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
-            - name: Set env vars
-              working-directory: xp-archive
-              env:
-                  VITE_APP_ORIGIN: ${{ inputs.VITE_APP_ORIGIN }}
-                  XP_ORIGIN: ${{ inputs.XP_ORIGIN }}
-                  HTML_RENDER_API: ${{ inputs.HTML_RENDER_API }}
-              run: |
-                  cat > .env <<EOF
-                  NODE_ENV=production
-                  APP_PORT=3499
-                  APP_BASEPATH=/xp
-                  VITE_APP_ORIGIN=$VITE_APP_ORIGIN
-                  XP_ORIGIN=$XP_ORIGIN
-                  HTML_RENDER_API=$HTML_RENDER_API
-                  EOF
-            - name: Build application
-              run: npm run build
-              working-directory: xp-archive
-            - name: Build and push docker image
-              uses: nais/docker-build-push@v0
-              id: docker-push
-              with:
-                  team: navno
-                  project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
-                  identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
-                  dockerfile: Dockerfile_xp
-                  cache_from: '' # Disable cache
-                  cache_to: '' # Disable cache
-                  image_suffix: ${{ inputs.naisEnv }}
-            - name: Deploy application
-              uses: nais/deploy/actions/deploy@v2
-              env:
-                  CLUSTER: ${{ inputs.naisEnv }}-gcp
-                  RESOURCE: xp-archive/.nais/config.yml
-                  VAR: image=${{ steps.docker-push.outputs.image }}
-                  VARS: xp-archive/.nais/vars/${{ inputs.naisEnv }}.yml
+          uses: actions/checkout@v4
+        - name: Setup node.js
+          uses: actions/setup-node@v4
+          with:
+              node-version: 22
+              registry-url: https://npm.pkg.github.com
+              cache: npm
+              cache-dependency-path: '**/package-lock.json'
+        - name: Install dependencies
+          run: npm ci --include-workspace-root --workspace=common --workspace=xp-archive
+          env:
+              NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+
+        - name: Write .env for build
+          shell: bash
+          working-directory: xp-archive
+          env:
+              VITE_APP_ORIGIN: ${{ inputs.VITE_APP_ORIGIN }}
+              XP_ORIGIN: ${{ inputs.XP_ORIGIN }}
+              HTML_RENDER_API: ${{ inputs.HTML_RENDER_API }}
+          run: |
+              cat > .env <<EOF
+              NODE_ENV=production
+              APP_PORT=3499
+              APP_BASEPATH=/xp
+              VITE_APP_ORIGIN=$VITE_APP_ORIGIN
+              XP_ORIGIN=$XP_ORIGIN
+              HTML_RENDER_API=$HTML_RENDER_API
+              EOF
+
+        - name: Build application
+          working-directory: xp-archive
+          run: npm run build
+
+        - name: Build and push docker image
+          id: docker-push
+          uses: nais/docker-build-push@v0
+          with:
+              team: navno
+              project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
+              identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
+              dockerfile: Dockerfile_xp
+              cache_from: '' # Disable cache
+              cache_to: '' # Disable cache
+              image_suffix: ${{ inputs.naisEnv }}
+
+        - name: Deploy application
+          uses: nais/deploy/actions/deploy@v2
+          env:
+              CLUSTER: ${{ inputs.naisEnv }}-gcp
+              RESOURCE: xp-archive/.nais/config.yml
+              VAR: image=${{ steps.docker-push.outputs.image }}
+              VARS: xp-archive/.nais/vars/${{ inputs.naisEnv }}.yml
