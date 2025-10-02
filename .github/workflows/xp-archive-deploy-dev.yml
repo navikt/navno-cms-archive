@@ -17,7 +17,7 @@ jobs:
             contents: read
             id-token: write
         steps:
-            - uses: ./.github/actions/internal-xp-archive-build-and-deploy.yml
+            - uses: ./.github/actions
               with:
                   naisEnv: dev
                   VITE_APP_ORIGIN: https://cms-arkiv.ansatt.dev.nav.no

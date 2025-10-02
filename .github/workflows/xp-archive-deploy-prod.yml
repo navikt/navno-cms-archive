@@ -14,7 +14,7 @@ jobs:
     environment: prod-xp
 
     steps:
-      - uses: ./.github/actions/internal-xp-archive-build-and-deploy.yml
+      - uses: ./.github/actions
         with:
           naisEnv: prod
           VITE_APP_ORIGIN: https://cms-arkiv.ansatt.nav.no
