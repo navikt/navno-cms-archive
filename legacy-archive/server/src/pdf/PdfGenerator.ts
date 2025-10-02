@@ -101,6 +101,15 @@ export class PdfGenerator {
         return this.generateContentPdf(content, width);
     }
 
+    private stripScriptTags(html: string): string {
+        // Remove all script and iframe tags including their content
+        return html
+            .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+            .replace(/<script\b[^>]*\/>/gi, '') // Handle self-closing script tags
+            .replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, '')
+            .replace(/<iframe\b[^>]*\/>/gi, ''); // Handle self-closing iframe tags
+    }
+
     private async generateContentPdf(content: CmsContent, width: number): Promise<PdfResult> {
         const { html, versionKey } = content;
         if (!html) {
@@ -114,25 +123,69 @@ export class PdfGenerator {
 
         const widthActual = width >= MIN_WIDTH_PX ? width : DEFAULT_WIDTH_PX;
 
-        // Remove header and footer in print
-        // const htmlWithoutHeaderAndFooter = html.replaceAll(
-        //     /(<header([^;]*)<\/header>|<footer([^;]*)<\/footer>)/g,
-        //     ''
-        // );
+        // Strip script tags and accessible megamenu panels from HTML
+        const htmlCleaned = this.stripScriptTags(html);
 
         // Ensures assets with relative urls are loaded from the correct origin
-        const htmlWithBase = html.replace(
+        const htmlWithBase = htmlCleaned.replace(
             '<head>',
             `<head><base href="${process.env.APP_ORIGIN_INTERNAL}"/>`
         );
 
+        let page;
         try {
-            const page = await this.browser.newPage();
+            console.log(`Starting PDF generation for version ${versionKey}`);
+            
+            page = await this.browser.newPage();
+            
+            // Enable request interception to debug network issues
+            await page.setRequestInterception(true);
+            
+            // Log Page events for debugging should generation fail
+            page.on('request', (request) => {
+                console.log(`Puppeteer: [${versionKey}] Request: ${request.method()} ${request.url()}`);
+                request.continue();
+            });
+            
+            page.on('requestfailed', (request) => {
+                console.error(`Puppeteer: [${versionKey}] Request failed: ${request.url()} - ${request.failure()?.errorText}`);
+            });
+            
+            page.on('response', (response) => {
+                console.log(`Puppeteer: [${versionKey}] Response: ${response.status()} ${response.url()}`);
+            });
+            
+            page.on('console', (msg) => {
+                console.log(`Puppeteer: [${versionKey}] Browser console: ${msg.type()} - ${msg.text()}`);
+            });
+            
+            page.on('pageerror', (error) => {
+                console.error(`Puppeteer: [${versionKey}] Page error:`, error);
+            });
+            
+            console.log(`Page created successfully for version ${versionKey}`);
 
             await page.setViewport({ width: widthActual, height: 1024 });
             await page.emulateMediaType('screen');
-            await page.setContent(htmlWithBase);
+ 
+            await page.setContent(htmlWithBase, { 
+                timeout: 30000 // 30 second timeout
+            });
 
+            // Wait for fonts
+            try {
+                await page.evaluateHandle('document.fonts.ready');
+            } catch (fontError) {
+                console.warn(`Font loading timeout for version ${versionKey}:`, fontError);
+            }
+
+            await page.addStyleTag({
+            content: `
+                div.panel-wrapper { display: none !important; }
+            `,
+            });
+
+            console.log(`Generating PDF for version ${versionKey}`);
             const pdf = await page.pdf({
                 printBackground: true,
                 format: 'A4',
@@ -146,8 +199,7 @@ export class PdfGenerator {
                     left: '4px',
                 },
             });
-
-            await page.close();
+            console.log(`PDF generated for version ${versionKey}, size: ${pdf.length} bytes`);
 
             return {
                 data: Buffer.from(pdf),
@@ -156,10 +208,22 @@ export class PdfGenerator {
         } catch (e) {
             const msg = `Error while generating PDF for content version ${versionKey} - ${e}`;
             console.error(msg);
+            console.error('Full error stack:', e);
             return {
                 data: Buffer.from(msg),
                 filename: generateErrorFilename(content),
             };
+        } finally {
+            // Ensure page is always closed
+            if (page) {
+                try {
+                    console.log(`Closing page for version ${versionKey}`);
+                    await page.close();
+                    console.log(`Page closed successfully for version ${versionKey}`);
+                } catch (closeError) {
+                    console.error(`Error closing page for version ${versionKey}:`, closeError);
+                }
+            }
         }
     }
 }
