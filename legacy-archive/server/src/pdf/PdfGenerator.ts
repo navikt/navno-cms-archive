@@ -168,84 +168,9 @@ export class PdfGenerator {
             await page.setViewport({ width: widthActual, height: 1024 });
             await page.emulateMediaType('screen');
  
-            let contentSet = false;
-
             await page.setContent(htmlWithBase, { 
-                waitUntil: 'networkidle0',
                 timeout: 30000 // 30 second timeout
             });
-            console.log(`Page content set successfully with networkidle0 for version ${versionKey}`);
-
-
-            /* try {
-                await page.setContent(htmlWithBase, { 
-                    waitUntil: 'networkidle0',
-                    timeout: 30000 // 30 second timeout
-                });
-                console.log(`Page content set successfully with networkidle0 for version ${versionKey}`);
-                contentSet = true;
-            } catch (contentError) {
-                console.error(`Timeout/error setting content with networkidle0 for version ${versionKey}:`, contentError);
-                // Try with a more lenient wait condition
-                try {
-                    console.log(`Retrying with load for version ${versionKey}`);
-                    await page.setContent(htmlWithBase, { 
-                        waitUntil: 'load',
-                        timeout: 15000
-                    });
-                    console.log(`Page content set with load for version ${versionKey}`);
-                    contentSet = true;
-                } catch (loadError) {
-                    console.error(`Error with load for version ${versionKey}:`, loadError);
-                    // Last resort - set without waiting
-                    console.log(`Final attempt without wait condition for version ${versionKey}`);
-                    await page.setContent(htmlWithBase);
-                    contentSet = true;
-                }
-            }
-
-            */
-
-            /* // Check loaded stylesheets
-            const stylesheetInfo = await page.evaluate(() => {
-                const sheets = Array.from(document.styleSheets);
-                return sheets.map(sheet => {
-                    try {
-                        return {
-                            href: sheet.href,
-                            disabled: sheet.disabled,
-                            rules: sheet.cssRules ? sheet.cssRules.length : 'Cannot access',
-                            ownerNode: sheet.ownerNode ? sheet.ownerNode.tagName : 'Unknown'
-                        };
-                    } catch (e) {
-                        return {
-                            href: sheet.href,
-                            error: e.message
-                        };
-                    }
-                });
-            });
-
-            console.log(`Stylesheets for version ${versionKey}:`, JSON.stringify(stylesheetInfo, null, 2));
-            */
-
-            // Check computed styles
-            /* const computedStyles = await page.evaluate(() => {
-                const body = document.body;
-                if (!body) return 'No body element';
-                const styles = window.getComputedStyle(body);
-                return {
-                    backgroundColor: styles.backgroundColor,
-                    color: styles.color,
-                    fontSize: styles.fontSize,
-                    fontFamily: styles.fontFamily,
-                    display: styles.display,
-                    visibility: styles.visibility
-                };
-            });
-
-            */
-            // console.log(`Computed styles for version ${versionKey}:`, JSON.stringify(computedStyles, null, 2));
 
             // Wait for fonts
             try {
@@ -253,15 +178,6 @@ export class PdfGenerator {
             } catch (fontError) {
                 console.warn(`Font loading timeout for version ${versionKey}:`, fontError);
             }
-
-
-            // Take screenshot for debugging
-            // console.log(`Taking screenshot for debugging version ${versionKey}`);
-            // const screenshot = await page.screenshot({ fullPage: true });
-            // console.log(`Screenshot taken for version ${versionKey}, size: ${screenshot.length} bytes`);
-            // Optionally save screenshot for debugging:
-            // const fs = require('fs');
-            // fs.writeFileSync(`debug-${versionKey}.png`, screenshot);
 
             await page.addStyleTag({
             content: `
