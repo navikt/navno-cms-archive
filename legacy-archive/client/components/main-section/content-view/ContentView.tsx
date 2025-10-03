@@ -88,6 +88,6 @@ const getDefaultViewState = (content: CmsContent | null): ViewState => {
     } else if (binaries && binaries.length > 0) {
         return 'files';
     } else {
-        return 'xml';
+        return 'xml-as-table';
     }
 };

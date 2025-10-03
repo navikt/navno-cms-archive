@@ -5,7 +5,7 @@ import { CmsContent } from '../../../../shared/cms-documents/content';
 
 import style from './ViewSelector.module.css';
 
-export type ViewState = 'html' | 'xml' | 'files' | 'export' | 'none';
+export type ViewState = 'html' | 'xml' | 'xml-as-table' | 'files' | 'export' | 'none';
 
 type Props = {
     content: CmsContent;
