@@ -1,13 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { parseString } from 'xml2js';
-import { Alert, Switch, Tooltip } from '@navikt/ds-react';
+import { useState, useEffect } from 'react';
+import { Alert } from '@navikt/ds-react';
 import { classNames } from '../../../../../../common/src/client/utils/classNames';
 
-import style from './XmlAsTableView.module.css';
-import { forceArray } from 'client/utils/forceArray';
-import { HeaderData, xmlToHtml } from 'shared/xmlToHtml';
+import {  xmlToHtml } from 'shared/xmlToHtml';
 import { CmsContent } from 'shared/cms-documents/content';
-import { FunnelFillIcon } from '@navikt/aksel-icons';
+
+import style from './XmlAsTableView.module.css';
 
 type Props = {
     content: CmsContent;
