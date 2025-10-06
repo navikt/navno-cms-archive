@@ -53,7 +53,9 @@ export const ViewSelector = ({ content, viewState, setViewState }: Props) => {
                     {`Filer (${filesCount})`}
                 </ToggleGroup.Item>
             </WithTooltip>
-            <ToggleGroup.Item value={'xml-as-table'}>{'XML som tabell'}</ToggleGroup.Item>
+            {!html && (
+                <ToggleGroup.Item value={'xml-as-table'}>{'XML som tabell'}</ToggleGroup.Item>
+            )}
             <ToggleGroup.Item value={'xml'}>{'Ren XML'}</ToggleGroup.Item>
         </ToggleGroup>
     );
