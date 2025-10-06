@@ -10,6 +10,7 @@ import { CmsContent } from '../../../shared/cms-documents/content';
 import archiver from 'archiver';
 import { Response } from 'express';
 import { DOWNLOAD_COOKIE_NAME } from '../../../shared/downloadCookie';
+import { xmlToHtml } from '../../../shared/xmlToHtml';
 
 const DEFAULT_WIDTH_PX = 1024;
 const MIN_WIDTH_PX = 400;
@@ -77,7 +78,7 @@ export class PdfGenerator {
         });
 
         for (const content of contentVersions) {
-            if (!content.html) {
+            if (!content.html && !content.xmlAsString) {
                 continue;
             }
 
@@ -94,7 +95,7 @@ export class PdfGenerator {
         width: number = DEFAULT_WIDTH_PX
     ): Promise<PdfResult | null> {
         const content = await this.contentService.getContentVersion(versionKey);
-        if (!content?.html) {
+        if (!content) {
             return null;
         }
 
@@ -110,17 +111,23 @@ export class PdfGenerator {
             .replace(/<iframe\b[^>]*\/>/gi, ''); // Handle self-closing iframe tags
     }
 
+    private async generateTableFromXML(content: CmsContent): Promise<string> {
+        return await xmlToHtml({ content, fullHtmlDocument: true });
+    }
+
     private async generateContentPdf(content: CmsContent, width: number): Promise<PdfResult> {
-        const { html, versionKey } = content;
-        if (!html) {
+        console.log(`Preparing to generate PDF for content version ${content.versionKey}`);
+        const { versionKey } = content;
+        if (!content.html && !content.xmlAsString) {
             return {
                 data: Buffer.from(
-                    `Could not generate PDF from content version ${versionKey} - HTML field was empty`
+                    `Could not generate PDF from content version ${versionKey} - HTML and XML was empty`
                 ),
                 filename: generateErrorFilename(content),
             };
         }
 
+        const html = content.html || (await this.generateTableFromXML(content));
         const widthActual = width >= MIN_WIDTH_PX ? width : DEFAULT_WIDTH_PX;
 
         // Strip script tags and accessible megamenu panels from HTML
@@ -135,41 +142,49 @@ export class PdfGenerator {
         let page;
         try {
             console.log(`Starting PDF generation for version ${versionKey}`);
-            
+
             page = await this.browser.newPage();
-            
+
             // Enable request interception to debug network issues
             await page.setRequestInterception(true);
-            
+
             // Log Page events for debugging should generation fail
             page.on('request', (request) => {
-                console.log(`Puppeteer: [${versionKey}] Request: ${request.method()} ${request.url()}`);
+                console.log(
+                    `Puppeteer: [${versionKey}] Request: ${request.method()} ${request.url()}`
+                );
                 request.continue();
             });
-            
+
             page.on('requestfailed', (request) => {
-                console.error(`Puppeteer: [${versionKey}] Request failed: ${request.url()} - ${request.failure()?.errorText}`);
+                console.error(
+                    `Puppeteer: [${versionKey}] Request failed: ${request.url()} - ${request.failure()?.errorText}`
+                );
             });
-            
+
             page.on('response', (response) => {
-                console.log(`Puppeteer: [${versionKey}] Response: ${response.status()} ${response.url()}`);
+                console.log(
+                    `Puppeteer: [${versionKey}] Response: ${response.status()} ${response.url()}`
+                );
             });
-            
+
             page.on('console', (msg) => {
-                console.log(`Puppeteer: [${versionKey}] Browser console: ${msg.type()} - ${msg.text()}`);
+                console.log(
+                    `Puppeteer: [${versionKey}] Browser console: ${msg.type()} - ${msg.text()}`
+                );
             });
-            
+
             page.on('pageerror', (error) => {
                 console.error(`Puppeteer: [${versionKey}] Page error:`, error);
             });
-            
+
             console.log(`Page created successfully for version ${versionKey}`);
 
             await page.setViewport({ width: widthActual, height: 1024 });
             await page.emulateMediaType('screen');
- 
-            await page.setContent(htmlWithBase, { 
-                timeout: 30000 // 30 second timeout
+
+            await page.setContent(htmlWithBase, {
+                timeout: 30000, // 30 second timeout
             });
 
             // Wait for fonts
@@ -180,7 +195,7 @@ export class PdfGenerator {
             }
 
             await page.addStyleTag({
-            content: `
+                content: `
                 div.panel-wrapper { display: none !important; }
             `,
             });

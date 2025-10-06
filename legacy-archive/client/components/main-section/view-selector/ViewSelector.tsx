@@ -39,7 +39,7 @@ export const ViewSelector = ({ content, viewState, setViewState }: Props) => {
                     {'Nettside'}
                 </ToggleGroup.Item>
             </WithTooltip>
-            {html && <ToggleGroup.Item value={'export'}>{'PDF'}</ToggleGroup.Item>}
+            <ToggleGroup.Item value={'export'}>{'PDF'}</ToggleGroup.Item>
             <WithTooltip tooltip={filesCount === 0 ? 'Innholdet har ingen filer' : undefined}>
                 <ToggleGroup.Item
                     value={'files'}

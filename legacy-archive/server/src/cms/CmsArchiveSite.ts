@@ -163,6 +163,7 @@ export class CmsArchiveSite {
 
     private setupFileRoutes(router: Router) {
         router.get('/pdf/single/:versionKey', async (req, res, next) => {
+            console.log('single');
             const result = await this.pdfGenerator.generatePdfFromVersion(
                 req.params.versionKey,
                 parseNumberParam(req.query.width)

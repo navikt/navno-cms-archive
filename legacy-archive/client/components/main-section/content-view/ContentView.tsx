@@ -63,12 +63,8 @@ export const ContentView = ({ content }: Props) => {
             </div>
             <XmlView xml={xmlAsString} hidden={viewState !== 'xml'} />
             <XmlAsTableView xml={xmlAsString} hidden={viewState !== 'xml-as-table'} />
-            {html && (
-                <>
-                    <HtmlView html={html} versionKey={versionKey} hidden={viewState !== 'html'} />
-                    <PdfExporter content={content} hidden={viewState !== 'export'} />
-                </>
-            )}
+            {html && <HtmlView html={html} versionKey={versionKey} hidden={viewState !== 'html'} />}
+            <PdfExporter content={content} hidden={viewState !== 'export'} />
             {content.binaries && (
                 <FilesView binaries={content.binaries} hidden={viewState !== 'files'} />
             )}
