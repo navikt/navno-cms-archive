@@ -116,7 +116,6 @@ export class PdfGenerator {
     }
 
     private async generateContentPdf(content: CmsContent, width: number): Promise<PdfResult> {
-        console.log(`Preparing to generate PDF for content version ${content.versionKey}`);
         const { versionKey } = content;
         if (!content.html && !content.xmlAsString) {
             return {
