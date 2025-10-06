@@ -62,7 +62,7 @@ export const ContentView = ({ content }: Props) => {
                 <VersionSelector content={content} />
             </div>
             <XmlView xml={xmlAsString} hidden={viewState !== 'xml'} />
-            <XmlAsTableView xml={xmlAsString} hidden={viewState !== 'xml-as-table'} />
+            <XmlAsTableView content={content} hidden={viewState !== 'xml-as-table'} />
             {html && <HtmlView html={html} versionKey={versionKey} hidden={viewState !== 'html'} />}
             <PdfExporter content={content} hidden={viewState !== 'export'} />
             {content.binaries && (

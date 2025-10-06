@@ -21,7 +21,6 @@ const fullHtmlDocumentTemplate = `<!DOCTYPE html>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>XML to HTML</title>
-    <style>.xmlTable{width:100%;border-collapse:collapse;font-family:monospace;font-size:14px}.xmlTable th{background-color:#f1f1f1;border:1px solid #ddd;padding:8px 12px;text-align:left;font-weight:600}.xmlTable td{border:1px solid #ddd;padding:8px 12px;vertical-align:top}.xmlTable tr:nth-child(even){background-color:#f9f9f9}.xmlTable tr:hover{background-color:#f5f5f5}</style>
 </head>
 <body>
     <h1>{{PAGE_TITLE}}</h1>
@@ -62,7 +61,8 @@ const createTableFromXml = (data: any): string => {
     // to determine which header and cell to render.
     const columnsWithData = getColumnsWithData(header || {});
 
-    return `<table class="xmlTable">
+    return `<style>.xmlTable{width:100%;border-collapse:collapse;font-family:monospace;font-size:14px}.xmlTable th{background-color:#f1f1f1;border:1px solid #ddd;padding:8px 12px;text-align:left;font-weight:600}.xmlTable td{border:1px solid #ddd;padding:8px 12px;vertical-align:top}.xmlTable tr:nth-child(even){background-color:#f9f9f9}.xmlTable tr:hover{background-color:#f5f5f5}</style>
+            <table class="xmlTable">
                 <thead>
                     <tr>
                         ${Object.entries(header || {})
