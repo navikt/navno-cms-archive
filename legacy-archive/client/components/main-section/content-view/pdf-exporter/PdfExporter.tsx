@@ -19,9 +19,9 @@ type Props = {
 export const PdfExporter = ({ content, hidden }: Props) => {
     const { appContext } = useAppState();
     const { basePath } = appContext;
-    const pdfApi = document.location.host.includes('localhost')
-        ? `http://localhost:3399${basePath}/pdf`
-        : `https://cms-arkiv.ansatt.nav.no${basePath}/pdf`;
+
+    const pdfApi = `${import.meta.env.VITE_APP_ORIGIN}${basePath}/pdf`;
+    console.log(pdfApi);
 
     const { versionKey: currentVersionKey, versions } = content;
 
