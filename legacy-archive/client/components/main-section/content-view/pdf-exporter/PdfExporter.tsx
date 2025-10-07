@@ -21,7 +21,6 @@ export const PdfExporter = ({ content, hidden }: Props) => {
     const { basePath } = appContext;
 
     const pdfApi = `${import.meta.env.VITE_APP_ORIGIN}${basePath}/pdf`;
-    console.log(pdfApi);
 
     const { versionKey: currentVersionKey, versions } = content;
 
