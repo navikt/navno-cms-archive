@@ -31,6 +31,17 @@ jobs:
               run: npm ci --include-workspace-root --workspace=common --workspace=legacy-archive
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+            - name: Write .env for build
+              shell: bash
+              working-directory: legacy-archive
+              env:
+                  VITE_APP_ORIGIN: https://cms-arkiv.ansatt.nav.no
+              run: |
+                  cat > .env <<EOF
+                  NODE_ENV=production
+                  APP_PORT=3499
+                  VITE_APP_ORIGIN=$VITE_APP_ORIGIN
+                  EOF
             - name: Build application
               run: npm run build
               working-directory: legacy-archive

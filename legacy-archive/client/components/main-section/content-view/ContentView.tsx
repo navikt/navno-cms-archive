@@ -3,6 +3,7 @@ import { ExternalLinkIcon } from '@navikt/aksel-icons';
 import { useAppState } from 'client/context/app-state/useAppState';
 import { CmsContent } from '../../../../shared/cms-documents/content';
 import { XmlView } from './xml-view/XmlView';
+import { XmlAsTableView } from './xml-as-table-view/XmlAsTableView';
 import { HtmlView } from './html-view/HtmlView';
 import { FilesView } from './files-view/FilesView';
 import { ViewSelector, ViewState } from '../view-selector/ViewSelector';
@@ -61,12 +62,9 @@ export const ContentView = ({ content }: Props) => {
                 <VersionSelector content={content} />
             </div>
             <XmlView xml={xmlAsString} hidden={viewState !== 'xml'} />
-            {html && (
-                <>
-                    <HtmlView html={html} versionKey={versionKey} hidden={viewState !== 'html'} />
-                    <PdfExporter content={content} hidden={viewState !== 'export'} />
-                </>
-            )}
+            <XmlAsTableView content={content} hidden={viewState !== 'xml-as-table'} />
+            {html && <HtmlView html={html} versionKey={versionKey} hidden={viewState !== 'html'} />}
+            <PdfExporter content={content} hidden={viewState !== 'export'} />
             {content.binaries && (
                 <FilesView binaries={content.binaries} hidden={viewState !== 'files'} />
             )}
@@ -86,6 +84,6 @@ const getDefaultViewState = (content: CmsContent | null): ViewState => {
     } else if (binaries && binaries.length > 0) {
         return 'files';
     } else {
-        return 'xml';
+        return 'xml-as-table';
     }
 };

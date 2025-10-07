@@ -110,7 +110,6 @@ export class CmsArchiveContentService {
     public async getContentVersions(versionKeys: string[]): Promise<CmsContent[] | null> {
         const result = await this.client.search<CmsContentDocument>({
             index: this.index,
-            _source_excludes: ['xmlAsString, versions'],
             size: versionKeys.length,
             body: {
                 sort: {

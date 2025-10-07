@@ -19,7 +19,8 @@ type Props = {
 export const PdfExporter = ({ content, hidden }: Props) => {
     const { appContext } = useAppState();
     const { basePath } = appContext;
-    const pdfApi = `https://cms-arkiv.ansatt.nav.no${basePath}/pdf`;
+
+    const pdfApi = `${import.meta.env.VITE_APP_ORIGIN}${basePath}/pdf`;
 
     const { versionKey: currentVersionKey, versions } = content;
 

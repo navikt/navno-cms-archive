@@ -5,7 +5,7 @@ import { CmsContent } from '../../../../shared/cms-documents/content';
 
 import style from './ViewSelector.module.css';
 
-export type ViewState = 'html' | 'xml' | 'files' | 'export' | 'none';
+export type ViewState = 'html' | 'xml' | 'xml-as-table' | 'files' | 'export' | 'none';
 
 type Props = {
     content: CmsContent;
@@ -39,7 +39,7 @@ export const ViewSelector = ({ content, viewState, setViewState }: Props) => {
                     {'Nettside'}
                 </ToggleGroup.Item>
             </WithTooltip>
-            {html && <ToggleGroup.Item value={'export'}>{'PDF'}</ToggleGroup.Item>}
+            <ToggleGroup.Item value={'export'}>{'PDF'}</ToggleGroup.Item>
             <WithTooltip tooltip={filesCount === 0 ? 'Innholdet har ingen filer' : undefined}>
                 <ToggleGroup.Item
                     value={'files'}
@@ -53,7 +53,10 @@ export const ViewSelector = ({ content, viewState, setViewState }: Props) => {
                     {`Filer (${filesCount})`}
                 </ToggleGroup.Item>
             </WithTooltip>
-            <ToggleGroup.Item value={'xml'}>{'XML'}</ToggleGroup.Item>
+            {!html && (
+                <ToggleGroup.Item value={'xml-as-table'}>{'XML som tabell'}</ToggleGroup.Item>
+            )}
+            <ToggleGroup.Item value={'xml'}>{'Ren XML'}</ToggleGroup.Item>
         </ToggleGroup>
     );
 };
