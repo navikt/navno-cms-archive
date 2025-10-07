@@ -1,5 +1,5 @@
 import { forceArray } from 'client/utils/forceArray';
-import { parseString, parseStringPromise } from 'xml2js';
+import { parseStringPromise } from 'xml2js';
 import { CmsContent } from './cms-documents/content';
 
 type XMLToHtmlProps = {
@@ -98,27 +98,29 @@ export const xmlToHtml = async ({
     if (!content?.xmlAsString) {
         return null;
     }
-    const result = await parseStringPromise(content.xmlAsString, {
-        explicitArray: false,
-        mergeAttrs: true,
-    });
-    if (result.err) {
-        return 'Kunne ikke parse XML: ' + result.err.message;
+
+    try {
+        const result = await parseStringPromise(content.xmlAsString, {
+            explicitArray: false,
+            mergeAttrs: true,
+        });
+
+        const htmlTable = createTableFromXml(result);
+
+        if (fullHtmlDocument) {
+            return fullHtmlDocumentTemplate
+                .replace('{{XML_CONTENT}}', htmlTable)
+                .replace('{{PAGE_TITLE}}', content.displayName || 'Ukjent sidenavn')
+                .replace(
+                    '{{GENERATED_DATE}}',
+                    content.meta.timestamp
+                        ? new Date(content.meta.timestamp).toLocaleString('no-NO')
+                        : 'Unknown'
+                );
+        }
+
+        return htmlTable;
+    } catch (err) {
+        return 'Kunne ikke parse XML: ' + (err instanceof Error ? err.message : String(err));
     }
-
-    const htmlTable = createTableFromXml(result);
-
-    if (fullHtmlDocument) {
-        return fullHtmlDocumentTemplate
-            .replace('{{XML_CONTENT}}', htmlTable)
-            .replace('{{PAGE_TITLE}}', content.displayName || 'Ukjent sidenavn')
-            .replace(
-                '{{GENERATED_DATE}}',
-                content.meta.timestamp
-                    ? new Date(content.meta.timestamp).toLocaleString('no-NO')
-                    : 'Unknown'
-            );
-    }
-
-    return htmlTable;
 };

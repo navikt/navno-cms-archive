@@ -112,7 +112,8 @@ export class PdfGenerator {
     }
 
     private async generateTableFromXML(content: CmsContent): Promise<string> {
-        return await xmlToHtml({ content, fullHtmlDocument: true });
+        const html = await xmlToHtml({ content, fullHtmlDocument: true });
+        return html ?? '';
     }
 
     private async generateContentPdf(content: CmsContent, width: number): Promise<PdfResult> {
