@@ -5,6 +5,6 @@
     "type": "module",
     "dependencies": {
         "http-terminator": "3.2.0",
-        "lru-cache": "11.2.1"
+        "lru-cache": "11.2.2"
     }
 }
