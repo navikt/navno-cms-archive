@@ -28,4 +28,5 @@ COPY legacy-archive/server/dist  /app/legacy-archive/server/dist/
 COPY legacy-archive/server/package.json /app/legacy-archive/server/
 
 EXPOSE 3399
-CMD ["npm", "run", "start"]
+ENTRYPOINT [ "node" ]
+CMD ["dist/server/server.js" ]
