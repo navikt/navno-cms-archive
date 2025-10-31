@@ -1,5 +1,6 @@
 import { CmsArchiveOpenSearchClient } from '../opensearch/CmsArchiveOpenSearchClient';
 import express, { Express, Response, Router } from 'express';
+import escape from 'escape-html';
 import { CmsArchiveContentService } from './CmsArchiveContentService';
 import { parseNumberParam, parseQueryParamsList } from '../utils/queryParams';
 import { lookup } from 'mime-types';
@@ -158,9 +159,9 @@ export class CmsArchiveSite {
             }
 
             if (!version.html) {
-                res.status(406).send(
-                    `Content with version key ${versionKey} does not have html content`
-                );
+                res.status(406)
+                    .type('text/plain')
+                    .send(`Content with version key ${escape(versionKey)} does not have html content`);
                 return;
             }
 
