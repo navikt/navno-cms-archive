@@ -1,5 +1,6 @@
 import { ViteDevServer } from 'vite';
 import { buildHtmlTemplate } from './templateBuilder';
+import { getErrorMessage } from '../../shared/fetchUtils';
 
 type AppContext = Record<string, unknown>;
 
@@ -14,15 +15,15 @@ const processTemplate = (templateHtml: string, appHtml: string, appContext: AppC
 
 export const prodRenderer =
     (render: AppHtmlRenderer): HtmlRenderer =>
-    async (url, context) => {
+    (url, context) => {
         const template = buildHtmlTemplate();
 
         try {
             const appHtml = render(url, context);
-            return processTemplate(template, appHtml, context);
+            return Promise.resolve(processTemplate(template, appHtml, context));
         } catch (e) {
-            console.error(`Rendering failed ${e}}`);
-            return processTemplate(template, '', context);
+            console.error(`Rendering failed ${getErrorMessage(e)}`);
+            return Promise.resolve(processTemplate(template, '', context));
         }
     };
 
@@ -43,8 +44,10 @@ export const devRenderer =
         const html = await vite.transformIndexHtml(url, template);
 
         try {
-            const { render } = await vite.ssrLoadModule(ssrEntryModule);
-            const appHtml = render(url, context);
+            const module = (await vite.ssrLoadModule(ssrEntryModule)) as {
+                render: AppHtmlRenderer;
+            };
+            const appHtml: string = module.render(url, context);
 
             return processTemplate(html, appHtml, context);
         } catch (e: unknown) {
@@ -53,7 +56,7 @@ export const devRenderer =
                 console.error(`Dev render error: ${e} \n ${e.stack}`);
                 return processTemplate(html, devErrorHtml(e), context);
             } else {
-                const msg = `Unknown error: ${e}`;
+                const msg = `Unknown error: ${getErrorMessage(e)}`;
                 console.error(msg);
                 return msg;
             }

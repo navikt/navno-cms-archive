@@ -10,18 +10,19 @@ export class ContentIconService {
 
     public getContentIconHandler: RequestHandler = async (req, res) => {
         if (!validateQuery(req.query, ['type'])) {
-            return res.status(400).send('Parameter type is required');
+            res.status(400).send('Parameter type is required');
+            return;
         }
 
         const { type } = req.query;
 
         const contentIconResponse = await this.getContentIcon(type);
         if (!contentIconResponse) {
-            return res.status(404).send(`Icon not found for type ${type}`);
+            res.status(404).send(`Icon not found for type ${type}`);
+            return;
         }
 
-        return res
-            .status(200)
+        res.status(200)
             .setHeader('Content-Disposition', 'inline')
             .setHeader('Content-Type', contentIconResponse.mimeType)
             .send(Buffer.from(contentIconResponse.data));

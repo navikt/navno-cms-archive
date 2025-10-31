@@ -42,7 +42,7 @@ export const SearchStateProvider = ({ children }: Props) => {
             status: 'loading',
         });
 
-        fetchSearch(params).then((result) => {
+        void fetchSearch(params).then((result) => {
             setSearchResult(
                 result || {
                     total: 0,

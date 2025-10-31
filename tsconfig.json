@@ -1,9 +1,9 @@
 {
     "$schema": "https://json.schemastore.org/tsconfig",
     "compilerOptions": {
-        "target": "ES2020",
+        "target": "ES2022",
         "useDefineForClassFields": true,
-        "lib": ["ES2020", "DOM", "DOM.Iterable"],
+        "lib": ["ES2022", "DOM", "DOM.Iterable"],
         "module": "ESNext",
         "skipLibCheck": true,
         "moduleResolution": "bundler",
@@ -12,6 +12,26 @@
         "noEmit": true,
         "jsx": "react-jsx",
         "strict": true,
-        "esModuleInterop": true
-    }
+        "esModuleInterop": true,
+        "baseUrl": ".",
+        "paths": {
+            "@common/*": ["./common/src/*"],
+            "client/*": ["./xp-archive/client/*", "./legacy-archive/client/*"],
+            "shared/*": ["./xp-archive/shared/*", "./legacy-archive/shared/*"],
+            "services/*": [
+                "./xp-archive/server/src/services/*",
+                "./legacy-archive/server/src/services/*"
+            ],
+            "utils/*": ["./xp-archive/server/src/utils/*", "./legacy-archive/server/src/utils/*"]
+        }
+    },
+    "include": [
+        "common/src/**/*",
+        "xp-archive/client/**/*",
+        "xp-archive/shared/**/*",
+        "xp-archive/server/src/**/*",
+        "legacy-archive/client/**/*",
+        "legacy-archive/shared/**/*",
+        "legacy-archive/server/src/**/*"
+    ]
 }

@@ -1,6 +1,7 @@
 import { ContentSearchParams } from '../../../shared/contentSearch';
 import Cookies from 'js-cookie';
 import { initialSearchParams } from './SearchStateContext';
+import { getErrorMessage } from '@common/shared/fetchUtils';
 
 const getCookieKey = (basePath: string) => `cms-archive-search-settings${basePath}`;
 
@@ -10,11 +11,11 @@ export const getInitialSearchParams = (basePath: string): ContentSearchParams =>
     if (cookieValue) {
         try {
             return {
-                ...JSON.parse(cookieValue),
+                ...(JSON.parse(cookieValue) as ContentSearchParams),
                 ...initialSearchParams,
             };
         } catch (e) {
-            console.error(`Failed to parse search params from cookie - ${e}`);
+            console.error(`Failed to parse search params from cookie - ${getErrorMessage(e)}`);
         }
     }
 

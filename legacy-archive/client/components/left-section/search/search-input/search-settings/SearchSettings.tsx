@@ -65,7 +65,9 @@ export const SearchSettings = () => {
                         size={'small'}
                         legend={'Søk etter...'}
                         value={type || 'titles'}
-                        onChange={(value) => updateSearchParams({ type: value })}
+                        onChange={(value: typeof type | 'titles') =>
+                            updateSearchParams({ type: value })
+                        }
                     >
                         <Radio value={'titles'}>{'Tittel'}</Radio>
                         <Radio value={'locations'}>{'URL'}</Radio>
@@ -75,7 +77,9 @@ export const SearchSettings = () => {
                         size={'small'}
                         legend={'Sortering'}
                         value={sort || 'score'}
-                        onChange={(value) => updateSearchParams({ sort: value })}
+                        onChange={(value: typeof sort | 'score') =>
+                            updateSearchParams({ sort: value })
+                        }
                     >
                         <Radio value={'score'}>{'Beste treff'}</Radio>
                         <Radio value={'name'}>{'Tittel'}</Radio>

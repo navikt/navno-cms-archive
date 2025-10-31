@@ -17,9 +17,11 @@ export const PdfExport = ({ versions, locale }: Props) => {
     const [showError, setShowError] = useState(false);
 
     const onSelectOrDeselectAll = () => {
-        versionsSelected.length === versions.length
-            ? setVersionsSelected([])
-            : setVersionsSelected(versions.map((v) => `${v.nodeId}:${v.versionId}`));
+        if (versionsSelected.length === versions.length) {
+            setVersionsSelected([]);
+        } else {
+            setVersionsSelected(versions.map((v) => `${v.nodeId}:${v.versionId}`));
+        }
     };
 
     const onCheckboxClick =

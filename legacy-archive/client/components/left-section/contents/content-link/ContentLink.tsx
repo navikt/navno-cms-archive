@@ -27,7 +27,7 @@ export const ContentLink = ({ content }: Props) => {
             onClick={(e) => {
                 e.preventDefault();
                 setIsLoading(true);
-                fetchContent(content.contentKey)
+                void fetchContent(content.contentKey)
                     .then((res) => {
                         if (res) {
                             setSelectedContent(res);

@@ -26,7 +26,7 @@ export const VersionSelector = ({ content }: Props) => {
             onChange={(e) => {
                 const versionKey = e.target.value;
 
-                fetchContentVersion(versionKey).then((res) => {
+                void fetchContentVersion(versionKey).then((res) => {
                     if (res) {
                         setSelectedContent(res);
                         setError(null);

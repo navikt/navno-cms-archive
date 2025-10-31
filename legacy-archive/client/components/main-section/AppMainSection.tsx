@@ -17,7 +17,7 @@ export const AppMainSection = () => {
             return;
         }
 
-        fetchContentVersion(selectedVersionKey).then((res) => {
+        void fetchContentVersion(selectedVersionKey).then((res) => {
             if (res) {
                 setSelectedContent(res);
             }

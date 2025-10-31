@@ -9,14 +9,15 @@ export class ContentTreeService {
 
     public getContentTreeHandler: RequestHandler = async (req, res) => {
         if (!validateQuery(req.query, ['path', 'locale'])) {
-            return res.status(400).send('Parameters path and locale are required');
+            res.status(400).send('Parameters path and locale are required');
+            return;
         }
 
         const { path, locale } = req.query;
 
         const contentTreeResponse = await this.fetchContentTree(path, locale);
 
-        return res.status(200).json(contentTreeResponse);
+        res.status(200).json(contentTreeResponse);
     };
 
     private async fetchContentTree(path: string, locale: string) {

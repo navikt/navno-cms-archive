@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Alert } from '@navikt/ds-react';
 import { classNames } from '../../../../../../common/src/client/utils/classNames';
 
-import {  xmlToHtml } from 'shared/xmlToHtml';
+import { xmlToHtml } from 'shared/xmlToHtml';
 import { CmsContent } from 'shared/cms-documents/content';
 
 import style from './XmlAsTableView.module.css';
@@ -13,7 +13,7 @@ type Props = {
 };
 
 export const XmlAsTableView = ({ content, hidden }: Props) => {
-    const [parsedHtml, setParsedHtml] = useState<any>(null);
+    const [parsedHtml, setParsedHtml] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {

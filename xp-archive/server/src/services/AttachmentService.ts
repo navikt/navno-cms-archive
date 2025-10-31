@@ -8,18 +8,19 @@ export class AttachmentService {
 
     public getAttachmentHandler: RequestHandler = async (req, res) => {
         if (!validateQuery(req.query, ['id', 'versionId', 'locale'])) {
-            return res.status(400).send('Parameters id, versionId and locale are required');
+            res.status(400).send('Parameters id, versionId and locale are required');
+            return;
         }
 
         const { id, versionId, locale } = req.query;
 
         const attachmentResponse = await this.getAttachment(id, versionId, locale);
         if (!attachmentResponse) {
-            return res.status(404).send('Attachment not found');
+            res.status(404).send('Attachment not found');
+            return;
         }
 
-        return res
-            .status(200)
+        res.status(200)
             .setHeader(
                 'Content-Disposition',
                 attachmentResponse.contentDisposition ||

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Alert, InternalHeader } from '@navikt/ds-react';
+import { InternalHeader } from '@navikt/ds-react';
 import { ArchiveSelector } from './archive-selector/ArchiveSelector';
 
 import style from './AppTopSection.module.css';

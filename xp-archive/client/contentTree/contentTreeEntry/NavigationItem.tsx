@@ -3,14 +3,12 @@ import { ContentTreeEntryData } from '../../../shared/types';
 import { useAppState } from '../../context/appState/useAppState';
 import { TreeItem } from '@mui/x-tree-view';
 import { useContentTree } from 'client/hooks/useContentTree';
+import { getContentIconUrl } from 'client/utils/getContentIconUrl';
 import style from './NavigationItem.module.css';
 
 type Props = {
     entry: ContentTreeEntryData;
 };
-
-export const getContentIconUrl = (type: string) =>
-    `${import.meta.env.VITE_APP_ORIGIN}/xp/api/contentIcon?type=${type}`;
 
 export const NavigationItem = ({ entry }: Props) => {
     const { updateSelectedContent } = useAppState();

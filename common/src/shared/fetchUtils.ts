@@ -1,16 +1,26 @@
 type Options = RequestInit & { params?: Record<string, unknown> };
 
+export const getErrorMessage = (e: unknown): string => {
+    return e instanceof Error ? e.message : String(e);
+};
+
+const stringifyValue = (v: unknown): string => {
+    if (typeof v === 'object' && v !== null) {
+        return JSON.stringify(v);
+    }
+    if (typeof v === 'string' || typeof v === 'number' || typeof v === 'boolean') {
+        return String(v);
+    }
+    return String(v);
+};
+
 const objectToQueryString = (params?: Record<string, unknown>) =>
     params
-        ? Object.entries(params).reduce(
-              (acc, [k, v], i) =>
-                  v !== undefined
-                      ? `${acc}${i ? '&' : '?'}${k}=${encodeURIComponent(
-                            typeof v === 'object' ? JSON.stringify(v) : v.toString()
-                        )}`
-                      : acc,
-              ''
-          )
+        ? Object.entries(params).reduce((acc, [k, v], i) => {
+              if (v === undefined) return acc;
+              const stringValue = stringifyValue(v);
+              return `${acc}${i ? '&' : '?'}${k}=${encodeURIComponent(stringValue)}`;
+          }, '')
         : '';
 
 const fetchWithRetry = async (
@@ -35,7 +45,7 @@ const fetchWithRetry = async (
             return fetchWithRetry(url, options, retries - 1);
         }
 
-        console.error(`Failed to fetch from ${urlWithParams} - ${e}`);
+        console.error(`Failed to fetch from ${urlWithParams} - ${getErrorMessage(e)}`);
         throw e;
     }
 };

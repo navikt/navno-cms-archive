@@ -5,6 +5,7 @@ import {
     Mget_Response,
     Search_Request,
 } from '@opensearch-project/opensearch/api/index.js';
+import { getErrorMessage } from '@common/shared/fetchUtils';
 
 type DocumentWithScore<Document> = Document & { _score?: number | string };
 
@@ -19,7 +20,7 @@ const logException = (e: unknown) => {
     if (e instanceof OpenSearchClientError) {
         console.log(`OpenSearch error: ${e.message} - ${e.stack}`);
     } else {
-        console.log(`Unknown error: ${e}`);
+        console.log(`Unknown error: ${getErrorMessage(e)}`);
     }
 };
 

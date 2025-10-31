@@ -7,9 +7,11 @@ export const setupErrorHandlers = (router: Router) => {
 
     const serverErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
         const { path } = req;
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const { status, stack } = err;
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
         const msg = stack?.split('\n')[0];
-        const statusCode = status || 500;
+        const statusCode: number = typeof status === 'number' ? status : 500;
 
         if (statusCode < 500) {
             console.log(`Invalid request to ${path}: ${statusCode} ${msg}`);
@@ -18,7 +20,7 @@ export const setupErrorHandlers = (router: Router) => {
 
         console.error(`Server error on ${path}: ${statusCode} ${msg}`);
 
-        return res.status(statusCode).end();
+        res.status(statusCode).end();
     };
 
     router.use('/{*splat}', notFoundHandler);

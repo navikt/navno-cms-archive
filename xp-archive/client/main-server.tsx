@@ -2,6 +2,6 @@ import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { App } from './App';
 
-export const render = (url: string, context: unknown) => {
+export const render = (_url: string, _context: unknown) => {
     return renderToString(<App />);
 };

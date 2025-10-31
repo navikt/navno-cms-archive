@@ -40,6 +40,7 @@ export const ContentMenu = ({ parentCategory }: Props) => {
     const headerText = `${parentTitle} (${currentCount !== contentCount ? `${currentCount} / ` : ''}${contentCount})`;
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setPageNumber(1);
         setQuery('');
     }, [parentKey]);

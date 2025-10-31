@@ -1,6 +1,7 @@
 import { createHttpTerminator } from 'http-terminator';
 import { Express } from 'express';
 import { validateEnv } from './utils/validateEnv';
+import { getErrorMessage } from '../shared/fetchUtils';
 
 type Props = {
     envKeys: string[] | readonly string[];
@@ -9,10 +10,11 @@ type Props = {
 };
 
 export const startServer = ({ envKeys, port, initApp }: Props) => {
-    validateEnv(envKeys)
-        .then(initApp)
+    validateEnv(envKeys);
+
+    void initApp()
         .catch((e) => {
-            console.error(`Error occured while initializing server - ${e}`);
+            console.error(`Error occurred while initializing server - ${getErrorMessage(e)}`);
             throw e;
         })
         .then((app) => {
@@ -24,7 +26,7 @@ export const startServer = ({ envKeys, port, initApp }: Props) => {
 
             const shutdown = (signal: string) => {
                 console.log(`Received ${signal} - Server shutting down`);
-                httpTerminator.terminate().then(() => {
+                void httpTerminator.terminate().then(() => {
                     server.close(() => {
                         console.log('Shutdown complete!');
                         process.exit(0);

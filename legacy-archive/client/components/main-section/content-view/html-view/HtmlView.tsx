@@ -9,7 +9,7 @@ type Props = {
     hidden: boolean;
 };
 
-export const HtmlView = ({ html, versionKey, hidden }: Props) => {
+export const HtmlView = ({ html, versionKey: _versionKey, hidden }: Props) => {
     const ref = useRef<HTMLIFrameElement>(null);
 
     return (

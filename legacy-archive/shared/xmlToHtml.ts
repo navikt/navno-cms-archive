@@ -1,6 +1,7 @@
 import { forceArray } from 'client/utils/forceArray';
 import { parseStringPromise } from 'xml2js';
 import { CmsContent } from './cms-documents/content';
+import { getErrorMessage } from '@common/shared/fetchUtils';
 
 type XMLToHtmlProps = {
     content: CmsContent;
@@ -12,7 +13,7 @@ export type HeaderData = {
 };
 
 export type RowData = {
-    [key: string]: string | { [key: string]: any };
+    [key: string]: string | { [key: string]: unknown };
 };
 
 const fullHtmlDocumentTemplate = `<!DOCTYPE html>
@@ -29,15 +30,23 @@ const fullHtmlDocumentTemplate = `<!DOCTYPE html>
 </body>
 </html>`;
 
-const renderValue = (value: any): React.ReactNode => {
+const renderValue = (value: unknown): string => {
     if (value === null || value === undefined) return '';
-    if (typeof value === 'object' && value['has-value'] === 'false') {
+    if (
+        typeof value === 'object' &&
+        value &&
+        'has-value' in value &&
+        value['has-value'] === 'false'
+    ) {
         return '';
     }
     if (typeof value === 'object') {
         return JSON.stringify(value);
     }
-    return String(value);
+    if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+        return String(value);
+    }
+    return '';
 };
 
 // All XML has 13 columns, but some are empty. Normally, the columns are
@@ -51,11 +60,16 @@ const getColumnsWithData = (header: HeaderData) => {
         : [];
 };
 
-const createTableFromXml = (data: any): string => {
-    const contentData = data?.contents?.content?.contentdata;
+const createTableFromXml = (data: unknown): string => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
+    const dataRecord = data as any;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+    const contentData = dataRecord?.contents?.content?.contentdata;
 
-    const header = contentData?.rows?.header;
-    const rows = forceArray(contentData?.rows?.row);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    const header = contentData?.rows?.header as HeaderData | undefined;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    const rows = forceArray(contentData?.rows?.row) as RowData[];
 
     // Filters out the columns with actual data, to be used further down
     // to determine which header and cell to render.
@@ -100,10 +114,10 @@ export const xmlToHtml = async ({
     }
 
     try {
-        const result = await parseStringPromise(content.xmlAsString, {
+        const result = (await parseStringPromise(content.xmlAsString, {
             explicitArray: false,
             mergeAttrs: true,
-        });
+        })) as unknown;
 
         const htmlTable = createTableFromXml(result);
 
@@ -121,6 +135,6 @@ export const xmlToHtml = async ({
 
         return htmlTable;
     } catch (err) {
-        return 'Kunne ikke parse XML: ' + (err instanceof Error ? err.message : String(err));
+        return 'Kunne ikke parse XML: ' + getErrorMessage(err);
     }
 };

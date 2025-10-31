@@ -125,12 +125,12 @@ const indexFile = async (indexName: string, baseDir: string, filePath: string) =
 
 const instance: CmsInstance = 'sbs';
 
-createIndex(instance).then((indexName: string) => {
+void createIndex(instance).then((indexName: string) => {
     const baseDir = path.join(process.cwd(), 'cms-assets', instance);
     const files = enumerateFiles(baseDir, '').map((file) =>
         file.split(path.sep).join(path.posix.sep)
     );
     console.log(`Found ${files.length} files in directory ${baseDir}`);
 
-    files.forEach(async (file) => await indexFile(indexName, baseDir, file));
+    files.forEach((file) => void indexFile(indexName, baseDir, file));
 });

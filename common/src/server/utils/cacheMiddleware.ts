@@ -34,7 +34,8 @@ export const createCacheMiddleware = ({
         const cachedRes = cache.get(originalUrl);
         if (cachedRes) {
             const { sentData, statusCode } = cachedRes;
-            return res.status(statusCode).send(sentData);
+            res.status(statusCode).send(sentData);
+            return;
         }
 
         const originalSend = res.send;
