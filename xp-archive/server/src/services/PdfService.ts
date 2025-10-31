@@ -67,7 +67,7 @@ export class PdfService {
             return;
         }
 
-        void this.createPdfZip(allPdfs, res);
+        this.createPdfZip(allPdfs, res);
     };
 
     private singlePdf(content: PdfResult, res: Response) {
@@ -106,7 +106,7 @@ export class PdfService {
             archive.append(pdf.data, { name: pdf.filename });
         }
 
-        void archive.finalize();
+        archive.finalize().catch(() => {});
     }
 
     private async generateContentPdf(
@@ -133,7 +133,7 @@ export class PdfService {
             // Log Page events for debugging should generation fail
             page.on('request', (request) => {
                 console.log(`Puppeteer: Request: ${request.method()} ${request.url()}`);
-                void request.continue();
+                request.continue().catch(() => {});
             });
 
             page.on('requestfailed', (request) => {

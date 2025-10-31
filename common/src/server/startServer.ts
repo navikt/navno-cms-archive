@@ -26,12 +26,18 @@ export const startServer = ({ envKeys, port, initApp }: Props) => {
 
             const shutdown = (signal: string) => {
                 console.log(`Received ${signal} - Server shutting down`);
-                void httpTerminator.terminate().then(() => {
-                    server.close(() => {
-                        console.log('Shutdown complete!');
-                        process.exit(0);
+                httpTerminator
+                    .terminate()
+                    .then(() => {
+                        server.close(() => {
+                            console.log('Shutdown complete!');
+                            process.exit(0);
+                        });
+                    })
+                    .catch((e) => {
+                        console.error(`Error during shutdown - ${getErrorMessage(e)}`);
+                        process.exit(1);
                     });
-                });
             };
 
             process.on('SIGTERM', shutdown);

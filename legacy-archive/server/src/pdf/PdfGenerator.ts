@@ -88,7 +88,7 @@ export class PdfGenerator {
             });
         }
 
-        void archive.finalize();
+        await archive.finalize();
     }
 
     public async generatePdfFromVersion(
@@ -154,7 +154,7 @@ export class PdfGenerator {
                 console.log(
                     `Puppeteer: [${versionKey}] Request: ${request.method()} ${request.url()}`
                 );
-                void request.continue();
+                request.continue().catch(() => {});
             });
 
             page.on('requestfailed', (request) => {

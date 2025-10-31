@@ -27,12 +27,13 @@ export const ContentLink = ({ content }: Props) => {
             onClick={(e) => {
                 e.preventDefault();
                 setIsLoading(true);
-                void fetchContent(content.contentKey)
+                fetchContent(content.contentKey)
                     .then((res) => {
                         if (res) {
                             setSelectedContent(res);
                         }
                     })
+                    .catch(() => {})
                     .finally(() => setIsLoading(false));
             }}
         >

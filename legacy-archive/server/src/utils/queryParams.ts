@@ -19,7 +19,7 @@ export const parseToStringArray = (value: unknown): string[] | undefined => {
         const parsed = JSON.parse(value) as unknown;
 
         if (Array.isArray(parsed)) {
-            return parsed.map((item: unknown) => String(item));
+            return parsed.map(String);
         }
 
         return [String(parsed)];
