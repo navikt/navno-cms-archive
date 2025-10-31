@@ -2,6 +2,7 @@ import { xpServiceUrl } from '../utils/urls';
 import { RequestHandler } from 'express';
 import { fetchFile, FileResponse } from '@common/shared/fetchUtils';
 import { validateQuery } from '../utils/params';
+import * as escape from 'escape-html';
 
 export class ContentIconService {
     private readonly CONTENT_ICON_API = xpServiceUrl('externalArchive/contentIcon');
@@ -18,7 +19,7 @@ export class ContentIconService {
 
         const contentIconResponse = await this.getContentIcon(type);
         if (!contentIconResponse) {
-            res.status(404).send(`Icon not found for type ${type}`);
+            res.status(404).send(`Icon not found for type ${escape(type as string)}`);
             return;
         }
 
