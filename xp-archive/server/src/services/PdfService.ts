@@ -81,8 +81,6 @@ export class PdfService {
 
     private createPdfZip(pdfs: PdfResult[], res: Response) {
         const newestVersion = pdfs[0];
-        // const oldestVersion = pdfs[pdfs.length - 1];
-
         const zipFilename = `${newestVersion.displayName.slice(0, 50)}.zip`;
 
         res.setHeader(

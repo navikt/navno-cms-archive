@@ -7,10 +7,10 @@ export const setupErrorHandlers = (router: Router) => {
 
     const serverErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
         const { path } = req;
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const { status, stack } = err;
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-        const msg = stack?.split('\n')[0];
+        const error = err as Error & { status?: number };
+        const status = error.status;
+        const stack = error.stack;
+        const msg = typeof stack === 'string' ? stack.split('\n')[0] : String(error);
         const statusCode: number = typeof status === 'number' ? status : 500;
 
         if (statusCode < 500) {
