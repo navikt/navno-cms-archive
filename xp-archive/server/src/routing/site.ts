@@ -1,4 +1,5 @@
 import { Router } from 'express';
+// @ts-expect-error - Generated SSR file without type declarations
 import { render } from '../_ssr-dist/main-server';
 import { buildHtmlRenderer } from '@common/server/ssr/initRenderer';
 import { ContentTreeService } from '../services/ContentTreeService';
@@ -13,6 +14,7 @@ import { HtmlRenderer } from '../../../../common/src/server/ssr/htmlRenderer';
 export const setupSite = async (router: Router) => {
     const htmlRenderer = await buildHtmlRenderer({
         router: router,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         appHtmlRenderer: render,
         appBaseBath: process.env.APP_BASEPATH,
         ssrModulePath: '/client/main-server.tsx',
@@ -20,11 +22,11 @@ export const setupSite = async (router: Router) => {
 
     router.get('/', async (req, res) => {
         const html = await htmlRenderer(req.url, {});
-        return res.send(html);
+        res.send(html);
     });
 
     await setupApiRoutes(router);
-    await setupBrowserRoutes(router, htmlRenderer);
+    setupBrowserRoutes(router, htmlRenderer);
 };
 
 const setupApiRoutes = async (router: Router) => {
@@ -46,7 +48,7 @@ const setupApiRoutes = async (router: Router) => {
     router.get('/api/search', searchService.getSearchHandler);
 };
 
-const setupBrowserRoutes = async (router: Router, htmlRenderer: HtmlRenderer) => {
+const setupBrowserRoutes = (router: Router, htmlRenderer: HtmlRenderer) => {
     const contentService = new ContentService();
 
     router.get('/html/:contentId/:locale', async (req, res, next) => {
@@ -54,14 +56,16 @@ const setupBrowserRoutes = async (router: Router, htmlRenderer: HtmlRenderer) =>
 
         const content = await contentService.fetchContent(contentId, locale);
         if (!content) {
-            return next();
+            next();
+            return;
         }
 
         if (!content.html) {
-            return res.status(406).send('This content does not have an html representation.');
+            res.status(406).send('This content does not have an html representation.');
+            return;
         }
 
-        return res.send(content.html);
+        res.send(content.html);
     });
 
     router.get('/html/:contentId/:locale/:versionId', async (req, res, next) => {
@@ -69,14 +73,16 @@ const setupBrowserRoutes = async (router: Router, htmlRenderer: HtmlRenderer) =>
 
         const content = await contentService.fetchContent(contentId, locale, versionId);
         if (!content) {
-            return next();
+            next();
+            return;
         }
 
         if (!content.html) {
-            return res.status(406).send('This content does not have an html representation.');
+            res.status(406).send('This content does not have an html representation.');
+            return;
         }
 
-        return res.send(content.html);
+        res.send(content.html);
     });
 
     router.get('/:contentId/:locale', async (req, res, next) => {
@@ -84,7 +90,8 @@ const setupBrowserRoutes = async (router: Router, htmlRenderer: HtmlRenderer) =>
 
         const content = await contentService.fetchContent(contentId, locale);
         if (!content) {
-            return next();
+            next();
+            return;
         }
 
         const contextContent = {
@@ -93,7 +100,7 @@ const setupBrowserRoutes = async (router: Router, htmlRenderer: HtmlRenderer) =>
         };
 
         const html = await htmlRenderer(req.url, { content: contextContent });
-        return res.send(html);
+        res.send(html);
     });
 
     router.get('/:contentId/:locale/:versionId', async (req, res, next) => {
@@ -101,7 +108,8 @@ const setupBrowserRoutes = async (router: Router, htmlRenderer: HtmlRenderer) =>
 
         const content = await contentService.fetchContent(contentId, locale, versionId);
         if (!content) {
-            return next();
+            next();
+            return;
         }
 
         const contextContent = {
@@ -110,6 +118,6 @@ const setupBrowserRoutes = async (router: Router, htmlRenderer: HtmlRenderer) =>
         };
 
         const html = await htmlRenderer(req.url, { content: contextContent });
-        return res.send(html);
+        res.send(html);
     });
 };

@@ -9,5 +9,8 @@ const fetchContentTree = async ({ path, locale }: { path: string; locale: string
 };
 
 export const useContentTree = (path: string, locale: string) => {
-    return useSWRImmutable({ path, locale }, fetchContentTree);
+    return useSWRImmutable<XPContentTreeServiceResponse | null, Error>(
+        { path, locale },
+        fetchContentTree
+    );
 };

@@ -8,6 +8,7 @@ import {
 } from './pdf-utils';
 import { CmsContent } from '../../../shared/cms-documents/content';
 import archiver from 'archiver';
+import { getErrorMessage } from '@common/shared/fetchUtils';
 import { Response } from 'express';
 import { DOWNLOAD_COOKIE_NAME } from '../../../shared/downloadCookie';
 import { xmlToHtml } from '../../../shared/xmlToHtml';
@@ -55,8 +56,6 @@ export class PdfGenerator {
         }
 
         const newestVersion = contentVersions[0];
-        const oldestVersion = contentVersions[contentVersions.length - 1];
-
         const zipFilename = `${newestVersion.name.slice(0, 50)}.zip`;
 
         res.setHeader(
@@ -87,7 +86,7 @@ export class PdfGenerator {
             });
         }
 
-        archive.finalize();
+        await archive.finalize();
     }
 
     public async generatePdfFromVersion(
@@ -153,7 +152,7 @@ export class PdfGenerator {
                 console.log(
                     `Puppeteer: [${versionKey}] Request: ${request.method()} ${request.url()}`
                 );
-                request.continue();
+                request.continue().catch(() => {});
             });
 
             page.on('requestfailed', (request) => {
@@ -221,7 +220,7 @@ export class PdfGenerator {
                 filename: generatePdfFilename(content),
             };
         } catch (e) {
-            const msg = `Error while generating PDF for content version ${versionKey} - ${e}`;
+            const msg = `Error while generating PDF for content version ${versionKey} - ${getErrorMessage(e)}`;
             console.error(msg);
             console.error('Full error stack:', e);
             return {

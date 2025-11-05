@@ -7,9 +7,11 @@ export const setupErrorHandlers = (router: Router) => {
 
     const serverErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
         const { path } = req;
-        const { status, stack } = err;
-        const msg = stack?.split('\n')[0];
-        const statusCode = status || 500;
+        const error = err as Error & { status?: number };
+        const status = error.status;
+        const stack = error.stack;
+        const msg = typeof stack === 'string' ? stack.split('\n')[0] : String(error);
+        const statusCode: number = typeof status === 'number' ? status : 500;
 
         if (statusCode < 500) {
             console.log(`Invalid request to ${path}: ${statusCode} ${msg}`);
@@ -18,7 +20,7 @@ export const setupErrorHandlers = (router: Router) => {
 
         console.error(`Server error on ${path}: ${statusCode} ${msg}`);
 
-        return res.status(statusCode).end();
+        res.status(statusCode).end();
     };
 
     router.use('/{*splat}', notFoundHandler);

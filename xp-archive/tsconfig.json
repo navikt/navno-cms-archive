@@ -1,12 +1,11 @@
 {
-    "extends": ["../tsconfig.json"],
-    "include": ["client"],
+    "extends": "../tsconfig.json",
     "compilerOptions": {
         "types": ["vite/client"],
         "baseUrl": ".",
         "paths": {
-            "@common/client/*": ["../common/src/client/*"],
-            "@common/shared/*": ["../common/src/shared/*"]
+            "@common/*": ["../common/src/*"]
         }
-    }
+    },
+    "include": ["client/**/*", "shared/**/*", "vite.config.ts", "global.d.ts"]
 }

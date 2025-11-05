@@ -1,7 +1,11 @@
 import { CmsContent, CmsContentDocument } from '../../../shared/cms-documents/content';
 import { CmsArchiveOpenSearchClient } from '../opensearch/CmsArchiveOpenSearchClient';
 import { sortVersions } from '../utils/sort';
-import { ContentSearchParams, ContentSearchResult } from '../../../shared/contentSearch';
+import {
+    ContentSearchHit,
+    ContentSearchParams,
+    ContentSearchResult,
+} from '../../../shared/contentSearch';
 import { buildContentSearchParams } from '../opensearch/queries/contentSearch';
 import { CmsArchiveCategoriesService } from './CmsArchiveCategoriesService';
 import { LegacyArchiveSiteConfig } from '@common/shared/siteConfigs';
@@ -43,11 +47,11 @@ export class CmsArchiveContentService {
             };
         }
 
-        const hits = result.hits.map((hit) => ({
+        const hits: ContentSearchHit[] = result.hits.map((hit) => ({
             contentKey: hit.contentKey,
             versionKey: hit.versionKey,
             displayName: hit.displayName,
-            score: hit._score || 0,
+            score: typeof hit._score === 'number' ? hit._score : 0,
             path: this.categoriesService.resolveCategoryPath(hit.category.key),
         }));
 

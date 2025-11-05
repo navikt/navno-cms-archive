@@ -68,7 +68,7 @@ export const NavigationBar = () => {
                         return;
                     }
 
-                    searchData();
+                    void searchData();
                 }}
             >
                 <Search

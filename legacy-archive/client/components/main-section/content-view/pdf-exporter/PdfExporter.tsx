@@ -78,10 +78,12 @@ export const PdfExporter = ({ content, hidden }: Props) => {
             []
         );
 
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setVersionKeysSelected(versionKeysSelected);
     }, [versionsSelectedMap]);
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setVersionsSelectedMap(versionsSelectedMapNew);
         setVersionKeysSelected([]);
         setPrevClickedIndex(0);

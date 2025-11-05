@@ -9,13 +9,14 @@ export class SearchService {
 
     public getSearchHandler: RequestHandler = async (req, res) => {
         if (!validateQuery(req.query, ['query'], ['searchType'])) {
-            return res.status(400).send('Missing or invalid parameters');
+            res.status(400).send('Missing or invalid parameters');
+            return;
         }
 
         const { query, searchType } = req.query;
         const searchResponse = await this.search(query, searchType);
 
-        return res.status(200).json(searchResponse);
+        res.status(200).json(searchResponse);
     };
 
     private async search(query: string, searchType?: string): Promise<SearchResponse | null> {

@@ -16,14 +16,14 @@ export const parseToStringArray = (value: unknown): string[] | undefined => {
             return undefined;
         }
 
-        const parsed = JSON.parse(value);
+        const parsed = JSON.parse(value) as unknown;
 
         if (Array.isArray(parsed)) {
-            return parsed.map((item) => item.toString());
+            return parsed.map(String);
         }
 
-        return [parsed.toString()];
-    } catch (_) {
+        return [String(parsed)];
+    } catch {
         return undefined;
     }
 };

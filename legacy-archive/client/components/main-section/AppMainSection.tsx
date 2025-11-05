@@ -17,11 +17,13 @@ export const AppMainSection = () => {
             return;
         }
 
-        fetchContentVersion(selectedVersionKey).then((res) => {
-            if (res) {
-                setSelectedContent(res);
-            }
-        });
+        fetchContentVersion(selectedVersionKey)
+            .then((res) => {
+                if (res) {
+                    setSelectedContent(res);
+                }
+            })
+            .catch(() => {});
     }, [fetchContentVersion, selectedContent, selectedVersionKey, setSelectedContent]);
 
     return (

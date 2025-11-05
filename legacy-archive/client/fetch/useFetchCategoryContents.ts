@@ -1,6 +1,6 @@
 import useSWRImmutable from 'swr/immutable';
 import { useApiFetch } from './useApiFetch';
-import { ContentSearchParams } from '../../shared/contentSearch';
+import { ContentSearchParams, ContentSearchResult } from '../../shared/contentSearch';
 
 type FetchCategoryContentsParams = {
     categoryKey: string;
@@ -25,7 +25,10 @@ export const useFetchCategoryContents = ({
         type: 'all',
     };
 
-    const { isLoading, data, error } = useSWRImmutable(params, fetchSearch);
+    const { isLoading, data, error } = useSWRImmutable<ContentSearchResult | null, Error>(
+        params,
+        fetchSearch
+    );
 
     return { isLoading, result: data, error };
 };

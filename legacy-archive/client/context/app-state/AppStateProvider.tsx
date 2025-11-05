@@ -30,7 +30,8 @@ export const AppStateProvider = ({ appContext, children }: ProviderProps) => {
 
     useEffect(() => {
         const onPopState = (e: PopStateEvent) => {
-            setSelectedContentWithHistory(e.state?.content || null, false);
+            const state = e.state as { content?: CmsContent } | null;
+            setSelectedContentWithHistory(state?.content ?? null, false);
         };
 
         window.addEventListener('popstate', onPopState);

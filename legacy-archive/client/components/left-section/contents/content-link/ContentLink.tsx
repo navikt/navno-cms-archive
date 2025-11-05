@@ -33,6 +33,7 @@ export const ContentLink = ({ content }: Props) => {
                             setSelectedContent(res);
                         }
                     })
+                    .catch(() => {})
                     .finally(() => setIsLoading(false));
             }}
         >

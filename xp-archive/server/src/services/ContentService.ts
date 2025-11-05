@@ -10,14 +10,15 @@ export class ContentService {
 
     public getContentHandler: RequestHandler = async (req, res) => {
         if (!validateQuery(req.query, ['id', 'locale'], ['versionId'])) {
-            return res.status(400).send('Missing or invalid parameters');
+            res.status(400).send('Missing or invalid parameters');
+            return;
         }
 
         const { id, locale, versionId } = req.query;
 
         const contentResponse = await this.fetchContent(id, locale, versionId);
 
-        return res.status(200).json(contentResponse);
+        res.status(200).json(contentResponse);
     };
 
     public async fetchContent(

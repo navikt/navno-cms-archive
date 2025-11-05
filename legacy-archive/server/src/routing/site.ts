@@ -1,6 +1,7 @@
 import { Express } from 'express';
 import { CmsArchiveSite } from '../cms/CmsArchiveSite';
 import { CmsArchiveOpenSearchClient } from '../opensearch/CmsArchiveOpenSearchClient';
+// @ts-expect-error - Generated SSR file without type declarations
 import { render } from '../_ssr-dist/main-server';
 import puppeteer from 'puppeteer';
 import { legacyArchiveConfigs } from '@common/shared/siteConfigs';
@@ -12,6 +13,7 @@ export const setupSites = async (expressApp: Express) => {
 
     const htmlRenderer = await buildHtmlRenderer({
         router: expressApp,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         appHtmlRenderer: render,
         appBaseBath: process.env.APP_BASEPATH,
         ssrModulePath: '/client/main-server.tsx',

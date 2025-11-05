@@ -26,14 +26,16 @@ export const VersionSelector = ({ content }: Props) => {
             onChange={(e) => {
                 const versionKey = e.target.value;
 
-                fetchContentVersion(versionKey).then((res) => {
-                    if (res) {
-                        setSelectedContent(res);
-                        setError(null);
-                    } else {
-                        setError(`Lasting av versjon med nøkkel "${versionKey}" feilet!`);
-                    }
-                });
+                fetchContentVersion(versionKey)
+                    .then((res) => {
+                        if (res) {
+                            setSelectedContent(res);
+                            setError(null);
+                        } else {
+                            setError(`Lasting av versjon med nøkkel "${versionKey}" feilet!`);
+                        }
+                    })
+                    .catch(() => {});
             }}
         >
             {content.versions.map((version) => {

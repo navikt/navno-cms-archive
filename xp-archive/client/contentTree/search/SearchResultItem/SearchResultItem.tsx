@@ -1,7 +1,7 @@
 import React from 'react';
 import { BodyShort, Detail } from '@navikt/ds-react';
 import { classNames } from '@common/client/utils/classNames';
-import { getContentIconUrl } from 'client/contentTree/contentTreeEntry/NavigationItem';
+import { getContentIconUrl } from 'client/utils/getContentIconUrl';
 import { useAppState } from 'client/context/appState/useAppState';
 import { SearchResponse } from 'shared/types';
 

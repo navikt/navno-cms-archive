@@ -42,16 +42,18 @@ export const SearchStateProvider = ({ children }: Props) => {
             status: 'loading',
         });
 
-        fetchSearch(params).then((result) => {
-            setSearchResult(
-                result || {
-                    total: 0,
-                    hits: [],
-                    status: 'error',
-                    params: params,
-                }
-            );
-        });
+        fetchSearch(params)
+            .then((result) => {
+                setSearchResult(
+                    result || {
+                        total: 0,
+                        hits: [],
+                        status: 'error',
+                        params: params,
+                    }
+                );
+            })
+            .catch(() => {});
     };
 
     useEffect(() => {

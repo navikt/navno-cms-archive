@@ -10,7 +10,7 @@ import { RequestHandler, Response } from 'express';
 import { validateQuery } from 'utils/params';
 import archiver from 'archiver';
 import { ContentServiceResponse } from '../../../shared/types';
-import { formatTimestampForPDF } from '../../../../common/src/shared/timestamp';
+import { getErrorMessage } from '@common/shared/fetchUtils';
 
 const DEFAULT_WIDTH_PX = 1024;
 const MIN_WIDTH_PX = 400;
@@ -38,14 +38,16 @@ export class PdfService {
 
     public generatePdfHandler: RequestHandler = async (req, res) => {
         if (!validateQuery(req.query, ['versionIds', 'locale'])) {
-            return res.status(400).send('Parameters versionIds and locale are required');
+            res.status(400).send('Parameters versionIds and locale are required');
+            return;
         }
 
         const versionIds = req.query.versionIds.split(',').map((v) => v.split(':'));
         const { locale } = req.query;
 
         if (versionIds.length === 0) {
-            return res.status(400).send('Version keys array must be non-empty');
+            res.status(400).send('Version keys array must be non-empty');
+            return;
         }
         const contents = await Promise.all(
             versionIds.map(([nodeId, versionId]) =>
@@ -56,14 +58,16 @@ export class PdfService {
         );
         const allPdfs = contents.filter((c) => c !== null);
         if (allPdfs.length === 0) {
-            return res.status(404).send('No content versions found');
+            res.status(404).send('No content versions found');
+            return;
         }
 
         if (allPdfs.length === 1) {
-            return this.singlePdf(allPdfs[0], res);
+            this.singlePdf(allPdfs[0], res);
+            return;
         }
 
-        return this.createPdfZip(allPdfs, res);
+        this.createPdfZip(allPdfs, res);
     };
 
     private singlePdf(content: PdfResult, res: Response) {
@@ -75,10 +79,8 @@ export class PdfService {
             .send(data);
     }
 
-    private async createPdfZip(pdfs: PdfResult[], res: Response) {
+    private createPdfZip(pdfs: PdfResult[], res: Response) {
         const newestVersion = pdfs[0];
-        const oldestVersion = pdfs[pdfs.length - 1];
-
         const zipFilename = `${newestVersion.displayName.slice(0, 50)}.zip`;
 
         res.setHeader(
@@ -98,14 +100,11 @@ export class PdfService {
             res.end();
         });
 
-        const addPdfs = async () => {
-            for (const pdf of pdfs) {
-                archive.append(pdf.data, { name: pdf.filename });
-            }
-        };
-        await addPdfs();
+        for (const pdf of pdfs) {
+            archive.append(pdf.data, { name: pdf.filename });
+        }
 
-        archive.finalize();
+        archive.finalize().catch(() => {});
     }
 
     private async generateContentPdf(
@@ -132,21 +131,23 @@ export class PdfService {
             // Log Page events for debugging should generation fail
             page.on('request', (request) => {
                 console.log(`Puppeteer: Request: ${request.method()} ${request.url()}`);
-                request.continue();
+                request.continue().catch(() => {});
             });
-            
+
             page.on('requestfailed', (request) => {
-                console.error(`Puppeteer: Request failed: ${request.url()} - ${request.failure()?.errorText}`);
+                console.error(
+                    `Puppeteer: Request failed: ${request.url()} - ${request.failure()?.errorText}`
+                );
             });
-            
+
             page.on('response', (response) => {
                 console.log(`Puppeteer: Response: ${response.status()} ${response.url()}`);
             });
-            
+
             page.on('console', (msg) => {
                 console.log(`Puppeteer: Browser console: ${msg.type()} - ${msg.text()}`);
             });
-            
+
             page.on('pageerror', (error) => {
                 console.error(`Puppeteer: Page error:`, error);
             });
@@ -184,7 +185,7 @@ export class PdfService {
                 displayName: json.displayName,
             };
         } catch (e) {
-            const msg = `Error while generating PDF for content version ${json._versionKey} - ${e}`;
+            const msg = `Error while generating PDF for content version ${json._versionKey} - ${getErrorMessage(e)}`;
             console.error(msg);
             return {
                 data: Buffer.from(msg),

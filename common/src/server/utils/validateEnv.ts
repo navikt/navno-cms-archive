@@ -1,6 +1,6 @@
 import process from 'process';
 
-export const validateEnv = async (expectedVars: readonly string[] | string[]) => {
+export const validateEnv = (expectedVars: readonly string[] | string[]) => {
     const missingVars: string[] = [];
 
     expectedVars.forEach((key) => {

@@ -1,5 +1,6 @@
 import { CmsArchiveOpenSearchClient } from '../opensearch/CmsArchiveOpenSearchClient';
 import express, { Express, Response, Router } from 'express';
+import escape from 'escape-html';
 import { CmsArchiveContentService } from './CmsArchiveContentService';
 import { parseNumberParam, parseQueryParamsList } from '../utils/queryParams';
 import { lookup } from 'mime-types';
@@ -68,17 +69,18 @@ export class CmsArchiveSite {
     private setupApiRoutes(router: Router) {
         router.get('/root-categories', (req, res) => {
             const rootCategories = this.categoriesService.getRootCategories();
-            return res.send(rootCategories);
+            res.send(rootCategories);
         });
 
         router.get('/categories/:keys', (req, res) => {
             const keys = parseQueryParamsList(req.params.keys);
             if (!keys) {
-                return res.status(400).send('Required parameter "keys" is not valid');
+                res.status(400).send('Required parameter "keys" is not valid');
+                return;
             }
 
             const category = this.categoriesService.getCategories(keys);
-            return res.send(category);
+            res.send(category);
         });
 
         router.get('/content/:contentKey', async (req, res, next) => {
@@ -86,10 +88,11 @@ export class CmsArchiveSite {
 
             const content = await this.contentService.getContent(contentKey);
             if (!content) {
-                return next();
+                next();
+                return;
             }
 
-            return res.send(content);
+            res.send(content);
         });
 
         router.get('/version/:versionKey', async (req, res, next) => {
@@ -97,21 +100,23 @@ export class CmsArchiveSite {
 
             const contentVersion = await this.contentService.getContentVersion(versionKey);
             if (!contentVersion) {
-                return next();
+                next();
+                return;
             }
 
-            return res.send(contentVersion);
+            res.send(contentVersion);
         });
 
         router.get('/search', async (req, res) => {
             const params = transformQueryToContentSearchParams(req);
             if (!params) {
-                return res.status(400).send('Invalid parameters for search request');
+                res.status(400).send('Invalid parameters for search request');
+                return;
             }
 
             const result = await this.contentService.contentSearch(params);
 
-            return res.send(result);
+            res.send(result);
         });
     }
 
@@ -122,10 +127,11 @@ export class CmsArchiveSite {
 
             if (hostname.endsWith(HOST_SUFFIX_INTERNAL) && !originalUrl.includes('/_public/')) {
                 const externalUrl = `${protocol}://${hostname.replace(HOST_SUFFIX_INTERNAL, HOST_SUFFIX_EXTERNAL)}${originalUrl}`;
-                return res.redirect(externalUrl);
+                res.redirect(externalUrl);
+                return;
             }
 
-            return next();
+            next();
         });
 
         router.get('/{:versionKey}', cspMiddleware, async (req, res) => {
@@ -140,7 +146,7 @@ export class CmsArchiveSite {
 
             const html = await htmlRenderer(req.url, appContext);
 
-            return res.send(html);
+            res.send(html);
         });
 
         router.get('/html/:versionKey', cspMiddleware, async (req, res, next) => {
@@ -148,16 +154,18 @@ export class CmsArchiveSite {
 
             const version = await this.contentService.getContentVersion(versionKey);
             if (!version) {
-                return next();
+                next();
+                return;
             }
 
             if (!version.html) {
-                return res
-                    .status(406)
-                    .send(`Content with version key ${versionKey} does not have html content`);
+                res.status(406)
+                    .type('text/plain')
+                    .send(`Content with version key ${escape(versionKey)} does not have html content`);
+                return;
             }
 
-            return res.send(version.html);
+            res.send(version.html);
         });
     }
 
@@ -170,13 +178,13 @@ export class CmsArchiveSite {
 
             if (!result) {
                 res.cookie(DOWNLOAD_COOKIE_NAME, false);
-                return next();
+                next();
+                return;
             }
 
             const { filename, data } = result;
 
-            return res
-                .setHeader('Content-Disposition', `attachment; filename="${filename}"`)
+            res.setHeader('Content-Disposition', `attachment; filename="${filename}"`)
                 .setHeader('Content-Type', 'application/pdf')
                 .cookie(DOWNLOAD_COOKIE_NAME, true)
                 .send(data);
@@ -195,10 +203,11 @@ export class CmsArchiveSite {
 
             const binary = await this.binariesService.getBinary(binaryKey);
             if (!binary) {
-                return next();
+                next();
+                return;
             }
 
-            return this.cmsBinaryResponse(
+            this.cmsBinaryResponse(
                 binary.filename,
                 binary.data,
                 `attachment; filename="${binary.filename}"`,
@@ -209,51 +218,58 @@ export class CmsArchiveSite {
         router.use('/_public', async (req, res, next) => {
             const file = await this.binariesService.getStaticAsset(req.path);
             if (!file) {
-                return next();
+                next();
+                return;
             }
 
-            return this.cmsBinaryResponse(file.filename, file.data, 'inline', res);
+            this.cmsBinaryResponse(file.filename, file.data, 'inline', res);
         });
 
         router.use('/*splat/_image/:contentKey.:extension', async (req, res, next) => {
             const content = await this.contentService.getContent(req.params.contentKey);
             if (!content) {
-                return next();
+                next();
+                return;
             }
 
             // The last item in the binaries array of an image content is the source file
             const binaryKey = content.binaries?.slice(-1)?.[0].key;
             if (!binaryKey) {
-                return next();
+                next();
+                return;
             }
 
             const binary = await this.binariesService.getBinary(binaryKey);
             if (!binary) {
-                return next();
+                next();
+                return;
             }
 
-            return this.cmsBinaryResponse(binary.filename, binary.data, 'inline', res);
+            this.cmsBinaryResponse(binary.filename, binary.data, 'inline', res);
         });
 
         router.use('/*splat/_image/:contentKey/label/:label.:extension', async (req, res, next) => {
             const content = await this.contentService.getContent(req.params.contentKey);
             if (!content) {
-                return next();
+                next();
+                return;
             }
 
             const binaryKey = content.binaries?.find((binary) =>
                 binary.filename.endsWith(`${req.params.label}.${req.params.extension}`)
             )?.key;
             if (!binaryKey) {
-                return next();
+                next();
+                return;
             }
 
             const binary = await this.binariesService.getBinary(binaryKey);
             if (!binary) {
-                return next();
+                next();
+                return;
             }
 
-            return this.cmsBinaryResponse(binary.filename, binary.data, 'inline', res);
+            this.cmsBinaryResponse(binary.filename, binary.data, 'inline', res);
         });
     }
 
@@ -263,8 +279,7 @@ export class CmsArchiveSite {
         contentDisposition: string,
         res: Response
     ) {
-        return res
-            .setHeader('Content-Disposition', contentDisposition)
+        res.setHeader('Content-Disposition', contentDisposition)
             .setHeader('Content-Type', lookup(filename) || 'application/octet-stream')
             .send(Buffer.from(base64Data, 'base64'));
     }
