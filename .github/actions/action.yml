@@ -30,7 +30,7 @@ runs:
 
         - name: Install dependencies
           shell: bash
-          run: npm ci --include-workspace-root --workspace=common --workspace=xp-archive
+          run: npm ci --ignore-scripts --include-workspace-root --workspace=common --workspace=xp-archive
           env:
               NODE_AUTH_TOKEN: ${{ env.READER_TOKEN }}
 

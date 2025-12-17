@@ -28,7 +28,7 @@ jobs:
                   cache: 'npm'
                   cache-dependency-path: '**/package-lock.json'
             - name: Install dependencies
-              run: npm ci --include-workspace-root --workspace=common --workspace=legacy-archive
+              run: npm ci --ignore-scripts --include-workspace-root --workspace=common --workspace=legacy-archive
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
             - name: Write .env for build
