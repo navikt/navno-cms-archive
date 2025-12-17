@@ -34,6 +34,10 @@ runs:
           env:
               NODE_AUTH_TOKEN: ${{ env.READER_TOKEN }}
 
+        - name: Rebuild puppeteer
+          shell: bash
+          run: npm rebuild puppeteer
+
         - name: Write .env for build
           shell: bash
           working-directory: xp-archive
