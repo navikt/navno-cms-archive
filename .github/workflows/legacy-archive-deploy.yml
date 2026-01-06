@@ -31,8 +31,6 @@ jobs:
               run: npm ci --ignore-scripts --include-workspace-root --workspace=common --workspace=legacy-archive
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
-            - name: Rebuild puppeteer
-              run: npm rebuild puppeteer
             - name: Write .env for build
               shell: bash
               working-directory: legacy-archive

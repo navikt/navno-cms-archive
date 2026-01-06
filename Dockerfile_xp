@@ -16,15 +16,13 @@ ENV XDG_CONFIG_HOME=/tmp/.chromium
 ENV XDG_CACHE_HOME=/tmp/.chromium
 
 RUN mkdir -p /app/xp-archive/server /app/.puppeteer-cache /tmp/.puppeteer /tmp/.chromium \
-	&& chown -R node:node /app /tmp/.puppeteer /tmp/.chromium
+    && chown -R node:node /app /tmp/.puppeteer /tmp/.chromium
 
-COPY --chown=node:node node_modules /app/node_modules/
-COPY --chown=node:node xp-archive/.env /app/xp-archive/
-COPY --chown=node:node xp-archive/node_modules* /app/xp-archive/node_modules/
-COPY --chown=node:node xp-archive/server/dist /app/xp-archive/server/dist/
-COPY --chown=node:node xp-archive/server/package.json /app/xp-archive/server/
-RUN chmod -R a-w /app/node_modules /app/xp-archive/node_modules /app/xp-archive/server/dist \
-    && chmod a-w /app/xp-archive/server/package.json /app/xp-archive/.env
+COPY --chown=node:node --chmod=555 node_modules /app/node_modules/
+COPY --chown=node:node --chmod=444 xp-archive/.env /app/xp-archive/
+COPY --chown=node:node --chmod=555 xp-archive/node_modules* /app/xp-archive/node_modules/
+COPY --chown=node:node --chmod=555 xp-archive/server/dist /app/xp-archive/server/dist/
+COPY --chown=node:node --chmod=444 xp-archive/server/package.json /app/xp-archive/server/
 
 USER node
 
