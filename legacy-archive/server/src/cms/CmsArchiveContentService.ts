@@ -160,7 +160,7 @@ export class CmsArchiveContentService {
         }
 
         return html
-            .replace(/(\r\n|\r|\n)/, '')
+            .replace(/(\r\n|\r|\n)/g, '')
             .replace(/="\/(\d)+\//g, `="${this.config.basePath}/`);
     }
 }
