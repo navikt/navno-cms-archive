@@ -10,13 +10,11 @@ WORKDIR /app/xp-archive/server
 ENV NODE_ENV=production
 ENV PUPPETEER_SKIP_DOWNLOAD=true
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
-ENV PUPPETEER_CACHE_DIR=/app/.puppeteer-cache
-ENV PUPPETEER_TMP_DIR=/tmp/.puppeteer
 ENV XDG_CONFIG_HOME=/tmp/.chromium
 ENV XDG_CACHE_HOME=/tmp/.chromium
 
-RUN mkdir -p /app/xp-archive/server /app/.puppeteer-cache /tmp/.puppeteer /tmp/.chromium \
-    && chown -R node:node /app /tmp/.puppeteer /tmp/.chromium
+RUN mkdir -p /app/xp-archive/server /tmp/.chromium \
+    && chown -R node:node /app /tmp/.chromium
 
 COPY --chown=root:root --chmod=755 node_modules /app/node_modules/
 COPY --chown=root:root --chmod=755 xp-archive/.env /app/xp-archive/
