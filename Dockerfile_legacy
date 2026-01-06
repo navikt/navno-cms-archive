@@ -18,9 +18,9 @@ ENV XDG_CACHE_HOME=/tmp/.chromium
 RUN mkdir -p /app/legacy-archive/server /app/.puppeteer-cache /tmp/.puppeteer /tmp/.chromium \
     && chown -R node:node /app /tmp/.puppeteer /tmp/.chromium
 
-COPY --chown=node:node --chmod=755 node_modules /app/node_modules/
-COPY --chown=node:node --chmod=755 legacy-archive/server/dist /app/legacy-archive/server/dist/
-COPY --chown=node:node --chmod=755 legacy-archive/server/package.json /app/legacy-archive/server/
+COPY --chown=root:root --chmod=755 node_modules /app/node_modules/
+COPY --chown=root:root --chmod=755 legacy-archive/server/dist /app/legacy-archive/server/dist/
+COPY --chown=root:root --chmod=755 legacy-archive/server/package.json /app/legacy-archive/server/
 
 USER node
 
