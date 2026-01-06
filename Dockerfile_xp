@@ -8,6 +8,8 @@ RUN apt-get update \
 WORKDIR /app/xp-archive/server
 
 ENV NODE_ENV=production
+ENV PUPPETEER_SKIP_DOWNLOAD=true
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 ENV PUPPETEER_CACHE_DIR=/app/.puppeteer-cache
 ENV PUPPETEER_TMP_DIR=/tmp/.puppeteer
 ENV XDG_CONFIG_HOME=/tmp/.chromium
@@ -17,11 +19,12 @@ RUN mkdir -p /app/xp-archive/server /app/.puppeteer-cache /tmp/.puppeteer /tmp/.
 	&& chown -R node:node /app /tmp/.puppeteer /tmp/.chromium
 
 COPY --chown=node:node node_modules /app/node_modules/
-COPY --chown=node:node .cache/puppeteer /app/.puppeteer-cache/
 COPY --chown=node:node xp-archive/.env /app/xp-archive/
 COPY --chown=node:node xp-archive/node_modules* /app/xp-archive/node_modules/
 COPY --chown=node:node xp-archive/server/dist /app/xp-archive/server/dist/
 COPY --chown=node:node xp-archive/server/package.json /app/xp-archive/server/
+RUN chmod -R a-w /app/node_modules /app/xp-archive/node_modules /app/xp-archive/server/dist \
+    && chmod a-w /app/xp-archive/server/package.json /app/xp-archive/.env
 
 USER node
 
