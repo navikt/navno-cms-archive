@@ -3,6 +3,7 @@ FROM node:22-bookworm-slim
 RUN apt-get update
 RUN apt-get --assume-yes --no-install-recommends install chromium && apt-get clean
 RUN apt-get install -y curl
+RUN rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app/legacy-archive/server
 
@@ -12,10 +13,15 @@ ENV PUPPETEER_TMP_DIR=/tmp/.puppeteer
 ENV XDG_CONFIG_HOME=/tmp/.chromium
 ENV XDG_CACHE_HOME=/tmp/.chromium
 
-COPY node_modules /app/node_modules/
-COPY .cache/puppeteer /app/.puppeteer-cache/
-COPY legacy-archive/server/dist  /app/legacy-archive/server/dist/
-COPY legacy-archive/server/package.json /app/legacy-archive/server/
+RUN mkdir -p /app/legacy-archive/server /app/.puppeteer-cache /tmp/.puppeteer /tmp/.chromium \
+	&& chown -R node:node /app /tmp/.puppeteer /tmp/.chromium
+
+COPY --chown=node:node node_modules /app/node_modules/
+COPY --chown=node:node .cache/puppeteer /app/.puppeteer-cache/
+COPY --chown=node:node legacy-archive/server/dist /app/legacy-archive/server/dist/
+COPY --chown=node:node legacy-archive/server/package.json /app/legacy-archive/server/
+
+USER node
 
 EXPOSE 3399
 CMD ["npm", "run", "start"]
