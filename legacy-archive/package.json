@@ -14,6 +14,8 @@
         "dev": "cp .env.development .env && npm run dev --prefix server"
     },
     "dependencies": {
+        "@emotion/react": "11.11.4",
+        "@emotion/styled": "11.11.5",
         "@mui/material": "7.3.5",
         "@mui/system": "7.3.5",
         "@mui/x-tree-view": "8.17.0",
