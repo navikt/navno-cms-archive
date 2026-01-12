@@ -24,7 +24,8 @@ export class ContentService {
     public async fetchContent(
         contentId: string,
         locale: string,
-        versionId?: string
+        versionId?: string,
+        expandAll?: boolean
     ): Promise<ContentServiceResponse | null> {
         const xpResponse = await fetchJson<XPContentServiceResponse>(this.CONTENT_PROPS_API, {
             headers: { secret: process.env.SERVICE_SECRET },
@@ -36,6 +37,10 @@ export class ContentService {
         }
 
         const { contentRaw, contentRenderProps, versions } = xpResponse;
+
+        if (contentRenderProps && expandAll) {
+            contentRenderProps.expandAll = true;
+        }
 
         const html = (await this.getContentHtml(contentRenderProps)) ?? undefined;
 

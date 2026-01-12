@@ -76,6 +76,7 @@ export type Content = {
     };
     attachment?: Attachment;
     originalContentTypeName?: string;
+    expandAll?: boolean;
 };
 
 export type SearchResponse = {
