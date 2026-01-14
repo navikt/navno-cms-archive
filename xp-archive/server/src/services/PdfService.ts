@@ -52,7 +52,7 @@ export class PdfService {
         const contents = await Promise.all(
             versionIds.map(([nodeId, versionId]) =>
                 this.contentService
-                    .fetchContent(nodeId, locale, versionId)
+                    .fetchContent(nodeId, locale, versionId, true)
                     .then((val) => (val ? this.generateContentPdf(val, DEFAULT_WIDTH_PX) : null))
             )
         );
