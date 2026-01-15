@@ -3,16 +3,16 @@ description: Builds the XP app, pushes a Docker image with NAIS, and deploys it
 inputs:
     naisEnv:
         required: true
-        type: string
+        description: NAIS environment (dev-gcp or prod-gcp)
     VITE_APP_ORIGIN:
         required: true
-        type: string
+        description: Vite app origin URL
     XP_ORIGIN:
         required: true
-        type: string
+        description: XP origin URL
     HTML_RENDER_API:
         required: true
-        type: string
+        description: HTML render API endpoint
 
 runs:
     using: composite
@@ -23,7 +23,7 @@ runs:
         - name: Setup Node.js
           uses: actions/setup-node@v4
           with:
-              node-version: 22
+              node-version: 24
               registry-url: https://npm.pkg.github.com
               cache: npm
               cache-dependency-path: '**/package-lock.json'
