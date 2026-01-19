@@ -21,7 +21,7 @@
         "@navikt/aksel-icons": "7.36.0",
         "@navikt/ds-css": "7.36.0",
         "@navikt/ds-react": "7.33.2",
-        "express": "5.2.0",
+        "express": "5.2.1",
         "react": "19.2.3",
         "react-dom": "19.2.3",
         "swr": "2.3.6",
@@ -31,7 +31,7 @@
     "devDependencies": {
         "@eslint/js": "^9.39.2",
         "@types/escape-html": "^1.0.4",
-        "@types/express": "5.0.5",
+        "@types/express": "5.0.6",
         "@types/react": "19.2.8",
         "@types/react-dom": "19.2.3",
         "@vitejs/plugin-react": "5.1.2",
