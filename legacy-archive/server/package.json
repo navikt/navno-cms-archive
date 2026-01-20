@@ -14,7 +14,7 @@
         "@opensearch-project/opensearch": "3.5.1",
         "archiver": "7.0.1",
         "compression": "1.8.1",
-        "csp-header": "6.2.0",
+        "csp-header": "6.3.0",
         "dotenv": "17.2.3",
         "mime-types": "3.0.1",
         "node-cache": "5.1.2",
