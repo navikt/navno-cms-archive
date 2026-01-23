@@ -42,6 +42,17 @@ export class ContentService {
             contentRenderProps.expandAll = true;
         }
 
+        // Hvis contentRenderProps mangler valueItems, bruk fra contentRaw som fallback
+        if (
+            contentRenderProps &&
+            contentRaw?.data?.valueItems &&
+            Array.isArray(contentRaw.data.valueItems) &&
+            Array.isArray(contentRenderProps.data.valueItems) &&
+            contentRenderProps.data.valueItems.length === 0
+        ) {
+            contentRenderProps.data.valueItems = contentRaw.data.valueItems;
+        }
+
         const html = (await this.getContentHtml(contentRenderProps)) ?? undefined;
 
         return {
