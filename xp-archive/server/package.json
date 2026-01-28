@@ -13,9 +13,9 @@
     "dependencies": {
         "archiver": "7.0.1",
         "compression": "1.8.1",
-        "csp-header": "6.2.0",
+        "csp-header": "6.3.0",
         "dotenv": "17.2.3",
-        "puppeteer": "24.30.0",
+        "puppeteer": "24.35.0",
         "escape-html": "1.0.3"
     },
     "devDependencies": {
