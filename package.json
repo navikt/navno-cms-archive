@@ -19,7 +19,7 @@
     ],
     "dependencies": {
         "@navikt/aksel-icons": "7.40.0",
-        "@navikt/ds-css": "7.40.0",
+        "@navikt/ds-css": "8.0.0",
         "@navikt/ds-react": "7.40.0",
         "express": "5.2.1",
         "react": "19.2.3",
