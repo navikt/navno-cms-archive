@@ -21,7 +21,7 @@
         "@mui/x-tree-view": "8.27.1",
         "js-cookie": "3.0.5",
         "lodash.debounce": "4.0.8",
-        "react-xml-viewer": "3.0.1",
+        "react-xml-viewer": "3.0.2",
         "xml2js": "0.6.2"
     },
     "devDependencies": {
