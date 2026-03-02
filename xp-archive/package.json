@@ -15,7 +15,7 @@
     },
     "dependencies": {
         "@mui/material": "7.3.8",
-        "@mui/x-tree-view": "8.27.1",
+        "@mui/x-tree-view": "8.27.2",
         "react-json-view-lite": "2.5.0"
     },
     "devDependencies": {}
