@@ -8,20 +8,25 @@
         "build-and-watch": "WATCH=true node build.mjs",
         "start": "node -r dotenv/config ./dist/server/server.cjs dotenv_config_path=../.env",
         "nodemon-start": "nodemon -r dotenv/config -w ./dist/server -w ../.env ./dist/server/server.cjs dotenv_config_path=../.env",
-        "dev": "npm-run-all -p build-and-watch nodemon-start"
+        "dev": "concurrently \"pnpm run build-and-watch\" \"pnpm run nodemon-start\""
     },
     "dependencies": {
-        "archiver": "7.0.1",
-        "compression": "1.8.1",
-        "csp-header": "6.3.0",
-        "dotenv": "17.3.1",
-        "puppeteer": "24.37.5",
-        "escape-html": "1.0.3"
+        "navno-cms-archive-common": "workspace:*",
+        "archiver": "catalog:",
+        "compression": "catalog:",
+        "csp-header": "catalog:",
+        "dotenv": "catalog:",
+        "escape-html": "catalog:",
+        "express": "catalog:",
+        "http-terminator": "catalog:",
+        "lru-cache": "catalog:",
+        "puppeteer": "catalog:"
     },
     "devDependencies": {
-        "@types/archiver": "7.0.0",
-        "@types/compression": "1.8.1",
-        "nodemon": "3.1.14"
+        "@types/archiver": "catalog:",
+        "@types/compression": "catalog:",
+        "concurrently": "catalog:",
+        "nodemon": "catalog:"
     },
     "nodemonConfig": {
         "delay": 500

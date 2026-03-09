@@ -1,0 +1,25 @@
+packages:
+    - common
+    - legacy-archive
+    - legacy-archive/server
+    - xp-archive
+    - xp-archive/server
+onlyBuiltDependencies:
+    - esbuild
+    - puppeteer
+catalog:
+    '@mui/material': '7.3.8'
+    '@mui/x-tree-view': '8.27.2'
+    '@types/archiver': '7.0.0'
+    '@types/compression': '1.8.1'
+    archiver: '7.0.1'
+    compression: '1.8.1'
+    concurrently: '9.2.1'
+    csp-header: '6.3.0'
+    dotenv: '17.3.1'
+    escape-html: '1.0.3'
+    express: '5.2.1'
+    http-terminator: '3.2.0'
+    lru-cache: '11.2.6'
+    nodemon: '3.1.14'
+    puppeteer: '24.37.5'
