@@ -4,7 +4,7 @@
     "version": "0.0.0",
     "type": "module",
     "scripts": {
-        "build": "pnpm run \"/^build:.*/\"",
+        "build": "pnpm run build:client && pnpm run build:ssr && pnpm run build:server",
         "build:client": "vite build --outDir ./server/dist/client",
         "build:ssr": "vite build --outDir ./server/src/_ssr-dist --ssr client/main-server.tsx",
         "build:server": "pnpm --dir server run build",
