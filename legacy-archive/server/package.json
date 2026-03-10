@@ -11,7 +11,7 @@
         "dev": "concurrently \"pnpm run build-and-watch\" \"pnpm run nodemon-start\""
     },
     "dependencies": {
-        "navno-cms-archive-common": "workspace:*",
+        "@mui/x-tree-view": "catalog:",
         "@opensearch-project/opensearch": "3.5.1",
         "archiver": "catalog:",
         "compression": "catalog:",
@@ -20,12 +20,16 @@
         "escape-html": "catalog:",
         "express": "catalog:",
         "http-terminator": "catalog:",
-        "lru-cache": "catalog:",
+        "js-cookie": "catalog:",
         "mime-types": "3.0.2",
-        "node-cache": "5.1.2",
-        "puppeteer": "catalog:"
+        "puppeteer": "catalog:",
+        "react": "catalog:",
+        "react-dom": "catalog:",
+        "vite": "catalog:",
+        "xml2js": "catalog:"
     },
     "devDependencies": {
+        "navno-cms-archive-common": "workspace:*",
         "@types/archiver": "catalog:",
         "@types/compression": "catalog:",
         "concurrently": "catalog:",

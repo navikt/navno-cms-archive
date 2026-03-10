@@ -42,15 +42,27 @@ catalogs:
         http-terminator:
             specifier: 3.2.0
             version: 3.2.0
-        lru-cache:
-            specifier: 11.2.6
-            version: 11.2.6
+        js-cookie:
+            specifier: 3.0.5
+            version: 3.0.5
         nodemon:
             specifier: 3.1.14
             version: 3.1.14
         puppeteer:
             specifier: 24.37.5
             version: 24.37.5
+        react:
+            specifier: 19.2.4
+            version: 19.2.4
+        react-dom:
+            specifier: 19.2.4
+            version: 19.2.4
+        vite:
+            specifier: 7.3.1
+            version: 7.3.1
+        xml2js:
+            specifier: 0.6.2
+            version: 0.6.2
 
 importers:
     .:
@@ -168,7 +180,7 @@ importers:
                 specifier: 'catalog:'
                 version: 8.27.2(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react@19.2.4))(@mui/material@7.3.8(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@mui/system@7.3.8(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
             js-cookie:
-                specifier: 3.0.5
+                specifier: 'catalog:'
                 version: 3.0.5
             lodash.debounce:
                 specifier: 4.0.8
@@ -177,15 +189,12 @@ importers:
                 specifier: 3.0.2
                 version: 3.0.2(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
             xml2js:
-                specifier: 0.6.2
+                specifier: 'catalog:'
                 version: 0.6.2
         devDependencies:
             '@types/js-cookie':
                 specifier: 3.0.6
                 version: 3.0.6
-            '@types/lodash':
-                specifier: 4.17.24
-                version: 4.17.24
             '@types/mime-types':
                 specifier: 3.0.1
                 version: 3.0.1
@@ -195,6 +204,9 @@ importers:
 
     legacy-archive/server:
         dependencies:
+            '@mui/x-tree-view':
+                specifier: 'catalog:'
+                version: 8.27.2(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react@19.2.4))(@mui/material@7.3.8(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@mui/system@7.3.8(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
             '@opensearch-project/opensearch':
                 specifier: 3.5.1
                 version: 3.5.1
@@ -219,21 +231,27 @@ importers:
             http-terminator:
                 specifier: 'catalog:'
                 version: 3.2.0
-            lru-cache:
+            js-cookie:
                 specifier: 'catalog:'
-                version: 11.2.6
+                version: 3.0.5
             mime-types:
                 specifier: 3.0.2
                 version: 3.0.2
-            navno-cms-archive-common:
-                specifier: workspace:*
-                version: link:../../common
-            node-cache:
-                specifier: 5.1.2
-                version: 5.1.2
             puppeteer:
                 specifier: 'catalog:'
                 version: 24.37.5(typescript@5.9.3)
+            react:
+                specifier: 'catalog:'
+                version: 19.2.4
+            react-dom:
+                specifier: 'catalog:'
+                version: 19.2.4(react@19.2.4)
+            vite:
+                specifier: 'catalog:'
+                version: 7.3.1(@types/node@25.3.2)(yaml@2.8.2)
+            xml2js:
+                specifier: 'catalog:'
+                version: 0.6.2
         devDependencies:
             '@types/archiver':
                 specifier: 'catalog:'
@@ -244,6 +262,9 @@ importers:
             concurrently:
                 specifier: 'catalog:'
                 version: 9.2.1
+            navno-cms-archive-common:
+                specifier: workspace:*
+                version: link:../../common
             nodemon:
                 specifier: 'catalog:'
                 version: 3.1.14
@@ -262,15 +283,15 @@ importers:
 
     xp-archive/server:
         dependencies:
+            '@mui/x-tree-view':
+                specifier: 'catalog:'
+                version: 8.27.2(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react@19.2.4))(@mui/material@7.3.8(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@mui/system@7.3.8(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
             archiver:
                 specifier: 'catalog:'
                 version: 7.0.1
             compression:
                 specifier: 'catalog:'
                 version: 1.8.1
-            csp-header:
-                specifier: 'catalog:'
-                version: 6.3.0
             dotenv:
                 specifier: 'catalog:'
                 version: 17.3.1
@@ -283,15 +304,18 @@ importers:
             http-terminator:
                 specifier: 'catalog:'
                 version: 3.2.0
-            lru-cache:
-                specifier: 'catalog:'
-                version: 11.2.6
-            navno-cms-archive-common:
-                specifier: workspace:*
-                version: link:../../common
             puppeteer:
                 specifier: 'catalog:'
                 version: 24.37.5(typescript@5.9.3)
+            react:
+                specifier: 'catalog:'
+                version: 19.2.4
+            react-dom:
+                specifier: 'catalog:'
+                version: 19.2.4(react@19.2.4)
+            vite:
+                specifier: 'catalog:'
+                version: 7.3.1(@types/node@25.3.2)(yaml@2.8.2)
         devDependencies:
             '@types/archiver':
                 specifier: 'catalog:'
@@ -302,6 +326,9 @@ importers:
             concurrently:
                 specifier: 'catalog:'
                 version: 9.2.1
+            navno-cms-archive-common:
+                specifier: workspace:*
+                version: link:../../common
             nodemon:
                 specifier: 'catalog:'
                 version: 3.1.14
@@ -1481,12 +1508,6 @@ packages:
                 integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==,
             }
 
-    '@types/lodash@4.17.24':
-        resolution:
-            {
-                integrity: sha512-gIW7lQLZbue7lRSWEFql49QJJWThrTFFeIMJdp3eH4tKoxm1OvEPg02rm4wCCSHS0cL3/Fizimb35b7k8atwsQ==,
-            }
-
     '@types/mime-types@3.0.1':
         resolution:
             {
@@ -2126,13 +2147,6 @@ packages:
                 integrity: sha512-BSeNnyus75C4//NQ9gQt1/csTXyo/8Sb+afLAkzAptFuMsod9HFokGNudZpi/oQV73hnVK+sR+5PVRMd+Dr7YQ==,
             }
         engines: { node: '>=12' }
-
-    clone@2.1.2:
-        resolution:
-            {
-                integrity: sha512-3Pe/CF1Nn94hyhIYpjtiLhdCoEoz0DqQ+988E9gmeEdQZlojxnOb74wctFyuwWQHzqyf9X7C7MG8juUpqBJT8w==,
-            }
-        engines: { node: '>=0.8' }
 
     clsx@2.1.1:
         resolution:
@@ -3885,13 +3899,6 @@ packages:
                 integrity: sha512-dBpDMdxv9Irdq66304OLfEmQ9tbNRFnFTuZiLo+bD+r332bBmMJ8GBLXklIXXgxd3+v9+KUnZaUR5PJMa75Gsg==,
             }
         engines: { node: '>= 0.4.0' }
-
-    node-cache@5.1.2:
-        resolution:
-            {
-                integrity: sha512-t1QzWwnk4sjLWaQAS8CHgOJ+RAfmHpxFWmc36IWTiWHQfs0w5JDMBS1b1ZxQteo0vVVuWJvIUKHDkkeK7vIGCg==,
-            }
-        engines: { node: '>= 8.0.0' }
 
     node-exports-info@1.6.0:
         resolution:
@@ -6094,8 +6101,6 @@ snapshots:
 
     '@types/json-schema@7.0.15': {}
 
-    '@types/lodash@4.17.24': {}
-
     '@types/mime-types@3.0.1': {}
 
     '@types/node@25.3.2':
@@ -6556,8 +6561,6 @@ snapshots:
             string-width: 4.2.3
             strip-ansi: 6.0.1
             wrap-ansi: 7.0.0
-
-    clone@2.1.2: {}
 
     clsx@2.1.1: {}
 
@@ -7663,10 +7666,6 @@ snapshots:
     negotiator@1.0.0: {}
 
     netmask@2.0.2: {}
-
-    node-cache@5.1.2:
-        dependencies:
-            clone: 2.1.2
 
     node-exports-info@1.6.0:
         dependencies:
