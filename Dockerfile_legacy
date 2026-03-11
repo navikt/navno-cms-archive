@@ -1,19 +1,17 @@
 FROM europe-north1-docker.pkg.dev/cgr-nav/pull-through/nav.no/node:24-dev
 
-RUN apk add --no-cache chromium curl
-
 WORKDIR /app/legacy-archive/server
 
 ENV NODE_ENV=production
-ENV PUPPETEER_SKIP_DOWNLOAD=true
-ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+ENV PUPPETEER_CACHE_DIR=/home/nonroot/.cache/puppeteer
 ENV XDG_CONFIG_HOME=/tmp/.chromium
 ENV XDG_CACHE_HOME=/tmp/.chromium
 
-RUN mkdir -p /app/legacy-archive/server /tmp/.chromium \
-    && chown -R nonroot:nonroot /app /tmp/.chromium
-
 COPY --chown=root:root --chmod=755 nonsymlink/legacy-server/ /app/legacy-archive/server/
+
+RUN mkdir -p /home/nonroot/.cache/puppeteer /tmp/.chromium \
+    && node node_modules/puppeteer/install.mjs \
+    && chown -R nonroot:nonroot /home/nonroot /tmp/.chromium
 
 USER nonroot
 
