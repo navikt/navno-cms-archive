@@ -1,14 +1,19 @@
-FROM europe-north1-docker.pkg.dev/cgr-nav/pull-through/nav.no/node:24-slim
+FROM europe-north1-docker.pkg.dev/cgr-nav/pull-through/nav.no/node:24-dev
+
+RUN apk add --no-cache chromium
 
 WORKDIR /app/xp-archive/server
 
 ENV NODE_ENV=production
-ENV PUPPETEER_CACHE_DIR=/app/xp-archive/server/puppeteer-cache
+ENV PUPPETEER_SKIP_DOWNLOAD=true
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 ENV XDG_CONFIG_HOME=/tmp/.chromium
 ENV XDG_CACHE_HOME=/tmp/.chromium
 
 COPY --chown=root:root --chmod=755 nonsymlink/xp-server/ /app/xp-archive/server/
 COPY --chown=root:root --chmod=755 xp-archive/.env /app/xp-archive/
+
+RUN mkdir -p /tmp/.chromium && chown nonroot:nonroot /tmp/.chromium
 
 USER nonroot
 

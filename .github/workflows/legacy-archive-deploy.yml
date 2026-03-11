@@ -51,8 +51,6 @@ jobs:
               working-directory: legacy-archive
             - name: Deploy dependencies for Docker (no symlinks)
               run: pnpm --filter ./legacy-archive/server deploy --prod nonsymlink/legacy-server --legacy
-            - name: Download puppeteer browser
-              run: PUPPETEER_CACHE_DIR=nonsymlink/legacy-server/puppeteer-cache node nonsymlink/legacy-server/node_modules/puppeteer/install.mjs
             - name: Build and push docker image
               uses: nais/docker-build-push@v0
               id: docker-push
