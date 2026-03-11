@@ -63,6 +63,10 @@ runs:
           shell: bash
           run: pnpm --filter ./xp-archive/server deploy --prod nonsymlink/xp-server --legacy
 
+        - name: Download puppeteer browser
+          shell: bash
+          run: PUPPETEER_CACHE_DIR=nonsymlink/xp-server/puppeteer-cache node nonsymlink/xp-server/node_modules/puppeteer/install.mjs
+
         - name: Build and push docker image
           id: docker-push
           uses: nais/docker-build-push@v0

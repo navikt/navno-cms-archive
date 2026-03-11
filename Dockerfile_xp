@@ -1,18 +1,14 @@
-FROM europe-north1-docker.pkg.dev/cgr-nav/pull-through/nav.no/node:24-dev
+FROM europe-north1-docker.pkg.dev/cgr-nav/pull-through/nav.no/node:24-slim
 
 WORKDIR /app/xp-archive/server
 
 ENV NODE_ENV=production
-ENV PUPPETEER_CACHE_DIR=/home/nonroot/.cache/puppeteer
+ENV PUPPETEER_CACHE_DIR=/app/xp-archive/server/puppeteer-cache
 ENV XDG_CONFIG_HOME=/tmp/.chromium
 ENV XDG_CACHE_HOME=/tmp/.chromium
 
 COPY --chown=root:root --chmod=755 nonsymlink/xp-server/ /app/xp-archive/server/
 COPY --chown=root:root --chmod=755 xp-archive/.env /app/xp-archive/
-
-RUN mkdir -p /home/nonroot/.cache/puppeteer /tmp/.chromium \
-    && node node_modules/puppeteer/install.mjs \
-    && chown -R nonroot:nonroot /home/nonroot /tmp/.chromium
 
 USER nonroot
 
