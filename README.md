@@ -12,14 +12,14 @@ For å kjøre opp applikasjonene må man gjøre følgende:
    Både i rot men også inne i de to respektive applikasjonene. Avhengigheter i common-mappa blir installert fra rot da det er definert som et workspace.
 
 ```
-npm install
+pnpm install
 ```
 
 2. Bygge appene
 
 ```
-npm run build -C legacy-archive
-npm run build -C xp-archive
+pnpm run build -C legacy-archive
+pnpm run build -C xp-archive
 ```
 
 3. (Kun første gang) Kopiere .env-template.
@@ -39,8 +39,8 @@ Sett NODE_ENV=production i xp-archive/.env.prod-local og legacy-archive/.env.pro
    For legacy arkivet trenger du også credentials for open-search, se [Enonic CMS legacy arkiv](#enonic-cms-legacy-arkiv-2006-2019), og så må man logge på aiven-prod i naisdevice. Brukernavn og passord roterer, så disse må oppdateres med jevne mellomrom.
 
 ```
-npm run dev -C legacy-archive
-npm run dev -C xp-archive
+pnpm run dev -C legacy-archive
+pnpm run dev -C xp-archive
 ```
 
 5. Relaterte applikasjoner
@@ -53,7 +53,7 @@ npm run dev -C xp-archive
 Hvis du har problemer med at css og js ikke laster ved første oppstart i dev-modus, prøv å start appen i prod-modus en gang og se om det løser problemet.
 
 ```
-npm run start-local -C xp-archive
+pnpm run start-local -C xp-archive
 ```
 
 Hvis iframes ikke vises, sjekk om du får cors-issues i srcdoc. Disse vil oppstå hvis du kjører nav-enonicxp-frontend i dev-modus og ikke i prod-modus.

@@ -16,13 +16,10 @@ ENV XDG_CACHE_HOME=/tmp/.chromium
 RUN mkdir -p /app/xp-archive/server /tmp/.chromium \
     && chown -R node:node /app /tmp/.chromium
 
-COPY --chown=root:root --chmod=755 node_modules /app/node_modules/
+COPY --chown=root:root --chmod=755 nonsymlink/xp-server/ /app/xp-archive/server/
 COPY --chown=root:root --chmod=755 xp-archive/.env /app/xp-archive/
-COPY --chown=root:root --chmod=755 xp-archive/node_modules* /app/xp-archive/node_modules/
-COPY --chown=root:root --chmod=755 xp-archive/server/dist /app/xp-archive/server/dist/
-COPY --chown=root:root --chmod=755 xp-archive/server/package.json /app/xp-archive/server/
 
 USER node
 
 EXPOSE 3499
-CMD ["npm", "run", "start"]
+CMD ["node", "-r", "dotenv/config", "./dist/server/server.cjs", "dotenv_config_path=../.env"]

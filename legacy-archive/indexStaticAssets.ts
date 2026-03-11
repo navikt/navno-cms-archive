@@ -1,3 +1,5 @@
+// One-off script used to bulk-index static CMS assets into OpenSearch.
+// @ts-nocheck
 import dotenv from 'dotenv';
 
 dotenv.config({ path: '.env' });

@@ -3,6 +3,7 @@
     "private": true,
     "version": "0.0.0",
     "type": "module",
+    "packageManager": "pnpm@10.30.3+sha512.c961d1e0a2d8e354ecaa5166b822516668b7f44cb5bd95122d590dd81922f606f5473b6d23ec4a5be05e7fcd18e8488d47d978bbe981872f1145d06e9a740017",
     "engines": {
         "node": "24.x"
     },
@@ -10,23 +11,14 @@
         "lint": "tsc --noEmit && eslint .",
         "prepare": "husky"
     },
-    "workspaces": [
-        "common",
-        "legacy-archive",
-        "legacy-archive/server",
-        "xp-archive",
-        "xp-archive/server"
-    ],
     "dependencies": {
         "@navikt/aksel-icons": "7.40.0",
         "@navikt/ds-css": "7.40.0",
         "@navikt/ds-react": "7.40.0",
-        "express": "5.2.1",
         "react": "19.2.4",
         "react-dom": "19.2.4",
         "swr": "2.4.0",
-        "vite": "7.3.1",
-        "xml2js": "0.6.2"
+        "vite": "7.3.1"
     },
     "devDependencies": {
         "@eslint/js": "9.39.2",
@@ -45,7 +37,6 @@
         "globals": "17.3.0",
         "husky": "9.1.7",
         "lint-staged": "16.2.7",
-        "npm-run-all": "4.1.5",
         "prettier": "3.8.1",
         "rollup-plugin-visualizer": "6.0.5",
         "typescript": "5.9.3",

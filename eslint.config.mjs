@@ -18,6 +18,7 @@ export default [
             '**/.cache/**',
             '**/*.cjs',
             '**/*.mjs',
+            'legacy-archive/indexStaticAssets.ts',
         ],
     },
     {

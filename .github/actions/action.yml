@@ -20,17 +20,19 @@ runs:
         - name: Checkout repo
           uses: actions/checkout@v6
 
+        - name: Setup pnpm
+          uses: pnpm/action-setup@v4
+
         - name: Setup Node.js
           uses: actions/setup-node@v6
           with:
               node-version: '24'
               registry-url: https://npm.pkg.github.com
-              cache: npm
-              cache-dependency-path: '**/package-lock.json'
+              cache: 'pnpm'
 
         - name: Install dependencies
           shell: bash
-          run: npm ci --ignore-scripts --include-workspace-root --workspace=common --workspace=xp-archive
+          run: pnpm install --frozen-lockfile
           env:
               NODE_AUTH_TOKEN: ${{ env.READER_TOKEN }}
 
@@ -54,7 +56,11 @@ runs:
         - name: Build application
           shell: bash
           working-directory: xp-archive
-          run: npm run build
+          run: pnpm run build
+
+        - name: Deploy dependencies for Docker (no symlinks)
+          shell: bash
+          run: pnpm --filter ./xp-archive/server deploy --prod nonsymlink/xp-server --legacy
 
         - name: Build and push docker image
           id: docker-push

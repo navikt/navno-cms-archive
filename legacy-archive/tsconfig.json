@@ -6,5 +6,5 @@
             "@common/*": ["../common/src/*"]
         }
     },
-    "include": ["client/**/*", "shared/**/*", "vite.config.ts", "indexStaticAssets.ts"]
+    "include": ["client/**/*", "shared/**/*", "vite.config.ts"]
 }

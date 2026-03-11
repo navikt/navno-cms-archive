@@ -8,23 +8,32 @@
         "build-and-watch": "WATCH=true node build.mjs",
         "start": "node -r dotenv/config ./dist/server/server.cjs dotenv_config_path=../.env",
         "nodemon-start": "nodemon -r dotenv/config -w ./dist/server -w ../.env ./dist/server/server.cjs dotenv_config_path=../.env",
-        "dev": "npm-run-all -p build-and-watch nodemon-start"
+        "dev": "concurrently \"pnpm run build-and-watch\" \"pnpm run nodemon-start\""
     },
     "dependencies": {
+        "@mui/x-tree-view": "catalog:",
         "@opensearch-project/opensearch": "3.5.1",
-        "archiver": "7.0.1",
-        "compression": "1.8.1",
+        "archiver": "catalog:",
+        "compression": "catalog:",
         "csp-header": "6.3.0",
-        "dotenv": "17.3.1",
+        "dotenv": "catalog:",
+        "escape-html": "catalog:",
+        "express": "catalog:",
+        "http-terminator": "catalog:",
+        "js-cookie": "catalog:",
         "mime-types": "3.0.2",
-        "node-cache": "5.1.2",
-        "puppeteer": "24.37.5",
-        "escape-html": "1.0.3"
+        "puppeteer": "catalog:",
+        "react": "catalog:",
+        "react-dom": "catalog:",
+        "vite": "catalog:",
+        "xml2js": "catalog:"
     },
     "devDependencies": {
-        "@types/archiver": "7.0.0",
-        "@types/compression": "1.8.1",
-        "nodemon": "3.1.14"
+        "navno-cms-archive-common": "workspace:*",
+        "@types/archiver": "catalog:",
+        "@types/compression": "catalog:",
+        "concurrently": "catalog:",
+        "nodemon": "catalog:"
     },
     "nodemonConfig": {
         "delay": 500
