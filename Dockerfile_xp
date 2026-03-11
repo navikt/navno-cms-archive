@@ -13,4 +13,4 @@ COPY --chown=root:root --chmod=755 xp-archive/.env /app/xp-archive/
 USER nonroot
 
 EXPOSE 3499
-CMD ["node", "-r", "dotenv/config", "./dist/server/server.cjs", "dotenv_config_path=../.env"]
+CMD ["-r", "dotenv/config", "./dist/server/server.cjs", "dotenv_config_path=../.env"]

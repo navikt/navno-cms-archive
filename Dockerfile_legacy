@@ -12,4 +12,4 @@ COPY --chown=root:root --chmod=755 nonsymlink/legacy-server/ /app/legacy-archive
 USER nonroot
 
 EXPOSE 3399
-CMD ["node", "-r", "dotenv/config", "./dist/server/server.cjs", "dotenv_config_path=../.env"]
+CMD ["-r", "dotenv/config", "./dist/server/server.cjs", "dotenv_config_path=../.env"]
