@@ -4,9 +4,11 @@ packages:
     - legacy-archive/server
     - xp-archive
     - xp-archive/server
+
 onlyBuiltDependencies:
     - esbuild
     - puppeteer
+
 catalog:
     '@mui/material': '7.3.8'
     '@mui/x-tree-view': '8.27.2'
@@ -26,3 +28,8 @@ catalog:
     react-dom: '19.2.4'
     vite: '7.3.1'
     xml2js: '0.6.2'
+
+minimumReleaseAge: 4320
+
+minimumReleaseAgeExclude:
+    - '@navikt/*'
