@@ -14,7 +14,7 @@ ENV XDG_CACHE_HOME=/tmp/.chromium
 COPY --chown=root:root --chmod=755 nonsymlink/xp-server/ /app/xp-archive/server/
 COPY --chown=root:root --chmod=755 xp-archive/.env /app/xp-archive/
 
-RUN mkdir -p /tmp/.chromium && chown nonroot:nonroot /tmp/.chromium
+RUN mkdir -p /tmp/.chromium && chown 65532:65532 /tmp/.chromium
 
 USER nonroot
 
