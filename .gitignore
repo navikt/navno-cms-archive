@@ -32,3 +32,7 @@ cms-assets
 /xp-archive/server/src/_ssr-dist/
 /legacy-archive/server/src/_ssr-dist/
 /legacy-archive/.cache/
+
+# Rollup visualizer output
+/xp-archive/stats.html
+/legacy-archive/stats.html

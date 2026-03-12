@@ -16,6 +16,9 @@ export default defineConfig(({ mode }) => {
                 ? [visualizer({ gzipSize: true, open: true, sourcemap: true })]
                 : []),
         ],
+        build: {
+            sourcemap: !!process.env.ANALYZE,
+        },
         ssr: {
             // Externalizing certain libraries causes SSR crashes due to invalid imports in the SSR bundle
             noExternal: [
