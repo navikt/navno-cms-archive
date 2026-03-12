@@ -4,18 +4,18 @@
     "version": "0.0.0",
     "type": "module",
     "scripts": {
-        "build": "npm-run-all build:*",
+        "build": "pnpm run build:client && pnpm run build:ssr && pnpm run build:server",
         "build:client": "vite build --outDir ./server/dist/client",
         "build:ssr": "vite build --outDir ./server/src/_ssr-dist --ssr client/main-server.tsx",
-        "build:server": "npm run build --prefix server",
-        "analyze-bundle": "ANALYZE=true npm run build:client",
-        "start": "npm run start --prefix server",
-        "start-local": "cp .env.prod-local .env && npm run build && npm run start --prefix server",
-        "dev": "cp .env.development .env && npm run dev --prefix server"
+        "build:server": "pnpm --dir server run build",
+        "analyze-bundle": "ANALYZE=true pnpm run build:client",
+        "start": "pnpm --dir server run start",
+        "start-local": "cp .env.prod-local .env && pnpm run build && pnpm --dir server run start",
+        "dev": "cp .env.development .env && pnpm --dir server run dev"
     },
     "dependencies": {
-        "@mui/material": "7.3.8",
-        "@mui/x-tree-view": "8.27.2",
+        "@mui/material": "catalog:",
+        "@mui/x-tree-view": "catalog:",
         "react-json-view-lite": "2.5.0"
     },
     "devDependencies": {}

@@ -150,7 +150,7 @@ export class CmsArchiveSite {
         });
 
         router.get('/html/:versionKey', cspMiddleware, async (req, res, next) => {
-            const { versionKey } = req.params;
+            const { versionKey } = req.params as { versionKey: string };
 
             const version = await this.contentService.getContentVersion(versionKey);
             if (!version) {
@@ -161,7 +161,9 @@ export class CmsArchiveSite {
             if (!version.html) {
                 res.status(406)
                     .type('text/plain')
-                    .send(`Content with version key ${escape(versionKey)} does not have html content`);
+                    .send(
+                        `Content with version key ${escape(versionKey)} does not have html content`
+                    );
                 return;
             }
 
