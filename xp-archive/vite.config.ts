@@ -14,6 +14,9 @@ export default defineConfig(() => {
                 : []),
         ],
         base: '/xp',
+        build: {
+            sourcemap: !!process.env.ANALYZE,
+        },
         ssr: {
             // Externalizing certain libraries causes SSR crashes due to invalid imports in the SSR bundle
             noExternal: [
