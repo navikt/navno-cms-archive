@@ -35,6 +35,7 @@ runs:
           run: pnpm install --frozen-lockfile
           env:
               NODE_AUTH_TOKEN: ${{ env.READER_TOKEN }}
+              PUPPETEER_SKIP_DOWNLOAD: 'true'
 
         - name: Write .env for build
           shell: bash
