@@ -1,9 +1,7 @@
-FROM node:24-bookworm-slim
+FROM europe-north1-docker.pkg.dev/cgr-nav/pull-through/nav.no/node:24-dev
 
-RUN apt-get update \
-    && apt-get --assume-yes --no-install-recommends install chromium \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+USER root
+RUN apk add --no-cache chromium
 
 WORKDIR /app/xp-archive/server
 
@@ -13,13 +11,12 @@ ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 ENV XDG_CONFIG_HOME=/tmp/.chromium
 ENV XDG_CACHE_HOME=/tmp/.chromium
 
-RUN mkdir -p /app/xp-archive/server /tmp/.chromium \
-    && chown -R node:node /app /tmp/.chromium
-
 COPY --chown=root:root --chmod=755 nonsymlink/xp-server/ /app/xp-archive/server/
 COPY --chown=root:root --chmod=755 xp-archive/.env /app/xp-archive/
 
-USER node
+RUN mkdir -p /tmp/.chromium && chown 65532:65532 /tmp/.chromium
+
+USER nonroot
 
 EXPOSE 3499
-CMD ["node", "-r", "dotenv/config", "./dist/server/server.cjs", "dotenv_config_path=../.env"]
+CMD ["-r", "dotenv/config", "./dist/server/server.cjs", "dotenv_config_path=../.env"]

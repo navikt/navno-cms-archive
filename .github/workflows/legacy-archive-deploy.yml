@@ -34,6 +34,7 @@ jobs:
               run: pnpm install --frozen-lockfile
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+                  PUPPETEER_SKIP_DOWNLOAD: 'true'
             - name: Write .env for build
               shell: bash
               working-directory: legacy-archive
