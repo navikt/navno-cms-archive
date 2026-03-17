@@ -2,7 +2,7 @@
 
 ## What this project is
 
-CMS archive frontend for NAV, deployed at https://cms-arkiv.intern.nav.no. Two independent archive apps:
+CMS archive frontend for NAV. Two independent archive apps:
 
 - **legacy-archive** – content from 2006–2019 (original Enonic CMS, stored in OpenSearch)
 - **xp-archive** – content from 2019+ (Enonic XP CMS, fetched via HTTP API)
