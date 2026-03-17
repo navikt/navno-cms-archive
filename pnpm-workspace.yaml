@@ -10,7 +10,7 @@ onlyBuiltDependencies:
     - puppeteer
 
 catalog:
-    '@mui/material': '7.3.8'
+    '@mui/material': '7.3.9'
     '@mui/x-tree-view': '8.27.2'
     '@types/archiver': '7.0.0'
     '@types/compression': '1.8.1'
@@ -23,11 +23,15 @@ catalog:
     http-terminator: '3.2.0'
     js-cookie: '3.0.5'
     nodemon: '3.1.14'
-    puppeteer: '24.37.5'
+    puppeteer: '24.39.1'
     react: '19.2.4'
     react-dom: '19.2.4'
     vite: '7.3.1'
     xml2js: '0.6.2'
+
+overrides:
+    flatted: ^3.4.1
+    minimatch@>=10.0.0 <10.2.3: ^10.2.4
 
 minimumReleaseAge: 4320
 

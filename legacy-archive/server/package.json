@@ -15,7 +15,7 @@
         "@opensearch-project/opensearch": "3.5.1",
         "archiver": "catalog:",
         "compression": "catalog:",
-        "csp-header": "6.3.0",
+        "csp-header": "6.3.1",
         "dotenv": "catalog:",
         "escape-html": "catalog:",
         "express": "catalog:",
