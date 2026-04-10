@@ -61,6 +61,10 @@ runs:
       working-directory: xp-archive
       run: npm run build
 
+    - name: Deploy dependencies for Docker (no symlinks)
+      shell: bash
+      run: pnpm --filter ./xp-archive/server deploy --prod nonsymlink/xp-server --legacy
+
     - name: Build and push docker image
       id: docker-push
       uses: nais/docker-build-push@v0
