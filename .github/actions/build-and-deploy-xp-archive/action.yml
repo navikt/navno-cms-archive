@@ -40,7 +40,6 @@ runs:
       run: pnpm run lint
 
     - name: Write .env for build
-      if: ${{ inputs.WORKSPACE == 'xp-archive' }}
       shell: bash
       working-directory: xp-archive
       env:
