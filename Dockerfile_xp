@@ -1,8 +1,4 @@
-<<<<<<< Updated upstream
 FROM europe-north1-docker.pkg.dev/cgr-nav/pull-through/nav.no/node:24-dev
-=======
-FROM europe-north1-docker.pkg.dev/cgr-nav/pull-through/nav.no/node:24-slim
->>>>>>> Stashed changes
 
 USER root
 RUN apk add --no-cache chromium
@@ -23,10 +19,4 @@ RUN mkdir -p /tmp/.chromium && chown 65532:65532 /tmp/.chromium
 USER nonroot
 
 EXPOSE 3499
-<<<<<<< Updated upstream
 CMD ["-r", "dotenv/config", "./dist/server/server.cjs", "dotenv_config_path=../.env"]
-=======
-#CMD ["npm", "run", "start"]
-ENTRYPOINT ["node"]
-CMD ["./dist/server/server.cjs"]
->>>>>>> Stashed changes
