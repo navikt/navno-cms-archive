@@ -2,8 +2,8 @@
 
 Eks:
 
--   Endrer type i foobar-objektet.
--   Oppdaterer diverse destruct etter typeendringer.
+- Endrer type i foobar-objektet.
+- Oppdaterer diverse destruct etter typeendringer.
 
 ## Testing
 

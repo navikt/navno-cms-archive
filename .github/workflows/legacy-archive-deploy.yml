@@ -1,72 +1,36 @@
-name: Build and deploy legacy archive
+name: Deploy legacy archive
 on:
-    workflow_dispatch:
-    push:
-        branches:
-            - main
-        paths:
-            - package*.json
-            - pnpm-lock.yaml
-            - pnpm-workspace.yaml
-            - legacy-archive/**/*
-            - common/**/*
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - package*.json
+      - pnpm-lock.yaml
+      - pnpm-workspace.yaml
+      - legacy-archive/**/*
+      - common/**/*
 
 jobs:
-    build-and-deploy:
-        name: Build and deploy
-        runs-on: ubuntu-latest
-        environment: prod-legacy
-        permissions:
-            contents: 'read'
-            id-token: 'write'
-        steps:
-            - name: Checkout repo
-              uses: actions/checkout@v6
-            - name: Setup pnpm
-              uses: pnpm/action-setup@v5
-            - name: Setup node.js
-              uses: actions/setup-node@v6
-              with:
-                  node-version: '24'
-                  registry-url: 'https://npm.pkg.github.com'
-                  cache: 'pnpm'
-            - name: Install dependencies
-              run: pnpm install --frozen-lockfile
-              env:
-                  NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
-                  PUPPETEER_SKIP_DOWNLOAD: 'true'
-            - name: Write .env for build
-              shell: bash
-              working-directory: legacy-archive
-              env:
-                  VITE_APP_ORIGIN: https://cms-arkiv.ansatt.nav.no
-              run: |
-                  cat > .env <<EOF
-                  NODE_ENV=production
-                  APP_PORT=3499
-                  VITE_APP_ORIGIN=$VITE_APP_ORIGIN
-                  EOF
-            - name: Build application
-              run: pnpm run build
-              working-directory: legacy-archive
-            - name: Deploy dependencies for Docker (no symlinks)
-              run: pnpm --filter ./legacy-archive/server deploy --prod nonsymlink/legacy-server --legacy
-            - name: Build and push docker image
-              uses: nais/docker-build-push@v0
-              id: docker-push
-              with:
-                  team: navno
-                  project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
-                  identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
-                  dockerfile: Dockerfile_legacy
-            - name: Deploy OpenSearch
-              uses: nais/deploy/actions/deploy@v2
-              env:
-                  CLUSTER: prod-gcp
-                  RESOURCE: legacy-archive/.nais/openSearch.yml
-            - name: Deploy application
-              uses: nais/deploy/actions/deploy@v2
-              env:
-                  CLUSTER: prod-gcp
-                  RESOURCE: legacy-archive/.nais/config.yml
-                  VAR: image=${{ steps.docker-push.outputs.image }}
+  build-and-deploy:
+    name: Build and deploy
+    runs-on: ubuntu-latest
+    environment: prod-legacy
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v6
+
+      - name: Build and deploy legacy archive
+        uses: ./.github/actions/build-and-deploy-legacy-archive
+        with:
+          naisEnv: dev
+          VITE_APP_ORIGIN: https://cms-arkiv.ansatt.dev.nav.no
+          XP_ORIGIN: https://www.dev.nav.no
+          HTML_RENDER_API: http://nav-enonicxp-frontend-dev1/render-from-props
+        env:
+          READER_TOKEN: ${{ secrets.READER_TOKEN }}
+          NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
+          NAIS_MANAGEMENT_PROJECT_ID: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}

@@ -1,0 +1,83 @@
+name: Build and deploy legacy app
+description: Builds the legacy app, pushes a Docker image with NAIS, and deploys it
+
+inputs:
+  naisEnv:
+    required: true
+    description: NAIS environment (dev-gcp or prod-gcp)
+  VITE_APP_ORIGIN:
+    required: true
+    description: Vite app origin URL
+  XP_ORIGIN:
+    required: true
+    description: XP origin URL
+  HTML_RENDER_API:
+    required: true
+    description: HTML render API endpoint
+
+runs:
+  using: composite
+  steps:
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v5
+
+    - name: Setup node.js
+      uses: actions/setup-node@v6
+      with:
+        node-version: '24'
+        registry-url: 'https://npm.pkg.github.com'
+        cache: 'pnpm'
+
+    - name: Install dependencies
+      shell: bash
+      run: pnpm install --frozen-lockfile
+      env:
+        NODE_AUTH_TOKEN: ${{ env.READER_TOKEN }}
+        PUPPETEER_SKIP_DOWNLOAD: 'true'
+
+    - name: Run lint
+      shell: bash
+      run: npm run lint
+
+    - name: Write .env for build
+      shell: bash
+      working-directory: legacy-archive
+      env:
+        VITE_APP_ORIGIN: https://cms-arkiv.ansatt.nav.no
+      run: |
+        cat > .env <<EOF
+        NODE_ENV=production
+        APP_PORT=3499
+        VITE_APP_ORIGIN=$VITE_APP_ORIGIN
+        EOF
+
+    - name: Build application
+      shell: bash
+      run: pnpm run build
+      working-directory: legacy-archive
+
+    - name: Deploy dependencies for Docker (no symlinks)
+      shell: bash
+      run: pnpm --filter ./legacy-archive/server deploy --prod nonsymlink/legacy-server --legacy
+
+    - name: Build and push docker image
+      uses: nais/docker-build-push@v0
+      id: docker-push
+      with:
+        team: navno
+        project_id: ${{ env.NAIS_MANAGEMENT_PROJECT_ID }}
+        identity_provider: ${{ env.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
+        dockerfile: Dockerfile_legacy
+
+    - name: Deploy OpenSearch
+      uses: nais/deploy/actions/deploy@v2
+      env:
+        CLUSTER: prod-gcp
+        RESOURCE: legacy-archive/.nais/openSearch.yml
+
+    - name: Deploy application
+      uses: nais/deploy/actions/deploy@v2
+      env:
+        CLUSTER: prod-gcp
+        RESOURCE: legacy-archive/.nais/config.yml
+        VAR: image=${{ steps.docker-push.outputs.image }}

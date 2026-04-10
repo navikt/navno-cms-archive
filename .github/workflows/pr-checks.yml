@@ -1,29 +1,33 @@
 name: PR Checks
 permissions:
-    contents: read
+  contents: read
 on:
-    pull_request:
-        branches:
-            - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
-    lint:
-        name: Run linters
-        runs-on: ubuntu-latest
-        steps:
-            - name: Checkout repo
-              uses: actions/checkout@v6
-            - name: Setup pnpm
-              uses: pnpm/action-setup@v5
-            - name: Setup node.js
-              uses: actions/setup-node@v6
-              with:
-                  node-version: '24'
-                  registry-url: 'https://npm.pkg.github.com'
-                  cache: 'pnpm'
-            - name: Install dependencies
-              run: pnpm install --frozen-lockfile
-              env:
-                  NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
-            - name: Run lint
-              run: pnpm run lint
+  lint:
+    name: Run linters
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v6
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v5
+
+      - name: Setup node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          registry-url: 'https://npm.pkg.github.com'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+
+      - name: Run lint
+        run: pnpm run lint
