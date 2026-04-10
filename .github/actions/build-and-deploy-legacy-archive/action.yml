@@ -32,7 +32,7 @@ runs:
       shell: bash
       run: pnpm install --frozen-lockfile
       env:
-        NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+        NODE_AUTH_TOKEN: ${{ env.READER_TOKEN }}
         PUPPETEER_SKIP_DOWNLOAD: 'true'
 
     - name: Run lint
@@ -65,8 +65,8 @@ runs:
       id: docker-push
       with:
         team: navno
-        project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
-        identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
+        project_id: ${{ env.NAIS_MANAGEMENT_PROJECT_ID }}
+        identity_provider: ${{ env.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
         dockerfile: Dockerfile_legacy
 
     - name: Deploy OpenSearch
