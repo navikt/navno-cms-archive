@@ -1,0 +1,31 @@
+# This is a reference file for the OpenSearch instance and is not used in actual deploy workflow.
+# OpenSearch instance is controlled in Nais Console.
+
+apiVersion: aiven.io/v1alpha1
+kind: OpenSearch
+metadata:
+    labels:
+        team: navno
+    name: opensearch-navno-enonic-cms-archive
+    namespace: navno
+spec:
+    plan: startup-8
+    project: nav-prod
+    disk_space: 755GiB
+    userConfig:
+        opensearch:
+            http_max_content_length: 2147483647
+
+---
+apiVersion: aiven.io/v1alpha1
+kind: ServiceIntegration
+metadata:
+    labels:
+        team: navno
+    name: opensearch-navno-enonic-cms-archive
+    namespace: navno
+spec:
+    project: nav-prod
+    integrationType: prometheus
+    destinationEndpointId: 76685598-1048-4f56-b34a-9769ef747a92
+    sourceServiceName: opensearch-navno-enonic-cms-archive
