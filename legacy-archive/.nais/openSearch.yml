@@ -1,3 +1,6 @@
+# This is a reference file for the OpenSearch instance and is not used in actual deploy workflow.
+# OpenSearch instance is controlled in Nais Console.
+
 apiVersion: aiven.io/v1alpha1
 kind: OpenSearch
 metadata:

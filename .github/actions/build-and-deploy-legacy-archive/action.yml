@@ -69,12 +69,6 @@ runs:
         identity_provider: ${{ env.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
         dockerfile: Dockerfile_legacy
 
-    - name: Deploy OpenSearch
-      uses: nais/deploy/actions/deploy@v2
-      env:
-        CLUSTER: prod-gcp
-        RESOURCE: legacy-archive/.nais/openSearch.yml
-
     - name: Deploy application
       uses: nais/deploy/actions/deploy@v2
       env:
