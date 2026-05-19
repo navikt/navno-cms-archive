@@ -5,10 +5,6 @@ packages:
     - xp-archive
     - xp-archive/server
 
-onlyBuiltDependencies:
-    - esbuild
-    - puppeteer
-
 catalog:
     '@mui/material': '7.3.9'
     '@mui/x-tree-view': '8.27.2'
@@ -36,3 +32,7 @@ minimumReleaseAge: 4320
 
 minimumReleaseAgeExclude:
     - '@navikt/*'
+engineStrict: true
+allowBuilds:
+    esbuild: true
+    puppeteer: true
