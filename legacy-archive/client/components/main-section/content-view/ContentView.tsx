@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { ExternalLinkIcon } from '@navikt/aksel-icons';
 import { useAppState } from 'client/context/app-state/useAppState';
 import { CmsContent } from '../../../../shared/cms-documents/content';
@@ -20,11 +20,20 @@ type Props = {
 
 export const ContentView = ({ content }: Props) => {
     const { html, xmlAsString, versionKey } = content;
-    const [viewState, setViewState] = useState<ViewState>(getDefaultViewState(content));
-
-    useEffect(() => {
-        setViewState(getDefaultViewState(content));
-    }, [content]);
+    const [viewStateByVersion, setViewStateByVersion] = useState<{
+        versionKey: string;
+        viewState: ViewState;
+    }>({
+        versionKey,
+        viewState: getDefaultViewState(content),
+    });
+    const viewState =
+        viewStateByVersion.versionKey === versionKey
+            ? viewStateByVersion.viewState
+            : getDefaultViewState(content);
+    const setViewState = (nextViewState: ViewState) => {
+        setViewStateByVersion({ versionKey, viewState: nextViewState });
+    };
 
     const { appContext } = useAppState();
     const fullscreenPath = `${appContext.basePath}/html/${versionKey}`;

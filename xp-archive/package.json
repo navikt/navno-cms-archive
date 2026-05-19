@@ -17,6 +17,5 @@
         "@mui/material": "catalog:",
         "@mui/x-tree-view": "catalog:",
         "react-json-view-lite": "2.5.0"
-    },
-    "devDependencies": {}
+    }
 }

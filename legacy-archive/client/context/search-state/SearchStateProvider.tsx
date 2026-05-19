@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { emptySearchResult, initialSearchParams, SearchStateContext } from './SearchStateContext';
 import { ContentSearchParams, ContentSearchResult } from '../../../shared/contentSearch';
 import { getInitialSearchParams, persistSearchParams } from './search-settings-cookies';
@@ -35,6 +35,7 @@ export const SearchStateProvider = ({ children }: Props) => {
     };
 
     const runSearch = (params: ContentSearchParams) => {
+        setSearchResultIsOpen(true);
         setSearchResult({
             hits: [],
             params,
@@ -44,21 +45,18 @@ export const SearchStateProvider = ({ children }: Props) => {
 
         fetchSearch(params)
             .then((result) => {
-                setSearchResult(
-                    result || {
-                        total: 0,
-                        hits: [],
-                        status: 'error',
-                        params: params,
-                    }
-                );
+                const nextResult = result || {
+                    total: 0,
+                    hits: [],
+                    status: 'error',
+                    params: params,
+                };
+
+                setSearchResult(nextResult);
+                setSearchResultIsOpen(nextResult.status !== 'empty');
             })
             .catch(() => {});
     };
-
-    useEffect(() => {
-        setSearchResultIsOpen(searchResult.status !== 'empty');
-    }, [searchResult]);
 
     return (
         <SearchStateContext.Provider
