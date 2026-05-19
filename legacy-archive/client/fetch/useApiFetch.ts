@@ -5,36 +5,42 @@ import { ContentSearchParams, ContentSearchResult } from '../../shared/contentSe
 import { useAppState } from '../context/app-state/useAppState';
 import { fetchJson } from '@common/shared/fetchUtils';
 
-const fetchContent = (basePath: string) => async (contentKey: string) =>
-    fetchJson<CmsContent>(`${basePath}/api/content/${contentKey}`);
-
-const fetchContentVersion = (basePath: string) => async (versionKey: string) =>
-    fetchJson<CmsContent>(`${basePath}/api/version/${versionKey}`);
-
-const fetchCategories =
-    (basePath: string) =>
-    async (categoryKeys: string[]): Promise<CmsCategoryListItem[] | null> =>
-        categoryKeys.length > 0
-            ? fetchJson<CmsCategoryListItem[]>(
-                  `${basePath}/api/categories/${categoryKeys.join(',')}`
-              )
-            : [];
-
-const fetchSearch = (basePath: string) => async (params: ContentSearchParams) =>
-    fetchJson<ContentSearchResult>(`${basePath}/api/search`, { params });
-
 export const useApiFetch = () => {
     const { appContext } = useAppState();
     const { basePath } = appContext;
 
+    const fetchContent = useCallback(
+        async (contentKey: string) =>
+            fetchJson<CmsContent>(`${basePath}/api/content/${contentKey}`),
+        [basePath]
+    );
+
+    const fetchContentVersion = useCallback(
+        async (versionKey: string) =>
+            fetchJson<CmsContent>(`${basePath}/api/version/${versionKey}`),
+        [basePath]
+    );
+
+    const fetchCategories = useCallback(
+        async (categoryKeys: string[]): Promise<CmsCategoryListItem[] | null> =>
+            categoryKeys.length > 0
+                ? fetchJson<CmsCategoryListItem[]>(
+                      `${basePath}/api/categories/${categoryKeys.join(',')}`
+                  )
+                : [],
+        [basePath]
+    );
+
+    const fetchSearch = useCallback(
+        async (params: ContentSearchParams) =>
+            fetchJson<ContentSearchResult>(`${basePath}/api/search`, { params }),
+        [basePath]
+    );
+
     return {
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        fetchContent: useCallback(fetchContent(basePath), [basePath]),
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        fetchContentVersion: useCallback(fetchContentVersion(basePath), [basePath]),
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        fetchCategories: useCallback(fetchCategories(basePath), [basePath]),
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        fetchSearch: useCallback(fetchSearch(basePath), [basePath]),
+        fetchContent,
+        fetchContentVersion,
+        fetchCategories,
+        fetchSearch,
     };
 };

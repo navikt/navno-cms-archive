@@ -12,7 +12,7 @@
     },
     "dependencies": {
         "@mui/x-tree-view": "catalog:",
-        "@opensearch-project/opensearch": "3.5.1",
+        "@opensearch-project/opensearch": "3.6.0",
         "archiver": "catalog:",
         "compression": "catalog:",
         "csp-header": "6.3.1",

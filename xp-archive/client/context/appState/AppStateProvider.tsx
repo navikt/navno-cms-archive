@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { AppStateContext } from './AppStateContext';
 import { xpArchiveConfig } from '../../../../common/src/shared/siteConfigs';
 
@@ -12,45 +12,45 @@ export type SelectedContent = {
     versionId: string | undefined;
 };
 
+const getSelectedContentFromPath = (): SelectedContent | undefined => {
+    if (typeof window === 'undefined') {
+        return undefined;
+    }
+
+    const matches = /\/xp\/([^/]+)\/([^/]+)\/([^/]+)?/.exec(window.location.pathname);
+
+    if (!matches) {
+        return undefined;
+    }
+
+    const [, contentId, locale, versionId] = matches;
+    return {
+        contentId,
+        locale,
+        versionId: versionId || undefined,
+    };
+};
+
 export const AppStateProvider = ({ children }: Props) => {
     const [selectedContent, setSelectedContent] = useState<SelectedContent>();
     const [versionViewOpen, setVersionViewOpen] = useState(false);
+    const activeSelectedContent = selectedContent ?? getSelectedContentFromPath();
 
-    useEffect(() => {
-        const path = window.location.pathname;
-        const matches = /\/xp\/([^/]+)\/([^/]+)\/([^/]+)?/.exec(path);
-
-        if (matches) {
-            const [, contentId, locale, versionId] = matches;
-            updateSelectedContent({ contentId, locale, versionId: versionId || undefined });
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    const updateSelectedContent = useCallback(
-        (newSelectedContent: SelectedContent) => {
-            setSelectedContent(newSelectedContent);
-            const newUrl = `${xpArchiveConfig.basePath}/${newSelectedContent.contentId}/${newSelectedContent.locale}/${newSelectedContent.versionId || ''}`;
-            window.history.pushState({}, '', newUrl);
-        },
-        [setSelectedContent]
-    );
-
-    const selectedVersionMemoized = useMemo(
-        () => selectedContent?.versionId,
-        [selectedContent?.versionId]
-    );
-    const setVersionViewOpenMemoized = useCallback(setVersionViewOpen, [setVersionViewOpen]);
+    const updateSelectedContent = (newSelectedContent: SelectedContent) => {
+        setSelectedContent(newSelectedContent);
+        const newUrl = `${xpArchiveConfig.basePath}/${newSelectedContent.contentId}/${newSelectedContent.locale}/${newSelectedContent.versionId || ''}`;
+        window.history.pushState({}, '', newUrl);
+    };
 
     return (
         <AppStateContext.Provider
             value={{
-                selectedContentId: selectedContent?.contentId,
-                selectedVersion: selectedVersionMemoized,
-                selectedLocale: selectedContent?.locale,
+                selectedContentId: activeSelectedContent?.contentId,
+                selectedVersion: activeSelectedContent?.versionId,
+                selectedLocale: activeSelectedContent?.locale,
                 updateSelectedContent,
                 versionViewOpen,
-                setVersionViewOpen: setVersionViewOpenMemoized,
+                setVersionViewOpen,
             }}
         >
             {children}
