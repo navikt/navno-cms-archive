@@ -19,7 +19,7 @@ runs:
   using: composite
   steps:
     - name: Setup pnpm
-      uses: pnpm/action-setup@v5
+      uses: pnpm/action-setup@v6
 
     - name: Setup node.js
       uses: actions/setup-node@v6
@@ -59,6 +59,8 @@ runs:
     - name: Deploy dependencies for Docker (no symlinks)
       shell: bash
       run: pnpm --filter ./legacy-archive/server deploy --prod nonsymlink/legacy-server --legacy
+      env:
+        NODE_AUTH_TOKEN: ${{ env.READER_TOKEN }}
 
     - name: Build and push docker image
       uses: nais/docker-build-push@v0
