@@ -11,7 +11,7 @@
     overflow: hidden;
     margin-left: 0.5rem;
     padding: 0.0625rem 0;
-    background-color: var(--a-white);
+    background-color: var(--ax-bg-default);
 
     transition-duration: 150ms;
     transition-timing-function: ease-out;
@@ -22,7 +22,7 @@
         visibility: visible;
     }
 
-    & > label:global(.navds-checkbox__label) {
+    & > label:global(.aksel-checkbox__label) {
         padding: 0;
     }
 }

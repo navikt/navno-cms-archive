@@ -13,7 +13,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid var(--a-gray-400);
+    border-bottom: 1px solid var(--ax-neutral-400);
     margin-bottom: 0.75rem;
     padding: 0.5rem 0;
 }
@@ -22,7 +22,7 @@
     margin-right: 0.5rem;
 }
 
-.downloadCurrentIcon{
+.downloadCurrentIcon {
     transform: rotate(-90deg);
 }
 
@@ -36,7 +36,7 @@
     overflow-y: auto;
     scrollbar-width: thin;
 
-    :global(.navds-checkbox__label) {
+    :global(.aksel-checkbox__label) {
         padding: 0.1875rem;
     }
 }

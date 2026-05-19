@@ -146,7 +146,8 @@ export const PdfExporter = ({ content, hidden }: Props) => {
                     {`Last ned ${versionKeysSelected.length} ${versionKeysSelected.length === 1 ? 'valgt versjon' : 'valgte versjoner'}`}
                 </DownloadLink>
                 <Button
-                    variant={'tertiary-neutral'}
+                    data-color="neutral"
+                    variant={'tertiary'}
                     size={'xsmall'}
                     onClick={() => setVersionsSelectedMap(versionsSelectedMapNew)}
                 >

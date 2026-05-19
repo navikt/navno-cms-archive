@@ -87,7 +87,8 @@ export const PdfExport = ({ versions, locale }: Props) => {
             </div>
             <div className={style.downloadBar}>
                 <Button
-                    variant="secondary-neutral"
+                    data-color="neutral"
+                    variant="secondary"
                     className={style.button}
                     onClick={onDownloadButtonClick}
                     icon={<DownloadIcon title="Last ned versjon(er)" />}

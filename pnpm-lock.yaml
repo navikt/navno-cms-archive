@@ -68,14 +68,14 @@ importers:
     .:
         dependencies:
             '@navikt/aksel-icons':
-                specifier: 7.40.0
-                version: 7.40.0
+                specifier: 8.10.6
+                version: 8.10.6
             '@navikt/ds-css':
-                specifier: 7.40.0
-                version: 7.40.0
+                specifier: 8.10.6
+                version: 8.10.6
             '@navikt/ds-react':
-                specifier: 7.40.0
-                version: 7.40.0(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+                specifier: 8.10.6
+                version: 8.10.6(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
             react:
                 specifier: 19.2.4
                 version: 19.2.4
@@ -494,10 +494,10 @@ packages:
             '@types/react':
                 optional: true
 
-    '@date-fns/tz@1.2.0':
+    '@date-fns/tz@1.4.1':
         resolution:
             {
-                integrity: sha512-LBrd7MiJZ9McsOgxqWX7AaxrDjcFVjWH/tIKJd7pnR7McaslGYOP1QmmiBXdJH/H/yLCT+rcQ7FaPBUxRGUtrg==,
+                integrity: sha512-P5LUNhtbj6YfI3iJjw5EL9eUAG6OitD0W3fWQcpQjDRc/QIsL0tRNuO1PcDvPccWL1fSTXXdE1ds+l95DV/OFA==,
             }
 
     '@emotion/babel-plugin@11.13.5':
@@ -892,31 +892,31 @@ packages:
             }
         engines: { node: ^18.18.0 || ^20.9.0 || >=21.1.0 }
 
-    '@floating-ui/core@1.7.4':
+    '@floating-ui/core@1.7.5':
         resolution:
             {
-                integrity: sha512-C3HlIdsBxszvm5McXlB8PeOEWfBhcGBTZGkGlWc2U0KFY5IwG5OQEuQ8rq52DZmcHDlPLd+YFBK+cZcytwIFWg==,
+                integrity: sha512-1Ih4WTWyw0+lKyFMcBHGbb5U5FtuHJuujoyyr5zTaWS5EYMeT6Jb2AuDeftsCsEuchO+mM2ij5+q9crhydzLhQ==,
             }
 
-    '@floating-ui/dom@1.7.5':
+    '@floating-ui/dom@1.7.6':
         resolution:
             {
-                integrity: sha512-N0bD2kIPInNHUHehXhMke1rBGs1dwqvC9O9KYMyyjK7iXt7GAhnro7UlcuYcGdS/yYOlq0MAVgrow8IbWJwyqg==,
+                integrity: sha512-9gZSAI5XM36880PPMm//9dfiEngYoC6Am2izES1FF406YFsjvyBMmeJ2g4SAju3xWwtuynNRFL2s9hgxpLI5SQ==,
             }
 
-    '@floating-ui/react-dom@2.1.7':
+    '@floating-ui/react-dom@2.1.8':
         resolution:
             {
-                integrity: sha512-0tLRojf/1Go2JgEVm+3Frg9A3IW8bJgKgdO0BN5RkF//ufuz2joZM63Npau2ff3J6lUVYgDSNzNkR+aH3IVfjg==,
+                integrity: sha512-cC52bHwM/n/CxS87FH0yWdngEZrjdtLW/qVruo68qg+prK7ZQ4YGdut2GyDVpoGeAYe/h899rVeOVm6Oi40k2A==,
             }
         peerDependencies:
             react: '>=16.8.0'
             react-dom: '>=16.8.0'
 
-    '@floating-ui/react@0.27.8':
+    '@floating-ui/react@0.27.19':
         resolution:
             {
-                integrity: sha512-EQJ4Th328y2wyHR3KzOUOoTW2UKjFk53fmyahfwExnFQ8vnsMYqKc+fFPOkeYtj5tcp1DUMiNJ7BFhed7e9ONw==,
+                integrity: sha512-31B8h5mm8YxotlE7/AU/PhNAl8eWxAmjL/v2QOxroDNkTFLk3Uu82u63N3b6TXa4EGJeeZLVcd/9AlNlVqzeog==,
             }
         peerDependencies:
             react: '>=17.0.0'
@@ -926,6 +926,12 @@ packages:
         resolution:
             {
                 integrity: sha512-aGTxbpbg8/b5JfU1HXSrbH3wXZuLPJcNEcZQFMxLs3oSzgtVu6nFPkbbGGUvBcUjKV2YyB9Wxxabo+HEH9tcRQ==,
+            }
+
+    '@floating-ui/utils@0.2.11':
+        resolution:
+            {
+                integrity: sha512-RiB/yIh78pcIxl6lLMG0CgBXAZ2Y0eVHqMPYugu+9U0AeT6YBeiJpf7lbdJNIugFP5SIjwNRgo4DhR1Qxi26Gg==,
             }
 
     '@humanfs/core@0.19.1':
@@ -1154,39 +1160,36 @@ packages:
             '@emotion/styled':
                 optional: true
 
-    '@navikt/aksel-icons@7.40.0':
+    '@navikt/aksel-icons@8.10.6':
         resolution:
             {
-                integrity: sha512-1xuhplMhKCEPn2iMFypMVgkRNxUd5iupQ7HP2itdQCkK3K2mm2b8HsDwL9d7YDWcxowq5ff7ewpKgQFPn6o1UQ==,
-                tarball: https://npm.pkg.github.com/download/@navikt/aksel-icons/7.40.0/16d67c0742bcf2a2c38ad37be6c287765640fd7f,
+                integrity: sha512-aECYww6+luwBfV8tPDDGG++395/dvhUusx9rWB7sSFbAj2rPi9ULMe8Gg9TE42tKqZMz8riXyQoRsQsz2xW45A==,
+                tarball: https://npm.pkg.github.com/download/@navikt/aksel-icons/8.10.6/3903bc63ecdf7c98f3819fca43cb52fcd8384cb8,
             }
 
-    '@navikt/ds-css@7.40.0':
+    '@navikt/ds-css@8.10.6':
         resolution:
             {
-                integrity: sha512-DPxoESUbmPImfbYrmcrOIL1XVsxqqFITgNCZ3cXQgv2xRHP9G6LTEdiYjwHecffHb6L/7mEPJ929MZ50o1fZNA==,
-                tarball: https://npm.pkg.github.com/download/@navikt/ds-css/7.40.0/267682132732537194904a0498ce8971bf8b4922,
+                integrity: sha512-ZoVz0CHluHor1q7AojDJ04Pj92YnWmnY43m91i32jGYiaIF0MNp9Qn0qr2GOm+1x50aGqtGx998TWj7ZYso1mw==,
+                tarball: https://npm.pkg.github.com/download/@navikt/ds-css/8.10.6/5a49d9b7c2bf0326289ff0a69505df89f36a3e68,
             }
 
-    '@navikt/ds-react@7.40.0':
+    '@navikt/ds-react@8.10.6':
         resolution:
             {
-                integrity: sha512-UAjWnl2ot3QtXTitbuzO8b28ugBR7Bx/AiPM+SkdCCrcC0LB5/qQ5LhnGAY9UvPVyRV8GUAc2iHvTdl47+t+nQ==,
-                tarball: https://npm.pkg.github.com/download/@navikt/ds-react/7.40.0/4752ce4b946ab9f05135124d5fec50f2d0eaa937,
+                integrity: sha512-XfuMhct9i6no6soZnvmzzn9CuqUDmk6FBQg0aNiKEpAkZUyp8l9AX1Hq2EQld3QTUEN9ldZDmoP8jBmtz7Kl3g==,
+                tarball: https://npm.pkg.github.com/download/@navikt/ds-react/8.10.6/6b1f5751a41ab6025ac61a8375e9c59f8add65d7,
             }
         peerDependencies:
             '@types/react': ^17.0.30 || ^18 || ^19
             react: ^17 || ^18 || ^19
             react-dom: ^17 || ^18 || ^19
-        peerDependenciesMeta:
-            '@types/react':
-                optional: true
 
-    '@navikt/ds-tokens@7.40.0':
+    '@navikt/ds-tokens@8.10.6':
         resolution:
             {
-                integrity: sha512-zBaBKLS5R2OZyXI4UUPOmiB15L/u/aJPHiyoccJDtmqrv5wRkc1oM6UCjzKK0D4gLZHBoxp7YBT0sR9Mp4DXFQ==,
-                tarball: https://npm.pkg.github.com/download/@navikt/ds-tokens/7.40.0/36f981e12d4d90f18155615b7666b737039a3ff0,
+                integrity: sha512-tsYS9Wy5/t6fryllnQfbzNkjD8lTA4b+enkbDj0SLTYfB4naCeXO4cog1jl3u/y3IhqqVTIMnyO7ujv1mLbYTg==,
+                tarball: https://npm.pkg.github.com/download/@navikt/ds-tokens/8.10.6/3070167a2ab8445b7f04935d47175c87cc0167a3,
             }
 
     '@opensearch-project/opensearch@3.5.1':
@@ -1435,6 +1438,13 @@ packages:
             }
         cpu: [x64]
         os: [win32]
+
+    '@tabby_ai/hijri-converter@1.0.5':
+        resolution:
+            {
+                integrity: sha512-r5bClKrcIusDoo049dSL8CawnHR6mRdDwhlQuIgZRNty68q0x8k3Lf1BtPAMxRf/GgnHBnIO4ujd3+GQdLWzxQ==,
+            }
+        engines: { node: '>=16.0.0' }
 
     '@tootallnate/quickjs-emscripten@0.23.0':
         resolution:
@@ -2012,6 +2022,7 @@ packages:
                 integrity: sha512-VoMINM2rqJwJgfdHq6RiUudKt2BV+FY5ZFezP/ypmwayk68+NzzAQy4XXLlqsGD4MCzq3DrmNFD/uUmBJuGoXw==,
             }
         engines: { node: '>=10.0.0' }
+        deprecated: Security vulnerability fixed in 5.2.1, please upgrade
 
     binary-extensions@2.3.0:
         resolution:
@@ -4350,10 +4361,10 @@ packages:
             }
         engines: { node: '>= 0.10' }
 
-    react-day-picker@9.7.0:
+    react-day-picker@9.14.0:
         resolution:
             {
-                integrity: sha512-urlK4C9XJZVpQ81tmVgd2O7lZ0VQldZeHzNejbwLWZSkzHH498KnArT0EHNfKBOWwKc935iMLGZdxXPRISzUxQ==,
+                integrity: sha512-tBaoDWjPwe0M5pGrum4H0SR6Lyk+BO9oHnp9JbKpGKW2mlraNPgP9BMfsg5pWpwrssARmeqk7YBl2oXutZTaHA==,
             }
         engines: { node: '>=18' }
         peerDependencies:
@@ -5598,7 +5609,7 @@ snapshots:
         optionalDependencies:
             '@types/react': 19.2.14
 
-    '@date-fns/tz@1.2.0': {}
+    '@date-fns/tz@1.4.1': {}
 
     '@emotion/babel-plugin@11.13.5':
         dependencies:
@@ -5807,30 +5818,32 @@ snapshots:
             '@eslint/core': 0.17.0
             levn: 0.4.1
 
-    '@floating-ui/core@1.7.4':
+    '@floating-ui/core@1.7.5':
         dependencies:
-            '@floating-ui/utils': 0.2.10
+            '@floating-ui/utils': 0.2.11
 
-    '@floating-ui/dom@1.7.5':
+    '@floating-ui/dom@1.7.6':
         dependencies:
-            '@floating-ui/core': 1.7.4
-            '@floating-ui/utils': 0.2.10
+            '@floating-ui/core': 1.7.5
+            '@floating-ui/utils': 0.2.11
 
-    '@floating-ui/react-dom@2.1.7(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
+    '@floating-ui/react-dom@2.1.8(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
         dependencies:
-            '@floating-ui/dom': 1.7.5
+            '@floating-ui/dom': 1.7.6
             react: 19.2.4
             react-dom: 19.2.4(react@19.2.4)
 
-    '@floating-ui/react@0.27.8(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
+    '@floating-ui/react@0.27.19(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
         dependencies:
-            '@floating-ui/react-dom': 2.1.7(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-            '@floating-ui/utils': 0.2.10
+            '@floating-ui/react-dom': 2.1.8(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+            '@floating-ui/utils': 0.2.11
             react: 19.2.4
             react-dom: 19.2.4(react@19.2.4)
             tabbable: 6.4.0
 
     '@floating-ui/utils@0.2.10': {}
+
+    '@floating-ui/utils@0.2.11': {}
 
     '@humanfs/core@0.19.1': {}
 
@@ -6000,25 +6013,23 @@ snapshots:
         transitivePeerDependencies:
             - '@types/react'
 
-    '@navikt/aksel-icons@7.40.0': {}
+    '@navikt/aksel-icons@8.10.6': {}
 
-    '@navikt/ds-css@7.40.0': {}
+    '@navikt/ds-css@8.10.6': {}
 
-    '@navikt/ds-react@7.40.0(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
+    '@navikt/ds-react@8.10.6(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
         dependencies:
-            '@floating-ui/react': 0.27.8(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-            '@floating-ui/react-dom': 2.1.7(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-            '@navikt/aksel-icons': 7.40.0
-            '@navikt/ds-tokens': 7.40.0
-            clsx: 2.1.1
+            '@floating-ui/react': 0.27.19(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+            '@floating-ui/react-dom': 2.1.8(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+            '@navikt/aksel-icons': 8.10.6
+            '@navikt/ds-tokens': 8.10.6
+            '@types/react': 19.2.14
             date-fns: 4.1.0
             react: 19.2.4
-            react-day-picker: 9.7.0(react@19.2.4)
+            react-day-picker: 9.14.0(react@19.2.4)
             react-dom: 19.2.4(react@19.2.4)
-        optionalDependencies:
-            '@types/react': 19.2.14
 
-    '@navikt/ds-tokens@7.40.0': {}
+    '@navikt/ds-tokens@8.10.6': {}
 
     '@opensearch-project/opensearch@3.5.1':
         dependencies:
@@ -6127,6 +6138,8 @@ snapshots:
 
     '@rollup/rollup-win32-x64-msvc@4.59.0':
         optional: true
+
+    '@tabby_ai/hijri-converter@1.0.5': {}
 
     '@tootallnate/quickjs-emscripten@0.23.0': {}
 
@@ -8045,9 +8058,10 @@ snapshots:
             iconv-lite: 0.7.2
             unpipe: 1.0.0
 
-    react-day-picker@9.7.0(react@19.2.4):
+    react-day-picker@9.14.0(react@19.2.4):
         dependencies:
-            '@date-fns/tz': 1.2.0
+            '@date-fns/tz': 1.4.1
+            '@tabby_ai/hijri-converter': 1.0.5
             date-fns: 4.1.0
             date-fns-jalali: 4.1.0-0
             react: 19.2.4

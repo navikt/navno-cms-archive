@@ -70,7 +70,8 @@ export const VersionSelector = ({ versions, onClose }: Props) => {
                         </HelpText>
                     </span>
                     <Button
-                        variant="tertiary-neutral"
+                        data-color="neutral"
+                        variant="tertiary"
                         icon={<XMarkIcon />}
                         onClick={handleClose}
                     ></Button>

@@ -23,17 +23,17 @@
 }
 
 .versionButton {
-    color: var(--a-text-default);
+    color: var(--ax-text-neutral);
     justify-content: space-between;
     position: relative;
 
-    :global(.navds-label) {
-        font-weight: var(--a-font-weight-regular);
+    :global(.aksel-label) {
+        font-weight: var(--ax-font-weight-regular);
         text-align: left;
     }
 
-    :global(.navds-button__icon) {
-        color: var(--a-icon-action-selected);
+    :global(.aksel-button__icon) {
+        color: var(--ax-accent-700);
     }
 
     &::after {
@@ -43,7 +43,7 @@
         left: 0;
         right: 0;
         height: 1px;
-        background-color: var(--a-border-divider);
+        background-color: var(--ax-border-neutral-subtleA);
     }
 
     &:last-child::after {
@@ -52,10 +52,10 @@
 }
 
 .selected {
-    background-color: var(--a-surface-selected);
+    background-color: var(--ax-bg-accent-soft);
 
-    :global(.navds-label) {
-        font-weight: var(--a-font-weight-bold);
+    :global(.aksel-label) {
+        font-weight: var(--ax-font-weight-bold);
     }
 }
 
@@ -66,6 +66,6 @@
 
     width: fit-content;
     border-radius: 99px;
-    background-color: var(--a-surface-inverted);
+    background-color: var(--ax-bg-neutral-strong);
     align-self: center;
 }
