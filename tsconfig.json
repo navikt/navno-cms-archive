@@ -11,9 +11,9 @@
         "isolatedModules": true,
         "noEmit": true,
         "jsx": "react-jsx",
+        "types": ["node"],
         "strict": true,
         "esModuleInterop": true,
-        "baseUrl": ".",
         "paths": {
             "@common/*": ["./common/src/*"],
             "client/*": ["./xp-archive/client/*", "./legacy-archive/client/*"],

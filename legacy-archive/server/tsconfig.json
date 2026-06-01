@@ -3,9 +3,12 @@
     "compilerOptions": {
         "lib": ["ES2022"],
         "jsx": "react",
-        "baseUrl": "src",
         "paths": {
-            "@common/*": ["../../../common/src/*"]
+            "@common/*": ["../../common/src/*"],
+            "client/*": ["../client/*"],
+            "shared/*": ["../shared/*"],
+            "services/*": ["./src/services/*"],
+            "utils/*": ["./src/utils/*"]
         }
     },
     "include": ["src/**/*", "../shared/**/*"]
