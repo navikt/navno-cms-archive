@@ -30,6 +30,9 @@ spec:
         - host: cdn.nav.no
   envFrom:
     - secret: {{ secret }}
+  openSearch:
+    instance: {{ openSearchInstance }}
+    access: {{ openSearchAccess }}
   replicas:
     min: 1
     max: 1
