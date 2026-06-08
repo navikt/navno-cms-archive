@@ -4,3 +4,4 @@ xpFrontendApp: nav-enonicxp-frontend-dev1
 secret: nav-enonicxp-dev1
 openSearchInstance: xp-cms-archive
 openSearchAccess: readwrite
+xpArchiveV2Enabled: 'true'
