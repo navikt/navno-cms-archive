@@ -12,8 +12,11 @@ import { SearchService } from 'services/SearchService';
 import { IndexingService } from '../services/IndexingService';
 import { XpArchiveOpenSearchClient } from '../opensearch/XpArchiveOpenSearchClient';
 import { HtmlRenderer } from '../../../../common/src/server/ssr/htmlRenderer';
+import { XpArchiveDocument } from '../../../shared/types';
 
 const archiveV2Enabled = process.env.XP_ARCHIVE_V2_ENABLED === 'true';
+const XP_ARCHIVE_CONTENT_INDEX = 'xp-archive-content';
+const archiveDocumentId = (nodeId: string, versionId: string) => `${nodeId}:${versionId}`;
 
 export const setupSite = async (router: Router) => {
     const htmlRenderer = await buildHtmlRenderer({
@@ -66,6 +69,7 @@ const setupApiRoutes = async (router: Router) => {
 
 const setupBrowserRoutes = (router: Router, htmlRenderer: HtmlRenderer) => {
     const contentService = new ContentService();
+    const osClient = archiveV2Enabled ? new XpArchiveOpenSearchClient() : undefined;
 
     router.get('/html/:contentId/:locale', async (req, res, next) => {
         const { contentId, locale } = req.params;
@@ -86,6 +90,28 @@ const setupBrowserRoutes = (router: Router, htmlRenderer: HtmlRenderer) => {
 
     router.get('/html/:contentId/:locale/:versionId', async (req, res, next) => {
         const { contentId, locale, versionId } = req.params;
+
+        // Midlertidig i dev: les versionert /html kun fra OpenSearch for å verifisere arkivkilde.
+        // Fjernes når content/contentTree/search er flyttet til OpenSearch i #104.
+        if (archiveV2Enabled && osClient) {
+            const document = await osClient.getDocument<XpArchiveDocument>({
+                index: XP_ARCHIVE_CONTENT_INDEX,
+                id: archiveDocumentId(contentId, versionId),
+            });
+
+            if (!document) {
+                next();
+                return;
+            }
+
+            if (!document.html) {
+                res.status(406).send('This content does not have an html representation.');
+                return;
+            }
+
+            res.send(document.html);
+            return;
+        }
 
         const content = await contentService.fetchContent(contentId, locale, versionId);
         if (!content) {
