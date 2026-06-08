@@ -32,7 +32,7 @@ spec:
     - secret: {{ secret }}
   env:
     - name: XP_ARCHIVE_V2_ENABLED
-      value: {{ xpArchiveV2Enabled }}
+      value: "{{ xpArchiveV2Enabled }}"
   openSearch:
     instance: {{ openSearchInstance }}
     access: {{ openSearchAccess }}
