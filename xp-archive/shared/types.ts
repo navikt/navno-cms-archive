@@ -79,6 +79,20 @@ export type Content = {
     expandAll?: boolean;
 };
 
+export type XpArchiveDocument = {
+    nodeId: string;
+    versionId: string;
+    path: string;
+    displayName: string;
+    type: ContentType;
+    locale: string;
+    timestamp: string;
+    modifiedTime: string;
+    searchText: string;
+    html?: string;
+    json: Content;
+};
+
 export type SearchResponse = {
     total: number;
     query: string;

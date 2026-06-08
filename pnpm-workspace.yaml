@@ -8,6 +8,7 @@ packages:
 catalog:
     '@mui/material': '7.3.11'
     '@mui/x-tree-view': '8.28.5'
+    '@opensearch-project/opensearch': '3.6.0'
     '@types/archiver': '7.0.0'
     '@types/compression': '1.8.1'
     archiver: '7.0.1'

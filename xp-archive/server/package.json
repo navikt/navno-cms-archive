@@ -12,6 +12,7 @@
     },
     "dependencies": {
         "@mui/x-tree-view": "catalog:",
+        "@opensearch-project/opensearch": "catalog:",
         "archiver": "catalog:",
         "compression": "catalog:",
         "dotenv": "catalog:",

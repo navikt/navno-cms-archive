@@ -9,7 +9,11 @@ import { AttachmentService } from '../services/AttachmentService';
 import { PdfService } from '../services/PdfService';
 import puppeteer from 'puppeteer';
 import { SearchService } from 'services/SearchService';
+import { IndexingService } from '../services/IndexingService';
+import { XpArchiveOpenSearchClient } from '../opensearch/XpArchiveOpenSearchClient';
 import { HtmlRenderer } from '../../../../common/src/server/ssr/htmlRenderer';
+
+const archiveV2Enabled = process.env.XP_ARCHIVE_V2_ENABLED === 'true';
 
 export const setupSite = async (router: Router) => {
     const htmlRenderer = await buildHtmlRenderer({
@@ -46,6 +50,18 @@ const setupApiRoutes = async (router: Router) => {
     router.get('/api/attachment', attachmentService.getAttachmentHandler);
     router.get('/api/pdf', pdfService.generatePdfHandler);
     router.get('/api/search', searchService.getSearchHandler);
+
+    if (archiveV2Enabled) {
+        const indexingService = new IndexingService({
+            contentService,
+            osClient: new XpArchiveOpenSearchClient(),
+        });
+        router.get('/api/index', indexingService.indexContentHandler);
+        router.get(
+            '/archived/:contentId/:locale/:versionId',
+            indexingService.getArchivedContentHandler
+        );
+    }
 };
 
 const setupBrowserRoutes = (router: Router, htmlRenderer: HtmlRenderer) => {
