@@ -40,4 +40,20 @@ export class XpArchiveOpenSearchClient {
                 return false;
             });
     }
+
+    public async getDocument<Document>(index: string, id: string): Promise<Document | null> {
+        return this.client
+            .get({ index, id })
+            .then((result) => {
+                if (result.statusCode !== 200) {
+                    console.error(`Failed to get document: ${result.statusCode}`);
+                    return null;
+                }
+                return (result.body._source as Document) || null;
+            })
+            .catch((e: unknown) => {
+                logException(e);
+                return null;
+            });
+    }
 }
