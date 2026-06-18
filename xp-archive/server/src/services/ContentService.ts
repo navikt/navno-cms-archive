@@ -1,6 +1,11 @@
 import { fetchHtml, fetchJson } from '@common/shared/fetchUtils';
 import { xpServiceUrl } from '../utils/urls';
-import { Content, ContentServiceResponse, XPContentServiceResponse } from '../../../shared/types';
+import {
+    Content,
+    ContentServiceResponse,
+    VersionReference,
+    XPContentServiceResponse,
+} from '../../../shared/types';
 import { RequestHandler } from 'express';
 import { validateQuery } from '../utils/params';
 
@@ -60,6 +65,15 @@ export class ContentService {
             json: contentRaw,
             versions,
         };
+    }
+
+    public async fetchVersions(nodeId: string, locale: string): Promise<VersionReference[] | null> {
+        const xpResponse = await fetchJson<XPContentServiceResponse>(this.CONTENT_PROPS_API, {
+            headers: { secret: process.env.SERVICE_SECRET },
+            params: { id: nodeId, locale },
+        });
+
+        return xpResponse?.versions ?? null;
     }
 
     private async getContentHtml(contentProps?: Content) {
