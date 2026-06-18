@@ -48,6 +48,10 @@ export class IndexingService {
             json,
         };
 
+        if (!html) {
+            console.warn(`Indexed without HTML: ${nodeId}:${versionId}`);
+        }
+
         return this.openSearchClient.indexDocument(INDEX, `${nodeId}:${versionId}`, doc);
     }
 
