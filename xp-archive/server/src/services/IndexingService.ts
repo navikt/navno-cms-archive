@@ -70,6 +70,11 @@ export class IndexingService {
     }
 
     public indexContentHandler: RequestHandler = async (req, res) => {
+        if (req.headers['secret'] !== process.env.SERVICE_SECRET) {
+            res.status(401).send('Unauthorized');
+            return;
+        }
+
         if (!validateQuery(req.query, ['id', 'locale'], ['versionId'])) {
             res.status(400).send('Missing or invalid parameters');
             return;
