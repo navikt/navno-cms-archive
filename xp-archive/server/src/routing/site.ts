@@ -50,7 +50,7 @@ const setupApiRoutes = async (router: Router) => {
     router.get('/api/attachment', attachmentService.getAttachmentHandler);
     router.get('/api/pdf', pdfService.generatePdfHandler);
     router.get('/api/search', searchService.getSearchHandler);
-    router.get('/api/index', indexingService.indexContentHandler);
+    router.post('/api/index', indexingService.indexContentHandler);
 };
 
 const setupBrowserRoutes = (router: Router, htmlRenderer: HtmlRenderer) => {
