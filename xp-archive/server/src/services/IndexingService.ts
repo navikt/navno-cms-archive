@@ -3,8 +3,7 @@ import { ContentService } from './ContentService';
 import { XpArchiveOpenSearchClient } from '../opensearch/XpArchiveOpenSearchClient';
 import { XpArchiveDocument } from '../opensearch/types';
 import { validateQuery } from '../utils/params';
-
-const INDEX = 'xp-archive-content';
+import { XP_ARCHIVE_INDEX } from '../opensearch/XpArchiveOpenSearchClient';
 
 export class IndexingService {
     private readonly contentService: ContentService;
@@ -52,7 +51,7 @@ export class IndexingService {
             console.warn(`Indexed without HTML: ${nodeId}:${versionId}`);
         }
 
-        return this.openSearchClient.indexDocument(INDEX, `${nodeId}:${versionId}`, doc);
+        return this.openSearchClient.indexDocument(XP_ARCHIVE_INDEX, `${nodeId}:${versionId}`, doc);
     }
 
     private async indexAllVersions(nodeId: string, locale: string): Promise<boolean> {

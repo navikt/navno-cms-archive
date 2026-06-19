@@ -2,6 +2,8 @@ import { Client, errors } from '@opensearch-project/opensearch';
 import { getErrorMessage } from '@common/shared/fetchUtils';
 import { XpArchiveDocument } from './types';
 
+export const XP_ARCHIVE_INDEX = 'xp-archive-content';
+
 const { OpenSearchClientError } = errors;
 
 //TODO: logException foreløpig duplisert fra legacy-archive
