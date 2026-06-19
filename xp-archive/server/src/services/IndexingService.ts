@@ -69,7 +69,7 @@ export class IndexingService {
         return results.every(Boolean);
     }
 
-    public indexContentHandler: RequestHandler = async (req, res) => {
+    public indexContentHandler: RequestHandler = (req, res) => {
         if (req.headers['secret'] !== process.env.SERVICE_SECRET) {
             res.status(401).send('Unauthorized');
             return;
@@ -82,10 +82,18 @@ export class IndexingService {
 
         const { id, locale, versionId } = req.query;
 
-        const success = versionId
-            ? await this.indexContentVersion(id, locale, versionId)
-            : await this.indexAllVersions(id, locale);
+        res.status(202).json({ accepted: true });
 
-        res.status(success ? 200 : 500).json({ success });
+        const indexPromise = versionId
+            ? this.indexContentVersion(id, locale, versionId)
+            : this.indexAllVersions(id, locale);
+
+        indexPromise
+            .then((success) => {
+                if (!success) {
+                    console.error(`Indexing failed for ${id}:${versionId ?? 'all'}`);
+                }
+            })
+            .catch((e) => console.error(`Indexing error for ${id}: ${e}`));
     };
 }
