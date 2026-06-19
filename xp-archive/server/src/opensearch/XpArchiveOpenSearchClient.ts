@@ -1,5 +1,6 @@
 import { Client, errors } from '@opensearch-project/opensearch';
 import { getErrorMessage } from '@common/shared/fetchUtils';
+import { XpArchiveDocument } from './types';
 
 const { OpenSearchClientError } = errors;
 
@@ -54,6 +55,67 @@ export class XpArchiveOpenSearchClient {
             .catch((e: unknown) => {
                 logException(e);
                 return null;
+            });
+    }
+
+    public async searchDocuments(
+        index: string,
+        query: string,
+        searchType?: string
+    ): Promise<{ total: number; hits: XpArchiveDocument[] }> {
+        const curatedTypes = [
+            'no.nav.navno:content-page-with-sidemenus',
+            'no.nav.navno:themed-article-page',
+            'no.nav.navno:situation-page',
+            'no.nav.navno:guide-page',
+            'no.nav.navno:main-article',
+            'no.nav.navno:current-topic-page',
+            'no.nav.navno:external-link',
+            'no.nav.navno:internal-link',
+            'no.nav.navno:product-details',
+            'no.nav.navno:global-case-time-set',
+            'no.nav.navno:payout-dates',
+        ];
+
+        const typeFilter =
+            searchType === 'curated'
+                ? { terms: { 'type.keyword': curatedTypes } }
+                : searchType === 'other'
+                  ? { bool: { must_not: { terms: { 'type.keyword': curatedTypes } } } }
+                  : null;
+
+        const body = {
+            query: {
+                bool: {
+                    must: {
+                        wildcard: {
+                            'displayName.keyword': { value: `*${query}*`, case_insensitive: true },
+                        },
+                    },
+                    ...(typeFilter && { filter: typeFilter }),
+                },
+            },
+            collapse: { field: 'nodeId.keyword' },
+            sort: [{ timestamp: { order: 'desc' } }],
+            size: 50,
+        };
+
+        type SearchBody = {
+            hits: { total: { value: number }; hits: Array<{ _source: XpArchiveDocument }> };
+        };
+
+        return this.client
+            .search({ index, body })
+            .then((result) => {
+                const searchBody = result.body as SearchBody;
+                return {
+                    total: searchBody.hits.total.value,
+                    hits: searchBody.hits.hits.map((h) => h._source),
+                };
+            })
+            .catch((e: unknown) => {
+                logException(e);
+                return { total: 0, hits: [] };
             });
     }
 }
