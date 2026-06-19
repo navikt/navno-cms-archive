@@ -1,6 +1,7 @@
 import { RequestHandler } from 'express';
 import { validateQuery } from 'utils/params';
 import { SearchResponse } from '../../../shared/types';
+import { Locale } from '../../../client/contentTree/NavigationBar';
 import {
     XpArchiveOpenSearchClient,
     XP_ARCHIVE_INDEX,
@@ -40,7 +41,7 @@ export class SearchService {
             hits: hits.map((hit) => ({
                 _id: hit.nodeId,
                 _path: hit.path,
-                layerLocale: hit.locale,
+                layerLocale: hit.locale as Locale,
                 displayName: hit.displayName,
                 type: hit.type,
             })),
