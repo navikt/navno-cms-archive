@@ -1,9 +1,11 @@
 import { RequestHandler } from 'express';
 import { ContentService } from './ContentService';
-import { XpArchiveOpenSearchClient } from '../opensearch/XpArchiveOpenSearchClient';
+import {
+    XpArchiveOpenSearchClient,
+    XP_ARCHIVE_INDEX,
+} from '../opensearch/XpArchiveOpenSearchClient';
 import { XpArchiveDocument } from '../opensearch/types';
 import { validateQuery } from '../utils/params';
-import { XP_ARCHIVE_INDEX } from '../opensearch/XpArchiveOpenSearchClient';
 
 export class IndexingService {
     private readonly contentService: ContentService;
@@ -54,7 +56,7 @@ export class IndexingService {
         return this.openSearchClient.indexDocument(XP_ARCHIVE_INDEX, `${nodeId}:${versionId}`, doc);
     }
 
-    private async indexAllVersions(nodeId: string, locale: string): Promise<boolean> {
+    public async indexAllVersions(nodeId: string, locale: string): Promise<boolean> {
         const versions = await this.contentService.fetchVersions(nodeId, locale);
 
         if (!versions) {
