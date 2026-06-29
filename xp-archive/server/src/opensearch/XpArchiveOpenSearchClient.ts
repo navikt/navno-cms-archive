@@ -60,6 +60,41 @@ export class XpArchiveOpenSearchClient {
             });
     }
 
+    public async getLatestDocument(
+        index: string,
+        nodeId: string,
+        locale: string
+    ): Promise<XpArchiveDocument | null> {
+        type SearchBody = {
+            hits: { hits: Array<{ _source: XpArchiveDocument }> };
+        };
+
+        return this.client
+            .search({
+                index,
+                body: {
+                    query: {
+                        bool: {
+                            filter: [
+                                { term: { 'nodeId.keyword': nodeId } },
+                                { term: { 'locale.keyword': locale } },
+                            ],
+                        },
+                    },
+                    sort: [{ timestamp: { order: 'desc' } }],
+                    size: 1,
+                },
+            })
+            .then((result) => {
+                const searchBody = result.body as SearchBody;
+                return searchBody.hits.hits[0]?._source ?? null;
+            })
+            .catch((e: unknown) => {
+                logException(e);
+                return null;
+            });
+    }
+
     public async searchDocuments(
         index: string,
         query: string,

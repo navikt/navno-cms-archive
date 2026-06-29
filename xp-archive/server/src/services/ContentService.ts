@@ -8,10 +8,18 @@ import {
 } from '../../../shared/types';
 import { RequestHandler } from 'express';
 import { validateQuery } from '../utils/params';
+import {
+    XP_ARCHIVE_INDEX,
+    XpArchiveOpenSearchClient,
+} from '../opensearch/XpArchiveOpenSearchClient';
+import { XpArchiveDocument } from '../opensearch/types';
 
 export class ContentService {
     private readonly CONTENT_PROPS_API = xpServiceUrl('externalArchive/content');
     private readonly HTML_RENDER_API = process.env.HTML_RENDER_API;
+    private readonly openSearchClient = process.env.OPEN_SEARCH_URI
+        ? new XpArchiveOpenSearchClient()
+        : null;
 
     public getContentHandler: RequestHandler = async (req, res) => {
         if (!validateQuery(req.query, ['id', 'locale'], ['versionId'])) {
@@ -32,6 +40,43 @@ export class ContentService {
         versionId?: string,
         expandAll?: boolean
     ): Promise<ContentServiceResponse | null> {
+        if (this.openSearchClient) {
+            const openSearchDocument = versionId
+                ? await this.openSearchClient.getDocument<XpArchiveDocument>(
+                      XP_ARCHIVE_INDEX,
+                      `${contentId}:${versionId}`
+                  )
+                : await this.openSearchClient.getLatestDocument(
+                      XP_ARCHIVE_INDEX,
+                      contentId,
+                      locale
+                  );
+
+            if (openSearchDocument?.locale === locale) {
+                const xpVersions = await this.fetchVersions(contentId, locale);
+                const versions: VersionReference[] = xpVersions ?? [
+                    {
+                        versionId: openSearchDocument.versionId,
+                        nodeId: openSearchDocument.nodeId,
+                        nodePath: openSearchDocument.path,
+                        timestamp: openSearchDocument.timestamp,
+                        locale: openSearchDocument.locale,
+                        displayName: openSearchDocument.displayName,
+                        type: openSearchDocument.type,
+                    },
+                ];
+
+                //TODO: fjern
+                console.log('getting from OpenSearch');
+
+                return {
+                    html: openSearchDocument.html,
+                    json: openSearchDocument.json,
+                    versions,
+                };
+            }
+        }
+
         const xpResponse = await fetchJson<XPContentServiceResponse>(this.CONTENT_PROPS_API, {
             headers: { secret: process.env.SERVICE_SECRET },
             params: { id: contentId, locale, versionId },
