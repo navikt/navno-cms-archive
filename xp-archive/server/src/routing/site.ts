@@ -43,7 +43,7 @@ const setupApiRoutes = async (router: Router) => {
     const pdfService = new PdfService({ browser, contentService });
     const openSearchClient = new XpArchiveOpenSearchClient();
     const searchService = new SearchService(openSearchClient);
-    const indexingService = new IndexingService(contentService, openSearchClient);
+    const indexingService = new IndexingService(contentService, openSearchClient, browser);
     router.get('/api/content', contentService.getContentHandler);
     router.get('/api/contentTree', contentTreeService.getContentTreeHandler);
     router.get('/api/contentIcon', contentIconService.getContentIconHandler);

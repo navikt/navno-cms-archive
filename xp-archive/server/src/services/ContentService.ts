@@ -38,9 +38,10 @@ export class ContentService {
         contentId: string,
         locale: string,
         versionId?: string,
-        expandAll?: boolean
+        expandAll?: boolean,
+        skipCache?: boolean
     ): Promise<ContentServiceResponse | null> {
-        if (this.openSearchClient) {
+        if (this.openSearchClient && !skipCache) {
             const openSearchDocument = versionId
                 ? await this.openSearchClient.getDocument<XpArchiveDocument>(
                       XP_ARCHIVE_INDEX,
