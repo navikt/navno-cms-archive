@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ExternalLinkIcon } from '@navikt/aksel-icons';
 import { VersionIcon } from '../versionSelector/VersionIcon';
 import { xpArchiveConfig } from '@common/shared/siteConfigs';
-import { Button, Detail, Heading, Label } from '@navikt/ds-react';
+import { Button, Detail, Heading, Label, Tag } from '@navikt/ds-react';
 import { useAppState } from '../context/appState/useAppState';
 import { ViewSelector, ViewVariant } from 'client/viewSelector/ViewSelector';
 import { ContentView } from '../contentView/ContentView';
@@ -108,6 +108,12 @@ export const Content = ({
                     <Heading size={'medium'} level={'2'}>
                         {data?.json?.displayName || 'Laster...'}
                     </Heading>
+                    {data?.json?.unpublishedTime && (
+                        <Tag variant="warning">Avpublisert: {data.json.unpublishedTime}</Tag>
+                    )}
+                    {data?.json?.archivedTime && (
+                        <Tag variant="info">Arkivert: {data.json.archivedTime}</Tag>
+                    )}
                     <div className={style.url}>
                         <Detail>{data?.json?._path || ''}</Detail>
                     </div>
