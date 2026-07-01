@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ExternalLinkIcon } from '@navikt/aksel-icons';
 import { VersionIcon } from '../versionSelector/VersionIcon';
 import { xpArchiveConfig } from '@common/shared/siteConfigs';
-import { Button, Detail, Heading, Label, Tag } from '@navikt/ds-react';
+import { Button, Detail, Heading, Label } from '@navikt/ds-react';
 import { useAppState } from '../context/appState/useAppState';
 import { ViewSelector, ViewVariant } from 'client/viewSelector/ViewSelector';
 import { ContentView } from '../contentView/ContentView';
