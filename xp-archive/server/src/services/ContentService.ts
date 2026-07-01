@@ -67,13 +67,11 @@ export class ContentService {
                     },
                 ];
 
-                //TODO: fjern
-                console.log('getting from OpenSearch');
-
                 return {
                     html: openSearchDocument.html,
                     json: openSearchDocument.json,
                     versions,
+                    source: 'opensearch',
                 };
             }
         }
@@ -110,6 +108,7 @@ export class ContentService {
             html,
             json: contentRaw,
             versions,
+            source: 'xp',
         };
     }
 

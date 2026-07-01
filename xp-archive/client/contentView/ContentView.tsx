@@ -14,7 +14,7 @@ const getDisplayComponent = (viewVariant?: ViewVariant, data?: ContentServiceRes
     const { json: content } = data;
 
     const components: Record<ViewVariant, React.ReactElement> = {
-        html: <HtmlView content={content} />,
+        html: <HtmlView content={content} source={data.source} />,
         filepreview: <FilePreviewWrapper content={content} />,
         pdf: <PdfExport versions={data.versions} locale={content.locale} />,
     };
