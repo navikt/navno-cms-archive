@@ -77,6 +77,8 @@ export type Content = {
     attachment?: Attachment;
     originalContentTypeName?: string;
     expandAll?: boolean;
+    unpublishedTime?: string;
+    archivedTime?: string;
 };
 
 export type SearchResponse = {
