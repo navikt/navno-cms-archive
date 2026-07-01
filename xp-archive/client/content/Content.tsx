@@ -108,12 +108,16 @@ export const Content = ({
                     <Heading size={'medium'} level={'2'}>
                         {data?.json?.displayName || 'Laster...'}
                     </Heading>
-                    {data?.json?.unpublishedTime && (
-                        <Tag variant="warning">Avpublisert: {data.json.unpublishedTime}</Tag>
+                    {(data?.json?.unpublishedTime || data?.json.archivedTime) && (
+                        <div className={style.url}>
+                            <Detail>
+                                {data?.json?.archivedTime
+                                    ? `Arkivert: ${formatTimestamp(data.json.archivedTime)}`
+                                    : `Avpublisert: ${formatTimestamp(data.json.unpublishedTime!)}`}
+                            </Detail>
+                        </div>
                     )}
-                    {data?.json?.archivedTime && (
-                        <Tag variant="info">Arkivert: {data.json.archivedTime}</Tag>
-                    )}
+
                     <div className={style.url}>
                         <Detail>{data?.json?._path || ''}</Detail>
                     </div>
