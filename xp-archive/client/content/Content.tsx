@@ -108,8 +108,11 @@ export const Content = ({
                     <Heading size={'medium'} level={'2'}>
                         {data?.json?.displayName || 'Laster...'}
                     </Heading>
+                    <div className={style.url}>
+                        <Detail>{data?.json?._path || ''}</Detail>
+                    </div>
                     {(data?.json?.unpublishedTime || data?.json.archivedTime) && (
-                        <div className={style.url}>
+                        <div className={style.archivedOrUnpublished}>
                             <Detail>
                                 {data?.json?.archivedTime
                                     ? `Arkivert: ${formatTimestamp(data.json.archivedTime)}`
@@ -117,10 +120,6 @@ export const Content = ({
                             </Detail>
                         </div>
                     )}
-
-                    <div className={style.url}>
-                        <Detail>{data?.json?._path || ''}</Detail>
-                    </div>
                 </div>
             </div>
 
