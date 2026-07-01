@@ -13,8 +13,22 @@
     margin-right: 0.5rem;
 }
 
+.headerWrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
 .header {
     margin-bottom: 0.25rem;
+}
+
+.unpublished {
+    background-color: var(--a-gray-300);
+    white-space: nowrap;
+    padding: 0.25rem 0.75rem;
+    border-radius: 10rem;
+    height: fit-content;
 }
 
 .viewSelectorWrapper {
