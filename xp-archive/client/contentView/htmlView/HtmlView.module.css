@@ -4,6 +4,10 @@
     background-color: var(--a-surface-neutral);
 }
 
+.sourceLabel {
+    margin-bottom: 0.5rem;
+}
+
 .iframe {
     height: 100%;
     width: 100%;

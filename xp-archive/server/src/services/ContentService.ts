@@ -1,12 +1,25 @@
 import { fetchHtml, fetchJson } from '@common/shared/fetchUtils';
 import { xpServiceUrl } from '../utils/urls';
-import { Content, ContentServiceResponse, XPContentServiceResponse } from '../../../shared/types';
+import {
+    Content,
+    ContentServiceResponse,
+    VersionReference,
+    XPContentServiceResponse,
+} from '../../../shared/types';
 import { RequestHandler } from 'express';
 import { validateQuery } from '../utils/params';
+import {
+    XP_ARCHIVE_INDEX,
+    XpArchiveOpenSearchClient,
+} from '../opensearch/XpArchiveOpenSearchClient';
+import { XpArchiveDocument } from '../opensearch/types';
 
 export class ContentService {
     private readonly CONTENT_PROPS_API = xpServiceUrl('externalArchive/content');
     private readonly HTML_RENDER_API = process.env.HTML_RENDER_API;
+    private readonly openSearchClient = process.env.OPEN_SEARCH_URI
+        ? new XpArchiveOpenSearchClient()
+        : null;
 
     public getContentHandler: RequestHandler = async (req, res) => {
         if (!validateQuery(req.query, ['id', 'locale'], ['versionId'])) {
@@ -25,8 +38,44 @@ export class ContentService {
         contentId: string,
         locale: string,
         versionId?: string,
-        expandAll?: boolean
+        expandAll?: boolean,
+        skipCache?: boolean
     ): Promise<ContentServiceResponse | null> {
+        if (this.openSearchClient && !skipCache) {
+            const openSearchDocument = versionId
+                ? await this.openSearchClient.getDocument<XpArchiveDocument>(
+                      XP_ARCHIVE_INDEX,
+                      `${contentId}:${versionId}`
+                  )
+                : await this.openSearchClient.getLatestDocument(
+                      XP_ARCHIVE_INDEX,
+                      contentId,
+                      locale
+                  );
+
+            if (openSearchDocument?.locale === locale) {
+                const xpVersions = await this.fetchVersions(contentId, locale);
+                const versions: VersionReference[] = xpVersions ?? [
+                    {
+                        versionId: openSearchDocument.versionId,
+                        nodeId: openSearchDocument.nodeId,
+                        nodePath: openSearchDocument.path,
+                        timestamp: openSearchDocument.timestamp,
+                        locale: openSearchDocument.locale,
+                        displayName: openSearchDocument.displayName,
+                        type: openSearchDocument.type,
+                    },
+                ];
+
+                return {
+                    html: openSearchDocument.html,
+                    json: openSearchDocument.json,
+                    versions,
+                    source: 'opensearch',
+                };
+            }
+        }
+
         const xpResponse = await fetchJson<XPContentServiceResponse>(this.CONTENT_PROPS_API, {
             headers: { secret: process.env.SERVICE_SECRET },
             params: { id: contentId, locale, versionId },
@@ -59,7 +108,17 @@ export class ContentService {
             html,
             json: contentRaw,
             versions,
+            source: 'xp',
         };
+    }
+
+    public async fetchVersions(nodeId: string, locale: string): Promise<VersionReference[] | null> {
+        const xpResponse = await fetchJson<XPContentServiceResponse>(this.CONTENT_PROPS_API, {
+            headers: { secret: process.env.SERVICE_SECRET },
+            params: { id: nodeId, locale },
+        });
+
+        return xpResponse?.versions ?? null;
     }
 
     private async getContentHtml(contentProps?: Content) {

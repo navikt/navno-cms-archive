@@ -1,11 +1,18 @@
-import { fetchJson } from '@common/shared/fetchUtils';
 import { RequestHandler } from 'express';
 import { validateQuery } from 'utils/params';
-import { xpServiceUrl } from 'utils/urls';
 import { SearchResponse } from '../../../shared/types';
+import { Locale } from '../../../client/contentTree/NavigationBar';
+import {
+    XpArchiveOpenSearchClient,
+    XP_ARCHIVE_INDEX,
+} from '../opensearch/XpArchiveOpenSearchClient';
 
 export class SearchService {
-    private readonly SEARCH_API = xpServiceUrl('externalArchive/search');
+    private readonly openSearchClient: XpArchiveOpenSearchClient;
+
+    constructor(openSearchClient: XpArchiveOpenSearchClient) {
+        this.openSearchClient = openSearchClient;
+    }
 
     public getSearchHandler: RequestHandler = async (req, res) => {
         if (!validateQuery(req.query, ['query'], ['searchType'])) {
@@ -19,12 +26,25 @@ export class SearchService {
         res.status(200).json(searchResponse);
     };
 
-    private async search(query: string, searchType?: string): Promise<SearchResponse | null> {
-        const searchResponse = await fetchJson<SearchResponse>(this.SEARCH_API, {
-            headers: { secret: process.env.SERVICE_SECRET },
-            params: { query, searchType },
-        });
+    //TODO: test søket mer når mer er indeksert. Test treff på mer enn 50
+    private async search(query: string, searchType?: string): Promise<SearchResponse> {
+        const { total, hits } = await this.openSearchClient.searchDocuments(
+            XP_ARCHIVE_INDEX,
+            query,
+            searchType
+        );
 
-        return searchResponse;
+        return {
+            total,
+            query,
+            hasMore: total > 50,
+            hits: hits.map((hit) => ({
+                _id: hit.nodeId,
+                _path: hit.path,
+                layerLocale: hit.locale as Locale,
+                displayName: hit.displayName,
+                type: hit.type,
+            })),
+        };
     }
 }
