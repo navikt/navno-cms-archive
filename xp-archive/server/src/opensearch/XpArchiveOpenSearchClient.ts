@@ -86,7 +86,7 @@ export class XpArchiveOpenSearchClient {
                 },
             })
             .then((result) => {
-                const searchBody = result.body as SearchBody;
+                const searchBody = result.body as unknown as SearchBody;
                 return searchBody.hits.hits[0]?._source ?? null;
             })
             .catch((e: unknown) => {
@@ -133,7 +133,7 @@ export class XpArchiveOpenSearchClient {
                 },
             },
             collapse: { field: 'nodeId.keyword' },
-            sort: [{ timestamp: { order: 'desc' } }],
+            sort: [{ timestamp: { order: 'desc' as const } }],
             size: 50,
         };
 
@@ -144,7 +144,7 @@ export class XpArchiveOpenSearchClient {
         return this.client
             .search({ index, body })
             .then((result) => {
-                const searchBody = result.body as SearchBody;
+                const searchBody = result.body as unknown as SearchBody;
                 return {
                     total: searchBody.hits.total.value,
                     hits: searchBody.hits.hits.map((h) => h._source),
