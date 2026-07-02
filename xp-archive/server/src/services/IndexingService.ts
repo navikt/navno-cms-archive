@@ -130,11 +130,18 @@ export class IndexingService {
             return false;
         }
 
-        const results = await Promise.all(
-            versions.map((v) => this.indexContentVersion(nodeId, locale, v.versionId))
-        );
+        const BATCH_SIZE = 4;
+        let allOk = true;
 
-        return results.every(Boolean);
+        for (let i = 0; i < versions.length; i += BATCH_SIZE) {
+            const batch = versions.slice(i, i + BATCH_SIZE);
+            const results = await Promise.all(
+                batch.map((v) => this.indexContentVersion(nodeId, locale, v.versionId))
+            );
+            allOk = allOk && results.every(Boolean);
+        }
+
+        return allOk;
     }
 
     public indexContentHandler: RequestHandler = (req, res) => {

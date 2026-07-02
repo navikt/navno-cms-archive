@@ -4,11 +4,15 @@ import { XpArchiveDocument } from './types';
 
 export const XP_ARCHIVE_INDEX = 'xp-archive-content';
 
-const { OpenSearchClientError } = errors;
+const { OpenSearchClientError, ResponseError } = errors;
 
 //TODO: logException foreløpig duplisert fra legacy-archive
 const logException = (e: unknown) => {
-    if (e instanceof OpenSearchClientError) {
+    if (e instanceof ResponseError) {
+        console.log(
+            `OpenSearch response error: status=${e.meta.statusCode} body=${JSON.stringify(e.meta.body)}`
+        );
+    } else if (e instanceof OpenSearchClientError) {
         console.log(`OpenSearch error: ${e.message} - ${e.stack}`);
     } else {
         console.log(`Unknown error: ${getErrorMessage(e)}`);
