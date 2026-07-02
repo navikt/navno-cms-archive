@@ -50,7 +50,7 @@ export class IndexingService {
 
         const page = await this.browser.newPage();
         try {
-            await page.setContent(html);
+            await page.setContent(html, { waitUntil: 'domcontentloaded' });
 
             await page.evaluate((css) => {
                 document
@@ -100,7 +100,15 @@ export class IndexingService {
             return false;
         }
 
-        const html = content.html ? await this.createStaticSnapshot(content.html) : undefined;
+        let html: string | undefined;
+        if (content.html) {
+            try {
+                html = await this.createStaticSnapshot(content.html);
+            } catch (e) {
+                const msg = e instanceof Error ? e.message : String(e);
+                console.error(`Snapshot failed for ${nodeId}:${versionId}: ${msg}`);
+            }
+        }
 
         if (!html) {
             console.warn(`Indexed without HTML: ${nodeId}:${versionId}`);
