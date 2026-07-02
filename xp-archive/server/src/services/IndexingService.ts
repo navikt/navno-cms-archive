@@ -50,6 +50,7 @@ export class IndexingService {
 
         const page = await this.browser.newPage();
         try {
+            //TODO: domcontentloaded eller load eller noe annet?
             await page.setContent(html, { waitUntil: 'domcontentloaded' });
 
             await page.evaluate((css) => {
