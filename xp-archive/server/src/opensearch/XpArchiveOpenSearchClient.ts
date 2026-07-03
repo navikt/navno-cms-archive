@@ -2,7 +2,9 @@ import { Client, errors } from '@opensearch-project/opensearch';
 import { getErrorMessage } from '@common/shared/fetchUtils';
 import { XpArchiveDocument } from './types';
 
-export const XP_ARCHIVE_INDEX = 'xp-archive-content';
+// v1: ny indeks trengs for å ta i bruk eksplisitt mapping (kan ikke endre mapping på
+// en eksisterende indeks, og app-brukeren har ikke tilgang til å slette indekser).
+export const XP_ARCHIVE_INDEX = 'xp-archive-content-v1';
 
 // Eksplisitt mapping. json-bloben lagres men indekseres ikke (enabled: false),
 // slik at skjemaløst XP-innhold ikke skaper typekonflikter (f.eks. json.data.audience
@@ -69,15 +71,25 @@ export class XpArchiveOpenSearchClient {
     }
 
     private async createIndexIfMissing(index: string): Promise<void> {
-        const exists = await this.client.indices.exists({ index });
-        if (exists.body) {
-            return;
+        // App-brukeren mangler tilgang til HEAD/GET på index-metadata, så vi kan ikke
+        // sjekke eksistens først. I stedet forsøker vi å opprette og svelger feilen hvis
+        // indeksen allerede finnes (400 resource_already_exists_exception).
+        try {
+            await this.client.indices.create({
+                index,
+                body: { mappings: XP_ARCHIVE_MAPPINGS },
+            });
+            console.log(`Created index ${index} with explicit mapping`);
+        } catch (e: unknown) {
+            if (
+                e instanceof ResponseError &&
+                e.meta.statusCode === 400 &&
+                JSON.stringify(e.meta.body).includes('resource_already_exists_exception')
+            ) {
+                return; // indeksen finnes allerede – forventet
+            }
+            throw e;
         }
-        await this.client.indices.create({
-            index,
-            body: { mappings: XP_ARCHIVE_MAPPINGS },
-        });
-        console.log(`Created index ${index} with explicit mapping`);
     }
 
     public async indexDocument(index: string, id: string, document: object): Promise<boolean> {

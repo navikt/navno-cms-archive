@@ -42,6 +42,11 @@ vært avviklet, ville denne endringen vært umulig å gjøre trygt.
 - Den opprinnelige migreringskilden for legacy-innholdet er ikke funnet bevart i
   repoet. `indexStaticAssets.ts` leste statiske assets fra en lokal filsystem-dump
   ved engangs-migrering; om den dumpen fortsatt finnes er uavklart.
+- **ACL-nyanse (dev, xp `readwrite`):** app-brukeren kan opprette indekser
+  (PUT = 200) og lese/skrive/slette _dokumenter_, men kan **ikke slette indekser**
+  (DELETE = 403) og ikke gjøre HEAD/GET på index-metadata (403). Sletting av en indeks
+  krever Aiven-admin (`avnadmin`). At web-appen ikke kan droppe en indeks er isolert
+  sett en bra guardrail.
 
 ## Risiko
 
@@ -49,7 +54,8 @@ vært avviklet, ville denne endringen vært umulig å gjøre trygt.
    legacy nå, xp etter XP-avvikling).
 2. **Ingen versjonskontrollert backup-strategi** — vi kan ikke resonnere om eller
    garantere retention fra koden.
-3. **xp-appen kan selv slette arkivet** pga. `readwrite` fra web-tjenesten.
+3. **xp-appen kan slette indekserte dokumenter** pga. `readwrite` (men ikke selve
+   indeksen — DELETE index er blokkert av ACL).
 4. **Låst datastruktur** — uten kildekopi kan mapping/format ikke endres trygt
    etter at kilden er borte.
 
@@ -66,6 +72,8 @@ vært avviklet, ville denne endringen vært umulig å gjøre trygt.
 - [ ] Vurder å flytte xp-indeksering til en egen **naisjob** med skrivetilgang, og
       sette web-appen til `read` — samme guardrail som legacy har.
 - [ ] Dokumenter en gjenopprettingsrutine (restore fra snapshot / re-index fra GCS).
+- [ ] Rydd med Aiven-admin (`avnadmin`) i dev: den foreldreløse `xp-archive-content`
+      (erstattet av `xp-archive-content-v1`) og throwaway-indeksen `acl-probe-tmp`.
 
 ## Mulige tiltak (ikke besluttet)
 
