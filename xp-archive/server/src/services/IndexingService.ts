@@ -81,6 +81,8 @@ export class IndexingService {
         locale: string,
         versionId: string
     ): Promise<boolean> {
+        await this.openSearchClient.ensureIndex(XP_ARCHIVE_INDEX);
+
         const content = await this.contentService.fetchContent(
             nodeId,
             locale,

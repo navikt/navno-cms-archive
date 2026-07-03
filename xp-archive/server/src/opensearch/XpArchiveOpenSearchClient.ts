@@ -4,6 +4,31 @@ import { XpArchiveDocument } from './types';
 
 export const XP_ARCHIVE_INDEX = 'xp-archive-content';
 
+// Eksplisitt mapping. json-bloben lagres men indekseres ikke (enabled: false),
+// slik at skjemaløst XP-innhold ikke skaper typekonflikter (f.eks. json.data.audience
+// som veksler mellom object og streng på tvers av versjoner). Strengfelt beholder
+// text + .keyword-underfelt fordi søket spør på .keyword-stiene.
+const stringField = {
+    type: 'text',
+    fields: { keyword: { type: 'keyword', ignore_above: 256 } },
+} as const;
+
+export const XP_ARCHIVE_MAPPINGS = {
+    properties: {
+        nodeId: stringField,
+        versionId: { type: 'keyword' },
+        path: { type: 'keyword' },
+        displayName: stringField,
+        type: stringField,
+        locale: stringField,
+        timestamp: { type: 'date' },
+        modifiedTime: { type: 'date' },
+        searchText: { type: 'text' },
+        html: { type: 'text' },
+        json: { type: 'object', enabled: false },
+    },
+} as const;
+
 const { OpenSearchClientError, ResponseError } = errors;
 
 //TODO: logException foreløpig duplisert fra legacy-archive
@@ -21,6 +46,7 @@ const logException = (e: unknown) => {
 
 export class XpArchiveOpenSearchClient {
     private readonly client: Client;
+    private indexReady?: Promise<void>;
 
     constructor() {
         const username = process.env.OPEN_SEARCH_USERNAME;
@@ -30,6 +56,28 @@ export class XpArchiveOpenSearchClient {
             node: process.env.OPEN_SEARCH_URI,
             auth: username && password ? { username, password } : undefined,
         });
+    }
+
+    public async ensureIndex(index: string): Promise<void> {
+        if (!this.indexReady) {
+            this.indexReady = this.createIndexIfMissing(index).catch((e: unknown) => {
+                this.indexReady = undefined; // tillat nytt forsøk hvis opprettelsen feilet
+                throw e;
+            });
+        }
+        return this.indexReady;
+    }
+
+    private async createIndexIfMissing(index: string): Promise<void> {
+        const exists = await this.client.indices.exists({ index });
+        if (exists.body) {
+            return;
+        }
+        await this.client.indices.create({
+            index,
+            body: { mappings: XP_ARCHIVE_MAPPINGS },
+        });
+        console.log(`Created index ${index} with explicit mapping`);
     }
 
     public async indexDocument(index: string, id: string, document: object): Promise<boolean> {
