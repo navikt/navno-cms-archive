@@ -50,7 +50,19 @@ export class IndexingService {
 
         const page = await this.browser.newPage();
         try {
-            //TODO: domcontentloaded eller load eller noe annet?
+            // Snapshot trenger ingen eksterne ressurser: CSS inlines manuelt, scripts
+            // fjernes, og <img>-URLer beholdes som referanser. Ved å aborte alt unntatt
+            // selve dokumentet fyrer DOMContentLoaded rett etter parsing i stedet for å
+            // henge på scripts/fonter — som ga sporadiske 30s Navigation timeouts.
+            await page.setRequestInterception(true);
+            page.on('request', (request) => {
+                if (request.resourceType() === 'document') {
+                    request.continue().catch(() => {});
+                } else {
+                    request.abort().catch(() => {});
+                }
+            });
+
             await page.setContent(html, { waitUntil: 'domcontentloaded' });
 
             await page.evaluate((css) => {
