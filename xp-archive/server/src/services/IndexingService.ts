@@ -154,17 +154,33 @@ export class IndexingService {
         }
 
         const BATCH_SIZE = 4;
-        let allOk = true;
+        const failedVersionIds: string[] = [];
 
         for (let i = 0; i < versions.length; i += BATCH_SIZE) {
             const batch = versions.slice(i, i + BATCH_SIZE);
             const results = await Promise.all(
                 batch.map((v) => this.indexContentVersion(nodeId, locale, v.versionId))
             );
-            allOk = allOk && results.every(Boolean);
+            results.forEach((ok, idx) => {
+                if (!ok) {
+                    failedVersionIds.push(batch[idx].versionId);
+                }
+            });
         }
 
-        return allOk;
+        // Enkeltversjoner kan være korrupte/uleselige i XP (f.eks. «Invalid property
+        // for content»). Én slik versjon skal ikke velte hele reindekseringen – logg
+        // hvilke som ble hoppet over, og regn jobben som vellykket så lenge ikke alt feilet.
+        if (failedVersionIds.length > 0) {
+            console.warn(
+                `Skipped ${failedVersionIds.length}/${versions.length} versions for ${nodeId} ` +
+                    `that could not be fetched/indexed (likely corrupt or unavailable upstream): ` +
+                    failedVersionIds.join(', ')
+            );
+        }
+
+        const allFailed = versions.length > 0 && failedVersionIds.length === versions.length;
+        return !allFailed;
     }
 
     public indexContentHandler: RequestHandler = (req, res) => {

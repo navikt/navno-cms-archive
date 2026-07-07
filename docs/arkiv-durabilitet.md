@@ -83,3 +83,9 @@ vært avviklet, ville denne endringen vært umulig å gjøre trygt.
 - **Aiven-snapshots til egen GCS-bøtte** med lang retention (minimum backup-vei).
 - **Skille lagring fra søk** som prinsipp: et søke-index bør ikke være eneste kopi
   av uerstattelig data.
+- **Rå-node-fallback i XP:** korrupte kildeversjoner (ugyldig property for
+  innholdstypen) kan ikke arkiveres i dag – `externalArchive/content` gir 500 og vi
+  får verken json eller html. Skal vi kunne arkivere _absolutt alt_, må
+  `nav-enonicxp` tilby et lavnivå node-uttrekk (`nodeLib.get` uten
+  innholdstype-validering). Lav prioritet: gjelder få versjoner, og en frisk
+  publisert versjon finnes som regel rett etterpå.
