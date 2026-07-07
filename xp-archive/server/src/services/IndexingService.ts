@@ -153,11 +153,14 @@ export class IndexingService {
             return false;
         }
 
-        const BATCH_SIZE = 4;
+        const batchSize = Number(process.env.INDEX_BATCH_SIZE) || 4;
         const failedVersionIds: string[] = [];
+        const startTime = Date.now();
 
-        for (let i = 0; i < versions.length; i += BATCH_SIZE) {
-            const batch = versions.slice(i, i + BATCH_SIZE);
+        console.log(`Indexing ${versions.length} versions for ${nodeId} (batch size ${batchSize})`);
+
+        for (let i = 0; i < versions.length; i += batchSize) {
+            const batch = versions.slice(i, i + batchSize);
             const results = await Promise.all(
                 batch.map((v) => this.indexContentVersion(nodeId, locale, v.versionId))
             );
@@ -166,6 +169,11 @@ export class IndexingService {
                     failedVersionIds.push(batch[idx].versionId);
                 }
             });
+
+            const done = Math.min(i + batchSize, versions.length);
+            const pct = Math.round((done / versions.length) * 100);
+            const elapsed = Math.round((Date.now() - startTime) / 1000);
+            console.log(`  ${done}/${versions.length} (${pct}%) for ${nodeId} – ${elapsed}s`);
         }
 
         // Enkeltversjoner kan være korrupte/uleselige i XP (f.eks. «Invalid property
@@ -178,6 +186,11 @@ export class IndexingService {
                     failedVersionIds.join(', ')
             );
         }
+
+        const totalElapsed = Math.round((Date.now() - startTime) / 1000);
+        console.log(
+            `Done indexing ${nodeId}: ${versions.length - failedVersionIds.length}/${versions.length} in ${totalElapsed}s`
+        );
 
         const allFailed = versions.length > 0 && failedVersionIds.length === versions.length;
         return !allFailed;
