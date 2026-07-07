@@ -197,12 +197,18 @@ export class XpArchiveOpenSearchClient {
                 },
             },
             collapse: { field: 'nodeId.keyword' },
+            aggs: {
+                // Teller distinkte sider (noder), ikke versjoner, slik at treff-tallet
+                // blir per side – som i main. collapse styrer visningen, denne styrer tallet.
+                total_pages: { cardinality: { field: 'nodeId.keyword' } },
+            },
             sort: [{ timestamp: { order: 'desc' as const } }],
             size: 50,
         };
 
         type SearchBody = {
-            hits: { total: { value: number }; hits: Array<{ _source: XpArchiveDocument }> };
+            hits: { hits: Array<{ _source: XpArchiveDocument }> };
+            aggregations: { total_pages: { value: number } };
         };
 
         return this.client
@@ -210,7 +216,7 @@ export class XpArchiveOpenSearchClient {
             .then((result) => {
                 const searchBody = result.body as unknown as SearchBody;
                 return {
-                    total: searchBody.hits.total.value,
+                    total: searchBody.aggregations.total_pages.value,
                     hits: searchBody.hits.hits.map((h) => h._source),
                 };
             })
