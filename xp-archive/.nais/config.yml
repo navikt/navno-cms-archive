@@ -31,9 +31,6 @@ spec:
       external:
         - host: {{ xpHost }}
         - host: cdn.nav.no
-  env:
-    - name: INDEX_BATCH_SIZE
-      value: "4"
   envFrom:
     - secret: {{ secret }}
   replicas:

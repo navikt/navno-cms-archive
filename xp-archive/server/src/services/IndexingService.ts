@@ -153,14 +153,16 @@ export class IndexingService {
             return false;
         }
 
-        const batchSize = Number(process.env.INDEX_BATCH_SIZE) || 4;
+        const BATCH_SIZE = 24;
         const failedVersionIds: string[] = [];
         const startTime = Date.now();
 
-        console.log(`Indexing ${versions.length} versions for ${nodeId} (batch size ${batchSize})`);
+        console.log(
+            `Indexing ${versions.length} versions for ${nodeId} (batch size ${BATCH_SIZE})`
+        );
 
-        for (let i = 0; i < versions.length; i += batchSize) {
-            const batch = versions.slice(i, i + batchSize);
+        for (let i = 0; i < versions.length; i += BATCH_SIZE) {
+            const batch = versions.slice(i, i + BATCH_SIZE);
             const results = await Promise.all(
                 batch.map((v) => this.indexContentVersion(nodeId, locale, v.versionId))
             );
@@ -170,7 +172,7 @@ export class IndexingService {
                 }
             });
 
-            const done = Math.min(i + batchSize, versions.length);
+            const done = Math.min(i + BATCH_SIZE, versions.length);
             const pct = Math.round((done / versions.length) * 100);
             const elapsed = Math.round((Date.now() - startTime) / 1000);
             console.log(`  ${done}/${versions.length} (${pct}%) for ${nodeId} – ${elapsed}s`);
