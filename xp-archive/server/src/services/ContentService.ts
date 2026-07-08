@@ -133,7 +133,9 @@ export class ContentService {
                 'Content-Type': 'application/json',
             },
             method: 'POST',
-            body: JSON.stringify({ contentProps: { ...contentProps, noRedirect: true } }),
+            body: JSON.stringify({
+                contentProps: { ...contentProps, noRedirect: true, noDecorator: true },
+            }),
         });
     }
 }
