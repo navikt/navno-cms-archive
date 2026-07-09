@@ -89,3 +89,27 @@ vært avviklet, ville denne endringen vært umulig å gjøre trygt.
   `nav-enonicxp` tilby et lavnivå node-uttrekk (`nodeLib.get` uten
   innholdstype-validering). Lav prioritet: gjelder få versjoner, og en frisk
   publisert versjon finnes som regel rett etterpå.
+
+## Snapshot-fullstendighet: binære ressurser ikke fanget
+
+Snapshotet er selvforsynt for struktur + CSS-tekst (CSS inlines), men **binære
+ressurser bakes ikke inn** – de forblir eksterne referanser:
+
+- **Bilder:** `<img src>` skrives kun om til original-URL. Nettleseren henter bildet
+  live fra nav.no/CDN ved visning. Slettes/flyttes kilde-bildet, blir det ødelagt i
+  arkivet.
+- **Fonter:** referert via `@font-face { src: url(...) }` i inlinet CSS – ikke
+  embeddet. Samme visnings-avhengighet.
+- **Video (Qbrick):** videoer spilles av via Qbrick (ekstern player/embed, ofte
+  iframe + scripts). Siden vi fjerner scripts og aborterer eksterne ressurser, fanges
+  **ikke** videoinnholdet i det hele tatt – kun evt. en placeholder/plakat. Ekte
+  arkivering av video krever en egen strategi (hente ned selve videofila fra Qbrick
+  og lagre den durabelt), som er vesentlig tyngre enn bilder. (ikke avklart i teamet)
+
+Ikke akutt mens nav.no/CDN/Qbrick lever, men en reell luke for et _ekte_
+langtidsarkiv. Mulig tiltak: **lagre binærene separat** (eget asset-index i
+OpenSearch eller GCS) og skriv referansene om til arkivets egen kopi – slik
+legacy-arkivet gjør (`indexStaticAssets.ts` → base64-assets i eget index). Ikke
+inline base64 i html-dokumentet (blåser opp doc-størrelsen). Passer inn i
+backfill-arbeidet: fang bildene mens vi likevel går gjennom alt innhold. Video
+(Qbrick) er en egen, større vurdering.
