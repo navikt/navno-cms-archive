@@ -111,6 +111,15 @@ export const Content = ({
                     <div className={style.url}>
                         <Detail>{data?.json?._path || ''}</Detail>
                     </div>
+                    {(data?.json?.unpublishedTime || data?.json.archivedTime) && (
+                        <div className={style.archivedOrUnpublished}>
+                            <Detail>
+                                {data?.json?.archivedTime
+                                    ? `Arkivert: ${formatTimestamp(data.json.archivedTime)}`
+                                    : `Avpublisert: ${formatTimestamp(data.json.unpublishedTime!)}`}
+                            </Detail>
+                        </div>
+                    )}
                 </div>
             </div>
 
