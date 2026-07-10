@@ -11,6 +11,7 @@ spec:
   port: 3499
   ingresses:
      - {{ appOrigin }}/xp
+     - {{ internOrigin }}/xp
   liveness:
     path: /xp/internal/isAlive
     initialDelay: 10
