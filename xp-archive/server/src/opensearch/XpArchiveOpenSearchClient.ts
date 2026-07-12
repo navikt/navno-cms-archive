@@ -2,9 +2,12 @@ import { Client, errors } from '@opensearch-project/opensearch';
 import { getErrorMessage } from '@common/shared/fetchUtils';
 import { XpArchiveDocument } from './types';
 
-// v1: ny indeks trengs for å ta i bruk eksplisitt mapping (kan ikke endre mapping på
-// en eksisterende indeks, og app-brukeren har ikke tilgang til å slette indekser).
-export const XP_ARCHIVE_INDEX = 'xp-archive-content-v1';
+// v2: ny indeks trengs for hver mapping-endring (kan ikke endre mapping på en
+// eksisterende indeks, og app-brukeren har ikke tilgang til å slette indekser).
+// v2 setter html til index: false – html lagres i _source og serveres som før, men
+// tokeniseres ikke inn i en inverted index. Søket treffer kun displayName.keyword,
+// så en søkeindeks over html (inkl. ~400 KB inlinet CSS per doc) var ren sløsing.
+export const XP_ARCHIVE_INDEX = 'xp-archive-content-v2';
 
 // Eksplisitt mapping. json-bloben lagres men indekseres ikke (enabled: false),
 // slik at skjemaløst XP-innhold ikke skaper typekonflikter (f.eks. json.data.audience
@@ -26,7 +29,7 @@ export const XP_ARCHIVE_MAPPINGS = {
         timestamp: { type: 'date' },
         modifiedTime: { type: 'date' },
         searchText: { type: 'text' },
-        html: { type: 'text' },
+        html: { type: 'text', index: false },
         json: { type: 'object', enabled: false },
     },
 } as const;
