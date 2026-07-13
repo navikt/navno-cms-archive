@@ -10,6 +10,7 @@ import { PdfService } from '../services/PdfService';
 import puppeteer from 'puppeteer';
 import { SearchService } from 'services/SearchService';
 import { IndexingService } from '../services/IndexingService';
+import { BackfillService } from '../services/BackfillService';
 import { XpArchiveOpenSearchClient } from '../opensearch/XpArchiveOpenSearchClient';
 import { HtmlRenderer } from '../../../../common/src/server/ssr/htmlRenderer';
 
@@ -44,6 +45,7 @@ const setupApiRoutes = async (router: Router) => {
     const openSearchClient = new XpArchiveOpenSearchClient();
     const searchService = new SearchService(openSearchClient);
     const indexingService = new IndexingService(contentService, openSearchClient, browser);
+    const backfillService = new BackfillService(indexingService);
     router.get('/api/content', contentService.getContentHandler);
     router.get('/api/contentTree', contentTreeService.getContentTreeHandler);
     router.get('/api/contentIcon', contentIconService.getContentIconHandler);
@@ -51,6 +53,7 @@ const setupApiRoutes = async (router: Router) => {
     router.get('/api/pdf', pdfService.generatePdfHandler);
     router.get('/api/search', searchService.getSearchHandler);
     router.post('/api/index', indexingService.indexContentHandler);
+    router.post('/api/backfill', backfillService.backfillHandler);
 };
 
 const setupBrowserRoutes = (router: Router, htmlRenderer: HtmlRenderer) => {
