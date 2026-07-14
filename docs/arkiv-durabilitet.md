@@ -113,3 +113,34 @@ legacy-arkivet gjør (`indexStaticAssets.ts` → base64-assets i eget index). Ik
 inline base64 i html-dokumentet (blåser opp doc-størrelsen). Passer inn i
 backfill-arbeidet: fang bildene mens vi likevel går gjennom alt innhold. Video
 (Qbrick) er en egen, større vurdering.
+
+## Naisjob-splitting løser to problemer samtidig (2026-07-14)
+
+Utdyper punktet under "Åpne spørsmål / handlinger" om å flytte xp-indeksering til
+egen naisjob. I dag gjør **én pod** tre ting med samme `readwrite`-credential:
+
+1. Serverer arkivet live til brukere
+2. Event-push-skriving (`/api/index`, én node om gangen, trigges av XP ved publisering)
+3. Tung backfill (`BackfillService` – tusenvis av Puppeteer-renderinger over timer)
+
+Å splitte den tunge backfillen ut i en egen naisjob (egen pod, egen service-konto)
+løser to separate problemer med én endring:
+
+- **Sikkerhet:** Den offentlig tilgjengelige poden trenger ikke lenger
+  slette-kapable credentials. Samme guardrail som legacy-arkivet allerede har
+  (`read`-only app-tilgang). En feil/sårbarhet i noe internett-nåbart kan da ikke
+  slette permanent arkivdata, fordi tilgangen ikke finnes.
+- **Pålitelighet/isolasjon:** Bekreftet av hendelsen 2026-07-13 – Puppeteer krasjet
+  under en lang backfill-kjøring og tok ned **hele poden**, inkludert den som
+  serverer arkivet til brukere. Flytter man backfillen til en egen pod, rammer et
+  nytt slikt krasj kun batch-jobben, ikke arkiv-visningen.
+
+**Nyanse ikke løst av dette alene:** event-push (`/api/index`) skriver også, og
+ligger i dag i samme app. Skal hovedappen bli fullstendig `read`-only (ekte
+paritet med legacy), må denne enkelt-node-skrivingen også flyttes et sted – enten
+en egen liten alltid-på skrive-tjeneste, eller bli værende i hovedappen med
+smalt scopet skrivetilgang (mindre risikooverflate enn den tunge backfillen, men
+ikke null).
+
+Vurdert, men ikke startet – kommer etter at nåværende backfill-kjøring i dev er
+ferdig og etter at content-tree-fra-OpenSearch er sett på.
