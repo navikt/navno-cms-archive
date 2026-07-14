@@ -1,6 +1,6 @@
 import { RequestHandler } from 'express';
-import { Browser } from 'puppeteer';
 import { ContentService } from './ContentService';
+import { BrowserManager } from './BrowserManager';
 import {
     XpArchiveOpenSearchClient,
     XP_ARCHIVE_INDEX,
@@ -8,19 +8,25 @@ import {
 import { XpArchiveDocument } from '../opensearch/types';
 import { validateQuery } from '../utils/params';
 
+// Resirkuler Chromium-instansen med jevne mellomrom under lange kjøringer (backfill).
+// En delt browser ble ustabil og krasjet hele prosessen etter ~9800 snapshots i én
+// sammenhengende kjøring (TargetCloseError fra puppeteer sin CDP-sesjon).
+const BROWSER_RECYCLE_INTERVAL = 200;
+
 export class IndexingService {
     private readonly contentService: ContentService;
     private readonly openSearchClient: XpArchiveOpenSearchClient;
-    private readonly browser: Browser;
+    private readonly browserManager: BrowserManager;
+    private snapshotsSinceRecycle = 0;
 
     constructor(
         contentService: ContentService,
         openSearchClient: XpArchiveOpenSearchClient,
-        browser: Browser
+        browserManager: BrowserManager
     ) {
         this.contentService = contentService;
         this.openSearchClient = openSearchClient;
-        this.browser = browser;
+        this.browserManager = browserManager;
     }
 
     private async createStaticSnapshot(html: string): Promise<string> {
@@ -48,7 +54,14 @@ export class IndexingService {
 
         const inlinedCss = cssTexts.filter(Boolean).join('\n');
 
-        const page = await this.browser.newPage();
+        this.snapshotsSinceRecycle += 1;
+        if (this.snapshotsSinceRecycle >= BROWSER_RECYCLE_INTERVAL) {
+            await this.browserManager.recycle();
+            this.snapshotsSinceRecycle = 0;
+        }
+        const browser = await this.browserManager.getBrowser();
+
+        const page = await browser.newPage();
         try {
             // Snapshot trenger ingen eksterne ressurser: CSS inlines manuelt, scripts
             // fjernes, og <img>-URLer beholdes som referanser. Ved å aborte alt unntatt
