@@ -185,6 +185,15 @@ export class IndexingService {
                 }
             });
 
+            // Resirkuleres HER, mellom batcher – aldri inni en konkurrerende
+            // Promise.all-batch (der opptil BATCH_SIZE samtidige kall bruker samme
+            // browser). Å lukke browseren midt i en batch ville rammet søsken-kallene
+            // med akkurat den TargetCloseError-krasjen vi prøver å unngå.
+            if (this.snapshotsSinceRecycle >= BROWSER_RECYCLE_INTERVAL) {
+                await this.browserManager.recycle();
+                this.snapshotsSinceRecycle = 0;
+            }
+
             const done = Math.min(i + BATCH_SIZE, versions.length);
             const pct = Math.round((done / versions.length) * 100);
             const elapsed = Math.round((Date.now() - startTime) / 1000);

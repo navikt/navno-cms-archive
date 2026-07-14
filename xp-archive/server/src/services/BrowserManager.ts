@@ -12,6 +12,7 @@ const LAUNCH_ARGS = ['--no-sandbox', '--disable-setuid-sandbox', '--user-data-di
 // synkronisert når den byttes ut.
 export class BrowserManager {
     private browser: Browser;
+    private relaunching?: Promise<Browser>;
 
     private constructor(browser: Browser) {
         this.browser = browser;
@@ -22,11 +23,23 @@ export class BrowserManager {
     }
 
     public async getBrowser(): Promise<Browser> {
-        if (!this.browser.connected) {
-            console.log('BrowserManager: Chromium-instans frakoblet, relanserer');
-            this.browser = await puppeteer.launch({ args: LAUNCH_ARGS });
+        if (this.browser.connected) {
+            return this.browser;
         }
-        return this.browser;
+
+        // Flere samtidige kall (opptil BATCH_SIZE i én indekserings-batch) kan oppdage
+        // frakoblingen samtidig. Del én relansering i stedet for å starte flere
+        // Chromium-prosesser parallelt.
+        if (!this.relaunching) {
+            console.log('BrowserManager: Chromium-instans frakoblet, relanserer');
+            this.relaunching = puppeteer.launch({ args: LAUNCH_ARGS }).then((browser) => {
+                this.browser = browser;
+                this.relaunching = undefined;
+                return browser;
+            });
+        }
+
+        return this.relaunching;
     }
 
     public async recycle(): Promise<void> {
