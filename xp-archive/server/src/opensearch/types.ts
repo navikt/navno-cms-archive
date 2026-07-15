@@ -4,6 +4,7 @@ export type XpArchiveDocument = {
     nodeId: string;
     versionId: string;
     path: string;
+    parentPath: string;
     displayName: string;
     type: ContentType;
     locale: string;

@@ -34,18 +34,19 @@ export const setupSite = async (router: Router) => {
 
 const setupApiRoutes = async (router: Router) => {
     const browserManager = await BrowserManager.create();
+    const openSearchClient = new XpArchiveOpenSearchClient();
 
     const contentService = new ContentService();
-    const contentTreeService = new ContentTreeService();
+    const contentTreeService = new ContentTreeService(openSearchClient);
     const contentIconService = new ContentIconService();
     const attachmentService = new AttachmentService();
     const pdfService = new PdfService({ browserManager, contentService });
-    const openSearchClient = new XpArchiveOpenSearchClient();
     const searchService = new SearchService(openSearchClient);
     const indexingService = new IndexingService(contentService, openSearchClient, browserManager);
     const backfillService = new BackfillService(indexingService);
     router.get('/api/content', contentService.getContentHandler);
-    router.get('/api/contentTree', contentTreeService.getContentTreeHandler);
+    router.get('/api/contentTree', contentTreeService.getContentTreeHandler); //TODO: slette? evt. også rename contentTreeFromIndex til contentTree
+    router.get('/api/contentTreeFromIndex', contentTreeService.getContentTreeFromIndexHandler);
     router.get('/api/contentIcon', contentIconService.getContentIconHandler);
     router.get('/api/attachment', attachmentService.getAttachmentHandler);
     router.get('/api/pdf', pdfService.generatePdfHandler);

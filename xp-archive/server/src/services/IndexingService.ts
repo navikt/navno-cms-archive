@@ -7,6 +7,7 @@ import {
 } from '../opensearch/XpArchiveOpenSearchClient';
 import { XpArchiveDocument } from '../opensearch/types';
 import { validateQuery } from '../utils/params';
+import { getParentPath, stripArchiveRootPrefix } from '../utils/paths';
 
 // Resirkuler Chromium-instansen med jevne mellomrom under lange kjøringer (backfill).
 // En delt browser ble ustabil og krasjet hele prosessen etter ~9800 snapshots i én
@@ -145,7 +146,8 @@ export class IndexingService {
         const doc: XpArchiveDocument = {
             nodeId,
             versionId,
-            path: json._path,
+            path: stripArchiveRootPrefix(json._path),
+            parentPath: getParentPath(stripArchiveRootPrefix(json._path)),
             displayName: json.displayName,
             type: json.type,
             locale,

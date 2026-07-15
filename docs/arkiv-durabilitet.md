@@ -144,3 +144,39 @@ ikke null).
 
 Vurdert, men ikke startet – kommer etter at nåværende backfill-kjøring i dev er
 ferdig og etter at content-tree-fra-OpenSearch er sett på.
+
+## Innholdstre fra OpenSearch i stedet for XP live (2026-07-14)
+
+Arkivets navigasjonstre (`ContentTreeService`) var en ren proxy mot XP sitt
+`externalArchive/contentTree` – dør XP, mister vi trenavigasjon selv om selve
+dokumentene overlever i OpenSearch. Bygget og bekreftet (query-design + faktisk
+klikk-gjennom i browser mot ekte data): `XpArchiveOpenSearchClient.getContentTreeLevel`
+
+- nytt endepunkt `/api/contentTreeFromIndex`. Klienten (`useContentTree.ts`) bruker
+  dette som default nå (besluttet: dette er retningen for arkivet, ikke en engangstest).
+
+To ting måtte fikses for at dette skulle fungere i det hele tatt:
+
+- **Sti-konvensjon**: dokumentene lagret tidligere XP sin fulle, rå sti
+  (`/content/www.nav.no/aap`), som aldri matchet klientens relative konvensjon
+  (rot = `/`, samme som XP sine egne `stripPathPrefix`-baserte tjenester). Løst med
+  `stripArchiveRootPrefix` (`server/src/utils/paths.ts`) – strippes ved indeksering.
+- **Tomt rot-nivå**: rot-stien har aldri et eget dokument (backfill enumererer kun
+  etterkommere). Løst med en syntetisk `isEmpty`-node, samme konsept som XP sitt eget
+  `content-tree-archive.ts` bruker for strukturelle "tomme" tre-noder.
+
+**Åpent, ikke verifisert:** `ARCHIVE_ROOT_PREFIX` (`/content/www.nav.no`) er kun
+bekreftet mot `locale=no`. Ukjent om `en`/`nn`/`se`-repoene bruker samme prefiks –
+kan feile stille (no-op fallback, ingen feilmelding) for de locales inntil sjekket.
+
+**Fremtidig opprydding (ikke gjort ennå):** `/api/contentTree` (XP-live-proxy,
+`getContentTreeHandler` i `ContentTreeService.ts`) har ingen gjenværende consumers,
+men beholdes bevisst som rollback-vei til migreringen er fullt tillitsvekkende:
+
+- [ ] Verifiser `ARCHIVE_ROOT_PREFIX` for alle 4 locales, ikke bare `no`.
+- [ ] Avklar barn-rekkefølge (i dag alfabetisk på sti, ikke XP sin authored `childOrder`).
+- [ ] Håndter 1000-barns-taket i `getContentTreeLevel` (ingen paginering i dag).
+- [ ] La OpenSearch-treet kjøre stabilt i dev en stund uten å trenge fallback.
+
+Når disse er ryddet: slett `getContentTreeHandler` + ruta + `CONTENT_TREE_API`/
+`xpServiceUrl`-koblingen i `ContentTreeService.ts` – da er det reell død kode.
