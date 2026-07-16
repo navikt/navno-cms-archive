@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import style from './HtmlView.module.css';
 import { xpArchiveConfig } from '@common/shared/siteConfigs';
-import { Alert, Loader } from '@navikt/ds-react';
-import { Content } from '../../../shared/types';
+import { Alert, Loader, Tag } from '@navikt/ds-react';
+import { Content, ContentSource } from '../../../shared/types';
 
 type Props = {
     content: Content;
+    source: ContentSource;
 };
 
 const localeNames: Record<string, string> = {
@@ -15,12 +16,20 @@ const localeNames: Record<string, string> = {
     se: 'samisk',
 };
 
-export const HtmlView = ({ content }: Props) => {
+export const HtmlView = ({ content, source }: Props) => {
     const [isLoading, setIsLoading] = useState(true);
     const htmlPath = `${xpArchiveConfig.basePath}/html/${content._id}/${content.locale}/${content._versionKey}`;
 
     return (
         <div className={style.wrapper}>
+            {/* TODO: fjern tag før prod? */}
+            <div className={style.sourceLabel}>
+                {source === 'opensearch' ? (
+                    <Tag variant="success">Arkivert snapshot (OpenSearch)</Tag>
+                ) : (
+                    <Tag variant="warning">Live fra XP – ikke arkivert ennå</Tag>
+                )}
+            </div>
             {content.originalContentTypeName ? (
                 <Alert variant="warning">{`Obs! Denne siden var opprinnelig en "${content.originalContentTypeName}" og inneholder versjonshistorikk.`}</Alert>
             ) : null}

@@ -7,8 +7,11 @@ import { ContentService } from '../services/ContentService';
 import { ContentIconService } from 'services/ContentIconService';
 import { AttachmentService } from '../services/AttachmentService';
 import { PdfService } from '../services/PdfService';
-import puppeteer from 'puppeteer';
+import { BrowserManager } from '../services/BrowserManager';
 import { SearchService } from 'services/SearchService';
+import { IndexingService } from '../services/IndexingService';
+import { BackfillService } from '../services/BackfillService';
+import { XpArchiveOpenSearchClient } from '../opensearch/XpArchiveOpenSearchClient';
 import { HtmlRenderer } from '../../../../common/src/server/ssr/htmlRenderer';
 
 export const setupSite = async (router: Router) => {
@@ -30,22 +33,26 @@ export const setupSite = async (router: Router) => {
 };
 
 const setupApiRoutes = async (router: Router) => {
-    const browser = await puppeteer.launch({
-        args: ['--no-sandbox', '--disable-setuid-sandbox', '--user-data-dir=/tmp/.chromium'],
-    });
+    const browserManager = await BrowserManager.create();
+    const openSearchClient = new XpArchiveOpenSearchClient();
 
     const contentService = new ContentService();
-    const contentTreeService = new ContentTreeService();
+    const contentTreeService = new ContentTreeService(openSearchClient);
     const contentIconService = new ContentIconService();
     const attachmentService = new AttachmentService();
-    const pdfService = new PdfService({ browser, contentService });
-    const searchService = new SearchService();
+    const pdfService = new PdfService({ browserManager, contentService });
+    const searchService = new SearchService(openSearchClient);
+    const indexingService = new IndexingService(contentService, openSearchClient, browserManager);
+    const backfillService = new BackfillService(indexingService);
     router.get('/api/content', contentService.getContentHandler);
-    router.get('/api/contentTree', contentTreeService.getContentTreeHandler);
+    router.get('/api/contentTree', contentTreeService.getContentTreeHandler); //TODO: slette? evt. også rename contentTreeFromIndex til contentTree
+    router.get('/api/contentTreeFromIndex', contentTreeService.getContentTreeFromIndexHandler);
     router.get('/api/contentIcon', contentIconService.getContentIconHandler);
     router.get('/api/attachment', attachmentService.getAttachmentHandler);
     router.get('/api/pdf', pdfService.generatePdfHandler);
     router.get('/api/search', searchService.getSearchHandler);
+    router.post('/api/index', indexingService.indexContentHandler);
+    router.post('/api/backfill', backfillService.backfillHandler);
 };
 
 const setupBrowserRoutes = (router: Router, htmlRenderer: HtmlRenderer) => {

@@ -1,4 +1,4 @@
-import { Browser } from 'puppeteer';
+import { BrowserManager } from './BrowserManager';
 import { ContentService } from './ContentService';
 import {
     generateErrorFilename,
@@ -23,16 +23,16 @@ type PdfResult = {
 };
 
 type PdfServiceProps = {
-    browser: Browser;
+    browserManager: BrowserManager;
     contentService: ContentService;
 };
 
 export class PdfService {
-    private readonly browser: Browser;
+    private readonly browserManager: BrowserManager;
     private readonly contentService: ContentService;
 
-    constructor({ browser, contentService }: PdfServiceProps) {
-        this.browser = browser;
+    constructor({ browserManager, contentService }: PdfServiceProps) {
+        this.browserManager = browserManager;
         this.contentService = contentService;
     }
 
@@ -126,7 +126,8 @@ export class PdfService {
         const widthActual = width >= MIN_WIDTH_PX ? width : DEFAULT_WIDTH_PX;
 
         try {
-            const page = await this.browser.newPage();
+            const browser = await this.browserManager.getBrowser();
+            const page = await browser.newPage();
 
             // Log Page events for debugging should generation fail
             page.on('request', (request) => {
