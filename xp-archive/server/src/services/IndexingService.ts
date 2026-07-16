@@ -12,7 +12,9 @@ import { getParentPath, stripArchiveRootPrefix } from '../utils/paths';
 // Resirkuler Chromium-instansen med jevne mellomrom under lange kjøringer (backfill).
 // En delt browser ble ustabil og krasjet hele prosessen etter ~9800 snapshots i én
 // sammenhengende kjøring (TargetCloseError fra puppeteer sin CDP-sesjon).
-const BROWSER_RECYCLE_INTERVAL = 200;
+// Satt til BATCH_SIZE (24) = én browser per batch – lett å resonnere om og unngår
+// akkumulert degradering over mange sider.
+const BROWSER_RECYCLE_INTERVAL = 24;
 
 export class IndexingService {
     private readonly contentService: ContentService;

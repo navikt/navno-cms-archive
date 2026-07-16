@@ -69,6 +69,8 @@ export class BrowserManager {
         } catch {
             // browseren kan allerede være død – ignorer og rens opp uansett
         }
+        // Gi OS tid til å frigjøre prosessen og lock-filene før vi renser og relanserer.
+        await new Promise((r) => setTimeout(r, 500));
         clearChromiumLock();
         this.browser = await puppeteer.launch({ args: LAUNCH_ARGS });
     }
