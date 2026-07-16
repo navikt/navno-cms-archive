@@ -54,18 +54,34 @@ export class ContentService {
                   );
 
             if (openSearchDocument?.locale === locale) {
-                const xpVersions = await this.fetchVersions(contentId, locale);
-                const versions: VersionReference[] = xpVersions ?? [
-                    {
-                        versionId: openSearchDocument.versionId,
-                        nodeId: openSearchDocument.nodeId,
-                        nodePath: openSearchDocument.path,
-                        timestamp: openSearchDocument.timestamp,
-                        locale: openSearchDocument.locale,
-                        displayName: openSearchDocument.displayName,
-                        type: openSearchDocument.type,
-                    },
-                ];
+                // Hent versjonslisten fra OpenSearch, ikke XP – unngår avhengighet til
+                // XP live for innhold som allerede er indeksert.
+                const indexedVersions = await this.openSearchClient.getVersionsFromIndex(
+                    XP_ARCHIVE_INDEX,
+                    contentId,
+                    locale
+                );
+                const versions: VersionReference[] = indexedVersions
+                    ? indexedVersions.map((doc) => ({
+                          versionId: doc.versionId,
+                          nodeId: doc.nodeId,
+                          nodePath: doc.path,
+                          timestamp: doc.timestamp,
+                          locale: doc.locale,
+                          displayName: doc.displayName,
+                          type: doc.type,
+                      }))
+                    : [
+                          {
+                              versionId: openSearchDocument.versionId,
+                              nodeId: openSearchDocument.nodeId,
+                              nodePath: openSearchDocument.path,
+                              timestamp: openSearchDocument.timestamp,
+                              locale: openSearchDocument.locale,
+                              displayName: openSearchDocument.displayName,
+                              type: openSearchDocument.type,
+                          },
+                      ];
 
                 return {
                     html: openSearchDocument.html,

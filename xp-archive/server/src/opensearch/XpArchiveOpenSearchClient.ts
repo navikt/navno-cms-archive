@@ -165,6 +165,47 @@ export class XpArchiveOpenSearchClient {
             });
     }
 
+    // Henter alle indekserte versjoner av én node, sortert nyest først.
+    // Brukes i stedet for å spørre XP om versjonslisten når dokumentet allerede
+    // er funnet i OpenSearch – slik at innholdsvisning ikke trenger XP live.
+    public async getVersionsFromIndex(
+        index: string,
+        nodeId: string,
+        locale: string
+    ): Promise<XpArchiveDocument[] | null> {
+        type SearchBody = { hits: { hits: Array<{ _source: XpArchiveDocument }> } };
+
+        return this.client
+            .search({
+                index,
+                body: {
+                    query: {
+                        bool: {
+                            filter: [
+                                { term: { 'nodeId.keyword': nodeId } },
+                                { term: { 'locale.keyword': locale } },
+                            ],
+                        },
+                    },
+                    sort: [{ timestamp: { order: 'desc' } }],
+                    // 1000 versjoner er en praktisk grense: de fleste sider har
+                    // noen hundre versjoner (AAP-siden har ~283). Nås taket er UI-et
+                    // uansett ubrukelig (1000 knapper i versjonslisten) før grensen
+                    // her blir det egentlige problemet – håndter begge samtidig da.
+                    size: 1000,
+                },
+            })
+            .then((result) => {
+                const searchBody = result.body as unknown as SearchBody;
+                const docs = searchBody.hits.hits.map((h) => h._source);
+                return docs.length > 0 ? docs : null;
+            })
+            .catch((e: unknown) => {
+                logException(e);
+                return null;
+            });
+    }
+
     private toContentTreeEntry(doc: XpArchiveDocument, numChildren: number): ContentTreeEntryData {
         return {
             id: doc.nodeId,
