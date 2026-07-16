@@ -56,10 +56,6 @@ export class IndexingService {
         const inlinedCss = cssTexts.filter(Boolean).join('\n');
 
         this.snapshotsSinceRecycle += 1;
-        if (this.snapshotsSinceRecycle >= BROWSER_RECYCLE_INTERVAL) {
-            await this.browserManager.recycle();
-            this.snapshotsSinceRecycle = 0;
-        }
         const browser = await this.browserManager.getBrowser();
 
         const page = await browser.newPage();
