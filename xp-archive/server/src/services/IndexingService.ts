@@ -137,11 +137,16 @@ export class IndexingService {
                 const msg = e instanceof Error ? e.message : String(e);
                 console.error(`Snapshot failed for ${nodeId}:${versionId}: ${msg}`);
             }
-        }
 
-        if (!html) {
-            console.warn(`Indexed without HTML: ${nodeId}:${versionId}`);
+            if (!html) {
+                // content.html var satt, men snapshot ble tom/feilet – uventet.
+                console.warn(
+                    `Snapshot produced no HTML for ${nodeId}:${versionId} (type: ${json.type})`
+                );
+            }
         }
+        // Ingen content.html = XP returnerte ingen render-props for denne typen
+        // (mapper, data-noder, maler etc.) – forventet, ingen logg nødvendig.
 
         const doc: XpArchiveDocument = {
             nodeId,
