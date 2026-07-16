@@ -9,12 +9,14 @@ import { XpArchiveDocument } from '../opensearch/types';
 import { validateQuery } from '../utils/params';
 import { getParentPath, stripArchiveRootPrefix } from '../utils/paths';
 
+const BATCH_SIZE = 24;
+
 // Resirkuler Chromium-instansen med jevne mellomrom under lange kjøringer (backfill).
 // En delt browser ble ustabil og krasjet hele prosessen etter ~9800 snapshots i én
 // sammenhengende kjøring (TargetCloseError fra puppeteer sin CDP-sesjon).
-// Satt til BATCH_SIZE (24) = én browser per batch – lett å resonnere om og unngår
+// Satt til BATCH_SIZE = én browser per batch – lett å resonnere om og unngår
 // akkumulert degradering over mange sider.
-const BROWSER_RECYCLE_INTERVAL = 24;
+const BROWSER_RECYCLE_INTERVAL = BATCH_SIZE;
 
 export class IndexingService {
     private readonly contentService: ContentService;
@@ -171,7 +173,6 @@ export class IndexingService {
             return false;
         }
 
-        const BATCH_SIZE = 24;
         const failedVersionIds: string[] = [];
         const startTime = Date.now();
 
