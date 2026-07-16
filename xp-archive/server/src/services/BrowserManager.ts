@@ -1,6 +1,26 @@
 import puppeteer, { Browser } from 'puppeteer';
+import { unlinkSync, existsSync } from 'fs';
 
 const LAUNCH_ARGS = ['--no-sandbox', '--disable-setuid-sandbox', '--user-data-dir=/tmp/.chromium'];
+
+// Chromium bruker singleton-filer for å hindre parallelle instanser mot samme
+// userDataDir. Sletter dem eksplisitt før relansering slik at en død instans
+// ikke blokkerer ny lansering (ellers: "browser is already running for /tmp/.chromium").
+const clearChromiumLock = () => {
+    [
+        '/tmp/.chromium/SingletonLock',
+        '/tmp/.chromium/SingletonSocket',
+        '/tmp/.chromium/SingletonCookie',
+    ]
+        .filter(existsSync)
+        .forEach((f) => {
+            try {
+                unlinkSync(f);
+            } catch {
+                // ignorer – filen kan allerede være borte
+            }
+        });
+};
 
 // Delt eier av Chromium-instansen, brukt av både IndexingService og PdfService.
 //
@@ -47,8 +67,9 @@ export class BrowserManager {
         try {
             await this.browser.close();
         } catch {
-            // browseren kan allerede være død – ignorer og relanser uansett
+            // browseren kan allerede være død – ignorer og rens opp uansett
         }
+        clearChromiumLock();
         this.browser = await puppeteer.launch({ args: LAUNCH_ARGS });
     }
 }
