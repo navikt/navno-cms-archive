@@ -115,7 +115,7 @@ export const Content = ({
                     </div>
                     {unpublishedTime && (
                         <div className={style.archivedOrUnpublished}>
-                            <Detail>`Avpublisert: ${formatTimestamp(unpublishedTime)}`</Detail>
+                            <Detail>{`Avpublisert: ${formatTimestamp(unpublishedTime)}`}</Detail>
                         </div>
                     )}
                 </div>
