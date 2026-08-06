@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { xpArchiveConfig } from '@common/shared/siteConfigs';
-import { Alert, Loader, Button, Link } from '@navikt/ds-react';
+import { Alert, Loader, Button, Link, Theme } from '@navikt/ds-react';
 import { Content, VersionReference } from '../../../shared/types';
 import { formatTimestamp } from '../../../../common/src/shared/timestamp';
 import { VersionSelector } from '../../versionSelector/VersionSelector';
@@ -58,11 +58,11 @@ export const HtmlView = ({ content, versions }: Props) => {
     };
 
     return (
-        <div className={style.wrapper}>
+        <Theme theme={'dark'} className={style.wrapper} hasBackground={false}>
             <div className={style.versionBar}>
                 <Button
-                    className={versionViewOpen ? style.activeVersionButton : style.versionButton}
-                    variant={'secondary'}
+                    data-color={'neutral'}
+                    variant={'tertiary'}
                     icon={<VersionIcon isOpen={versionViewOpen} />}
                     onClick={() => setVersionViewOpen(!versionViewOpen)}
                 >
@@ -70,7 +70,7 @@ export const HtmlView = ({ content, versions }: Props) => {
                 </Button>
                 <Link
                     href={htmlPath}
-
+                    data-color={'neutral'}
                     onClick={(e) => {
                         e.preventDefault();
                         window.open(htmlPath, '_blank');
@@ -87,7 +87,7 @@ export const HtmlView = ({ content, versions }: Props) => {
                         onClose={() => setVersionViewOpen(false)}
                     />
                 )}
-                <div>
+                <div className={style.content}>
                     {content.originalContentTypeName ? (
                         <Alert variant="warning">{`Obs! Denne siden var opprinnelig en "${content.originalContentTypeName}" og inneholder versjonshistorikken. ${getUnpublishedWarningText(content, versions)}`}</Alert>
                     ) : null}
@@ -110,7 +110,7 @@ export const HtmlView = ({ content, versions }: Props) => {
                     />
                 </div>
             </div>
-        </div>
+        </Theme>
     );
 };
 
