@@ -44,7 +44,8 @@ const localeNames: Record<string, string> = {
 export const HtmlView = ({ content, versions }: Props) => {
     const [isLoading, setIsLoading] = useState(true);
     const htmlPath = `${xpArchiveConfig.basePath}/html/${content._id}/${content.locale}/${content._versionKey}`;
-    const { versionViewOpen, setVersionViewOpen, selectedVersion } = useAppState();
+    const { selectedVersion } = useAppState();
+    const [versionViewOpen, setVersionViewOpen] = useState(false);
 
     const getVersionDisplay = () => {
         // if (isLoading) return 'Laster...';
