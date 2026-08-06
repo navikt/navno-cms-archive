@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
-import style from './HtmlView.module.css';
 import { xpArchiveConfig } from '@common/shared/siteConfigs';
-import { Alert, Loader } from '@navikt/ds-react';
+import { Alert, Loader, Button, Link } from '@navikt/ds-react';
 import { Content, VersionReference } from '../../../shared/types';
 import { formatTimestamp } from '../../../../common/src/shared/timestamp';
+import { VersionSelector } from '../../versionSelector/VersionSelector';
+import { VersionIcon } from '../../versionSelector/VersionIcon';
+import { useAppState } from '../../context/appState/useAppState';
+import { ExternalLinkIcon } from '@navikt/aksel-icons';
+
+import style from './HtmlView.module.css';
 
 type Props = {
     content: Content;
@@ -39,29 +44,71 @@ const localeNames: Record<string, string> = {
 export const HtmlView = ({ content, versions }: Props) => {
     const [isLoading, setIsLoading] = useState(true);
     const htmlPath = `${xpArchiveConfig.basePath}/html/${content._id}/${content.locale}/${content._versionKey}`;
+    const { versionViewOpen, setVersionViewOpen, selectedVersion } = useAppState();
+
+    const getVersionDisplay = () => {
+        // if (isLoading) return 'Laster...';
+        if (versions.length === 0 || !content) return 'Ingen versjoner';
+        if (!selectedVersion) return formatTimestamp(versions[0].timestamp);
+
+        return formatTimestamp(
+            versions.find((v) => v.versionId === selectedVersion)?.timestamp ?? ''
+        );
+    };
 
     return (
         <div className={style.wrapper}>
-            {content.originalContentTypeName ? (
-                <Alert variant="warning">{`Obs! Denne siden var opprinnelig en "${content.originalContentTypeName}" og inneholder versjonshistorikken. ${getUnpublishedWarningText(content, versions)}`}</Alert>
-            ) : null}
-            {content.x?.['no-nav-navno']?.redirectToLayer?.locale ? (
-                <Alert variant="warning">{`Obs! Denne siden er satt som redirect til språkversjonen for "${localeNames[content.x['no-nav-navno'].redirectToLayer.locale]}". Husk å velge riktig språkversjon for å se korrekt historikk.`}</Alert>
-            ) : null}
-            {isLoading && (
-                <div className={style.loaderWrapper}>
-                    <Loader size="xlarge" />
+            <div className={style.versionBar}>
+                <Button
+                    className={versionViewOpen ? style.activeVersionButton : style.versionButton}
+                    variant={'secondary'}
+                    icon={<VersionIcon isOpen={versionViewOpen} />}
+                    onClick={() => setVersionViewOpen(!versionViewOpen)}
+                >
+                    {getVersionDisplay()}
+                </Button>
+                <Link
+                    href={htmlPath}
+
+                    onClick={(e) => {
+                        e.preventDefault();
+                        window.open(htmlPath, '_blank');
+                    }}
+                >
+                    {'Åpne i nytt vindu'}
+                    <ExternalLinkIcon />
+                </Link>
+            </div>
+            <div className={style.versionsAndContent}>
+                {versionViewOpen && (
+                    <VersionSelector
+                        versions={versions}
+                        onClose={() => setVersionViewOpen(false)}
+                    />
+                )}
+                <div>
+                    {content.originalContentTypeName ? (
+                        <Alert variant="warning">{`Obs! Denne siden var opprinnelig en "${content.originalContentTypeName}" og inneholder versjonshistorikken. ${getUnpublishedWarningText(content, versions)}`}</Alert>
+                    ) : null}
+                    {content.x?.['no-nav-navno']?.redirectToLayer?.locale ? (
+                        <Alert variant="warning">{`Obs! Denne siden er satt som redirect til språkversjonen for "${localeNames[content.x['no-nav-navno'].redirectToLayer.locale]}". Husk å velge riktig språkversjon for å se korrekt historikk.`}</Alert>
+                    ) : null}
+                    {isLoading && (
+                        <div className={style.loaderWrapper}>
+                            <Loader size="xlarge" />
+                        </div>
+                    )}
+                    <iframe
+                        title={'HTML-visning'}
+                        src={htmlPath}
+                        className={style.iframe}
+                        onLoad={(e) => {
+                            setIsLoading(false);
+                            disableLinksScriptsAndEventListeners(e.currentTarget);
+                        }}
+                    />
                 </div>
-            )}
-            <iframe
-                title={'HTML-visning'}
-                src={htmlPath}
-                className={style.iframe}
-                onLoad={(e) => {
-                    setIsLoading(false);
-                    disableLinksScriptsAndEventListeners(e.currentTarget);
-                }}
-            />
+            </div>
         </div>
     );
 };

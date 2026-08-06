@@ -8,68 +8,18 @@
 .top {
     background-color: var(--a-surface-subtle);
     display: flex;
-    flex-direction: column;
     justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
 }
 
-.label {
-    margin-bottom: 0.5rem;
-}
-
-.versionSelector {
-    display: flex;
-    flex-direction: column;
-}
-
-.versionButton {
-    background-color: white;
-}
-
-.activeVersionButton {
-    color: var(
-        --ac-button-secondary-active-text,
-        var(--__ac-button-secondary-active-text, var(--a-text-on-action))
-    );
-    background-color: var(
-        --ac-button-secondary-active-bg,
-        var(--__ac-button-secondary-active-bg, var(--a-surface-action-active))
-    );
-    box-shadow: none;
-}
-
-.versionAndViewWrapper {
+.heading {
     display: flex;
     gap: 1rem;
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
-    padding-top: 1rem;
-    padding-bottom: 0.25rem;
-    width: 100%;
-    justify-content: space-between;
-}
-
-.viewSelector {
-    display: flex;
-    flex-direction: column;
-}
-
-.viewSelectorWrapper {
-    display: flex;
-    gap: 1rem;
-}
-
-.titleAndUrl {
-    display: flex;
-    gap: 1rem;
-    padding: 1rem 1.5rem;
     align-items: center;
 }
 
 .url {
-    background-color: var(--a-deepblue-100);
-    height: fit-content;
-    padding: 0.25rem 0.75rem;
-    border-radius: 10rem;
     word-break: break-all;
 }
 

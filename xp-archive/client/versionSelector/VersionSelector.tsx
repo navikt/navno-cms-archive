@@ -56,7 +56,7 @@ export const VersionSelector = ({ versions, onClose }: Props) => {
     );
 
     return (
-        <>
+        <div>
             <div className={style.headingAndFilter}>
                 <div className={style.top}>
                     <span className={style.heading}>
@@ -97,6 +97,6 @@ export const VersionSelector = ({ versions, onClose }: Props) => {
                     </VersionButton>
                 ))}
             </div>
-        </>
+        </div>
     );
 };

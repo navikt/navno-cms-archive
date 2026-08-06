@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ExternalLinkIcon } from '@navikt/aksel-icons';
-import { VersionIcon } from '../versionSelector/VersionIcon';
-import { xpArchiveConfig } from '@common/shared/siteConfigs';
-import { Button, Detail, Heading, Label } from '@navikt/ds-react';
+import { Detail, Heading } from '@navikt/ds-react';
 import { useAppState } from '../context/appState/useAppState';
 import { ViewSelector, ViewVariant } from 'client/viewSelector/ViewSelector';
 import { ContentView } from '../contentView/ContentView';
@@ -25,13 +22,7 @@ export const Content = ({
     data: ContentServiceResponse | null | undefined;
     isLoading: boolean;
 }) => {
-    const {
-        selectedContentId,
-        selectedLocale,
-        selectedVersion,
-        versionViewOpen,
-        setVersionViewOpen,
-    } = useAppState();
+    const { selectedContentId } = useAppState();
 
     const isWebpage = !!data?.html && !data?.json?.attachment;
     const hasAttachment = !!data?.json?.attachment;
@@ -44,81 +35,37 @@ export const Content = ({
         setSelectedView(getDefaultView(isWebpage, hasAttachment));
     }, [isWebpage, hasAttachment, selectedContentId]);
 
-    const htmlPath = `${xpArchiveConfig.basePath}/html/${data?.json._id}/${selectedLocale}/${
-        data?.json._versionKey
-    }`;
-
-    const getVersionDisplay = () => {
-        if (isLoading) return 'Laster...';
-        if (data?.versions.length === 0 || !data) return 'Ingen versjoner';
-        if (!selectedVersion) return formatTimestamp(data.versions[0].timestamp);
-
-        return formatTimestamp(
-            data.versions.find((v) => v.versionId === selectedVersion)?.timestamp ?? ''
-        );
-    };
-
     if (!selectedContentId) {
         return <EmptyState />;
     }
 
-    const unpublishedTime = data?.json?.unpublishedTime ?? data?.json.archivedTime;
+    const unpublishedTime = 'Avpublisert 3.august'; //data?.json?.unpublishedTime ?? data?.json.archivedTime;
 
     return (
         <div className={style.content}>
             <div className={style.top}>
-                <div className={style.versionAndViewWrapper}>
-                    <div className={style.versionSelector}>
-                        <Label className={style.label}>Versjoner</Label>
-                        <Button
-                            className={
-                                versionViewOpen ? style.activeVersionButton : style.versionButton
-                            }
-                            variant={'secondary'}
-                            icon={<VersionIcon isOpen={versionViewOpen} />}
-                            onClick={() => setVersionViewOpen(!versionViewOpen)}
-                        >
-                            {getVersionDisplay()}
-                        </Button>
+                <div>
+                    <div className={style.heading}>
+                        <Heading size={'medium'} level={'2'}>
+                            {data?.json?.displayName || 'Laster...'}
+                        </Heading>
+                        {unpublishedTime && (
+                            <div className={style.archivedOrUnpublished}>
+                                <Detail>{`Avpublisert: ${formatTimestamp(unpublishedTime)}`}</Detail>
+                            </div>
+                        )}
                     </div>
-                    <div className={style.viewSelector}>
-                        <Label className={style.label}>Visning</Label>
-                        <div className={style.viewSelectorWrapper}>
-                            <ViewSelector
-                                selectedView={selectedView}
-                                setSelectedView={setSelectedView}
-                                hasAttachment={hasAttachment}
-                                isWebpage={isWebpage}
-                            />
-                            <Button
-                                as={'a'}
-                                href={htmlPath}
-                                icon={<ExternalLinkIcon />}
-                                iconPosition={'right'}
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    window.open(htmlPath, '_blank');
-                                }}
-                            >
-                                {'Åpne i nytt vindu'}
-                            </Button>
-                        </div>
-                    </div>
-                </div>
-
-                <div className={style.titleAndUrl}>
-                    <Heading size={'medium'} level={'2'}>
-                        {data?.json?.displayName || 'Laster...'}
-                    </Heading>
                     <div className={style.url}>
                         <Detail>{data?.json?._path || ''}</Detail>
                     </div>
-                    {unpublishedTime && (
-                        <div className={style.archivedOrUnpublished}>
-                            <Detail>{`Avpublisert: ${formatTimestamp(unpublishedTime)}`}</Detail>
-                        </div>
-                    )}
                 </div>
+
+                <ViewSelector
+                    selectedView={selectedView}
+                    setSelectedView={setSelectedView}
+                    hasAttachment={hasAttachment}
+                    isWebpage={isWebpage}
+                />
             </div>
 
             <ContentView

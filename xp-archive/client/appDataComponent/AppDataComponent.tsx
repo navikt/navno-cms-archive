@@ -15,7 +15,7 @@ export const AppDataComponent = () => {
 
     return (
         <>
-            <SideView versions={data?.versions || []} />
+            <SideView />
             <Content data={data} isLoading={isLoading} />
         </>
     );
