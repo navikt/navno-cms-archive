@@ -1,6 +1,5 @@
 import React from 'react';
 import { ToggleGroup } from '@navikt/ds-react';
-import style from './ViewSelector.module.css';
 
 export type ViewVariant = 'html' | 'pdf' | 'filepreview';
 
