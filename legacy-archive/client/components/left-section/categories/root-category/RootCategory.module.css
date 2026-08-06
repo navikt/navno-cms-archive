@@ -22,7 +22,7 @@
         visibility: visible;
     }
 
-    & > label:global(.navds-checkbox__label) {
+    & > label:global(.aksel-checkbox__label) {
         padding: 0;
     }
 }

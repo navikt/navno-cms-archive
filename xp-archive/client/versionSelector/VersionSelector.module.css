@@ -27,15 +27,6 @@
     justify-content: space-between;
     position: relative;
 
-    :global(.navds-label) {
-        font-weight: var(--ax-font-weight-regular);
-        text-align: left;
-    }
-
-    :global(.navds-button__icon) {
-        color: var(--ax-text-accent-subtle);
-    }
-
     &::after {
         content: '';
         position: absolute;
@@ -53,10 +44,6 @@
 
 .selected {
     background-color: var(--ax-bg-accent-soft);
-
-    :global(.navds-label) {
-        font-weight: var(--ax-font-weight-bold);
-    }
 }
 
 .closeButton {
