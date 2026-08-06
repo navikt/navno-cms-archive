@@ -11,27 +11,27 @@
 
 .selectDeselectAllBox {
     padding: 0.5rem 0;
-    border-bottom: solid 1px var(--a-border-divider);
+    border-bottom: solid 1px var(--ax-border-neutral-subtle);
     width: 100%;
 }
 
 .checkboxGroup {
     width: 100%;
-    border-radius: var(--a-border-radius-medium);
+    border-radius: var(--ax-radius-4);
 }
 
 .checkboxGroup:nth-child(even) {
-    background-color: var(--a-surface-subtle);
+    background-color: var(--ax-bg-neutral-soft);
 }
 
 .downloadBar {
     position: fixed;
     bottom: 0;
-    background-color: var(--a-surface-neutral);
+    background-color: var(--ax-bg-neutral-strong);
     width: 100%;
 }
 
 .button {
     margin: 0.5rem;
-    background-color: var(--a-surface-default);
+    background-color: var(--ax-bg-default);
 }

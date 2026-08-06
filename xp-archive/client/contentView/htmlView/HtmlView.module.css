@@ -1,7 +1,7 @@
 .wrapper {
     height: 100%;
     padding: 1rem 1rem 0;
-    background-color: var(--a-surface-neutral);
+    background-color: var(--ax-bg-neutral-strong);
 }
 
 .iframe {
@@ -13,9 +13,9 @@
 .loaderWrapper {
     position: absolute;
     margin: 1rem;
-    background-color: var(--a-surface-subtle);
+    background-color: var(--ax-bg-neutral-soft);
     opacity: 0.8;
-    border: 3px solid var(--a-border-default);
+    border: 3px solid var(--ax-border-neutral);
     padding: 0.5rem;
     border-radius: 0.5rem;
     display: flex;
@@ -35,11 +35,11 @@
 .activeVersionButton {
     color: var(
         --ac-button-secondary-active-text,
-        var(--__ac-button-secondary-active-text, var(--a-text-on-action))
+        var(--__ac-button-secondary-active-text, var(--ax-text-accent-contrast))
     );
     background-color: var(
         --ac-button-secondary-active-bg,
-        var(--__ac-button-secondary-active-bg, var(--a-surface-action-active))
+        var(--__ac-button-secondary-active-bg, var(--ax-bg-accent-strong-pressed))
     );
     box-shadow: none;
 }
