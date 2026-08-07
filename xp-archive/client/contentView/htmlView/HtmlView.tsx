@@ -10,11 +10,6 @@ import { ExternalLinkIcon } from '@navikt/aksel-icons';
 
 import style from './HtmlView.module.css';
 
-type Props = {
-    content: Content;
-    versions: VersionReference[];
-};
-
 const getUnpublishedWarningText = (content: Content, versions: VersionReference[]) => {
     if (content.originalContentTypeName && content.type === 'no.nav.navno:internal-link') {
         const v = versions.find((version, index, versions) => {
@@ -41,14 +36,20 @@ const localeNames: Record<string, string> = {
     se: 'samisk',
 };
 
+type Props = {
+    content: Content;
+    versions: VersionReference[];
+};
+
 export const HtmlView = ({ content, versions }: Props) => {
-    const [isLoading, setIsLoading] = useState(true);
+    const [loadedPath, setLoadedPath] = useState<string | null>(null);
     const htmlPath = `${xpArchiveConfig.basePath}/html/${content._id}/${content.locale}/${content._versionKey}`;
+    const isLoading = loadedPath !== htmlPath;
+
     const { selectedVersion } = useAppState();
     const [versionViewOpen, setVersionViewOpen] = useState(false);
 
     const getVersionDisplay = () => {
-        // if (isLoading) return 'Laster...';
         if (versions.length === 0 || !content) return 'Ingen versjoner';
         if (!selectedVersion) return formatTimestamp(versions[0].timestamp);
 
@@ -104,7 +105,7 @@ export const HtmlView = ({ content, versions }: Props) => {
                         src={htmlPath}
                         className={style.iframe}
                         onLoad={(e) => {
-                            setIsLoading(false);
+                            setLoadedPath(htmlPath);
                             disableLinksScriptsAndEventListeners(e.currentTarget);
                         }}
                     />

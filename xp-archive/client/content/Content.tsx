@@ -3,11 +3,11 @@ import { Detail, Heading } from '@navikt/ds-react';
 import { useAppState } from '../context/appState/useAppState';
 import { ViewSelector, ViewVariant } from 'client/viewSelector/ViewSelector';
 import { ContentView } from '../contentView/ContentView';
-import { ContentServiceResponse } from '../../shared/types';
 import { formatTimestamp } from '@common/shared/timestamp';
 import { EmptyState } from '@common/shared/EmptyState/EmptyState';
 
 import style from './Content.module.css';
+import { useFetchContent } from '../hooks/useFetchContent';
 
 const getDefaultView = (isWebpage: boolean, hasAttachment: boolean): ViewVariant | undefined => {
     if (isWebpage) return 'html';
@@ -15,14 +15,14 @@ const getDefaultView = (isWebpage: boolean, hasAttachment: boolean): ViewVariant
     return undefined;
 };
 
-export const Content = ({
-    data,
-    isLoading,
-}: {
-    data: ContentServiceResponse | null | undefined;
-    isLoading: boolean;
-}) => {
-    const { selectedContentId } = useAppState();
+export const Content = () => {
+    const { selectedContentId, selectedLocale, selectedVersion } = useAppState();
+
+    const { data, isLoading } = useFetchContent({
+        id: selectedContentId ?? '',
+        locale: selectedLocale ?? 'no',
+        versionId: selectedVersion ?? '',
+    });
 
     const isWebpage = !!data?.html && !data?.json?.attachment;
     const hasAttachment = !!data?.json?.attachment;
@@ -39,7 +39,7 @@ export const Content = ({
         return <EmptyState />;
     }
 
-    const unpublishedTime = 'Avpublisert 3.august'; //data?.json?.unpublishedTime ?? data?.json.archivedTime;
+    const unpublishedTime = data?.json?.unpublishedTime ?? data?.json?.archivedTime;
 
     return (
         <div className={style.content}>
