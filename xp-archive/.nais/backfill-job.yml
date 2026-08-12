@@ -34,8 +34,11 @@ spec:
               medium: Memory
           mountPath: /dev/shm
     resources:
+        # Mer CPU enn hovedpoden: jobben kjører opptil BATCH_SIZE=24 samtidige
+        # Chromium-renderere kontinuerlig i timevis (ikke sporadisk som hovedpoden),
+        # og 500m holdt ikke tritt - ga vedvarende renderer-krasj ("Connection closed").
         requests:
-            cpu: 500m
+            cpu: 2000m
             memory: 1024Mi
         limits:
             # Mer RAM enn den vanlige poden: backfill kjører mange Puppeteer-render-jobber
