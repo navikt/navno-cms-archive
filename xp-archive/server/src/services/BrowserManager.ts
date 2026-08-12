@@ -8,6 +8,10 @@ const LAUNCH_ARGS = [
     '--user-data-dir=/tmp/.chromium',
 ];
 
+// dumpio: true videresender Chromiums egen stdout/stderr til prosessens logg,
+// slik at den faktiske krasj-årsaken (ikke bare "Connection closed") blir synlig.
+const launchBrowser = () => puppeteer.launch({ args: LAUNCH_ARGS, dumpio: true });
+
 // Chromium bruker singleton-filer for å hindre parallelle instanser mot samme
 // userDataDir. Sletter dem eksplisitt før relansering slik at en død instans
 // ikke blokkerer ny lansering (ellers: "browser is already running for /tmp/.chromium").
@@ -44,7 +48,7 @@ export class BrowserManager {
     }
 
     public static async create(): Promise<BrowserManager> {
-        return new BrowserManager(await puppeteer.launch({ args: LAUNCH_ARGS }));
+        return new BrowserManager(await launchBrowser());
     }
 
     public async getBrowser(): Promise<Browser> {
@@ -57,7 +61,7 @@ export class BrowserManager {
         // Chromium-prosesser parallelt.
         if (!this.relaunching) {
             console.log('BrowserManager: Chromium-instans frakoblet, relanserer');
-            this.relaunching = puppeteer.launch({ args: LAUNCH_ARGS }).then((browser) => {
+            this.relaunching = launchBrowser().then((browser) => {
                 this.browser = browser;
                 this.relaunching = undefined;
                 return browser;
@@ -77,6 +81,6 @@ export class BrowserManager {
         // Gi OS tid til å frigjøre prosessen og lock-filene før vi renser og relanserer.
         await new Promise((r) => setTimeout(r, 500));
         clearChromiumLock();
-        this.browser = await puppeteer.launch({ args: LAUNCH_ARGS });
+        this.browser = await launchBrowser();
     }
 }
