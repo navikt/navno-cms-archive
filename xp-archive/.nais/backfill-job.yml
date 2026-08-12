@@ -27,6 +27,13 @@ spec:
                 - host: cdn.nav.no
     envFrom:
         - secret: '{{ secret }}'
+    # Standard /dev/shm (64Mi) er for lite for Chromium og ga momentane
+    # "Connection closed"-krasj i denne poden. Øker til et Memory-backed emptyDir.
+    filesFrom:
+        - emptyDir:
+              medium: Memory
+              sizeLimit: 512Mi
+          mountPath: /dev/shm
     resources:
         requests:
             cpu: 500m

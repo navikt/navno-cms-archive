@@ -1,7 +1,12 @@
 import puppeteer, { Browser } from 'puppeteer';
 import { unlinkSync, existsSync } from 'fs';
 
-const LAUNCH_ARGS = ['--no-sandbox', '--disable-setuid-sandbox', '--user-data-dir=/tmp/.chromium'];
+const LAUNCH_ARGS = [
+    '--no-sandbox',
+    '--disable-setuid-sandbox',
+    '--disable-dev-shm-usage',
+    '--user-data-dir=/tmp/.chromium',
+];
 
 // Chromium bruker singleton-filer for å hindre parallelle instanser mot samme
 // userDataDir. Sletter dem eksplisitt før relansering slik at en død instans
