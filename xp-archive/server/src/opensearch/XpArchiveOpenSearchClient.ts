@@ -408,4 +408,34 @@ export class XpArchiveOpenSearchClient {
                 return { total: 0, hits: [] };
             });
     }
+
+    // Cursor-persistens for backfill-jobben: lagrer og leser siste indekserte
+    // _path slik at jobben kan gjenopptas etter et OOM-krasj uten å starte fra
+    // scratch. Lagres som ett enkelt dokument i en fast indeks.
+    private readonly CURSOR_INDEX = 'xp-archive-backfill-cursor';
+    private readonly CURSOR_ID = 'current';
+
+    public async saveCursor(locale: string, after: string): Promise<void> {
+        await this.client
+            .index({
+                index: this.CURSOR_INDEX,
+                id: `${locale}:${this.CURSOR_ID}`,
+                body: { locale, after, updatedAt: new Date().toISOString() },
+            })
+            .catch((e: unknown) => logException(e));
+    }
+
+    public async getCursor(locale: string): Promise<string> {
+        type CursorDoc = { after: string };
+        return this.client
+            .get({ index: this.CURSOR_INDEX, id: `${locale}:${this.CURSOR_ID}` })
+            .then((result) => (result.body._source as CursorDoc).after ?? '')
+            .catch(() => ''); // indeksen finnes ikke ennå, eller ingen cursor → start fra begynnelsen
+    }
+
+    public async clearCursor(locale: string): Promise<void> {
+        await this.client
+            .delete({ index: this.CURSOR_INDEX, id: `${locale}:${this.CURSOR_ID}` })
+            .catch(() => {}); // ignorer hvis ikke finnes
+    }
 }

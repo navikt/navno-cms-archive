@@ -2,6 +2,7 @@ import { RequestHandler } from 'express';
 import { fetchJson } from '@common/shared/fetchUtils';
 import { xpServiceUrl } from '../utils/urls';
 import { IndexingService } from './IndexingService';
+import { XpArchiveOpenSearchClient } from '../opensearch/XpArchiveOpenSearchClient';
 
 // Speiler kontrakten fra enonic-xp externalArchive/nodeList.
 type NodeListEntry = {
@@ -28,10 +29,12 @@ const PAGE_SIZE = 1000;
 // nodeList-kontrakten foreskriver: loop til hasMore er false.
 export class BackfillService {
     private readonly indexingService: IndexingService;
+    private readonly openSearchClient?: XpArchiveOpenSearchClient;
     private running = false;
 
-    constructor(indexingService: IndexingService) {
+    constructor(indexingService: IndexingService, openSearchClient?: XpArchiveOpenSearchClient) {
         this.indexingService = indexingService;
+        this.openSearchClient = openSearchClient;
     }
 
     private async fetchLocales(): Promise<string[]> {
@@ -57,7 +60,14 @@ export class BackfillService {
         const reachedLimit = () => maxNodes !== undefined && indexed >= maxNodes;
 
         for (const locale of locales) {
-            let after = '';
+            // Les lagret cursor – gjenopptar etter OOM-krasj uten å starte fra scratch.
+            const savedAfter = this.openSearchClient
+                ? await this.openSearchClient.getCursor(locale)
+                : '';
+            let after = savedAfter;
+            if (after) {
+                console.log(`Backfill: gjenopptar locale=${locale} fra cursor after=${after}`);
+            }
             let hasMore = true;
 
             while (hasMore && !reachedLimit()) {
@@ -85,6 +95,10 @@ export class BackfillService {
                         console.log(
                             `Backfill: ${indexed} noder indeksert (${failed} feilet) – ${elapsed}s`
                         );
+                        // Lagre cursor periodisk – begrenser tap ved OOM til ~10 noder.
+                        if (this.openSearchClient) {
+                            await this.openSearchClient.saveCursor(locale, after);
+                        }
                     }
                 }
 
@@ -95,11 +109,31 @@ export class BackfillService {
             if (reachedLimit()) {
                 break;
             }
+
+            // Locale ferdig – slett cursor for denne locale.
+            if (this.openSearchClient) {
+                await this.openSearchClient.clearCursor(locale);
+                console.log(`Backfill: cursor slettet for locale=${locale}`);
+            }
         }
 
         const elapsed = Math.round((Date.now() - startTime) / 1000);
         console.log(`Backfill ferdig: ${indexed} noder indeksert, ${failed} feilet – ${elapsed}s`);
         this.running = false;
+    }
+
+    // Kjøres som naisjob-entrypoint: henter locales, kjører backfill til ferdig, og
+    // avslutter prosessen. Gjenopptar automatisk fra lagret cursor ved OOM-restart.
+    public async runStandaloneBackfill(): Promise<void> {
+        const locales = await this.fetchLocales();
+        if (locales.length === 0) {
+            console.error('Backfill: ingen locales å kjøre for');
+            process.exit(1);
+        }
+        console.log(`Backfill starter for locales: ${locales.join(', ')}`);
+        await this.runBackfill(locales);
+        console.log('Backfill fullført – avslutter.');
+        process.exit(0);
     }
 
     // Trigger-endepunkt: starter driveren og svarer 202 med en gang. Driveren kjører

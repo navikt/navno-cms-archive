@@ -43,7 +43,7 @@ const setupApiRoutes = async (router: Router) => {
     const pdfService = new PdfService({ browserManager, contentService });
     const searchService = new SearchService(openSearchClient);
     const indexingService = new IndexingService(contentService, openSearchClient, browserManager);
-    const backfillService = new BackfillService(indexingService);
+    const backfillService = new BackfillService(indexingService, openSearchClient);
     router.get('/api/content', contentService.getContentHandler);
     router.get('/api/contentTree', contentTreeService.getContentTreeHandler); //TODO: slette? evt. også rename contentTreeFromIndex til contentTree
     router.get('/api/contentTreeFromIndex', contentTreeService.getContentTreeFromIndexHandler);

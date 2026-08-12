@@ -1,0 +1,46 @@
+---
+apiVersion: nais.io/v1
+kind: Naisjob
+metadata:
+    name: navno-xp-archive-backfill
+    namespace: navno
+    labels:
+        team: navno
+spec:
+    image: '{{ image }}'
+    # Starter backfillJob.cjs (bygget fra backfillJob.ts) i stedet for den vanlige serveren.
+    command:
+        - node
+        - -r
+        - dotenv/config
+        - /app/xp-archive/server/dist/server/backfillJob.cjs
+        - dotenv_config_path=/app/xp-archive/.env
+    openSearch:
+        access: readwrite
+        instance: '{{ openSearchInstance }}'
+    accessPolicy:
+        outbound:
+            rules:
+                - application: '{{ xpFrontendApp }}'
+            external:
+                - host: '{{ xpHost }}'
+                - host: cdn.nav.no
+    envFrom:
+        - secret: '{{ secret }}'
+    resources:
+        requests:
+            cpu: 500m
+            memory: 1024Mi
+        limits:
+            # Mer RAM enn den vanlige poden: backfill kjører mange Puppeteer-render-jobber
+            # og akkumulerer Node.js-heap over tid. Jobben er isolert så OOM her påvirker
+            # ikke live-arkivet.
+            memory: 4096Mi
+    # Kubernetes starter jobben på nytt ved krasj (inkl. OOM). Backfill-jobben
+    # gjenopptar automatisk fra lagret cursor i OpenSearch.
+    restartPolicy: OnFailure
+    backoffLimit: 10
+    # Kjøres on-demand (ingen cron) – deploy-triggeret manuelt for initial backfill.
+    # Sett schedule her for nattlig sweep når steady-state er nådd.
+    # schedule: '0 2 * * *'
+    ttlSecondsAfterFinished: 86400
