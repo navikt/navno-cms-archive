@@ -1,26 +1,38 @@
 name: Deploy XP archive to dev
 on:
-  workflow_dispatch:
+    workflow_dispatch:
 
 jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
-    environment: dev-xp
-    permissions:
-      contents: read
-      id-token: write
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
+    build-and-deploy:
+        runs-on: ubuntu-latest
+        environment: dev-xp
+        permissions:
+            contents: read
+            id-token: write
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v6
 
-      - name: Build and deploy dev
-        uses: ./.github/actions/build-and-deploy-xp-archive
-        with:
-          naisEnv: dev
-          VITE_APP_ORIGIN: https://cms-arkiv.ansatt.dev.nav.no
-          XP_ORIGIN: https://www.dev.nav.no
-          HTML_RENDER_API: http://nav-enonicxp-frontend-dev1/render-from-props
-        env:
-          READER_TOKEN: ${{ secrets.READER_TOKEN }}
-          NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
-          NAIS_MANAGEMENT_PROJECT_ID: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
+            - name: Build and deploy dev
+              id: build-deploy
+              uses: ./.github/actions/build-and-deploy-xp-archive
+              with:
+                  naisEnv: dev
+                  VITE_APP_ORIGIN: https://cms-arkiv.ansatt.dev.nav.no
+                  XP_ORIGIN: https://www.dev.nav.no
+                  HTML_RENDER_API: http://nav-enonicxp-frontend-dev1/render-from-props
+              env:
+                  READER_TOKEN: ${{ secrets.READER_TOKEN }}
+                  NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
+                  NAIS_MANAGEMENT_PROJECT_ID: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
+
+            # Manuelt on-demand-steg for å (re)starte backfill-NaisJob-en i dev.
+            # Gjenbruker samme image som nettopp ble bygget over. Kun i dev-workflowen
+            # (workflow_dispatch) - ikke i prod, som trigges automatisk på push til main.
+            - name: Deploy backfill job to dev
+              uses: nais/deploy/actions/deploy@v2
+              env:
+                  CLUSTER: dev-gcp
+                  RESOURCE: xp-archive/.nais/backfill-job.yml
+                  VAR: image=${{ steps.build-deploy.outputs.image }}
+                  VARS: xp-archive/.nais/vars/backfill-job-dev.yml
