@@ -21,7 +21,7 @@ jobs:
       id-token: 'write'
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Build and deploy legacy archive
         uses: ./.github/actions/build-and-deploy-legacy-archive

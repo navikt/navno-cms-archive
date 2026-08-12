@@ -11,10 +11,10 @@ import style from './ContentView.module.css';
 const getDisplayComponent = (viewVariant?: ViewVariant, data?: ContentServiceResponse | null) => {
     if (!data || !viewVariant) return null;
 
-    const { json: content } = data;
+    const { json: content, versions } = data;
 
     const components: Record<ViewVariant, React.ReactElement> = {
-        html: <HtmlView content={content} source={data.source} />,
+        html: <HtmlView content={content} source={data.source} versions={versions} />,
         filepreview: <FilePreviewWrapper content={content} />,
         pdf: <PdfExport versions={data.versions} locale={content.locale} />,
     };

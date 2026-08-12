@@ -8,11 +8,12 @@ import { HtmlView } from './html-view/HtmlView';
 import { FilesView } from './files-view/FilesView';
 import { ViewSelector, ViewState } from '../view-selector/ViewSelector';
 import { VersionSelector } from './version-selector/VersionSelector';
-import { Button, Heading } from '@navikt/ds-react';
+import { Button, Detail, Heading } from '@navikt/ds-react';
 import { CategoriesPath } from '../../common/categories-path/CategoriesPath';
 import { PdfExporter } from './pdf-exporter/PdfExporter';
 
 import style from './ContentView.module.css';
+import { formatTimestamp } from '../../../../../common/src/shared/timestamp';
 
 type Props = {
     content: CmsContent;
@@ -43,9 +44,16 @@ export const ContentView = ({ content }: Props) => {
             <CategoriesPath path={content.path} className={style.path} />
             <div className={style.top}>
                 <div className={style.topLeft}>
-                    <Heading size={'medium'} level={'2'} className={style.header}>
-                        {content.displayName}
-                    </Heading>
+                    <div className={style.headerWrapper}>
+                        <Heading size={'medium'} level={'2'} className={style.header}>
+                            {content.displayName}
+                            {content.meta.publishTo && (
+                                <Detail
+                                    className={style.unpublished}
+                                >{`Avpublisert: ${formatTimestamp(content.meta.publishTo)}`}</Detail>
+                            )}
+                        </Heading>
+                    </div>
                     <div className={style.viewSelectorWrapper}>
                         <ViewSelector
                             content={content}

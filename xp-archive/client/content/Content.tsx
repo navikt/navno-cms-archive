@@ -62,6 +62,8 @@ export const Content = ({
         return <EmptyState />;
     }
 
+    const unpublishedTime = data?.json?.unpublishedTime ?? data?.json.archivedTime;
+
     return (
         <div className={style.content}>
             <div className={style.top}>
@@ -111,6 +113,11 @@ export const Content = ({
                     <div className={style.url}>
                         <Detail>{data?.json?._path || ''}</Detail>
                     </div>
+                    {unpublishedTime && (
+                        <div className={style.archivedOrUnpublished}>
+                            <Detail>{`Avpublisert: ${formatTimestamp(unpublishedTime)}`}</Detail>
+                        </div>
+                    )}
                 </div>
             </div>
 

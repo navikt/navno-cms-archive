@@ -70,4 +70,12 @@
     height: fit-content;
     padding: 0.25rem 0.75rem;
     border-radius: 10rem;
+    word-break: break-all;
+}
+
+.archivedOrUnpublished {
+    background-color: var(--a-gray-300);
+    white-space: nowrap;
+    padding: 0.25rem 0.75rem;
+    border-radius: 10rem;
 }
