@@ -32,7 +32,6 @@ spec:
     filesFrom:
         - emptyDir:
               medium: Memory
-              sizeLimit: 512Mi
           mountPath: /dev/shm
     resources:
         requests:
