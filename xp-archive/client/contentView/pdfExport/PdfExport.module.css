@@ -18,10 +18,19 @@
 .checkboxGroup {
     width: 100%;
     border-radius: var(--ax-radius-4);
+    label {
+        display: grid;
+        grid-auto-columns: 1fr 1fr 2fr 1fr;
+        grid-auto-flow: column;
+    }
 }
 
 .checkboxGroup:nth-child(even) {
     background-color: var(--ax-bg-neutral-soft);
+}
+
+.displayName {
+    color: var(--ax-text-neutral-subtle);
 }
 
 .downloadBar {

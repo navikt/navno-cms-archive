@@ -25,9 +25,9 @@ const VersionButton = ({ version, isSelected, isLatest, onClick }: VersionButton
         >
             {formatTimestamp(version.timestamp)}
             {isLatest ? <span style={{ fontWeight: 'normal' }}> (Siste versjon)</span> : null}
-            {/* {version.unpublishedTime ? ( */}
-            <Detail className={style.unpublished}>Avpublisert</Detail>
-            {/* ) : null} */}
+            {version.unpublishedTime ? (
+                <Detail className={style.unpublished}>Avpublisert</Detail>
+            ) : null}
         </Button>
     );
 };

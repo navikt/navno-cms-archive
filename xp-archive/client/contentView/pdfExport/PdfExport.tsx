@@ -1,8 +1,16 @@
 import React, { useState } from 'react';
 import { DownloadIcon } from '@navikt/aksel-icons';
-import { Button, Checkbox, CheckboxGroup, Heading, HelpText } from '@navikt/ds-react';
+import {
+    Button,
+    Checkbox,
+    CheckboxGroup,
+    Detail,
+    Heading,
+    HelpText,
+    BodyShort,
+} from '@navikt/ds-react';
 import { VersionReference } from 'shared/types';
-import { formatTimestamp } from '@common/shared/timestamp';
+import { formatTimestamp, getTimestring } from '@common/shared/timestamp';
 import style from './PdfExport.module.css';
 
 type Props = {
@@ -80,7 +88,16 @@ export const PdfExport = ({ versions, locale }: Props) => {
                             value={`${v.nodeId}:${v.versionId}`}
                             className={style.checkboxGroup}
                         >
-                            {v.displayName} {formatTimestamp(v.timestamp)}{' '}
+                            <BodyShort size="small">{formatTimestamp(v.timestamp, true)}</BodyShort>
+                            <BodyShort size="small">
+                                {getTimestring(new Date(v.timestamp))}
+                            </BodyShort>
+                            <BodyShort size="small" className={style.displayName}>
+                                {v.displayName}
+                            </BodyShort>
+                            {v.unpublishedTime ? (
+                                <Detail>Avpublisert: {formatTimestamp(v.unpublishedTime)}</Detail>
+                            ) : null}
                         </Checkbox>
                     ))}
                 </CheckboxGroup>
