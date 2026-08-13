@@ -1,17 +1,7 @@
 import puppeteer, { Browser } from 'puppeteer';
 import { unlinkSync, existsSync } from 'fs';
 
-const LAUNCH_ARGS = [
-    '--no-sandbox',
-    '--disable-setuid-sandbox',
-    '--disable-dev-shm-usage',
-    // Unngår zygote-basert fork-spawning av renderer-prosesser. Containerruntimen
-    // her ser ut til å blokkere/maskere skriving til /proc/*/oom_score_adj
-    // (samme zygote_host_impl_linux.cc-komponent som feiler i loggen), som ga
-    // konstant "Connection closed" uavhengig av CPU/minne.
-    '--no-zygote',
-    '--user-data-dir=/tmp/.chromium',
-];
+const LAUNCH_ARGS = ['--no-sandbox', '--disable-setuid-sandbox', '--user-data-dir=/tmp/.chromium'];
 
 // dumpio: true videresender Chromiums egen stdout/stderr til prosessens logg,
 // slik at den faktiske krasj-årsaken (ikke bare "Connection closed") blir synlig.
