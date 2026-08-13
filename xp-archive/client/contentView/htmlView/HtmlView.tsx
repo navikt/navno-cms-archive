@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { xpArchiveConfig } from '@common/shared/siteConfigs';
-import { Alert, Loader, Button, Link, Theme } from '@navikt/ds-react';
+import { Alert, Loader, Button, Link, Box, Theme } from '@navikt/ds-react';
 import { Content, VersionReference } from '../../../shared/types';
 import { formatTimestamp } from '../../../../common/src/shared/timestamp';
 import { VersionSelector } from '../../versionSelector/VersionSelector';
@@ -46,8 +46,7 @@ export const HtmlView = ({ content, versions }: Props) => {
     const htmlPath = `${xpArchiveConfig.basePath}/html/${content._id}/${content.locale}/${content._versionKey}`;
     const isLoading = loadedPath !== htmlPath;
 
-    const { selectedVersion } = useAppState();
-    const [versionViewOpen, setVersionViewOpen] = useState(false);
+    const { selectedVersion, versionViewOpen, setVersionViewOpen } = useAppState();
 
     const getVersionDisplay = () => {
         if (versions.length === 0 || !content) return 'Ingen versjoner';
@@ -59,59 +58,57 @@ export const HtmlView = ({ content, versions }: Props) => {
     };
 
     return (
-        <Theme theme={'dark'} className={style.wrapper} hasBackground={false}>
-            <div className={style.versionBar}>
-                <Button
-                    data-color={'neutral'}
-                    variant={'tertiary'}
-                    icon={<VersionIcon isOpen={versionViewOpen} />}
-                    onClick={() => setVersionViewOpen(!versionViewOpen)}
-                >
-                    {getVersionDisplay()}
-                </Button>
-                <Link
-                    href={htmlPath}
-                    data-color={'neutral'}
-                    onClick={(e) => {
-                        e.preventDefault();
-                        window.open(htmlPath, '_blank');
-                    }}
-                >
-                    {'Åpne i nytt vindu'}
-                    <ExternalLinkIcon />
-                </Link>
-            </div>
-            <div className={style.versionsAndContent}>
-                {versionViewOpen && (
-                    <VersionSelector
-                        versions={versions}
-                        onClose={() => setVersionViewOpen(false)}
-                    />
-                )}
-                <div className={style.content}>
-                    {content.originalContentTypeName ? (
-                        <Alert variant="warning">{`Obs! Denne siden var opprinnelig en "${content.originalContentTypeName}" og inneholder versjonshistorikken. ${getUnpublishedWarningText(content, versions)}`}</Alert>
-                    ) : null}
-                    {content.x?.['no-nav-navno']?.redirectToLayer?.locale ? (
-                        <Alert variant="warning">{`Obs! Denne siden er satt som redirect til språkversjonen for "${localeNames[content.x['no-nav-navno'].redirectToLayer.locale]}". Husk å velge riktig språkversjon for å se korrekt historikk.`}</Alert>
-                    ) : null}
-                    {isLoading && (
-                        <div className={style.loaderWrapper}>
-                            <Loader size="xlarge" />
-                        </div>
-                    )}
-                    <iframe
-                        title={'HTML-visning'}
-                        src={htmlPath}
-                        className={style.iframe}
-                        onLoad={(e) => {
-                            setLoadedPath(htmlPath);
-                            disableLinksScriptsAndEventListeners(e.currentTarget);
+        <Box className={style.wrapper} background={'neutral-strong'}>
+            <Theme theme={'dark'} hasBackground={false} className={style.themeWrapper}>
+                <div className={style.versionBar}>
+                    <Button
+                        size={'small'}
+                        variant={'tertiary'}
+                        data-color={'neutral'}
+                        icon={<VersionIcon isOpen={versionViewOpen} />}
+                        onClick={() => setVersionViewOpen(!versionViewOpen)}
+                    >
+                        {getVersionDisplay()}
+                    </Button>
+                    <Link
+                        href={htmlPath}
+                        data-color={'neutral'}
+                        onClick={(e) => {
+                            e.preventDefault();
+                            window.open(htmlPath, '_blank');
                         }}
-                    />
+                    >
+                        {'Åpne i nytt vindu'}
+                        <ExternalLinkIcon />
+                    </Link>
                 </div>
-            </div>
-        </Theme>
+                <div className={style.versionsAndContent}>
+                    {versionViewOpen && <VersionSelector versions={versions} />}
+                    <div className={style.content}>
+                        {content.originalContentTypeName ? (
+                            <Alert variant="warning">{`Obs! Denne siden var opprinnelig en "${content.originalContentTypeName}" og inneholder versjonshistorikken. ${getUnpublishedWarningText(content, versions)}`}</Alert>
+                        ) : null}
+                        {content.x?.['no-nav-navno']?.redirectToLayer?.locale ? (
+                            <Alert variant="warning">{`Obs! Denne siden er satt som redirect til språkversjonen for "${localeNames[content.x['no-nav-navno'].redirectToLayer.locale]}". Husk å velge riktig språkversjon for å se korrekt historikk.`}</Alert>
+                        ) : null}
+                        {isLoading && (
+                            <div className={style.loaderWrapper}>
+                                <Loader size="xlarge" />
+                            </div>
+                        )}
+                        <iframe
+                            title={'HTML-visning'}
+                            src={htmlPath}
+                            className={style.iframe}
+                            onLoad={(e) => {
+                                setLoadedPath(htmlPath);
+                                disableLinksScriptsAndEventListeners(e.currentTarget);
+                            }}
+                        />
+                    </div>
+                </div>
+            </Theme>
+        </Box>
     );
 };
 

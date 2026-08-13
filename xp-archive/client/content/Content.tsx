@@ -39,7 +39,7 @@ export const Content = () => {
         return <EmptyState />;
     }
 
-    const unpublishedTime = data?.json?.unpublishedTime ?? data?.json?.archivedTime;
+    const unpublishedTime = data?.json?.unpublishedTime;
 
     return (
         <div className={style.content}>

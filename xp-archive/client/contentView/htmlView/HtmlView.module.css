@@ -1,7 +1,10 @@
 .wrapper {
     height: 100%;
     padding: 1rem 1rem 0;
-    background-color: var(--ax-bg-accent-soft);
+}
+
+.themeWrapper {
+    height: 100%;
 }
 
 .iframe {
@@ -26,6 +29,8 @@
 .versionBar {
     display: flex;
     justify-content: space-between;
+    color: var(--ax-text-neutral-contrast);
+    margin-bottom: 1rem;
 }
 
 .versionsAndContent {
@@ -34,5 +39,5 @@
 }
 
 .content {
-    flex-grow: 2;
+    flex: 3;
 }

@@ -33,6 +33,7 @@ const getSelectedContentFromPath = (): SelectedContent | undefined => {
 
 export const AppStateProvider = ({ children }: Props) => {
     const [selectedContent, setSelectedContent] = useState<SelectedContent>();
+    const [versionViewOpen, setVersionViewOpen] = useState(false);
     const activeSelectedContent = selectedContent ?? getSelectedContentFromPath();
 
     const updateSelectedContent = (newSelectedContent: SelectedContent) => {
@@ -48,6 +49,8 @@ export const AppStateProvider = ({ children }: Props) => {
                 selectedVersion: activeSelectedContent?.versionId,
                 selectedLocale: activeSelectedContent?.locale,
                 updateSelectedContent,
+                versionViewOpen,
+                setVersionViewOpen,
             }}
         >
             {children}

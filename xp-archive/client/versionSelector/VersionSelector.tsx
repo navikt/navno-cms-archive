@@ -1,44 +1,45 @@
 import React, { useState } from 'react';
-import { CheckmarkIcon, XMarkIcon } from '@navikt/aksel-icons';
-import { Heading, Button, HelpText, TextField } from '@navikt/ds-react';
+import { CheckmarkIcon } from '@navikt/aksel-icons';
+import { Heading, Button, TextField, Detail } from '@navikt/ds-react';
 import { VersionReference } from 'shared/types';
 import { formatTimestamp } from '@common/shared/timestamp';
 import { useAppState } from 'client/context/appState/useAppState';
-import { classNames } from '@common/client/utils/classNames';
 import style from './VersionSelector.module.css';
 
 type VersionButtonProps = {
+    version: VersionReference;
     isSelected: boolean;
+    isLatest: boolean;
     onClick: () => void;
-    children: React.ReactNode;
 };
 
-const VersionButton = ({ isSelected, onClick, children }: VersionButtonProps) => (
-    <Button
-        variant="tertiary"
-        className={classNames(style.versionButton, isSelected && style.selected)}
-        onClick={onClick}
-        icon={isSelected && <CheckmarkIcon />}
-        iconPosition="right"
-    >
-        {children}
-    </Button>
-);
+const VersionButton = ({ version, isSelected, isLatest, onClick }: VersionButtonProps) => {
+    return (
+        <Button
+            variant="tertiary"
+            data-color={'neutral'}
+            className={style.versionButton}
+            onClick={onClick}
+            icon={isSelected && <CheckmarkIcon />}
+            iconPosition="left"
+        >
+            {formatTimestamp(version.timestamp)}
+            {isLatest ? <span style={{ fontWeight: 'normal' }}> (Siste versjon)</span> : null}
+            {/* {version.unpublishedTime ? ( */}
+            <Detail className={style.unpublished}>Avpublisert</Detail>
+            {/* ) : null} */}
+        </Button>
+    );
+};
 
 type Props = {
     versions: VersionReference[];
-    onClose: () => void;
 };
 
-export const VersionSelector = ({ versions, onClose }: Props) => {
+export const VersionSelector = ({ versions }: Props) => {
     const [searchQuery, setSearchQuery] = useState('');
     const { selectedVersion, updateSelectedContent } = useAppState();
     const versionSelected = selectedVersion || versions[0].versionId;
-
-    const handleClose = () => {
-        setSearchQuery('');
-        onClose();
-    };
 
     const selectVersion = (versionId: string) => {
         const node = versions.find((v) => v.versionId === versionId);
@@ -56,24 +57,14 @@ export const VersionSelector = ({ versions, onClose }: Props) => {
     );
 
     return (
-        <div>
-            <div className={style.headingAndFilter}>
+        <div className={style.versionSelector}>
+            <div>
                 <div className={style.top}>
                     <span className={style.heading}>
                         <Heading size="xsmall" spacing>
                             Versjoner
                         </Heading>
-                        <HelpText title={'Tips!'}>
-                            {
-                                '«Versjoner» viser kun innholdet for den valgte siden. For å søke på en annen side, må du først nullstille versjonssøket ved å klikke på krysset ved siden av «Versjoner».'
-                            }
-                        </HelpText>
                     </span>
-                    <Button
-                        variant="tertiary-neutral"
-                        icon={<XMarkIcon />}
-                        onClick={handleClose}
-                    ></Button>
                 </div>
                 <TextField
                     label="Søk i versjoner"
@@ -87,14 +78,11 @@ export const VersionSelector = ({ versions, onClose }: Props) => {
                 {filteredVersions.map((version, index) => (
                     <VersionButton
                         key={version.versionId}
+                        version={version}
                         isSelected={version.versionId === versionSelected}
                         onClick={() => selectVersion(version.versionId)}
-                    >
-                        {formatTimestamp(version.timestamp)}
-                        {index === 0 && (
-                            <span style={{ fontWeight: 'normal' }}> (Siste versjon)</span>
-                        )}
-                    </VersionButton>
+                        isLatest={index === 0}
+                    />
                 ))}
             </div>
         </div>
