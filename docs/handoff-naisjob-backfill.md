@@ -1,7 +1,9 @@
-# Handoff — XP-arkiv backfill NaisJob (2026-08-11)
+# Handoff — XP-arkiv backfill NaisJob (2026-08-14, v2)
 
 > Handoff-dokument for å fortsette arbeidet i en ny chat uten tilgang til den forrige samtalen.
 > Skrevet detaljert med vilje. Den korte "Session Start"-versjonen ligger nederst.
+> Denne versjonen ERSTATTER 2026-08-11-versjonen: NaisJob-en er nå fullt verifisert ende-til-ende i dev.
+> Gjenstående arbeid er kun P2/P3/P4-opprydding (se §10), ingen P0/P1-blokkere lenger.
 
 ---
 
@@ -30,47 +32,45 @@ NaisJob-en isolerer backfillen i egen pod med mer RAM og gjenopptar automatisk f
 
 ---
 
-## 2. Nåværende status — hvor vi slapp
+## 2. Nåværende status — FULLT VERIFISERT ENDE-TIL-ENDE (2026-08-14)
 
-Bruker er tilbake fra 3 ukers ferie og re-orienterer seg. All NaisJob-kode er **bygget og lint-ren
-(EXIT=0)**, men **ustaget og aldri kjørt/deployet**.
+Alt NaisJob-relatert arbeid som var ustaget i 2026-08-11-versjonen er nå **committet, deployet, kjørt
+og verifisert vellykket** i dev. Sjekk alltid `git status` selv — ikke stol på gamle fil-lister.
 
-### Ustaget akkurat nå (verifisert med `git status`)
+**Resultat av full backfill-kjøring:** `Backfill ferdig: 9000 noder indeksert, 0 feilet – 7818s`
+(job `navno-xp-archive-backfill-7`, restartet 1 gang underveis — dette var den første reelle testen
+av cursor-resume, og den besto: jobben endte `Complete`, `1/1`, med 0 feilet totalt).
+OpenSearch-indeks `xp-archive-content-v3` har 30 347 docs totalt (kumulativt over alle kjøringer).
 
-```
- M xp-archive/server/build.mjs                                  # bygger job.cjs i tillegg til server.cjs
- M xp-archive/server/src/opensearch/XpArchiveOpenSearchClient.ts # save/get/clearCursor
- M xp-archive/server/src/routing/site.ts                        # BackfillService(indexingService, openSearchClient)
- M xp-archive/server/src/services/BackfillService.ts            # runStandaloneBackfill + cursor
-?? xp-archive/.nais/backfill-job.yml                            # NaisJob-manifest (NYTT)
-?? xp-archive/.nais/vars/backfill-job-dev.yml                   # env-vars dev (NYTT)
-?? xp-archive/.nais/vars/backfill-job-prod.yml                  # env-vars prod (NYTT)
-?? xp-archive/server/src/job.ts                                 # NaisJob-entrypoint (NYTT)
-```
+**To rotårsaker ble funnet og fikset underveis** (ingen av de opprinnelige P0/P1-hypotesene i denne
+handoff-en fra 2026-08-11 var de faktiske blokkerne — se §6 for full historikk):
 
-> Merk: mange filer som tidligere var ustaget (BrowserManager, IndexingService-logging, content-tree,
-> getVersionsFromIndex, paths.ts, useContentTree.ts, ContentTreeService, ContentService) er **allerede
-> committet** på `xp-arkiv-v2`. De er ferdige og verifiserte (se §5). Kun NaisJob-biten står igjen ustaget.
+1. **NetworkPolicy — topartsavtale manglet.** `navno-xp-archive-backfill` (ny app-identitet, egen
+   NaisJob) manglet `accessPolicy.inbound`-regel i `nav-enonicxp-frontend`s `config.yml`. Caller-siden
+   (vår egress) var OK, men target-siden (deres ingress) manglet oss. Fikset i søsterrepoet
+   (commit `31a85f044`, branch `xp-arkiv-v2`).
+2. **Puppeteer/Chromium versjonsmismatch.** `apk add --no-cache chromium` (upinnet i `Dockerfile_xp`)
+   hadde installert en Chromium 3 hovedversjoner nyere enn det pinnede Puppeteer-npm-paketet forventet
+   → 100 % `Connection closed` på ALL `newPage()`/snapshot, uavhengig av CPU/shm/zygote (tre blindveier,
+   alle reversert). Fikset ved å bumpe `puppeteer` i `pnpm-workspace.yaml`-katalogen til en versjon som
+   matcher den faktisk installerte Chromium-build-linjen.
 
-### Siste 5 commits på branchen
+**Kjent, delvis uløst drift-risiko:** dev1 er et DELT miljø. Etter at backfill-kjøringen fullførte, ble
+NetworkPolicy-fiksen i `nav-enonicxp-frontend` midlertidig BORTE fra live state (noen redeployet appen
+fra en annen branch/eldre commit — config.yml erstattes fullstendig ved hver deploy, merges ikke).
+Bruker redeployet fra `xp-arkiv-v2` igjen 2026-08-14, og fiksen er **verifisert tilbake** (se §9 for
+kommandoen som bekrefter dette). Men fiksen er ikke merget til `main` i søsterrepoet ennå — den kan i
+prinsippet forsvinne igjen ved neste vilkårlige redeploy fra andre team/branches. Vurder å merge/lande
+den permanent (se §10, P4).
 
-```
-9d8f71f fix: replace hardcoded BROWSER_RECYCLE_INTERVAL with BATCH_SIZE constant
-c524132 fix: adjust browser recycle interval for stability during long indexing runs
-bcd9468 fix: remove browser recycling logic from createStaticSnapshot method
-a2fba7b feat: add clearChromiumLock function to manage Chromium instance locks
-909af46 fix: improve logging for empty HTML snapshots in IndexingService
-```
+### Neste steg (kun opprydding igjen, ingen blokkere)
 
-### Neste steg (prioritert)
-
-1. **VERIFISER env-lasting i NaisJob-en før deploy** (se §6 "Åpent funn: dotenv i NaisJob"). Dette er
-   det viktigste blokkeringspunktet — job-en kan feile umiddelbart på manglende `XP_ORIGIN`/`HTML_RENDER_API`.
-2. Verifiser `command`-stien mot Dockerfile (allerede sjekket her — se §4, stien er korrekt).
-3. Bruker stager/committer NaisJob-filene (bruker gjør git selv — se §8).
-4. Deploy NaisJob til dev (via CI eller `kubectl apply`/nais deploy-action).
-5. Trigger + følg: `kubectl -n navno logs -f job/navno-xp-archive-backfill`.
-6. La backfillen kjøre ferdig i dev, overvåk minne og feilrate.
+Se full prioritert liste i §10. Kort oppsummert: (a) produktbeslutning om type-filter for "arkiverbar
+side" (76 % av indeksert innhold er strukturell støy), (b) undersøk hvorfor en tidligere, mye mindre
+testkjøring hadde ~1150 node-spesifikke XP-500-feil som IKKE gjentok seg i denne fulle 9000-node-kjøringen
+(0 feilet — uforklart avvik, ikke hastverk), (c) slett døde v1/v2 OpenSearch-indekser via Aiven-admin,
+(d) vurder å merge NetworkPolicy-fiksen til `main` i nav-enonicxp-frontend for å stoppe drift-risikoen,
+(e) read-write-split (parkert, se `docs/arkiv-durabilitet.md`).
 
 ---
 
@@ -129,9 +129,11 @@ a2fba7b feat: add clearChromiumLock function to manage Chromium instance locks
 
 ## 4. Filer og komponenter
 
-### NaisJob-spesifikke (ustaget)
+### NaisJob-spesifikke (nå COMMITTET + deployet + kjørt vellykket)
 
-**`xp-archive/server/src/job.ts`** (NY) — NaisJob-entrypoint.
+**`xp-archive/server/src/job.ts`** — NaisJob-entrypoint. Senere omdøpt til `backfillJob.ts`
+(og tilsvarende `dist/server/backfillJob.cjs`) — sjekk faktisk filnavn i workspace, ikke stol blindt på
+dette dokumentet for eksakt navn.
 
 - Booter kun backfill-avhengigheter (ingen Express/HTTP): `BrowserManager.create()`, `ContentService`,
   `XpArchiveOpenSearchClient`, `IndexingService`, `BackfillService`.
@@ -170,13 +172,21 @@ a2fba7b feat: add clearChromiumLock function to manage Chromium instance locks
 **`xp-archive/server/build.mjs`** (ENDRET) — bygger `dist/server/job.cjs` i tillegg til `server.cjs`
 (esbuild via `navno-cms-archive-common/src/server/buildServer.mjs`, `platform: node`, `packages: external`).
 
-**`xp-archive/.nais/backfill-job.yml`** (NY) — `kind: Naisjob`, navn `navno-xp-archive-backfill`, ns `navno`.
+**`xp-archive/.nais/backfill-job.yml`** — `kind: Naisjob`, navn `navno-xp-archive-backfill`, ns `navno`.
+DEPLOYET OG KJØRT VELLYKKET (2026-08-13/14).
 
-- `command: [node, -r, dotenv/config, /app/xp-archive/server/dist/server/job.cjs]`
+- `command: [node, -r, dotenv/config, /app/xp-archive/server/dist/server/backfillJob.cjs, dotenv_config_path=/app/xp-archive/.env]`
+  (dotenv-argumentet var P0-fiksen — se §6).
 - `openSearch.access: readwrite`, `accessPolicy.outbound` (xpFrontendApp, xpHost, cdn.nav.no),
-  `envFrom.secret`, `resources.limits.memory: 4096Mi` (vs 2048Mi for hovedpoden),
-  `restartPolicy: OnFailure`, `backoffLimit: 10`, `ttlSecondsAfterFinished: 86400`.
+  `envFrom.secret`, `resources.requests.cpu: 2000m` (bumpet fra 500m under feilsøking — IKKE den
+  faktiske rotårsaken, men beholdt som rimelig siden jobben spawner opptil 24 samtidige Chromium-renderere),
+  `resources.limits.memory: 4096Mi`, `restartPolicy: OnFailure`, `backoffLimit: 10`, `ttlSecondsAfterFinished: 86400`.
+- Template-placeholders (`{{ image }}` osv.) må IKKE ha mellomrom mellom klammene — en formatter kan
+  mangle dem til `{ { image } }` ved lagring; pakk inn i enkeltfnutter (`'{{ image }}'`) for å hindre dette.
 - `schedule` er **kommentert ut** (manuell/on-demand trigger for initial backfill; sett cron for nattlig sweep senere).
+- CI: `.github/workflows/xp-archive-deploy-dev.yml` har nå et eget deploy-steg for denne manifesten
+  (gjenbruker image fra hovedbygget via `outputs.image` på den delte composite-action). Bevisst IKKE
+  lagt i prod-workflowen (unngår at hver push til main auto-trigger en tung backfill i prod).
 
 **`xp-archive/.nais/vars/backfill-job-dev.yml`**:
 
@@ -238,25 +248,92 @@ secret: nav-enonicxp
 - `getVersionsFromIndex` (XP-uavhengig versjonsliste): bygget + lint-ren.
 - v3-indeks med `parentPath`: opprettet; 15 896 docs indeksert før OOM.
 
-### Ferdig men IKKE kjørt/deployet (ustaget)
+### Ferdig OG kjørt vellykket (2026-08-13/14)
 
-- **NaisJob (job.ts + BackfillService.runStandaloneBackfill + cursor-metoder + manifest + vars + build.mjs)**:
-  bygget, lint EXIT=0. **Aldri kjørt.**
-- Cursor-persistens: bygget, lint-ren, aldri utøvd i praksis.
+- **NaisJob** (entrypoint + `BackfillService.runStandaloneBackfill` + cursor-metoder + manifest + vars +
+  `build.mjs`): committet, deployet, kjørt til `Complete` med 9000 noder / 0 feilet.
+- **Cursor-persistens**: utøvd i praksis — jobben restartet 1 gang midt i kjøringen og fortsatte korrekt
+  fra cursor (bekreftet via at sluttresultatet var konsistent, 0 feilet totalt).
+- **NetworkPolicy-fiks** (nav-enonicxp-frontend): committet og verifisert live (se §2).
+- **Puppeteer/Chromium-versjonsfiks**: committet i `pnpm-workspace.yaml`, verifisert løser problemet 100 %.
 
-### Gjenstår
+### Gjenstår (kun opprydding/produktbeslutninger, se §10 for full prioritert liste)
 
-- Verifiser env-lasting i NaisJob (§6 dotenv-funn) — **blokkerer deploy**.
-- Kjør backfillen i dev, overvåk.
-- Type-filter for "arkiverbar side" (PARKERT — se §9). 76% av indeksert innhold er strukturell støy.
+- Type-filter for "arkiverbar side" (PARKERT). 76 % av indeksert innhold er strukturell støy.
 - Slett døde v2/v1-indekser via Aiven-admin (~3,2 GB page-cache-press).
-- Undersøk ~1150 node-spesifikke XP 500-feil (§6).
+- Undersøk hvorfor ~1150 node-spesifikke XP 500-feil fra en tidligere, mye mindre testkjøring IKKE
+  gjentok seg i denne fulle 9000-node-kjøringen (0 feilet) — uforklart avvik, ikke hastverk.
 - Verifiser `ARCHIVE_ROOT_PREFIX` for en/nn/se (kun `no` bekreftet).
 - Land `noDecorator`-endring i nav-enonicxp-frontend (committet på branch, ikke i main/prod).
+- Vurder å merge NetworkPolicy accessPolicy-fiksen til `main` i nav-enonicxp-frontend (drift-risiko, se §2).
+- Vurder å pinne `chromium`-versjonen i `Dockerfile_xp` (eller droppe `PUPPETEER_SKIP_DOWNLOAD`/
+  `PUPPETEER_EXECUTABLE_PATH` slik at Puppeteer laster sin egen matchende build) — systemisk drift-risiko
+  siden `apk add` uten versjonspin installerer nyeste hver gang imaget bygges på nytt.
 
 ---
 
 ## 6. Bugs og feilsøking
+
+### LØST (2026-08-14): NetworkPolicy — topartsavtale manglet for ny app-identitet
+
+- **Rot:** Nais NetworkPolicy krever at BEGGE sider lister hverandre: callerens `accessPolicy.outbound`
+  OG targetens `accessPolicy.inbound`. `navno-xp-archive-backfill` er en helt ny app-identitet (egen
+  NaisJob, ikke samme identitet som `navno-xp-archive`), og `nav-enonicxp-frontend`s `config.yml` hadde
+  kun `navno-xp-archive` i sin inbound-allowlist, ikke den nye backfill-identiteten.
+- **Symptom:** 100 % `TypeError: fetch failed` fra `ContentService.getContentHtml()` mot
+  `render-from-props`, selv om caller-siden (vår egress) så identisk ut som den fungerende hovedappen.
+  Første (feilaktige) hypotese: sammenlignet kun egress-reglene og konkluderte "ikke en policy-feil" —
+  ufullstendig, fordi ingress-siden hos target aldri ble sjekket.
+- **Verifisering:** `kubectl exec deploy/navno-xp-archive -- node -e "fetch(...)"` ga `status 404`
+  (hovedappen NÅR target), mens NaisJob-en feilet vedvarende — beviste at det var identitetsspesifikt,
+  ikke et generelt DNS/nettverksproblem.
+- **Fiks:** la til `navno-xp-archive-backfill` i `nav-enonicxp-frontend/.nais/config.yml` sin
+  `accessPolicy.inbound.rules`. Committet der (`31a85f044`, branch `xp-arkiv-v2`).
+- **Drift-risiko (delvis uløst):** dev1 er delt miljø — config.yml erstattes helt (ikke merges) ved
+  hver deploy. Fiksen forsvant midlertidig fra live state da noen redeployet fra en annen branch/commit,
+  men ble gjenopprettet 2026-08-14 (se §2, §9). Vurder å merge til `main` for å stoppe gjentakelse.
+
+### LØST (2026-08-14): Puppeteer/Chromium versjonsmismatch — "Connection closed" på ALL snapshot
+
+- **Symptom:** etter at NetworkPolicy-fiksen løste HTML-henting, feilet HVER ENESTE
+  `createStaticSnapshot()`-kall med `Connection closed` fra Puppeteer.
+- **Tre blindveier prøvd og forkastet (alle basert på plausible, men feil hypoteser):**
+  (a) `/dev/shm` for lite → la til `--disable-dev-shm-usage` + Memory-backed emptyDir. Ingen effekt.
+  (b) CPU-sult fra 24 samtidige Puppeteer-sider → bumpet `requests.cpu` 500m→2000m. Ingen effekt
+  (beholdt likevel som rimelig, se §4).
+  (c) Zygote/seccomp-støy (`Failed to adjust OOM score... Permission denied (13)`) → la til `--no-zygote`.
+  Ingen effekt (reversert).
+- **Avgjørende A/B-test:** kjørte SAMME kode (med alle 3 "fikser" fortsatt aktive) via hovedappens
+  HTTP-endepunkt (`POST /api/backfill`) i stedet for NaisJob-en — feilet 100 % IDENTISK. Beviste at det
+  var en kode-/avhengighetsregresjon delt av begge deployments, IKKE et NaisJob-spesifikt miljøproblem.
+- **Faktisk rotårsak:** `kubectl exec ... -- chromium --version` → `Chromium 151.0.7922.137`. Kryssjekket
+  mot Puppeteers offisielle kompatibilitetstabell (https://pptr.dev/supported-browsers) → pinnet
+  Puppeteer-versjon forventet Chrome for Testing **148.0.7778.97** — 3 hovedversjoner avvik. Dette
+  forklarer symptommønsteret eksakt: DevTools-websocket koblet alltid til fint (bekreftet via
+  `dumpio: true`-diagnostikk, "DevTools listening on ws://..." hver gang), men nyere/inkompatibel
+  CDP-semantikk for `Target.createTarget`/sideopprettelse feilet konsekvent.
+- **Fiks:** reverterte alle 3 blindveier (shm-flagg og zygote-flagg reversert, CPU-bump beholdt som
+  harmløs), bumpet `puppeteer` i `pnpm-workspace.yaml`-katalogen til en versjon som matcher den faktisk
+  installerte Chromium-build-linjen (samme build-linje 7922.x). `pnpm install` (unsandboxed) regenererte
+  lockfilen, `pnpm run lint` bekreftet ingen TS/API-brekkasje fra major-versjonsbumpen.
+- **LÆRDOM (systemisk, ikke fullt løst):** `apk add --no-cache chromium` (upinnet) i `Dockerfile_xp`
+  installerer alltid nyeste Chromium ved image-rebuild — vil drifte igjen. Permanent fiks (ikke gjort):
+  pin chromium-versjonen eksplisitt, ELLER fjern `PUPPETEER_SKIP_DOWNLOAD`/`PUPPETEER_EXECUTABLE_PATH`
+  slik at Puppeteer laster ned sin egen matchende Chrome for Testing-binær i stedet.
+
+### LØST/AVKLART: `kubectl logs -f`-strømming brytes midt i lange kjøringer
+
+- `read tcp ...: connection reset by peer` under en flere-timers `kubectl logs -f` er en CLIENT-side
+  TCP-frakobling (vanlig for langvarige log-streaming-sesjoner), IKKE et tegn på at jobben/poden feilet.
+  Bekreft alltid faktisk jobb-helse via `kubectl get pods`/`get job` i stedet for å stole på om
+  log-strømmen forble tilkoblet.
+
+### LØST tidligere (2026-08-11, historisk — dotenv/env i NaisJob)
+
+- Opprinnelig hypotese om at NaisJob-en manglet `dotenv_config_path` og derfor ville feile på manglende
+  `XP_ORIGIN`/`HTML_RENDER_API` VISTE SEG Å VÆRE KORREKT og var den faktiske P0-fiksen — se `command`
+  i §4. Denne var reell og nødvendig, men var IKKE hovedblokkeren for at kjøringen lyktes — de to nye
+  rotårsakene over (NetworkPolicy, Puppeteer/Chromium) var det som faktisk avgjorde suksess/fiasko.
 
 ### LØST: `Number.isFinite is not a function` (enonic nodeList 500)
 
@@ -299,24 +376,6 @@ secret: nav-enonicxp
 - **Hypotese:** guillotine-query feiler for visse content-typer/configs (jf. "No type found for input type"-WARN
   i XP-logg). **NESTE:** hent XP-stacktrace for content-500 på én av dem (bruker har XP-logg-tilgang).
 - **Robusthetsgap:** driveren mangler per-node timeout — én hengende fetch fryser hele loopen (ikke skjedd, men gap).
-
-### ÅPENT FUNN (ny, oppdaget i denne handoff-gjennomgangen): dotenv i NaisJob
-
-- **Hovedserveren** starter med (Dockerfile CMD):
-  `["-r", "dotenv/config", "./dist/server/server.cjs", "dotenv_config_path=../.env"]`
-  Base-image ENTRYPOINT = `node`. `WORKDIR /app/xp-archive/server`. `.env` bakes inn på `/app/xp-archive/.env`.
-- **`config.yml` har INGEN eksplisitt `env:`** for `XP_ORIGIN`/`HTML_RENDER_API` — de kommer sannsynligvis
-  fra den innbakte `.env`-fila (lastet via `dotenv_config_path=../.env`), IKKE fra k8s-secret.
-- **NaisJob-kommandoen mangler `dotenv_config_path`:**
-  `[node, -r, dotenv/config, /app/xp-archive/server/dist/server/job.cjs]` — cwd = WORKDIR, så dotenv leter
-  etter `/app/xp-archive/server/.env` som IKKE finnes (.env ligger på `/app/xp-archive/.env`).
-- **Konsekvens (må verifiseres, ikke bekreftet):** NaisJob-en kan feile umiddelbart på `job.ts` sin
-  requiredEnv-sjekk fordi `XP_ORIGIN` + `HTML_RENDER_API` ikke er lastet. `OPEN_SEARCH_*` injiseres av nais
-  `openSearch:`-blokka; `SERVICE_SECRET` ligger trolig i k8s-secret (`envFrom`).
-- **Sannsynlig fiks:** legg til `dotenv_config_path=/app/xp-archive/.env` (eller `../.env`) som siste arg i
-  NaisJob `command`, ELLER bekreft at `XP_ORIGIN`/`HTML_RENDER_API` finnes i secret `nav-enonicxp-dev1`.
-  **IKKE inspiser secret-innhold lokalt — bruker verifiserer.** Command-STIEN til `job.cjs` er derimot korrekt
-  (WORKDIR `/app/xp-archive/server` + COPY `nonsymlink/xp-server/` → `dist/server/job.cjs`).
 
 ### LØST tidligere: mapping-konflikt, snapshot-timeout, korrupt versjon
 
@@ -391,6 +450,14 @@ gh workflow run "Deploy XP archive to dev" --ref xp-arkiv-v2
 # NaisJob (etter deploy)
 kubectl -n navno logs -f job/navno-xp-archive-backfill
 kubectl -n navno describe job navno-xp-archive-backfill
+kubectl -n navno get job navno-xp-archive-backfill    # sjekk faktisk COMPLETIONS/status, ikke bare logg-strømmen
+
+# Verifiser at NetworkPolicy-fiksen er live (topartsavtale — se §2, §6)
+kubectl -n navno get networkpolicy nav-enonicxp-frontend-dev1 -o yaml | grep -B3 "navno-xp-archive"
+# forventet: både "navno-xp-archive" OG "navno-xp-archive-backfill" i output
+
+# Sjekk installert Chromium-versjon i poden (drift-risiko, se §6)
+kubectl -n navno exec deploy/navno-xp-archive -- chromium --version
 
 # OpenSearch-diagnostikk fra poden (readwrite-ACL: _cat/_count OK, ikke DELETE)
 kubectl -n navno exec deploy/navno-xp-archive -- <curl _cat/indices etc>
@@ -411,42 +478,80 @@ kubectl -n navno exec deploy/navno-xp-archive -- <curl _cat/indices etc>
 
 ## 10. Åpne spørsmål, risiko og TODOs (prioritert)
 
-**P0 — blokkerer NaisJob-kjøring**
+**Ingen P0/P1-blokkere lenger.** NaisJob-en er fullt verifisert ende-til-ende (§2). Gjenstående punkter
+er opprydding og produktbeslutninger, ingen av dem hindrer normal drift.
 
-1. **dotenv/env i NaisJob** (§6): verifiser at `XP_ORIGIN`/`HTML_RENDER_API` når job-en. Sannsynlig fiks:
-   legg `dotenv_config_path=/app/xp-archive/.env` sist i `command`, ELLER bekreft at de finnes i k8s-secret.
+**P1 — drift-risiko som bør lukkes snart**
 
-**P1 — kjøring og korrekthet** 2. Bruker stager/committer NaisJob-filene, deployer til dev, trigger, overvåker minne + feilrate. 3. Cursor-resume aldri utøvd — verifiser at et OOM-restart faktisk plukker opp `after` korrekt. 4. Per-node timeout mangler i driveren (én hengende XP-fetch fryser loopen).
+1. **Merge NetworkPolicy accessPolicy-fiksen til `main`** i nav-enonicxp-frontend (§2, §6) — den er kun
+   på `xp-arkiv-v2` og kan forsvinne igjen når noen redeployer dev1 fra en annen branch/commit.
+2. **Pin Chromium-versjonen** i `Dockerfile_xp` (eller fjern `PUPPETEER_SKIP_DOWNLOAD`/
+   `PUPPETEER_EXECUTABLE_PATH`) — samme klasse drift-risiko som traff oss denne økten, vil skje igjen
+   ved neste image-rebuild med mindre løst permanent.
+3. Cursor-resume er verifisert én gang (1 restart under 9000-node-kjøringen) — trolig OK, men fortsatt
+   kun én datapunkt.
 
-**P2 — datakvalitet / opprydding** 5. **Type-filter for "arkiverbar side"** (PARKERT): 76 % av indeksert innhold er strukturell støy
-(megamenu-item 160, page-template 56, user-tests-config 26, base:folder, template-folder). Ville gå i
-node-list.ts (enonic). **Produktavgjørelse:** hvilke typer er arkiverbar side? Merk: brukers screenshot av
-XP sitt EKTE live-tre viste samme støy → ikke en ny regresjon, paritet med XP. `SearchService.curatedTypes`
-er startpunkt, men mangler office-page og har link-typer uten html. 6. Undersøk ~1150 node-spesifikke XP 500 (§6) — hent stacktrace fra XP-logg for `1c807e52`/`d4750660`. 7. Slett døde v2 (3,1 GB) + v1 (149 MB) indekser via `avnadmin` (page-cache-press). Også foreldreløse
-`xp-archive-content` + `acl-probe-tmp`.
+**P2 — datakvalitet / opprydding**
 
-**P3 — content-tree-opprydding (fra durabilitet-doc)** 8. Verifiser `ARCHIVE_ROOT_PREFIX` for en/nn/se (kun `no` bekreftet — kan feile stille). 9. Barn-rekkefølge alfabetisk vs XP authored `childOrder`. 1000-barns-tak uten paginering. 10. Når P3 ryddet: slett `getContentTreeHandler` + `/api/contentTree`-ruta (reell død kode; TODO ligger i site.ts).
+4. **Type-filter for "arkiverbar side"** (PARKERT): 76 % av indeksert innhold er strukturell støy
+   (megamenu-item 160, page-template 56, user-tests-config 26, base:folder, template-folder). Ville gå i
+   node-list.ts (enonic). **Produktavgjørelse:** hvilke typer er arkiverbar side? Merk: brukers screenshot av
+   XP sitt EKTE live-tre viste samme støy → ikke en ny regresjon, paritet med XP. `SearchService.curatedTypes`
+   er startpunkt, men mangler office-page og har link-typer uten html.
+5. **Undersøk avviket:** en tidligere, mye mindre testkjøring hadde ~1150 node-spesifikke XP 500-feil
+   (§6, node-spesifikt bekreftet den gang — IKKE last), men denne fulle 9000-node-produksjonsskala-kjøringen
+   hadde 0 feilet. Årsak til avviket ukjent (endret XP-innhold siden sist? annen enumereringsrekkefølge?).
+   Ikke hastverk, men verdt å forstå før man stoler blindt på fremtidige kjøringer.
+6. Slett døde v2 (3,1 GB) + v1 (149 MB) indekser via `avnadmin` (page-cache-press). Også foreldreløse
+   `xp-archive-content` + `acl-probe-tmp`.
 
-**P4 — arkitektur/sikkerhet** 11. Read-write-split: hovedpod → `read`-only (paritet med legacy). Event-push-skriving må da flyttes/scopes. 12. Aiven snapshot/GCS-backup-strategi (durabilitet-doc). Rotér eksponert dev-secret `nav-enonicxp-dev1`. 13. Land `noDecorator` i nav-enonicxp-frontend.
+**P3 — content-tree-opprydding (fra durabilitet-doc)**
+
+7. Verifiser `ARCHIVE_ROOT_PREFIX` for en/nn/se (kun `no` bekreftet — kan feile stille).
+8. Barn-rekkefølge alfabetisk vs XP authored `childOrder`. 1000-barns-tak uten paginering.
+9. Når P3 ryddet: slett `getContentTreeHandler` + `/api/contentTree`-ruta (reell død kode; TODO ligger i site.ts).
+
+**P4 — arkitektur/sikkerhet**
+
+10. **Read-write-split**: hovedpod → `read`-only (paritet med legacy). Event-push-skriving må da
+    flyttes/scopes. Dette er den ene gjenværende oppgaven i denne lista med reell sikkerhetsarkitektur-avveining
+    — vurder å bruke en stærkere modell (Opus) for design-fasen hvis tilgjengelig, resten av lista er rutinemessig
+    nok for en standard modell (Sonnet).
+11. Aiven snapshot/GCS-backup-strategi (durabilitet-doc). Roter eksponert dev-secret `nav-enonicxp-dev1`.
+12. Land `noDecorator` i nav-enonicxp-frontend.
 
 ---
 
 ## 11. Kontekst som sparer neste AI for gjentatt utredning / samme feil
 
-- **`git status` ≠ den gamle summary-en.** Mye tidligere "ustaget" arbeid er nå committet. Kun NaisJob-biten
-  (4 modified + 4 new) er ustaget. Ikke stol blindt på eldre fil-lister — sjekk `git status`.
+- **`git status` ≠ den gamle summary-en.** Alt NaisJob-relatert er nå committet, deployet og kjørt
+  vellykket (§2). Ikke stol blindt på eldre fil-lister — sjekk `git status`.
+- **NetworkPolicy i Nais er en topartsavtale.** En ny app-identitet (som en NaisJob) trenger BÅDE egen
+  `accessPolicy.outbound` OG en eksplisitt `accessPolicy.inbound`-regel hos MÅLET. Å bare sjekke egress
+  hos seg selv og konkludere "ikke en policy-feil" er en klassisk ufullstendig diagnose (§6).
+- **Upinnet `apk add <pakke>` er en tikkende bombe** for verktøy med strenge versjonskrav (som Puppeteer/
+  Chromium). Driften skjedde en gang allerede denne økten og vil skje igjen ved neste image-rebuild med
+  mindre permanent løst (§10, P1).
+- **Delte dev-navnerom kan overskrives av andre teams/branches deploys.** Committet config i git er ikke
+  en garanti for hva som faktisk kjører live — verifiser alltid mot faktisk cluster-state (§2, §9).
+- **`kubectl logs -f`-frakobling under lange kjøringer er normalt** og betyr IKKE at jobben feilet —
+  sjekk `kubectl get job`/`get pods` for faktisk status.
 - **Prod bruker IKKE OpenSearch.** Ikke anta at endringer her rører prod-arkivet. Ingen prod-indeks finnes.
   76 %-junken er et rent DEV-fenomen; type-filter kan besluttes FØR go-live (blank tavle).
 - **Nashorn ES5.1 i enonic-xp.** Ikke bruk ES6 runtime-APIer i søster-repo-koden. TS-build lurer deg
   (syntaks OK, runtime feiler).
 - **`grep_search`/`file_search` når ikke søster-repoene.** Bruk absolutte stier + terminal for nav-enonicxp
   og nav-enonicxp-frontend.
-- **Node-spesifikke 500 er BEKREFTET node-spesifikke, ikke last.** Ikke gjenta "last"-hypotesen.
+- **Node-spesifikke 500 er BEKREFTET node-spesifikke, ikke last** (fra en tidligere, mindre testkjøring).
+  Men denne fulle 9000-node-kjøringen hadde 0 feilet — avviket er ikke forklart, ikke gjenta konklusjonen
+  ukritisk på nye datapunkter uten å sjekke om mønsteret faktisk gjentar seg.
 - **Aiven readwrite ≠ index-admin.** Kan create doc/index, kan ikke DELETE index eller HEAD/GET metadata (403).
 - **Arkivet er additivt.** Aldri foreslå sletting som "opprydding" av indeksert innhold.
 - **Content-tree-migreringen ER retningen** (bruker-bekreftet), ikke en engangstest. `/api/contentTreeFromIndex`
   er default; `/api/contentTree` beholdes bevisst som rollback.
-- **NaisJob-command-STIEN er korrekt** (verifisert mot Dockerfile). Det åpne punktet er env-lasting (dotenv), ikke stien.
+- **Modellvalg for videre arbeid:** de fleste gjenstående oppgavene (§10) er rutinemessige nok for en
+  standard modell. Read-write-split (P4.10) er den ene oppgaven med reell sikkerhetsarkitektur-avveining
+  hvor en sterkere modell kan være verdt kostnaden, hvis tilgjengelig.
 
 ---
 
@@ -456,27 +561,31 @@ Du er nav-pilot. Svar på norsk, konsist. Jeg fortsetter arbeid på `navno-cms-a
 (`/Users/bdahle/Documents/navno/navno-cms-archive`, branch `xp-arkiv-v2`, PR #344). Full handoff ligger i
 `docs/handoff-naisjob-backfill.md` — les den ved behov.
 
-**Hva vi gjør:** Ferdigstille og kjøre en **NaisJob** som backfiller xp-arkivet inn i OpenSearch (dev først).
+**Hva vi gjorde:** Ferdigstilte og kjørte en **NaisJob** som backfiller xp-arkivet inn i OpenSearch (dev).
 Backfill er for tung for den brukervendte poden (OOM-krasj, Exit 137). NaisJob-en isolerer backfillen i egen
 pod (4 GB RAM) og gjenopptar automatisk fra en OpenSearch-cursor (`xp-archive-backfill-cursor`) ved OOM/krasj.
 
-**Status:** All NaisJob-kode er bygget og lint-ren (`pnpm run lint` EXIT=0) men **ustaget og aldri kjørt**.
-Ustaget: `xp-archive/server/src/job.ts` (ny entrypoint), `.../services/BackfillService.ts`
-(`runStandaloneBackfill` + cursor), `.../opensearch/XpArchiveOpenSearchClient.ts` (save/get/clearCursor),
-`.../routing/site.ts` (wiring), `server/build.mjs` (bygger `job.cjs`), `.nais/backfill-job.yml` (manifest),
-`.nais/vars/backfill-job-{dev,prod}.yml`.
+**Status: FULLT VERIFISERT ENDE-TIL-ENDE (2026-08-14).** Jobben kjørte til `Complete`:
+`Backfill ferdig: 9000 noder indeksert, 0 feilet – 7818s` (1 restart underveis, cursor-resume besto testen).
+Alt er committet, ingen ustaget NaisJob-kode lenger. To rotårsaker ble funnet og fikset underveis:
 
-**Neste steg (prioritert):**
+1. **NetworkPolicy-topartsavtale**: `navno-xp-archive-backfill` (ny app-identitet) manglet
+   `accessPolicy.inbound` hos `nav-enonicxp-frontend`. Fikset der (commit `31a85f044`, branch `xp-arkiv-v2`).
+   **Kjent drift-risiko:** dev1 er delt miljø — denne fiksen ble midlertidig borte fra live state da noen
+   redeployet fra en annen branch, men er verifisert gjenopprettet 2026-08-14. IKKE merget til `main` ennå.
+2. **Puppeteer/Chromium versjonsmismatch**: upinnet `apk add chromium` i `Dockerfile_xp` installerte en
+   Chromium 3 hovedversjoner nyere enn pinnet Puppeteer forventet → 100 % `Connection closed` på snapshot.
+   Fikset ved å bumpe `puppeteer` i `pnpm-workspace.yaml`-katalogen til en matchende versjon.
 
-1. **P0 — verifiser env-lasting i NaisJob FØR deploy.** Hovedserveren laster innbakt `.env` via
-   Dockerfile CMD `dotenv_config_path=../.env`. `config.yml` har ingen eksplisitt `env:` for `XP_ORIGIN`/
-   `HTML_RENDER_API`, så de kommer trolig fra `.env`, ikke k8s-secret. NaisJob-`command` mangler
-   `dotenv_config_path` → kan feile på `job.ts` requiredEnv-sjekk. Sannsynlig fiks: legg
-   `dotenv_config_path=/app/xp-archive/.env` sist i `command`, ELLER bekreft at `XP_ORIGIN`+`HTML_RENDER_API`
-   finnes i secret `nav-enonicxp-dev1`. (Command-STIEN `/app/xp-archive/server/dist/server/job.cjs` er
-   allerede verifisert korrekt mot Dockerfile.)
-2. Bruker stager/committer, deployer til dev, trigger, følger `kubectl -n navno logs -f job/navno-xp-archive-backfill`.
-3. Verifiser at cursor-resume faktisk plukker opp `after` ved et restart (aldri utøvd).
+**Neste steg (kun opprydding, ingen blokkere — se §10 i handoff for full prioritert liste):**
+
+1. **P1:** vurder å merge NetworkPolicy-fiksen til `main` i nav-enonicxp-frontend (drift-risiko).
+   Vurder å pinne Chromium-versjonen permanent i `Dockerfile_xp` (samme drift-risiko-klasse).
+2. **P2:** produktbeslutning om type-filter for "arkiverbar side" (76 % strukturell støy); undersøk hvorfor
+   en tidligere, mindre testkjøring hadde ~1150 node-spesifikke XP-500-feil som IKKE gjentok seg i denne
+   fulle kjøringen (0 feilet — uforklart, ikke hastverk); slett døde v1/v2-indekser via `avnadmin`.
+3. **P4:** read-write-split (hovedpod → read-only) er parkert — eneste gjenstående punkt med reell
+   sikkerhetsarkitektur-avveining. Vurder sterkere modell for design-fasen der.
 
 **Kritiske regler:**
 
@@ -484,12 +593,10 @@ Ustaget: `xp-archive/server/src/job.ts` (ny entrypoint), `.../services/BackfillS
 - **VERIFISER, ikke påstå.** Bruker har korrigert agenten ofte. Ikke håndter secrets lokalt.
 - **Prod bruker IKKE OpenSearch** (live XP-pass-through). OpenSearch-laget er ny capability kun på branchen —
   ingen prod-data å korrumpere.
+- **NetworkPolicy = topartsavtale.** Ny app-identitet trenger BÅDE egen outbound OG target sin inbound-regel.
 - **Enonic-xp = Nashorn (ES5.1)** — ingen ES6 runtime-APIer i søster-repo `nav-enonicxp`
   (`/Users/bdahle/Documents/navno/nav-enonicxp/`, branch `index-opensearch-archive`). `grep_search` når IKKE dit.
 - **Aiven readwrite ≠ index-admin:** kan create, kan ikke DELETE index (403). Arkivet er additivt.
+- **Delte dev-miljøer kan overskrives** av andres deploys — verifiser alltid mot faktisk cluster-state,
+  ikke bare committet config.
 - Utforsk/forklar før implementering, én ting av gangen, stopp ved bruddpunkter.
-
-**Kjente åpne (ikke-blokkerende):** ~1150 node-spesifikke XP 500 (bekreftet node-spesifikke, ikke last —
-hent XP-stacktrace); type-filter for "arkiverbar side" (76 % strukturell støy, produktavgjørelse, PARKERT);
-`ARCHIVE_ROOT_PREFIX` kun verifisert for `no`; døde v2/v1-indekser bør slettes av `avnadmin`; per-node
-timeout mangler i driveren.
