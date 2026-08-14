@@ -11,6 +11,7 @@ import { validateQuery } from 'utils/params';
 import archiver from 'archiver';
 import { ContentServiceResponse } from '../../../shared/types';
 import { getErrorMessage } from '@common/shared/fetchUtils';
+import { Page } from 'puppeteer';
 
 const DEFAULT_WIDTH_PX = 1024;
 const MIN_WIDTH_PX = 400;
@@ -125,14 +126,14 @@ export class PdfService {
 
         const widthActual = width >= MIN_WIDTH_PX ? width : DEFAULT_WIDTH_PX;
 
+        let page: Page | undefined;
         try {
             const browser = await this.browserManager.getBrowser();
-            const page = await browser.newPage();
+            page = await browser.newPage();
 
             // Log Page events for debugging should generation fail
             page.on('request', (request) => {
                 console.log(`Puppeteer: Request: ${request.method()} ${request.url()}`);
-                request.continue().catch(() => {});
             });
 
             page.on('requestfailed', (request) => {
@@ -177,8 +178,6 @@ export class PdfService {
                 },
             });
 
-            await page.close();
-
             return {
                 data: Buffer.from(pdf),
                 timestamp: json.createdTime,
@@ -194,6 +193,8 @@ export class PdfService {
                 filename: generateErrorFilename(content),
                 displayName: json.displayName,
             };
+        } finally {
+            await page?.close().catch(() => {});
         }
     }
 }
