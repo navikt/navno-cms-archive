@@ -485,9 +485,40 @@ er opprydding og produktbeslutninger, ingen av dem hindrer normal drift.
 
 1. **Merge NetworkPolicy accessPolicy-fiksen til `main`** i nav-enonicxp-frontend (§2, §6) — den er kun
    på `xp-arkiv-v2` og kan forsvinne igjen når noen redeployer dev1 fra en annen branch/commit.
-2. **Pin Chromium-versjonen** i `Dockerfile_xp` (eller fjern `PUPPETEER_SKIP_DOWNLOAD`/
-   `PUPPETEER_EXECUTABLE_PATH`) — samme klasse drift-risiko som traff oss denne økten, vil skje igjen
-   ved neste image-rebuild med mindre løst permanent.
+2. **Chromium/Puppeteer-versjonsdrift** — utredet 2026-08-17, beslutning tatt, IKKE implementert ennå.
+   Rotårsaken er at `apk add chromium` (upinnet, Wolfi ruller fritt) og `puppeteer` i pnpm-katalogen har
+   to uavhengige oppdateringstakter. Mer enn ~2 majors avvik gir 100 % `Connection closed` på all
+   `newPage()`, uten brukbar feilmelding. Gjelder BÅDE `Dockerfile_xp` og `Dockerfile_legacy` (sistnevnte
+   kjører i prod).
+
+    **Status 2026-08-17:** Wolfi gir Chromium 151.0.7922.137, `puppeteer@25.5.0` vil ha 151.0.7922.71.
+    Samme major, altså i synk. Ingen drift ennå — ikke akutt.
+
+    **Å pinne versjonen er forkastet.** Wolfi-repoet beholder normalt bare nyeste bygg av hver pakke, så
+    en hard pin slutter å bygge når versjonen ryddes bort — og fryser CVE-fikser i mellomtiden.
+
+    **Valgt løsning: byggtids-versjonssjekk.** Behold rullende `apk add chromium`, men legg til et steg
+    som sammenligner `chromium --version` mot `PUPPETEER_REVISIONS.chrome` fra `puppeteer-core` i imaget
+    og feiler bygget ved mer enn 1 major avvik. Da blir drift en tydelig byggfeil i stedet for et stille
+    runtime-krasj. Toleranse 1 major fordi Chrome slipper ny major hver ~4. uke og `minimumReleaseAge`
+    i `pnpm-workspace.yaml` er 3 døgn — 0 toleranse ville brutt bygget nesten månedlig.
+
+    **Alternativet «la Puppeteer eie sin egen Chrome» er utredet og PARKERT.** Det ville gjort drift
+    strukturelt umulig, men koster mer enn det smaker. Funn fra utredningen, verdt å beholde:
+    - De 25 manglende `.so`-filene løses automatisk med `apk add so:<biblioteknavn>` — apk utleder
+      pakken selv, ingen pakkenavn-gjetting nødvendig.
+    - Fonter mangler (`Could not find any font: , sans`). Rammer PDF-eksport, IKKE snapshots —
+      `createStaticSnapshot` returnerer `page.content()` (serialisert DOM, ingen rasterisering).
+      Distro-chromium drar inn `font-opensans` + `fontconfig` gratis; en manuell lukking må replikere det.
+    - Chrome for Testing publiserer ingen linux-arm64-build. Alternativet binder imaget til amd64.
+    - Lokal røyktest er umulig på Apple Silicon: `qemu: unknown option 'type=utility'` — QEMU klarer ikke
+      emulere Chromiums flerprosess-modell. Sluttverifisering måtte uansett skjedd i dev.
+
+    Nyttige teknikker hvis noen tar opp tråden: base-imaget har ikke `ldd` — bruk
+    `LD_TRACE_LOADED_OBJECTS=1 /lib/ld-linux-x86-64.so.2 <binær>`. Og `apk info -R chromium` inne i et
+    prøve-image kan vise foreldet indeks (viste 133 mens faktisk installert var 151) — verifiser alltid
+    med `apk add` etterfulgt av `--version`.
+
 3. Cursor-resume er verifisert én gang (1 restart under 9000-node-kjøringen) — trolig OK, men fortsatt
    kun én datapunkt.
 
