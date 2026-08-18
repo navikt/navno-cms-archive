@@ -48,7 +48,12 @@ spec:
     # Kubernetes starter jobben på nytt ved krasj (inkl. OOM). Backfill-jobben
     # gjenopptar automatisk fra lagret cursor i OpenSearch.
     restartPolicy: OnFailure
-    backoffLimit: 10
+    # Høyt tak fordi de observerte feilene ikke er krasj, men at cluster-autoscaleren
+    # kaster ut poden ved node-nedskalering ("deleting pod for node scale down") -
+    # infrastrukturstøy under en kjøring som varer i timer. Nais eksponerer ikke
+    # pod-annotasjonen safe-to-evict, så dette er den eneste knappen. Hvert forsøk
+    # gjenopptar fra cursor og indeksering er idempotent, så retries koster kun tid.
+    backoffLimit: 50
     # Kjøres on-demand (ingen cron) – deploy-triggeret manuelt for initial backfill.
     # Sett schedule her for nattlig sweep når steady-state er nådd.
     # schedule: '0 2 * * *'
