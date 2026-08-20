@@ -28,8 +28,11 @@
 .versionButton {
     position: relative;
     display: grid;
-    grid-template-columns: [version-chosen-icon] auto [version-info] 1fr;
+    grid-template-columns: [version-chosen-icon] 24px [version-info] 1fr;
     justify-items: start;
+    :global(.aksel-label) {
+        grid-column: version-info;
+    }
 
     &::after {
         content: '';
