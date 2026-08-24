@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { DownloadIcon } from '@navikt/aksel-icons';
-import { Button, Detail, Heading, LocalAlert } from '@navikt/ds-react';
+import { Button, Heading, LocalAlert } from '@navikt/ds-react';
 import { DataGrid } from '@navikt/ds-react/PREVIEW';
 import { VersionReference } from 'shared/types';
 import { formatTimestamp, getTimestring } from '@common/shared/timestamp';
@@ -32,9 +32,7 @@ const columns: DataGrid.Columns<VersionReference> = [
         id: 'unpublished',
         header: 'Avpublisert',
         bodyCell: (v) =>
-            v.unpublishedTime ? (
-                <Detail>Avpublisert: {formatTimestamp(v.unpublishedTime)}</Detail>
-            ) : null,
+            v.unpublishedTime ? <>Avpublisert: {formatTimestamp(v.unpublishedTime)}</> : null,
     },
 ];
 
