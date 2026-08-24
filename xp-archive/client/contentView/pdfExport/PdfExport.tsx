@@ -31,8 +31,7 @@ const columns: DataGrid.Columns<VersionReference> = [
     {
         id: 'unpublished',
         header: 'Avpublisert',
-        bodyCell: (v) =>
-            v.unpublishedTime ? <>Avpublisert: {formatTimestamp(v.unpublishedTime)}</> : null,
+        bodyCell: (v) => (v.unpublishedTime ? formatTimestamp(v.unpublishedTime) : null),
     },
 ];
 
