@@ -65,7 +65,7 @@ export const PdfExport = ({ versions, locale }: Props) => {
                     getRowId={(v) => v.versionId}
                     selection={{ mode: 'multiple', onSelectedRowIdsChange: updateVersionsSelected }}
                 >
-                    <DataGrid.Table />
+                    <DataGrid.Table layout="auto" />
                 </DataGrid>
                 {showError && (
                     <LocalAlert status="error" className={style.errorAlert}>
