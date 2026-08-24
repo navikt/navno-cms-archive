@@ -9,35 +9,15 @@
     gap: 0.5rem;
 }
 
-.selectDeselectAllBox {
-    padding: 0.5rem 0;
-    border-bottom: solid 1px var(--ax-border-neutral-subtle);
-    width: 100%;
-}
-
-.checkboxGroup {
-    width: 100%;
-    border-radius: var(--ax-radius-4);
-    label {
-        display: grid;
-        grid-auto-columns: 18ch 8ch 25% 35%;
-        grid-auto-flow: column;
-    }
-}
-
-.checkboxGroup:nth-child(even) {
-    background-color: var(--ax-bg-neutral-soft);
-}
-
-.displayName {
-    color: var(--ax-text-neutral-subtle);
-}
-
 .downloadBar {
     position: fixed;
     bottom: 0;
     background-color: var(--ax-bg-neutral-strong);
     width: 100%;
+}
+
+.errorAlert {
+    margin-top: 1rem;
 }
 
 .button {
