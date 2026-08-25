@@ -12,13 +12,17 @@ const MAX_SCALE = 2;
 export const pixelWidthToA4Scale = (pxWidth: number) =>
     Math.max(MIN_SCALE, Math.min(MAX_SCALE, (1 / pxWidth) * SCALE_FACTOR));
 
-export const generatePdfInfo = (content: ContentServiceResponse) => `
+export const generatePdfInfo = (content: ContentServiceResponse) => {
+    const unpublishedTime = content?.json?.unpublishedTime ?? content?.json.archivedTime;
+
+    return `
     <div style="font-size: 10px; margin-top:-16px; padding: 4px; width: 100%; display: flex; justify-content: space-between; white-space: nowrap">
     <div style="overflow-x: hidden; text-overflow: ellipsis">${pruneString(content.json.displayName, 110)}</div>
     <div>
-            [Endret: ${formatTimestamp(content.json.modifiedTime)}] - (side <span class="pageNumber"></span>/<span class="totalPages"></span>)
+            [Endret: ${formatTimestamp(content.json.modifiedTime)}${unpublishedTime ? ` | Avpublisert: ${formatTimestamp(unpublishedTime)}` : ''}] - (side <span class="pageNumber"></span>/<span class="totalPages"></span>)
         </div>
     </div>`;
+};
 
 const generateFilename = (content: ContentServiceResponse) =>
     `${formatTimestampForPDF(content.json.modifiedTime)}_${content.json.displayName}_${content.json._versionKey}`;

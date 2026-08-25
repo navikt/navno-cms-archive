@@ -80,7 +80,7 @@ export const PdfExport = ({ versions, locale }: Props) => {
                             value={`${v.nodeId}:${v.versionId}`}
                             className={style.checkboxGroup}
                         >
-                            {v.displayName} {formatTimestamp(v.timestamp)}{' '}
+                            {`${v.displayName} ${formatTimestamp(v.timestamp)}`}
                         </Checkbox>
                     ))}
                 </CheckboxGroup>
