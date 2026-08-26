@@ -484,7 +484,9 @@ er opprydding og produktbeslutninger, ingen av dem hindrer normal drift.
 > **Nytt 2026-08-25:** verifisering mot XP avdekket flere forhold, se **§12**. Kort oppsummert, vektet
 > etter at søk er primær inngang og treet sekundært:
 >
-> - **Fire sider mangler i indeksen** (§12.4) — eneste rene feil. Usynlige i både tre og søk.
+> - **Fire sider mangler i indeksen** (§12.4) — funnet på rotnivå i `no`. Usynlige i både tre og søk.
+>   **Dekning under rotnivå er ikke verifisert.** Den egentlige dekningstesten (flat sammenligning av
+>   node-IDer fra `nodeList` mot indeksen) er aldri kjørt — den krever feature-branchen i XP.
 > - **Søket treffer kun på tittel** (§12.1) — `searchText` fylles aldri. Vurdert akseptabelt for nå,
 >   men det er den reelle begrensningen på hovedinngangen.
 > - **Foreldreløse noder** (§12.3) — kosmetisk, innholdet er søkbart.
@@ -641,7 +643,12 @@ node-IDer fra `nodeList` mot indeksen, uten hierarki.
 
 **Innholdet er ikke utilgjengelig** — det er fullt søkbart, siden `searchDocuments` ikke filtrerer på sti.
 
-### 12.4 Fire sider mangler i indeksen (eneste rene feil)
+### 12.4 Fire sider mangler i indeksen — funnet på ROTNIVÅ i `no`
+
+> **Omfangsbegrensning:** dette er funnet ved å sammenligne **kun rotnivået** (`MAX_DEPTH=1`) i `no`.
+> Dekning under rotnivå er **ikke verifisert**. Dybde-3-kjøringen som ble gjort måler struktur, ikke
+> dekning (§12.2), og sier derfor ingenting om hva som er indeksert. Antall reelle dekningshull i
+> arkivet som helhet er **ukjent**.
 
 Ikke i indeksen i det hele tatt — usynlige både i tre og søk:
 
