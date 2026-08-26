@@ -484,9 +484,10 @@ er opprydding og produktbeslutninger, ingen av dem hindrer normal drift.
 > **Nytt 2026-08-25:** verifisering mot XP avdekket flere forhold, se **§12**. Kort oppsummert, vektet
 > etter at søk er primær inngang og treet sekundært:
 >
-> - **Fire sider mangler i indeksen** (§12.4) — funnet på rotnivå i `no`. Usynlige i både tre og søk.
->   **Dekning under rotnivå er ikke verifisert.** Den egentlige dekningstesten (flat sammenligning av
->   node-IDer fra `nodeList` mot indeksen) er aldri kjørt — den krever feature-branchen i XP.
+> - **Dekningen er verifisert og god** (§12.9): `no` 99,97 %, `nn` 100 %, `en` 99,93 %, `se` 5 av 6.
+>   De få manglende er innhold publisert bak cursoren under kjøringen — jobb for den nattlige sweepen.
+> - **De fire sidene som vises i `main` men mangler i arkivet er IKKE et hull** (§12.4). XP enumererer
+>   dem ikke; de er upubliserte. Arkivet gjør det riktige.
 > - **Søket treffer kun på tittel** (§12.1) — `searchText` fylles aldri. Vurdert akseptabelt for nå,
 >   men det er den reelle begrensningen på hovedinngangen.
 > - **Foreldreløse noder** (§12.3) — kosmetisk, innholdet er søkbart.
@@ -643,14 +644,14 @@ node-IDer fra `nodeList` mot indeksen, uten hierarki.
 
 **Innholdet er ikke utilgjengelig** — det er fullt søkbart, siden `searchDocuments` ikke filtrerer på sti.
 
-### 12.4 Fire sider mangler i indeksen — funnet på ROTNIVÅ i `no`
+### 12.4 Fire sider vises i `main`, men er IKKE et dekningshull
 
-> **Omfangsbegrensning:** dette er funnet ved å sammenligne **kun rotnivået** (`MAX_DEPTH=1`) i `no`.
-> Dekning under rotnivå er **ikke verifisert**. Dybde-3-kjøringen som ble gjort måler struktur, ikke
-> dekning (§12.2), og sier derfor ingenting om hva som er indeksert. Antall reelle dekningshull i
-> arkivet som helhet er **ukjent**.
+> **Avklart 2026-08-26.** `nodeList` enumererer ikke disse fire. XP anser dem altså ikke som
+> arkiverbare — ekskludert av `isExcludedFromExternalArchive`, mest sannsynlig fordi de er upubliserte
+> (`arbeid-og-opphold-pa-svalbard` sto som «New» i Content Studio). **Arkivet gjør det riktige ved å
+> ikke ha dem.** At de likevel vises i `main`s tre skyldes filterforskjellen i §12.5.
 
-Ikke i indeksen i det hele tatt — usynlige både i tre og søk:
+Sidene det gjelder, i tilfelle de dukker opp igjen i en senere sammenligning:
 
 | nodeId                                 | type                                                     |
 | -------------------------------------- | -------------------------------------------------------- |
@@ -702,19 +703,44 @@ sorterer ikke om. `docs/arkiv-durabilitet.md` sier «alfabetisk» — det stemme
 - Noen noder har 2000–3000 versjoner (arbeidslivssenter-kontorsider, ca. ti stykker) og tar ~50 minutter
   hver. `Done indexing` logges først når en node er ferdig, så telleren står stille i mellomtiden.
 
-### 12.9 Enumereringsvolum per locale
+### 12.9 Dekning per locale — målt 2026-08-26
 
-Målt direkte mot `nodeList` (nedre grenser — skanningen stoppet på 30 sider à 1000):
+Flat sammenligning av node-IDer fra `nodeList` mot indeksen. Ingen hierarki — se §12.2 for hvorfor
+tre-diff ikke duger som dekningsmål.
 
-| locale | lokaliserte noder |
-| ------ | ----------------- |
-| `no`   | ≥ 29 974          |
-| `nn`   | ≥ 332             |
-| `en`   | ≥ 322             |
-| `se`   | 1                 |
+| locale | XP enumererte | i indeksen | mangler | dekning |
+| ------ | ------------- | ---------- | ------- | ------- |
+| `no`   | 46 723        | 46 707     | 16      | 99,97 % |
+| `nn`   | 1208          | 1208       | 0       | 100 %   |
+| `en`   | 1390          | 1389       | 1       | 99,93 % |
+| `se`   | 6             | 5          | 1       | 83,3 %  |
 
-Feilkilde å unngå: `nodeList` med lav `count` gir null treff for alle locales, fordi de første nodene
-alfabetisk er `/_templates`-maler som ikke er lokalisert. Bruk `count=1000` og paginer.
+**Arkivet er i praksis komplett.** Indeksen har 46 733 noder for `no` — 26 flere enn XP enumererer.
+Det er historisk innhold (`okonomi-og-gjeld`, `beskjed`, `footer-contactus-*`) som er slettet eller
+avpublisert i XP. Arkivprinsippet fungerer.
+
+De manglende fordeler seg slik:
+
+- **16 i `no`**: testsider (`/no/eivind-tester` + to regneark), en side med `-copy` i navnet, tre
+  `/redirects/sok-nav-kontor*`, et par fragmenter, et bilde, en PDF og noen lokale sider. Alle bærer
+  preg av å være publisert **bak cursoren** mens backfillen kjørte. Enumereringen går alfabetisk over
+  mange timer, så innhold som dukker opp på en allerede passert posisjon blir ikke fanget. Det er
+  nettopp dette den nattlige sweepen (§3, `schedule` utkommentert i `.nais/backfill-job.yml`) skal ta.
+- **1 i `en`**: `e5ee2f6e-1eab-428c-b2f4-98fe2de4d53e`,
+  `/no/bedrift/ansatt-venter-barn/tester-01.07.2026`. Samme forklaring.
+- **1 i `se`**: `baf59cae-6de9-48fb-b8fb-4d873a275112` (AAP-noden). Kjent fra tidligere økt: 284
+  publiserte versjoner i `no`, hvorav `c74d032e` er **korrupt i XP** og ikke kan åpnes i Content Studio
+  heller.
+
+Merk også: `no` vokste fra 29 159 noder (18. august) til 46 733 (26. august). Backfillen fortsatte
+lenge etter at den ble sluttet fulgt med på, og fikk med seg ~17 000 noder til.
+
+**Feilkilder som ga sterkt misvisende tall tidligere:**
+
+- `nodeList` med lav `count` gir null treff for alle locales, fordi de første nodene alfabetisk er
+  `/_templates`-maler som ikke er lokalisert.
+- Å stoppe pagineringen på et sidetak. En tidligere måling med tak på 30 sider ga `nn ≥332` og `en ≥322`
+  — de reelle tallene er fire ganger så høye. Paginer til `hasMore` er `false`.
 
 ---
 
