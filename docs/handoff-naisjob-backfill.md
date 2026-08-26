@@ -481,6 +481,16 @@ kubectl -n navno exec deploy/navno-xp-archive -- <curl _cat/indices etc>
 **Ingen P0/P1-blokkere lenger.** NaisJob-en er fullt verifisert ende-til-ende (§2). Gjenstående punkter
 er opprydding og produktbeslutninger, ingen av dem hindrer normal drift.
 
+> **Nytt 2026-08-25:** verifisering mot XP avdekket flere forhold, se **§12**. Kort oppsummert, vektet
+> etter at søk er primær inngang og treet sekundært:
+>
+> - **Fire sider mangler i indeksen** (§12.4) — eneste rene feil. Usynlige i både tre og søk.
+> - **Søket treffer kun på tittel** (§12.1) — `searchText` fylles aldri. Vurdert akseptabelt for nå,
+>   men det er den reelle begrensningen på hovedinngangen.
+> - **Foreldreløse noder** (§12.3) — kosmetisk, innholdet er søkbart.
+> - **Arkivtreet er historisk, XP sitt er nåtidig** (§12.2) — produktbeslutning, ikke feil.
+>   Ikke bruk tre-diff mot XP som dekningsmål.
+
 **P1 — drift-risiko som bør lukkes snart**
 
 1. **Merge NetworkPolicy accessPolicy-fiksen til `main`** i nav-enonicxp-frontend (§2, §6) — den er kun
@@ -583,6 +593,121 @@ er opprydding og produktbeslutninger, ingen av dem hindrer normal drift.
 - **Modellvalg for videre arbeid:** de fleste gjenstående oppgavene (§10) er rutinemessige nok for en
   standard modell. Read-write-split (P4.10) er den ene oppgaven med reell sikkerhetsarkitektur-avveining
   hvor en sterkere modell kan være verdt kostnaden, hvis tilgjengelig.
+
+---
+
+## 12. Verifiseringsfunn (2026-08-25)
+
+Etter at backfillen fullførte ble arkivet sammenlignet mot XP. Alt under er **verifisert** — hypoteser
+som ble falsifisert underveis er bevisst utelatt.
+
+> **Viktigste kontekst for prioritering (bruker-bekreftet):** _søket_ er den primære måten å finne
+> innhold på. Innholdstreet er sekundært. Tittelsøk vurderes som godt nok inntil videre. Vekt funnene
+> under deretter — flere av dem er kosmetiske gitt den premissen.
+
+### 12.1 Søket treffer kun på tittel
+
+- `IndexingService.ts` setter `searchText: ''` — feltet fylles **aldri**.
+- `searchDocuments` gjør `wildcard` på `displayName.keyword` og spør aldri etter `searchText`.
+- `html` er mappet med `index: false` — lagret, men ikke søkbart.
+
+Konsekvens: en side kan bare finnes hvis man husker deler av overskriften. Å endre dette krever ny
+indeks og full reindeksering. Vurdert som akseptabelt for nå.
+
+### 12.2 Arkivtreet er historisk, XP sitt tre er nåtidig
+
+Indeksen lagrer `path` slik den var i hver versjon, og treet bygges på nyeste versjon. XP viser nodens
+**nåværende** plassering. Flyttes innhold uten å republiseres, endres `_path` uten at det lages en
+versjon arkivet kan fange — og de to trærne divergerer permanent.
+
+Dokumentert på node `471570db-fc30-4c02-a13c-ce07dac8602d`: to stier i indeksen (flyttet 2025-10),
+mens XP viser den på en tredje plassering under `/kontor/`. Nav har reorganisert kontorstrukturen fra
+`/no/lokalt/hjelpemiddelsentraler/` til `/kontor/`.
+
+**Konsekvens for testing: å diffe arkivtreet mot XP-treet er IKKE et dekningsmål.** De måler ulike ting.
+En «25 % dekning» fra en slik diff er meningsløs. Riktig dekningstest er en flat sammenligning av
+node-IDer fra `nodeList` mot indeksen, uten hierarki.
+
+### 12.3 Foreldreløse noder (kosmetisk, gitt at søk er primært)
+
+- 271 av 2000 undersøkte `parentPath`-verdier finnes ikke som node.
+- Årsak: mapper indekseres nesten ikke (kun 543 `base:folder` totalt), fordi de mangler `publish.from`
+  og dermed faller på `isExcludedFromExternalArchive`.
+- `getContentTreeLevel` finner barn med eksakt `term`-match på `parentPath`. Mangler mappen, kan man
+  aldri navigere inn i den.
+- Flytting i XP produserer nye foreldreløse, så tallet vokser over tid.
+- Hele `/content/redirects`-undertreet er indeksert med **ustrippede** stier (`parentPath=/content`) og
+  er foreldreløst per definisjon.
+
+**Innholdet er ikke utilgjengelig** — det er fullt søkbart, siden `searchDocuments` ikke filtrerer på sti.
+
+### 12.4 Fire sider mangler i indeksen (eneste rene feil)
+
+Ikke i indeksen i det hele tatt — usynlige både i tre og søk:
+
+| nodeId                                 | type                                                     |
+| -------------------------------------- | -------------------------------------------------------- |
+| `6d294fa1-fe29-4669-bb94-9b7e0eb453e8` | current-topic-page (kompetansesatsing-sosiale-tjenester) |
+| `bd5b4539-49df-4a41-a2e0-58bbbd3ce9d2` | main-article (send-soknad-om-sykepenger)                 |
+| `8bb408ff-5814-433b-87a0-febccfc47618` | main-article (arbeid-og-opphold-pa-svalbard)             |
+| `0e96e4d7-50a0-42af-a732-26e360a318d6` | main-article (jobb-i-utlandet)                           |
+
+Alle ligger rett under roten, så ingen mellomliggende mappe kan forklare det. Må feilsøkes mot
+`isExcludedFromExternalArchive` i søsterrepoet. Merk at `arbeid-og-opphold-pa-svalbard` sto som «New»
+(upublisert) i Content Studio — sjekk om de øvrige tre har samme status.
+
+### 12.5 Filtrene i XP er ulike på de to sidene
+
+```
+content-tree.ts:41   if (content && !isExcludedFromExternalArchive(content))
+node-list.ts:75      if (isContentLocalized(content) && !isExcludedFromExternalArchive(content))
+```
+
+Live-treet krever **ikke** `isContentLocalized`. Indekseringen gjør det. Forklarer hvorfor `nn` og `en`
+viser flere (arvede) mapper i XP enn i arkivet.
+
+### 12.6 XP-branchens betydning
+
+Diff mellom `main` og `index-opensearch-archive` i `nav-enonicxp`:
+
+- `content-tree.ts` — **identisk**. Tre-sammenligning påvirkes derfor ikke av hvilken branch dev kjører.
+- `node-list.ts`, `locales.ts`, `nodeList.ts` — **kun på feature-branchen**. Backfill krever den.
+- `search/search.ts` — **slettet** på feature-branchen. Kjører dev XP feature-branchen, har `main`-arkivet
+  et ødelagt søk per konstruksjon. Ikke bruk søket til å sammenligne branchene.
+
+### 12.7 Tre-sortering
+
+Barn sorteres på `timestamp desc` (fra `sort` i `getContentTreeLevel`), ikke alfabetisk. Klienten
+sorterer ikke om. `docs/arkiv-durabilitet.md` sier «alfabetisk» — det stemmer ikke med koden.
+
+### 12.8 Backfill-drift i dev
+
+- Pod-feilene var **ikke** OOM, men `ScaleDown` — cluster-autoscaleren kaster ut poden ved
+  node-nedskalering. Å øke `memory` hjelper ikke.
+- Naisjob-spesifikasjonen eksponerer **ikke** pod-annotasjoner, så `safe-to-evict` kan ikke settes.
+  `backoffLimit` er den eneste knappen (hevet til 50, se `.nais/backfill-job.yml`).
+- Cursoren har **side-granularitet** (`PAGE_SIZE = 1000`), ikke node-granularitet. Kommentaren i
+  `BackfillService` som lover «~10 noder» ved krasj er feil — reelt tap er opptil én side.
+- Fullføres en locale, slettes cursoren. Neste kjøring starter **den locale-en fra scratch**. Det finnes
+  ingen «fortsett der vi slapp» for hele jobben.
+- Dev-workflowen deployer appen **og** NaisJob-en i samme kjøring. Enhver dev-deploy erstatter en
+  kjørende backfill.
+- Noen noder har 2000–3000 versjoner (arbeidslivssenter-kontorsider, ca. ti stykker) og tar ~50 minutter
+  hver. `Done indexing` logges først når en node er ferdig, så telleren står stille i mellomtiden.
+
+### 12.9 Enumereringsvolum per locale
+
+Målt direkte mot `nodeList` (nedre grenser — skanningen stoppet på 30 sider à 1000):
+
+| locale | lokaliserte noder |
+| ------ | ----------------- |
+| `no`   | ≥ 29 974          |
+| `nn`   | ≥ 332             |
+| `en`   | ≥ 322             |
+| `se`   | 1                 |
+
+Feilkilde å unngå: `nodeList` med lav `count` gir null treff for alle locales, fordi de første nodene
+alfabetisk er `/_templates`-maler som ikke er lokalisert. Bruk `count=1000` og paginer.
 
 ---
 
