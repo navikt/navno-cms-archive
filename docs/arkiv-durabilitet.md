@@ -74,6 +74,8 @@ vært avviklet, ville denne endringen vært umulig å gjøre trygt.
 - [ ] Dokumenter en gjenopprettingsrutine (restore fra snapshot / re-index fra GCS).
 - [ ] Rydd med Aiven-admin (`avnadmin`) i dev: den foreldreløse `xp-archive-content`
       (erstattet av `xp-archive-content-v1`) og throwaway-indeksen `acl-probe-tmp`.
+- [ ] **Bestem shard-antall og replicas FØR den fulle reindekseringen i prod.** Shard-antall
+      kan ikke endres uten å reindeksere — se «Shard- og replica-oppsett» under.
 
 ## Mulige tiltak (ikke besluttet)
 
@@ -113,6 +115,73 @@ legacy-arkivet gjør (`indexStaticAssets.ts` → base64-assets i eget index). Ik
 inline base64 i html-dokumentet (blåser opp doc-størrelsen). Passer inn i
 backfill-arbeidet: fang bildene mens vi likevel går gjennom alt innhold. Video
 (Qbrick) er en egen, større vurdering.
+
+### Volumet er målt (2026-08-26): ~3,6 GB
+
+Utvalgsmåling av 15 tilfeldige filer per media-type, hentet via `/api/attachment`
+og skalert opp mot nodetallet i indeksen:
+
+| type                 | noder      | anslag      |
+| -------------------- | ---------- | ----------- |
+| `media:document`     | 15 024     | 1,59 GB     |
+| `media:image`        | 1542       | 0,84 GB     |
+| `media:presentation` | 108        | 0,44 GB     |
+| `media:spreadsheet`  | 10 802     | 0,36 GB     |
+| `media:text`         | 235        | 0,29 GB     |
+| resten               | ~650       | ~0,09 GB    |
+| **sum**              | **28 356** | **3,61 GB** |
+
+Anslaget er robust: snitt og median ligger tett for de dominerende typene
+(dokumenter 0,1/0,1 MB, presentasjoner 4,1/4,0 MB), altså ingen fet hale som drar
+snittet. De 10 802 regnearkene er små tabelluttrekk, ikke tunge filer.
+
+**Konsekvens for valget:** med base64 (~33 % påslag) blir det ~4,8 GB. Indeksen
+bruker i dag ~15 GB av 78. **OpenSearch holder** – GCS er ikke nødvendig, og man
+slipper en ny lagringstjeneste med egne tilganger.
+
+Praktisk fordel: indeksen er allerede arbeidslista. `media:*`-nodene ligger der
+med `nodeId`, `versionId` og `locale`, som er alt `externalArchive/attachment`
+trenger. Ingen ny enumerering mot XP.
+
+Merk at Qbrick-video **ikke** er med i tallet – de to `media:video`-nodene er filer
+i XP, mens Qbrick-innholdet ligger utenfor og fanges ikke i det hele tatt.
+
+## Shard- og replica-oppsett (målt 2026-08-27)
+
+Målt på `xp-archive-content-v3` i dev:
+
+|                      |          |
+| -------------------- | -------- |
+| shards (primary)     | 1        |
+| replicas             | **0**    |
+| dokumenter           | 136 746  |
+| primaries            | 18,34 GB |
+| total inkl. replicas | 18,34 GB |
+
+**Replicas er ikke backup.** De er synkrone kopier på andre noder i samme cluster og beskytter
+mot at en node dør. En feilaktig `DELETE`, en bug eller et tapt cluster forplanter seg til alle
+replicas i samme øyeblikk. Replicas dekker maskinvarefeil; backup dekker feilhandlinger og tid.
+Ingen av delene finnes for xp-arkivet i dag.
+
+Med `replicas: 0` har indeksen null redundans: dør noden som holder shard-en, er den borte. For
+dev er det akseptabelt — arkivet er en gjenoppbyggbar projeksjon så lenge XP lever. For prod bør
+det være et bevisst valg.
+
+Verdien settes **ikke** i koden — `createIndexIfMissing` sender kun `mappings`. Både shard-antall
+og replica-antall arves derfor fra cluster-default eller en index-template i Aiven. Verifiser hva
+prod-clusteret gir før du antar at det blir det samme der.
+
+### Hvorfor dette må avgjøres før prod-reindekseringen
+
+Shard-antall kan **ikke endres på en eksisterende indeks**. Å endre det krever ny indeks og full
+reindeksering — nøyaktig den operasjonen som uansett skal kjøres når `xp-arkiv-v2` går til prod.
+
+Dimensjonering: 18,34 GB i én shard i dag. Bilde-inlining legger på ~10 GB (se
+handoff-dokumentet §12.10 og bildemålingene) → ~28 GB i én shard. Det er innenfor vanlig
+anbefaling (10–50 GB per shard), men gir null parallellitet i søk, og prod er større enn dev.
+
+Beslutningen er gratis i det øyeblikket reindekseringen kjøres, og koster en ny full omkjøring
+hvis den tas etterpå.
 
 ## Naisjob-splitting løser to problemer samtidig (2026-07-14)
 

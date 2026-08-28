@@ -498,11 +498,41 @@ er opprydding og produktbeslutninger, ingen av dem hindrer normal drift.
 
 1. **Merge NetworkPolicy accessPolicy-fiksen til `main`** i nav-enonicxp-frontend (§2, §6) — den er kun
    på `xp-arkiv-v2` og kan forsvinne igjen når noen redeployer dev1 fra en annen branch/commit.
+   1b. **Den «nattlige sweepen» finnes ikke — backfillen er en full omkjøring.** ⚠️ Ikke bare fjern
+   kommentaren foran `schedule` i `.nais/backfill-job.yml`. To grunner:
+    - `runBackfill` re-indekserer **alt** hver kjøring. Den hopper ikke over versjoner som allerede
+      finnes i indeksen, så den kan ikke brukes som inkrementell sweep slik den står.
+    - `concurrencyPolicy` står på standardverdien `Allow`. Tar en kjøring lengre tid enn intervallet,
+      stabler jobbene seg oppå hverandre.
+
+    **Kjøretiden er ikke verifisert.** Bruker husker at hele backfillen ble ferdig på under et døgn.
+    Den eksakte varigheten står i sluttlinja `Backfill ferdig: N noder indeksert, M feilet – Xs` —
+    finnes i Loki for `navno-xp-archive-backfill` rundt 18.–19. august 2026. Avklar den før du
+    velger intervall.
+
+1c. **NaisJob-en kjører full reindeks ved hver deploy — dette er midlertidig.** ⚠️ Uten `schedule`
+kjører en NaisJob når den blir applied, og dev-workflowen applier den ved hver eneste deploy av
+appen. Det var **et bevisst testtiltak** mens backfillen ble utviklet i dev: hver deploy ga en fersk
+full kjøring uten manuelt steg.
+
+    Det må ikke bli stående. Konsekvensene i normal drift:
+    - Et deploy som ikke har noe med indeksering å gjøre trigger en flertimers full reindeks.
+    - En pågående backfill drepes midt i (§12.8), og cursoren har bare side-granularitet.
+    - I prod ville et rutinedeploy sette i gang en full omkjøring av hele arkivet utilsiktet.
+
+    Ikke avgjort hvordan det løses. Aktuelle retninger: skille NaisJob-deployet ut av
+    app-workflowen så det trigges manuelt, gate det bak en workflow-input, eller — når `runBackfill`
+    faktisk er inkrementell (1b) — la `schedule` styre kjøringene i stedet.
+
+    De 16 restnodene fra §12.9 (innhold publisert bak cursoren under kjøringen) krever uansett en ekte
+    inkrementell sweep — designarbeid, ikke bare en konfigendring. Alternativt kan event-push (§3) dekke
+    behovet i steady state, og sweepen reduseres til en sjelden fullkontroll.
+
 2. **Chromium/Puppeteer-versjonsdrift** — utredet 2026-08-17, beslutning tatt, IKKE implementert ennå.
-   Rotårsaken er at `apk add chromium` (upinnet, Wolfi ruller fritt) og `puppeteer` i pnpm-katalogen har
-   to uavhengige oppdateringstakter. Mer enn ~2 majors avvik gir 100 % `Connection closed` på all
-   `newPage()`, uten brukbar feilmelding. Gjelder BÅDE `Dockerfile_xp` og `Dockerfile_legacy` (sistnevnte
-   kjører i prod).
+Rotårsaken er at `apk add chromium` (upinnet, Wolfi ruller fritt) og `puppeteer` i pnpm-katalogen har
+to uavhengige oppdateringstakter. Mer enn ~2 majors avvik gir 100 % `Connection closed` på all
+`newPage()`, uten brukbar feilmelding. Gjelder BÅDE `Dockerfile_xp` og `Dockerfile_legacy` (sistnevnte
+kjører i prod).
 
     **Status 2026-08-17:** Wolfi gir Chromium 151.0.7922.137, `puppeteer@25.5.0` vil ha 151.0.7922.71.
     Samme major, altså i synk. Ingen drift ennå — ikke akutt.
@@ -533,7 +563,7 @@ er opprydding og produktbeslutninger, ingen av dem hindrer normal drift.
     med `apk add` etterfulgt av `--version`.
 
 3. Cursor-resume er verifisert én gang (1 restart under 9000-node-kjøringen) — trolig OK, men fortsatt
-   kun én datapunkt.
+kun én datapunkt.
 
 **P2 — datakvalitet / opprydding**
 
@@ -616,6 +646,9 @@ som ble falsifisert underveis er bevisst utelatt.
 
 Konsekvens: en side kan bare finnes hvis man husker deler av overskriften. Å endre dette krever ny
 indeks og full reindeksering. Vurdert som akseptabelt for nå.
+
+**Å skru på indeksering av `html`/`json` er FEIL løsning — se §12.10 for hvorfor, og for den billige
+varianten som faktisk gir fritekstsøk.**
 
 ### 12.2 Arkivtreet er historisk, XP sitt tre er nåtidig
 
@@ -741,6 +774,45 @@ lenge etter at den ble sluttet fulgt med på, og fikk med seg ~17 000 noder til.
   `/_templates`-maler som ikke er lokalisert.
 - Å stoppe pagineringen på et sidetak. En tidligere måling med tak på 30 sider ga `nn ≥332` og `en ≥322`
   — de reelle tallene er fire ganger så høye. Paginer til `hasMore` er `false`.
+
+### 12.10 Fritekstsøk: ikke indekser `html`/`json` — fyll `searchText` (2026-08-27)
+
+**Ikke gjort. Notert for senere.** Oppsto av spørsmålet «hadde vi trengt mer lagring hvis `html` og
+`json` var i det inverterte indeksen?». Svaret er ja, men begge feiler på hver sin måte, og ingen av
+dem er veien til fritekstsøk.
+
+Målt tilstand i dev 2026-08-27:
+
+|                                   |          |
+| --------------------------------- | -------- |
+| dokumenter (node-versjoner)       | 136 746  |
+| unike noder                       | ~46 788  |
+| lagret (primaries)                | 18,34 GB |
+| per dokument                      | 140,6 kB |
+| rå HTML per dokument (målt snitt) | 411 kB   |
+
+Komprimeringsforholdet er dermed ~2,9× — normalt for LZ4 på repetitiv markup. Siden `html` er
+`index: false` og `json.enabled: false`, er praktisk talt hele de 18 GB komprimert `_source`.
+
+**Hvorfor `index: true` på `html` er feil:** man ville indeksert markup, ikke prosa. Analysatoren
+tokeniserer klassenavn og Next.js-hashede identifikatorer, som gir enorm term-diversitet. Et invertert
+indeks komprimerer godt nettopp når termer gjentar seg — unike hasher er verste tilfelle.
+
+**Hvorfor `json.enabled: true` er verre:** her er plass ikke hovedproblemet. Dynamisk mapping over
+vilkårlig innholds-JSON gir mapping-eksplosjon (1000-feltgrensen) og type-konflikter når samme sti er
+streng i én innholdstype og objekt i en annen. Da feiler **indekseringen av dokumentet**, ikke bare
+søket. Mistanken er at det er derfor feltet står avskrudd — ikke lagringshensyn. Verifiser før du
+konkluderer.
+
+**Den billige varianten:** `searchText` finnes allerede i mappingen, men settes alltid til `''` i
+`IndexingService`. Fyll den med ren tekst strippet for markup. Grovt anslag: 5–15 kB prosa per side →
+~1–2 GB råtekst for hele indeksen → invertert indeks under 1 GB. Det løser §12.1 til en brøkdel av
+kostnaden ved å indeksere HTML-en.
+
+⚠️ Anslagene for prosa-andel og indeksstørrelse er **ikke målt** — kun komprimeringsforholdet og
+tabellen over er verifisert. Mål faktisk tekstmengde per side før du dimensjonerer.
+
+Krever ny indeks og full reindeksering (§12.1).
 
 ---
 
