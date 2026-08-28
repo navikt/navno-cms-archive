@@ -1,6 +1,11 @@
 name: Deploy XP archive to dev
 on:
     workflow_dispatch:
+        inputs:
+            startBackfill:
+                description: 'Start backfill-jobben etter deploy (full reindeksering)'
+                type: boolean
+                default: false
 
 jobs:
     build-and-deploy:
@@ -26,10 +31,12 @@ jobs:
                   NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
                   NAIS_MANAGEMENT_PROJECT_ID: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
 
-            # Manuelt on-demand-steg for å (re)starte backfill-NaisJob-en i dev.
-            # Gjenbruker samme image som nettopp ble bygget over. Kun i dev-workflowen
-            # (workflow_dispatch) - ikke i prod, som trigges automatisk på push til main.
+            # En NaisJob uten schedule starter i det den applies, så dette steget ER
+            # å kjøre backfillen — ikke bare å oppdatere manifestet. Derfor avslått som
+            # standard: et vanlig deploy skal ikke utløse en full reindeksering.
+            # Gjenbruker imaget som nettopp ble bygget over.
             - name: Deploy backfill job to dev
+              if: ${{ inputs.startBackfill }}
               uses: nais/deploy/actions/deploy@v2
               env:
                   CLUSTER: dev-gcp

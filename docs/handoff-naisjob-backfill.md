@@ -444,8 +444,11 @@ pnpm run lint                       # tsc --noEmit && eslint
 pnpm run dev -C xp-archive          # port 3499, basepath /xp
 pnpm run build -C xp-archive        # build:client + build:ssr + build:server
 
-# Deploy dev (bruker gjør selv)
+# Deploy dev (bruker gjør selv) — rører IKKE backfill-jobben
 gh workflow run "Deploy XP archive to dev" --ref xp-arkiv-v2
+
+# Deploy dev OG start full backfill (se §10 P1.1c)
+gh workflow run "Deploy XP archive to dev" --ref xp-arkiv-v2 -f startBackfill=true
 
 # NaisJob (etter deploy)
 kubectl -n navno logs -f job/navno-xp-archive-backfill
@@ -510,19 +513,26 @@ er opprydding og produktbeslutninger, ingen av dem hindrer normal drift.
     finnes i Loki for `navno-xp-archive-backfill` rundt 18.–19. august 2026. Avklar den før du
     velger intervall.
 
-1c. **NaisJob-en kjører full reindeks ved hver deploy — dette er midlertidig.** ⚠️ Uten `schedule`
+1c. **NaisJob-en startet full reindeks ved hver deploy — LØST I DEV 2026-08-28.** Uten `schedule`
 kjører en NaisJob når den blir applied, og dev-workflowen applier den ved hver eneste deploy av
 appen. Det var **et bevisst testtiltak** mens backfillen ble utviklet i dev: hver deploy ga en fersk
 full kjøring uten manuelt steg.
 
-    Det må ikke bli stående. Konsekvensene i normal drift:
-    - Et deploy som ikke har noe med indeksering å gjøre trigger en flertimers full reindeks.
-    - En pågående backfill drepes midt i (§12.8), og cursoren har bare side-granularitet.
-    - I prod ville et rutinedeploy sette i gang en full omkjøring av hele arkivet utilsiktet.
+    **Fikset i dev:** `xp-archive-deploy-dev.yml` har nå en `workflow_dispatch`-input
+    `startBackfill` (boolean, default `false`), og backfill-steget står bak
+    `if: ${{ inputs.startBackfill }}`. Et vanlig deploy rører dermed ikke NaisJob-en. Den
+    eksisterende jobbressursen blir stående i clusteret, men re-kjører ikke før manifestet applies
+    på nytt — altså når man krysser av.
 
-    Ikke avgjort hvordan det løses. Aktuelle retninger: skille NaisJob-deployet ut av
-    app-workflowen så det trigges manuelt, gate det bak en workflow-input, eller — når `runBackfill`
-    faktisk er inkrementell (1b) — la `schedule` styre kjøringene i stedet.
+    **Fortsatt åpent for prod:** backfill-steget finnes **kun** i dev-workflowen. Prod har derfor
+    ingen mekanisme for å kjøre backfillen i det hele tatt. Den planlagte fulle reindekseringen i
+    prod har ingen vei via CI i dag, og det må løses før den dagen. Det er en større beslutning enn
+    dev-avkrysningen: hvem som skal kunne trigge den, og hvordan man unngår at et rutinedeploy gjør
+    det utilsiktet.
+
+    Konsekvensene som gjorde dette nødvendig, for ordens skyld:
+    - Et deploy som ikke har noe med indeksering å gjøre trigget en flertimers full reindeks.
+    - En pågående backfill ble drept midt i (§12.8), og cursoren har bare side-granularitet.
 
     De 16 restnodene fra §12.9 (innhold publisert bak cursoren under kjøringen) krever uansett en ekte
     inkrementell sweep — designarbeid, ikke bare en konfigendring. Alternativt kan event-push (§3) dekke
@@ -732,7 +742,8 @@ sorterer ikke om. `docs/arkiv-durabilitet.md` sier «alfabetisk» — det stemme
 - Fullføres en locale, slettes cursoren. Neste kjøring starter **den locale-en fra scratch**. Det finnes
   ingen «fortsett der vi slapp» for hele jobben.
 - Dev-workflowen deployer appen **og** NaisJob-en i samme kjøring. Enhver dev-deploy erstatter en
-  kjørende backfill.
+  kjørende backfill. **Endret 2026-08-28:** backfill-steget krever nå `-f startBackfill=true`, så et
+  vanlig deploy lar en pågående kjøring være i fred (§10 P1.1c).
 - Noen noder har 2000–3000 versjoner (arbeidslivssenter-kontorsider, ca. ti stykker) og tar ~50 minutter
   hver. `Done indexing` logges først når en node er ferdig, så telleren står stille i mellomtiden.
 
