@@ -1,4 +1,4 @@
-import { Browser } from 'puppeteer';
+import { BrowserManager } from './BrowserManager';
 import { ContentService } from './ContentService';
 import {
     generateErrorFilename,
@@ -11,6 +11,7 @@ import { validateQuery } from 'utils/params';
 import archiver from 'archiver';
 import { ContentServiceResponse } from '../../../shared/types';
 import { getErrorMessage } from '@common/shared/fetchUtils';
+import { Page } from 'puppeteer';
 
 const DEFAULT_WIDTH_PX = 1024;
 const MIN_WIDTH_PX = 400;
@@ -23,16 +24,16 @@ type PdfResult = {
 };
 
 type PdfServiceProps = {
-    browser: Browser;
+    browserManager: BrowserManager;
     contentService: ContentService;
 };
 
 export class PdfService {
-    private readonly browser: Browser;
+    private readonly browserManager: BrowserManager;
     private readonly contentService: ContentService;
 
-    constructor({ browser, contentService }: PdfServiceProps) {
-        this.browser = browser;
+    constructor({ browserManager, contentService }: PdfServiceProps) {
+        this.browserManager = browserManager;
         this.contentService = contentService;
     }
 
@@ -125,13 +126,14 @@ export class PdfService {
 
         const widthActual = width >= MIN_WIDTH_PX ? width : DEFAULT_WIDTH_PX;
 
+        let page: Page | undefined;
         try {
-            const page = await this.browser.newPage();
+            const browser = await this.browserManager.getBrowser();
+            page = await browser.newPage();
 
             // Log Page events for debugging should generation fail
             page.on('request', (request) => {
                 console.log(`Puppeteer: Request: ${request.method()} ${request.url()}`);
-                request.continue().catch(() => {});
             });
 
             page.on('requestfailed', (request) => {
@@ -176,8 +178,6 @@ export class PdfService {
                 },
             });
 
-            await page.close();
-
             return {
                 data: Buffer.from(pdf),
                 timestamp: json.createdTime,
@@ -193,6 +193,8 @@ export class PdfService {
                 filename: generateErrorFilename(content),
                 displayName: json.displayName,
             };
+        } finally {
+            await page?.close().catch(() => {});
         }
     }
 }

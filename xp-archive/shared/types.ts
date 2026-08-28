@@ -28,10 +28,13 @@ export type XPContentServiceResponse = {
     versions: VersionReference[];
 };
 
+export type ContentSource = 'opensearch' | 'xp';
+
 export type ContentServiceResponse = {
     json: Content;
     versions: VersionReference[];
     html?: string;
+    source: ContentSource;
 };
 
 export type VersionReference = {

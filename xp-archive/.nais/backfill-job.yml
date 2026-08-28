@@ -1,0 +1,60 @@
+---
+apiVersion: nais.io/v1
+kind: Naisjob
+metadata:
+    name: navno-xp-archive-backfill
+    namespace: navno
+    labels:
+        team: navno
+spec:
+    image: '{{ image }}'
+    # Starter backfillJob.cjs (bygget fra backfillJob.ts) i stedet for den vanlige serveren.
+    command:
+        - node
+        - -r
+        - dotenv/config
+        - /app/xp-archive/server/dist/server/backfillJob.cjs
+        - dotenv_config_path=/app/xp-archive/.env
+    openSearch:
+        access: readwrite
+        instance: '{{ openSearchInstance }}'
+    accessPolicy:
+        outbound:
+            rules:
+                - application: '{{ xpFrontendApp }}'
+            external:
+                - host: '{{ xpHost }}'
+                - host: cdn.nav.no
+    envFrom:
+        - secret: '{{ secret }}'
+    # Standard /dev/shm (64Mi) er for lite for Chromium og ga momentane
+    # "Connection closed"-krasj i denne poden. Øker til et Memory-backed emptyDir.
+    filesFrom:
+        - emptyDir:
+              medium: Memory
+          mountPath: /dev/shm
+    resources:
+        # Mer CPU enn hovedpoden: jobben kjører opptil BATCH_SIZE=24 samtidige
+        # Chromium-renderere kontinuerlig i timevis (ikke sporadisk som hovedpoden),
+        # og 500m holdt ikke tritt - ga vedvarende renderer-krasj ("Connection closed").
+        requests:
+            cpu: 2000m
+            memory: 1024Mi
+        limits:
+            # Mer RAM enn den vanlige poden: backfill kjører mange Puppeteer-render-jobber
+            # og akkumulerer Node.js-heap over tid. Jobben er isolert så OOM her påvirker
+            # ikke live-arkivet.
+            memory: 4096Mi
+    # Kubernetes starter jobben på nytt ved krasj (inkl. OOM). Backfill-jobben
+    # gjenopptar automatisk fra lagret cursor i OpenSearch.
+    restartPolicy: OnFailure
+    # Høyt tak fordi de observerte feilene ikke er krasj, men at cluster-autoscaleren
+    # kaster ut poden ved node-nedskalering ("deleting pod for node scale down") -
+    # infrastrukturstøy under en kjøring som varer i timer. Nais eksponerer ikke
+    # pod-annotasjonen safe-to-evict, så dette er den eneste knappen. Hvert forsøk
+    # gjenopptar fra cursor og indeksering er idempotent, så retries koster kun tid.
+    backoffLimit: 50
+    # Kjøres on-demand (ingen cron) – deploy-triggeret manuelt for initial backfill.
+    # Sett schedule her for nattlig sweep når steady-state er nådd.
+    # schedule: '0 2 * * *'
+    ttlSecondsAfterFinished: 86400

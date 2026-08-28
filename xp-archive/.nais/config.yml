@@ -11,6 +11,7 @@ spec:
   port: 3499
   ingresses:
      - {{ appOrigin }}/xp
+     - {{ internOrigin }}/xp
   liveness:
     path: /xp/internal/isAlive
     initialDelay: 10
@@ -21,6 +22,9 @@ spec:
     autoInstrumentation:
       enabled: true
       runtime: nodejs
+  openSearch:
+    access: readwrite
+    instance: {{ openSearchInstance }}
   accessPolicy:
     outbound:
       rules:
