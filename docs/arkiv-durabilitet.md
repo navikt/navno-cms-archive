@@ -97,11 +97,13 @@ vært avviklet, ville denne endringen vært umulig å gjøre trygt.
 Snapshotet er selvforsynt for struktur + CSS-tekst (CSS inlines), men **binære
 ressurser bakes ikke inn** – de forblir eksterne referanser:
 
-- **Bilder:** `<img src>` skrives kun om til original-URL. Nettleseren henter bildet
-  live fra nav.no/CDN ved visning. Slettes/flyttes kilde-bildet, blir det ødelagt i
-  arkivet.
+- **Bilder:** ~~`<img src>` skrives kun om til original-URL~~ **LØST 2026-08-28** – bilder
+  hentes i Node og bakes inn som `data:`-URI (`IndexingService.inlineImages`). Målt
+  duplisering 1,07×, kostnad ~9,8 GB. Bilder som ikke lar seg hente beholder original-URLen
+  og logges per side.
 - **Fonter:** referert via `@font-face { src: url(...) }` i inlinet CSS – ikke
-  embeddet. Samme visnings-avhengighet.
+  embeddet. **Bevisst ikke arkivert**, se egen seksjon under: 37 GB for 213 kB unike data,
+  og fallback til systemfont er ekte.
 - **Video (Qbrick):** videoer spilles av via Qbrick (ekstern player/embed, ofte
   iframe + scripts). Siden vi fjerner scripts og aborterer eksterne ressurser, fanges
   **ikke** videoinnholdet i det hele tatt – kun evt. en placeholder/plakat. Ekte
@@ -145,6 +147,42 @@ trenger. Ingen ny enumerering mot XP.
 
 Merk at Qbrick-video **ikke** er med i tallet – de to `media:video`-nodene er filer
 i XP, mens Qbrick-innholdet ligger utenfor og fanges ikke i det hele tatt.
+
+### Fonter: målt 2026-08-28 — bevisst ikke arkivert
+
+Bilder bakes nå inn som `data:`-URI i snapshotet (se handoff §12.10-området og
+`IndexingService.inlineImages`). Fonter gjør vi **ikke** det samme med, og det er et
+bevisst valg basert på måling.
+
+Den inlinede CSS-en refererer 8 woff2-filer, alle Source Sans 3 fra `cdn.nav.no`:
+
+|                         |           |
+| ----------------------- | --------- |
+| unike fontbytes totalt  | 213 kB    |
+| per dokument med base64 | 284 kB    |
+| × 136 746 dokumenter    | **37 GB** |
+| dupliseringsfaktor      | 136 746×  |
+
+Altså 37 GB for å bevare 213 kB unike data. Indeksen er 18 GB i dag; dette ville
+tredoblet den. Motsatt av bilder, der dupliseringsgraden er 1,07× og inlining derfor
+er riktig.
+
+**Hvorfor det er trygt å utsette:**
+
+- Fallbacken er ekte. CSS-en har `font-family`-stack, så feiler `@font-face`-nedlastingen
+  faller nettleseren til Arial/sans-serif. Teksten forblir lesbar — i motsetning til et
+  ødelagt bilde, som er innhold som forsvinner.
+- Fontene ligger på `cdn.nav.no`, ikke i XP. De overlever en XP-avvikling.
+- Ingenting går tapt ved å vente: 8 kjente URLer, 213 kB, kan hentes når som helst.
+  Vedlegg er motsatt — de bor i XP og forsvinner med den.
+
+**Hvis de skal arkiveres senere,** må det gjøres motsatt av bilder: lagre filene **én
+gang** og skriv om `@font-face`-URLene. Enkleste variant er `xp-archive/public/` med
+relative `url()` — ingen indeks, intet endepunkt, 213 kB i git.
+
+Samme måling viste også at **alle** `url(...)` i den inlinede CSS-en er fonter. Det er
+ingen `background-image: url(...)` mot eksterne filer, så den bekymringen er tom (målt på
+én side).
 
 ## Shard- og replica-oppsett (målt 2026-08-27)
 
