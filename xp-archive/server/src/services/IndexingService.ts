@@ -1,4 +1,5 @@
 import { RequestHandler } from 'express';
+import { Page } from 'puppeteer';
 import { ContentService } from './ContentService';
 import { BrowserManager } from './BrowserManager';
 import {
@@ -18,6 +19,8 @@ const BATCH_SIZE = 24;
 // akkumulert degradering over mange sider.
 const BROWSER_RECYCLE_INTERVAL = BATCH_SIZE;
 
+const IMAGE_FETCH_TIMEOUT_MS = 10_000;
+
 export class IndexingService {
     private readonly contentService: ContentService;
     private readonly openSearchClient: XpArchiveOpenSearchClient;
@@ -34,7 +37,7 @@ export class IndexingService {
         this.browserManager = browserManager;
     }
 
-    private async createStaticSnapshot(html: string): Promise<string> {
+    private async createStaticSnapshot(html: string, label: string): Promise<string> {
         const renderOrigin = new URL(process.env.HTML_RENDER_API ?? '').origin;
 
         // Next.js prod mode puts all CSS in /_next/static/css/ — extract from raw HTML (may be absolute or relative)
@@ -60,14 +63,16 @@ export class IndexingService {
         const inlinedCss = cssTexts.filter(Boolean).join('\n');
 
         this.snapshotsSinceRecycle += 1;
+
         const browser = await this.browserManager.getBrowser();
 
         const page = await browser.newPage();
         try {
-            // Snapshot trenger ingen eksterne ressurser: CSS inlines manuelt, scripts
-            // fjernes, og <img>-URLer beholdes som referanser. Ved å aborte alt unntatt
-            // selve dokumentet fyrer DOMContentLoaded rett etter parsing i stedet for å
-            // henge på scripts/fonter — som ga sporadiske 30s Navigation timeouts.
+            // Snapshot trenger ingen eksterne ressurser: CSS og bilder inlines manuelt
+            // og scripts fjernes. Ved å aborte alt unntatt selve dokumentet fyrer
+            // DOMContentLoaded rett etter parsing i stedet for å henge på scripts/fonter
+            // — som ga sporadiske 30s Navigation timeouts. Bildene hentes derfor i Node
+            // under, ikke av nettleseren.
             await page.setRequestInterception(true);
             page.on('request', (request) => {
                 if (request.resourceType() === 'document') {
@@ -96,9 +101,81 @@ export class IndexingService {
                 document.head.appendChild(style);
             }, inlinedCss);
 
+            await this.inlineImages(page, renderOrigin, label);
+
             return page.content();
         } finally {
             await page.close();
+        }
+    }
+
+    // Bilder som ikke lar seg hente beholder original-URLen. Et snapshot med noen
+    // eksterne referanser er bedre enn ingen bilder i det hele tatt.
+    private async inlineImages(page: Page, renderOrigin: string, label: string): Promise<void> {
+        const srcs: string[] = await page.evaluate(() =>
+            [...document.querySelectorAll('img')]
+                .map((img) => img.getAttribute('src'))
+                .filter((src): src is string => !!src && !src.startsWith('data:'))
+        );
+
+        if (srcs.length === 0) {
+            return;
+        }
+
+        // Nøkles på rå src slik at nettleseren slipper å regne ut absolutt URL på nytt
+        const dataUris: Record<string, string> = {};
+        const feilet: string[] = [];
+
+        await Promise.all(
+            [...new Set(srcs)].map(async (src) => {
+                const dataUri = await this.fetchAsDataUri(new URL(src, renderOrigin).href);
+                if (dataUri) {
+                    dataUris[src] = dataUri;
+                } else {
+                    feilet.push(src);
+                }
+            })
+        );
+
+        // Et bilde som ikke ble hentet forblir en ekstern referanse og råtner med kilden.
+        // Logges per side slik at hullet er tellbart i stedet for usynlig.
+        if (feilet.length > 0) {
+            console.warn(
+                `Inlined ${srcs.length - feilet.length}/${srcs.length} images for ${label}, ` +
+                    `failed: ${feilet.join(', ')}`
+            );
+        }
+
+        await page.evaluate((map: Record<string, string>) => {
+            document.querySelectorAll('img').forEach((img) => {
+                const dataUri = map[img.getAttribute('src') ?? ''];
+                if (!dataUri) {
+                    return;
+                }
+
+                img.setAttribute('src', dataUri);
+                // srcset ville ellers overstyre src og be om originalen på nytt
+                img.removeAttribute('srcset');
+            });
+
+            document.querySelectorAll('source[srcset]').forEach((el) => el.remove());
+        }, dataUris);
+    }
+
+    private async fetchAsDataUri(url: string): Promise<string | null> {
+        try {
+            const res = await fetch(url, { signal: AbortSignal.timeout(IMAGE_FETCH_TIMEOUT_MS) });
+            const mime = res.headers.get('content-type')?.split(';')[0];
+
+            if (!res.ok || !mime?.startsWith('image/')) {
+                return null;
+            }
+
+            const buffer = Buffer.from(await res.arrayBuffer());
+
+            return `data:${mime};base64,${buffer.toString('base64')}`;
+        } catch {
+            return null;
         }
     }
 
@@ -132,7 +209,7 @@ export class IndexingService {
         let html: string | undefined;
         if (content.html) {
             try {
-                html = await this.createStaticSnapshot(content.html);
+                html = await this.createStaticSnapshot(content.html, `${nodeId}:${versionId}`);
             } catch (e) {
                 const msg = e instanceof Error ? e.message : String(e);
                 console.error(`Snapshot failed for ${nodeId}:${versionId}: ${msg}`);
