@@ -5,6 +5,64 @@
 Notat fra en diskusjon om datavarighet for `legacy-archive` og `xp-archive`.
 Formålet er å fange opp risiko og åpne spørsmål — ikke en ferdig beslutning.
 
+## Hva som faktisk driver arbeidet (presisert 2026-08-28)
+
+⚠️ **Les dette før resten av dokumentet.** Notatet under er skrevet ut fra scenarioet «XP
+blir avviklet». Det er ikke drivkraften bak arbeidet som faktisk gjøres, og har ført til
+feilprioritering minst én gang.
+
+**XP skal ikke avvikles i overskuelig framtid.** Hovedgrunnen til å arkivere rendrede sider
+er å kunne **rydde opp i frontend-kode i `nav-enonicxp-frontend`** uten å miste hvordan
+sidene så ut. Durabilitet mot XP-avvikling er en bonus, ikke målet.
+
+Konsekvens for hva som haster:
+
+| ressurs                            | serveres av       | i fare ved frontend-opprydding |
+| ---------------------------------- | ----------------- | ------------------------------ |
+| `/gfx/*.svg`                       | frontend-appen    | **ja**                         |
+| `cdn.nav.no/_next/static/*`        | frontend-bygget   | **ja**                         |
+| `_/image`, `_/attachment`          | XP                | nei                            |
+| Aksel-fonter (`cdn.nav.no/aksel/`) | design-system-CDN | nei                            |
+
+Derfor er **vedlegg ikke en oppgave**: XP serverer dem og blir værende. `/api/attachment`
+proxyer til `externalArchive/attachment` i `nav-enonicxp` — altså XP-appen, ikke frontend —
+så frontend-opprydding rører den ikke.
+
+**Visuell troverdighet er ikke et mål i seg selv.** Lenker i arkiverte sider er dessuten
+bevisst deaktivert (`disableLinksScriptsAndEventListeners` i `HtmlView.tsx`), så arkivet er
+en frossen gjengivelse, ikke et navigerbart nettsted. Lenker som peker ut av en arkivert
+side skal ikke virke, og trenger ikke skrives om.
+
+**Men bilder er ikke pynt.** Mange av dem bærer informasjon som ikke finnes i teksten —
+infografikk og statistikkfigurer som `2 Infografikk Sykefravær Nordland 4kv25` og
+`Pensjonspyramide`. Forsvinner bildet, forsvinner innholdet. Bildene deler seg derfor i to
+kategorier med hver sin begrunnelse:
+
+|                           | andel forekomster | andel bytes | hvorfor bake inn              |
+| ------------------------- | ----------------- | ----------- | ----------------------------- |
+| `/gfx/`, `_next/static`   | 61 %              | 0,3 %       | avkobling fra frontend-deploy |
+| `_/image`, `_/attachment` | 39 %              | 88 %        | arkivverdig innhold           |
+
+De ~9,8 GB inlining koster går altså nesten utelukkende til den kategorien som bærer
+informasjon.
+
+### Alternativet som ble lagt til side
+
+Det ble foreslått å bygge en **egen arkiv-frontend** som rendret komponentene enklere, blant
+annet for å slippe duplisert CSS i titusenvis av dokumenter. Lagt bort: mer komplisert å
+implementere og vedlikeholde enn det hørtes ut, og lagringsfrykten ble vurdert som overdrevet.
+
+Målingene bekrefter det siste:
+
+```
+rå HTML per dokument:   411 kB
+lagret per dokument:    141 kB
+komprimering:           ~2,9× (LZ4 på repetitiv markup)
+```
+
+53,6 GB rå HTML koster 18,3 GB på disk, av 78 tilgjengelige. Duplikasjonen er reell, men
+billig — repetitiv markup er nettopp det en kompressor er god på.
+
 ## Bakgrunn
 
 Begge arkivene lagrer innhold i Aiven-managed OpenSearch:
