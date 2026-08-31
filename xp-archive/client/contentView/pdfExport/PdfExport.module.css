@@ -14,10 +14,8 @@
     bottom: 0;
     background-color: var(--ax-bg-neutral-strong);
     width: 100%;
-}
-
-.errorAlert {
-    margin-top: 1rem;
+    display: flex;
+    align-items: center;
 }
 
 .button {

@@ -15,12 +15,12 @@ const PDF_API = `${import.meta.env.VITE_APP_ORIGIN}/xp/api/pdf`;
 const columns: DataGrid.Columns<VersionReference> = [
     {
         id: 'date',
-        header: 'Dato',
+        header: 'Publisertdato',
         bodyCell: ({ timestamp }) => formatTimestamp(timestamp, true),
     },
     {
         id: 'time',
-        header: 'Tid',
+        header: 'Publisert klokkeslett',
         bodyCell: ({ timestamp }) => getTimestring(new Date(timestamp)),
     },
     {
@@ -66,13 +66,6 @@ export const PdfExport = ({ versions, locale }: Props) => {
                 >
                     <DataGrid.Table layout="auto" />
                 </DataGrid>
-                {showError && (
-                    <LocalAlert status="error" className={style.errorAlert}>
-                        <LocalAlert.Header>
-                            <LocalAlert.Title>Du må velge minimum en versjon</LocalAlert.Title>
-                        </LocalAlert.Header>
-                    </LocalAlert>
-                )}
             </div>
 
             <div className={style.downloadBar}>
@@ -84,6 +77,13 @@ export const PdfExport = ({ versions, locale }: Props) => {
                 >
                     {'Last ned valgte versjoner '}
                 </Button>
+                {showError && (
+                    <LocalAlert status="error">
+                        <LocalAlert.Header>
+                            <LocalAlert.Title>Du må velge minimum en versjon</LocalAlert.Title>
+                        </LocalAlert.Header>
+                    </LocalAlert>
+                )}
             </div>
         </>
     );
