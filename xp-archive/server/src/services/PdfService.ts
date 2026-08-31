@@ -1,4 +1,4 @@
-import { Browser } from 'puppeteer';
+import { Browser, Page } from 'puppeteer';
 import { ContentService } from './ContentService';
 import {
     generateErrorFilename,
@@ -125,8 +125,13 @@ export class PdfService {
 
         const widthActual = width >= MIN_WIDTH_PX ? width : DEFAULT_WIDTH_PX;
 
+        let page: Page | undefined;
+
         try {
-            const page = await this.browser.newPage();
+            page = await this.browser.newPage();
+
+            // Required for request.continue() below to be valid
+            await page.setRequestInterception(true);
 
             // Log Page events for debugging should generation fail
             page.on('request', (request) => {
@@ -160,7 +165,7 @@ export class PdfService {
 
             await page.setViewport({ width: widthActual, height: 1024, deviceScaleFactor: 1 });
             await page.emulateMediaType('screen');
-            await page.setContent(htmlWithoutDecorator);
+            await page.setContent(htmlWithoutDecorator, { timeout: 30000 });
 
             const pdf = await page.pdf({
                 printBackground: true,
@@ -175,8 +180,6 @@ export class PdfService {
                     left: '4px',
                 },
             });
-
-            await page.close();
 
             return {
                 data: Buffer.from(pdf),
@@ -193,6 +196,15 @@ export class PdfService {
                 filename: generateErrorFilename(content),
                 displayName: json.displayName,
             };
+        } finally {
+            // A page left open on the error path leaks a renderer process until the browser dies
+            if (page) {
+                await page.close().catch((e) => {
+                    console.error(
+                        `Failed to close page for ${json._versionKey} - ${getErrorMessage(e)}`
+                    );
+                });
+            }
         }
     }
 }
