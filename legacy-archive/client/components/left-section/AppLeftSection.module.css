@@ -3,7 +3,7 @@
 .root {
     position: relative;
     grid-area: left;
-    border-left: solid 4px var(--a-gray-600);
+    border-left: solid 4px var(--ax-neutral-700);
     padding-top: 1rem;
 }
 
