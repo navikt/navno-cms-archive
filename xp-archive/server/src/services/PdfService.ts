@@ -15,9 +15,6 @@ import { getErrorMessage } from '@common/shared/fetchUtils';
 const DEFAULT_WIDTH_PX = 1024;
 const MIN_WIDTH_PX = 400;
 
-// Mirrors accessPolicy.outbound.externalHosts - anything else is dropped by NetworkPolicy and would hang
-const allowedHosts = new Set([new URL(process.env.XP_ORIGIN).host, 'cdn.nav.no']);
-
 type PdfResult = {
     data: Buffer;
     timestamp: string;
@@ -133,35 +130,9 @@ export class PdfService {
         try {
             page = await this.browser.newPage();
 
-            // Required for request.continue()/abort() below to be valid
-            await page.setRequestInterception(true);
-
+            // Log Page events for debugging should generation fail
             page.on('request', (request) => {
-                const url = request.url();
-
-                // TODO: fjern før merge - kun for feilsøking i dev
-                console.log(`Puppeteer: Request: ${request.method()} ${url}`);
-
-                if (url.startsWith('data:')) {
-                    request.continue().catch(() => {});
-                    return;
-                }
-
-                let parsed;
-                try {
-                    parsed = new URL(url);
-                } catch {
-                    request.abort().catch(() => {});
-                    return;
-                }
-
-                if (allowedHosts.has(parsed.host)) {
-                    request.continue().catch(() => {});
-                    return;
-                }
-
-                console.log(`Puppeteer: Aborting request to blocked host ${parsed.host}`);
-                request.abort().catch(() => {});
+                console.log(`Puppeteer: Request: ${request.method()} ${request.url()}`);
             });
 
             page.on('requestfailed', (request) => {
