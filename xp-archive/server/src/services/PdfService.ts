@@ -161,7 +161,7 @@ export class PdfService {
 
             await page.setViewport({ width: widthActual, height: 1024, deviceScaleFactor: 1 });
             await page.emulateMediaType('screen');
-            await page.setContent(htmlWithoutDecorator, { timeout: 30000 });
+            await page.setContent(htmlWithoutDecorator);
 
             const pdf = await page.pdf({
                 printBackground: true,
