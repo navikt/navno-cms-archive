@@ -161,6 +161,9 @@ importers:
             lru-cache:
                 specifier: 11.5.2
                 version: 11.5.2
+            puppeteer:
+                specifier: 'catalog:'
+                version: 25.5.0(yauzl@2.10.0)
 
     legacy-archive:
         dependencies:

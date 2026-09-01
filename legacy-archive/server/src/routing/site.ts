@@ -3,7 +3,7 @@ import { CmsArchiveSite } from '../cms/CmsArchiveSite';
 import { CmsArchiveOpenSearchClient } from '../opensearch/CmsArchiveOpenSearchClient';
 // @ts-expect-error - Generated SSR file without type declarations
 import { render } from '../_ssr-dist/main-server';
-import puppeteer from 'puppeteer';
+import { getBrowser } from '@common/server/utils/browser';
 import { legacyArchiveConfigs } from '@common/shared/siteConfigs';
 import { buildHtmlRenderer } from '@common/server/ssr/initRenderer';
 import { setupErrorHandlers } from '@common/server/routing/errorHandlers';
@@ -19,9 +19,7 @@ export const setupSites = async (expressApp: Express) => {
         ssrModulePath: '/client/main-server.tsx',
     });
 
-    const browser = await puppeteer.launch({
-        args: ['--no-sandbox', '--disable-setuid-sandbox', '--user-data-dir=/tmp/.chromium'],
-    });
+    await getBrowser();
 
     const sites = legacyArchiveConfigs.map((config) => {
         return new CmsArchiveSite({
@@ -29,7 +27,6 @@ export const setupSites = async (expressApp: Express) => {
             expressApp,
             client: opensearchClent,
             htmlRenderer,
-            browser,
         });
     });
 
