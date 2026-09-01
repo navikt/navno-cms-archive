@@ -15,10 +15,10 @@ COPY --chown=root:root --chmod=755 nonsymlink/legacy-server/ /app/legacy-archive
 
 RUN mkdir -p /tmp/.chromium && chown 65532:65532 /tmp/.chromium
 
-USER nonroot
-
 COPY --chown=root:root --chmod=755 docker/pdf-smoke-test.cjs ./
 RUN node pdf-smoke-test.cjs && rm -rf /tmp/.smoketest
+
+USER nonroot
 
 EXPOSE 3399
 CMD ["-r", "dotenv/config", "./dist/server/server.cjs", "dotenv_config_path=../.env"]
