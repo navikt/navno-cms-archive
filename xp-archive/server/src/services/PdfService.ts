@@ -1,6 +1,7 @@
 import { Page } from 'puppeteer';
 import { ContentService } from './ContentService';
 import {
+    contentDispositionHeader,
     generateErrorFilename,
     generatePdfFilename,
     generatePdfInfo,
@@ -72,7 +73,7 @@ export class PdfService {
         const { filename, data } = content;
 
         return res
-            .setHeader('Content-Disposition', `attachment; filename="${filename}"`)
+            .setHeader('Content-Disposition', contentDispositionHeader(filename))
             .setHeader('Content-Type', 'application/pdf')
             .send(data);
     }
@@ -81,10 +82,7 @@ export class PdfService {
         const newestVersion = pdfs[0];
         const zipFilename = `${newestVersion.displayName.slice(0, 50)}.zip`;
 
-        res.setHeader(
-            'Content-Disposition',
-            `attachment; filename="${encodeURIComponent(zipFilename)}"`
-        )
+        res.setHeader('Content-Disposition', contentDispositionHeader(zipFilename))
             .setHeader('Content-Type', 'application/zip')
             .setHeader('Transfer-Encoding', 'chunked');
 
