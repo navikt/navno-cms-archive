@@ -32,3 +32,7 @@ export const generatePdfFilename = (content: ContentServiceResponse) =>
 
 export const generateErrorFilename = (content: ContentServiceResponse) =>
     `${generateFilename(content)}.txt`;
+
+// filename must be percent-encoded, otherwise non-Latin1 characters (e.g. em dash) crash Node's header validation
+export const contentDispositionHeader = (filename: string) =>
+    `attachment; filename="${encodeURIComponent(filename)}"`;
