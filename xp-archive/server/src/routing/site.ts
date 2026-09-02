@@ -7,7 +7,7 @@ import { ContentService } from '../services/ContentService';
 import { ContentIconService } from 'services/ContentIconService';
 import { AttachmentService } from '../services/AttachmentService';
 import { PdfService } from '../services/PdfService';
-import puppeteer from 'puppeteer';
+import { getBrowser } from '@common/server/utils/browser';
 import { SearchService } from 'services/SearchService';
 import { HtmlRenderer } from '../../../../common/src/server/ssr/htmlRenderer';
 
@@ -30,15 +30,13 @@ export const setupSite = async (router: Router) => {
 };
 
 const setupApiRoutes = async (router: Router) => {
-    const browser = await puppeteer.launch({
-        args: ['--no-sandbox', '--disable-setuid-sandbox', '--user-data-dir=/tmp/.chromium'],
-    });
+    await getBrowser();
 
     const contentService = new ContentService();
     const contentTreeService = new ContentTreeService();
     const contentIconService = new ContentIconService();
     const attachmentService = new AttachmentService();
-    const pdfService = new PdfService({ browser, contentService });
+    const pdfService = new PdfService({ contentService });
     const searchService = new SearchService();
     router.get('/api/content', contentService.getContentHandler);
     router.get('/api/contentTree', contentTreeService.getContentTreeHandler);
