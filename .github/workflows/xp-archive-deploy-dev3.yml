@@ -19,7 +19,7 @@ jobs:
           naisEnv: dev
           varsFile: dev3.yml
           VITE_APP_ORIGIN: https://cms-arkiv-dev3.ansatt.dev.nav.no
-          XP_ORIGIN: https://trial-navpoc.enonic.cloud
+          XP_ORIGIN: https://www-navpoc.enonic.cloud
           HTML_RENDER_API: http://nav-enonicxp-frontend-dev3/render-from-props
         env:
           READER_TOKEN: ${{ secrets.READER_TOKEN }}
