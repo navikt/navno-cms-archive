@@ -33,6 +33,7 @@
     justify-items: start;
     :global(.aksel-label) {
         grid-column: version-info;
+        text-align: left;
     }
 
     &::after {
