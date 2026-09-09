@@ -9,14 +9,12 @@ import { CmsArchiveCategoriesService } from './CmsArchiveCategoriesService';
 import { cspMiddleware } from '../routing/csp';
 import { CmsArchiveBinariesService } from './CmsArchiveBinariesService';
 import { PdfGenerator } from '../pdf/PdfGenerator';
-import { Browser } from 'puppeteer';
 import { DOWNLOAD_COOKIE_NAME } from '../../../shared/downloadCookie';
 import { LegacyArchiveSiteConfig } from '@common/shared/siteConfigs';
 import { HtmlRenderer } from '@common/server/ssr/htmlRenderer';
 
 type ContructorProps = {
     config: LegacyArchiveSiteConfig;
-    browser: Browser;
     client: CmsArchiveOpenSearchClient;
     expressApp: Express;
     htmlRenderer: HtmlRenderer;
@@ -33,7 +31,7 @@ export class CmsArchiveSite {
     private readonly contentService: CmsArchiveContentService;
     private readonly binariesService: CmsArchiveBinariesService;
 
-    constructor({ config, browser, expressApp, client, htmlRenderer }: ContructorProps) {
+    constructor({ config, expressApp, client, htmlRenderer }: ContructorProps) {
         this.config = config;
 
         this.categoriesService = new CmsArchiveCategoriesService({
@@ -49,7 +47,7 @@ export class CmsArchiveSite {
 
         this.binariesService = new CmsArchiveBinariesService({ config, client });
 
-        this.pdfGenerator = new PdfGenerator({ browser, contentService: this.contentService });
+        this.pdfGenerator = new PdfGenerator({ contentService: this.contentService });
 
         const siteRouter = express.Router();
         const apiRouter = express.Router();

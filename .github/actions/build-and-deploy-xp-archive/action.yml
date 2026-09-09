@@ -5,6 +5,9 @@ inputs:
   naisEnv:
     required: true
     description: NAIS environment (dev-gcp or prod-gcp)
+  varsFile:
+    required: true
+    description: The file for the NAIS deployment (e.g., dev.yml or prod.yml)
   VITE_APP_ORIGIN:
     required: true
     description: Vite app origin URL
@@ -85,4 +88,4 @@ runs:
         CLUSTER: ${{ inputs.naisEnv }}-gcp
         RESOURCE: xp-archive/.nais/config.yml
         VAR: image=${{ steps.docker-push.outputs.image }}
-        VARS: xp-archive/.nais/vars/${{ inputs.naisEnv }}.yml
+        VARS: xp-archive/.nais/vars/${{ inputs.varsFile }}

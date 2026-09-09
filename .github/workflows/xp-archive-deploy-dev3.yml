@@ -1,4 +1,4 @@
-name: Deploy XP archive to dev
+name: Deploy XP archive to dev3 for Enonic XP Cloud PoC
 on:
   workflow_dispatch:
 
@@ -13,14 +13,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v7
 
-      - name: Build and deploy dev
+      - name: Build and deploy dev3
         uses: ./.github/actions/build-and-deploy-xp-archive
         with:
           naisEnv: dev
-          varsFile: dev.yml
-          VITE_APP_ORIGIN: https://cms-arkiv.ansatt.dev.nav.no
-          XP_ORIGIN: https://www.dev.nav.no
-          HTML_RENDER_API: http://nav-enonicxp-frontend-dev1/render-from-props
+          varsFile: dev3.yml
+          VITE_APP_ORIGIN: https://cms-arkiv-dev3.ansatt.dev.nav.no
+          XP_ORIGIN: https://trial-navpoc.enonic.cloud
+          HTML_RENDER_API: http://nav-enonicxp-frontend-dev3/render-from-props
         env:
           READER_TOKEN: ${{ secrets.READER_TOKEN }}
           NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}

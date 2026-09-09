@@ -1,11 +1,13 @@
-import { Browser } from 'puppeteer';
+import { Page } from 'puppeteer';
 import { ContentService } from './ContentService';
 import {
+    contentDispositionHeader,
     generateErrorFilename,
     generatePdfFilename,
     generatePdfInfo,
     pixelWidthToA4Scale,
 } from 'utils/pdf-utils';
+import { getBrowser } from '@common/server/utils/browser';
 import { RequestHandler, Response } from 'express';
 import { validateQuery } from 'utils/params';
 import archiver from 'archiver';
@@ -23,16 +25,13 @@ type PdfResult = {
 };
 
 type PdfServiceProps = {
-    browser: Browser;
     contentService: ContentService;
 };
 
 export class PdfService {
-    private readonly browser: Browser;
     private readonly contentService: ContentService;
 
-    constructor({ browser, contentService }: PdfServiceProps) {
-        this.browser = browser;
+    constructor({ contentService }: PdfServiceProps) {
         this.contentService = contentService;
     }
 
@@ -74,7 +73,7 @@ export class PdfService {
         const { filename, data } = content;
 
         return res
-            .setHeader('Content-Disposition', `attachment; filename="${filename}"`)
+            .setHeader('Content-Disposition', contentDispositionHeader(filename))
             .setHeader('Content-Type', 'application/pdf')
             .send(data);
     }
@@ -83,10 +82,7 @@ export class PdfService {
         const newestVersion = pdfs[0];
         const zipFilename = `${newestVersion.displayName.slice(0, 50)}.zip`;
 
-        res.setHeader(
-            'Content-Disposition',
-            `attachment; filename="${encodeURIComponent(zipFilename)}"`
-        )
+        res.setHeader('Content-Disposition', contentDispositionHeader(zipFilename))
             .setHeader('Content-Type', 'application/zip')
             .setHeader('Transfer-Encoding', 'chunked');
 
@@ -125,13 +121,15 @@ export class PdfService {
 
         const widthActual = width >= MIN_WIDTH_PX ? width : DEFAULT_WIDTH_PX;
 
+        let page: Page | undefined;
+
         try {
-            const page = await this.browser.newPage();
+            const browser = await getBrowser();
+            page = await browser.newPage();
 
             // Log Page events for debugging should generation fail
             page.on('request', (request) => {
                 console.log(`Puppeteer: Request: ${request.method()} ${request.url()}`);
-                request.continue().catch(() => {});
             });
 
             page.on('requestfailed', (request) => {
@@ -176,8 +174,6 @@ export class PdfService {
                 },
             });
 
-            await page.close();
-
             return {
                 data: Buffer.from(pdf),
                 timestamp: json.createdTime,
@@ -193,6 +189,15 @@ export class PdfService {
                 filename: generateErrorFilename(content),
                 displayName: json.displayName,
             };
+        } finally {
+            // A page left open on the error path leaks a renderer process until the browser dies
+            if (page) {
+                await page.close().catch((e) => {
+                    console.error(
+                        `Failed to close page for ${json._versionKey} - ${getErrorMessage(e)}`
+                    );
+                });
+            }
         }
     }
 }
