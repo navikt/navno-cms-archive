@@ -53,7 +53,7 @@ export const PdfExport = ({ versions, locale }: Props) => {
     };
 
     return (
-        <>
+        <div className={style.root}>
             <div className={style.wrapper}>
                 <div className={style.checkboxHeading}>
                     <Heading size="medium"> Versjoner</Heading>
@@ -85,6 +85,6 @@ export const PdfExport = ({ versions, locale }: Props) => {
                     </LocalAlert>
                 )}
             </div>
-        </>
+        </div>
     );
 };
