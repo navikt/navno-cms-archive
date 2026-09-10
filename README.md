@@ -78,37 +78,27 @@ Logger for migreringsjobbene finnes i Opensearch-databasen, under index'ene `cms
 
 ### Oppsett for utvikling
 
-Credentials for opensearch må legges inn i .env filer lokalt. Disse kan hentes ut fra kubernetes secret `aiven-navno-cms-archive-*`.
+Dette gjelder kun for `legacy-archive`. Credentials for opensearch må legges inn i .env filer lokalt. Disse hentes enklest ut med `nais`-CLIet.
 
-Sett context til prod-gcp:
+Installer `nais`-CLIet hvis du ikke har det: https://doc.nais.io/services/secrets/how-to/get-platform-secret/
 
-```
-kubectl config use-context prod-gcp
-```
-
-List ut secrets:
+Finn navnet på secreten (id-en i navnet kan endre seg over tid):
 
 ```
-kubectl get secret -n navno
+nais app env navno-cms-archive --environment prod-gcp --team navno
 ```
 
-Be om tilgang til aiven-prod i naisdevice.
+Se på `Source`-kolonnen for `OPEN_SEARCH_URI` (eller en av de andre `OPEN_SEARCH_*`-variablene) i output — den viser `Secret/aiven-opensearch-navno-cms-archive-<id>`, som er det fulle secret-navnet.
 
-Åpne secret:
-
-```
-kubectl edit secret -n navno aiven-opensearch-navno-cms-archive-<id> //Bytt ut <id> med id fra lista
-```
-
-Dekod OPEN_SEARCH_URI, OPEN_SEARCH_USERNAME og OPEN_SEARCH_PASSWORD fra base64:
+Hent ut verdiene (ett kall gir alle nøklene i secreten samlet, inkludert `OPEN_SEARCH_URI`, `OPEN_SEARCH_USERNAME` og `OPEN_SEARCH_PASSWORD`):
 
 ```
-echo <OPEN_SEARCH_URI> | base64 --decode
+nais secret get <secret-navn> --environment prod-gcp --team navno --with-values --reason "lokal utvikling"
 ```
 
-Fjern eventuelt trailing prosent-tegn.
+Be om tilgang til aiven-prod i naisdevice hvis du ikke allerede har det.
 
-Erstatt disse feltene med dekodede verdier fra secrets i .env.prod-local og .env.development: (IKKE i .env-template)
+Erstatt disse feltene med verdiene fra secreten i `legacy-archive/.env.prod-local` og `legacy-archive/.env.development`: (IKKE i `legacy-archive/.env-template`)
 
 ```
 OPEN_SEARCH_URI=http://my-opensearch-instance
