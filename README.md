@@ -90,15 +90,15 @@ Finn navnet på secreten (id-en i navnet kan endre seg over tid):
 nais app env navno-cms-archive --environment prod-gcp --team navno
 ```
 
-Se på `Source`-kolonnen for `OPEN_SEARCH_URI` (eller en av de andre `OPEN_SEARCH_*`-variablene) i output — den viser `Secret/aiven-opensearch-navno-cms-archive-<id>`, som er det fulle secret-navnet.
+Se på `Source`-kolonnen for `OPEN_SEARCH_URI` (eller en av de andre `OPEN_SEARCH_*`-variablene) i output — den viser `Secret/aiven-opensearch-navno-cms-archive-<id>`. Bruk delen etter `Secret/` som secret-navn i neste kommando.
 
 Hent ut verdiene (ett kall gir alle nøklene i secreten samlet, inkludert `OPEN_SEARCH_URI`, `OPEN_SEARCH_USERNAME` og `OPEN_SEARCH_PASSWORD`):
 
 ```
-nais secret get <secret-navn> --environment prod-gcp --team navno --with-values --reason "lokal utvikling"
+nais secret get <aiven-secret-navn> --environment prod-gcp --team navno --with-values --reason "lokal utvikling"
 ```
 
-Erstatt disse feltene med verdiene fra secreten i `legacy-archive/.env.prod-local` og `legacy-archive/.env.development`: (IKKE i `legacy-archive/.env-template`)
+Erstatt disse tre feltene med verdiene fra secreten i `legacy-archive/.env.prod-local` og `legacy-archive/.env.development`: (IKKE i `legacy-archive/.env-template`)
 
 ```
 OPEN_SEARCH_URI=http://my-opensearch-instance
