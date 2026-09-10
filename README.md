@@ -80,6 +80,8 @@ Logger for migreringsjobbene finnes i Opensearch-databasen, under index'ene `cms
 
 Dette gjelder kun for `legacy-archive`. Credentials for opensearch må legges inn i .env filer lokalt. Disse hentes enklest ut med `nais`-CLIet.
 
+Du trenger også tilgang til `aiven-prod` i naisdevice for selve OpenSearch-tilkoblingen når appen kjører.
+
 Installer `nais`-CLIet hvis du ikke har det: https://doc.nais.io/services/secrets/how-to/get-platform-secret/
 
 Finn navnet på secreten (id-en i navnet kan endre seg over tid):
@@ -95,8 +97,6 @@ Hent ut verdiene (ett kall gir alle nøklene i secreten samlet, inkludert `OPEN_
 ```
 nais secret get <secret-navn> --environment prod-gcp --team navno --with-values --reason "lokal utvikling"
 ```
-
-Be om tilgang til aiven-prod i naisdevice hvis du ikke allerede har det.
 
 Erstatt disse feltene med verdiene fra secreten i `legacy-archive/.env.prod-local` og `legacy-archive/.env.development`: (IKKE i `legacy-archive/.env-template`)
 
