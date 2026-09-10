@@ -21,6 +21,6 @@
 .radioGroupWrapper {
     margin-top: 0.5rem;
     padding: 0.75rem;
-    background-color: var(--ax-bg-neutral-soft);
+    background-color: var(--a-surface-subtle);
     border-radius: 0.5rem;
 }

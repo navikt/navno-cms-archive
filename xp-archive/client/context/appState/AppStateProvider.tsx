@@ -33,16 +33,11 @@ const getSelectedContentFromPath = (): SelectedContent | undefined => {
 
 export const AppStateProvider = ({ children }: Props) => {
     const [selectedContent, setSelectedContent] = useState<SelectedContent>();
-    const [versionViewOpen, setVersionViewOpen] = useState(true);
+    const [versionViewOpen, setVersionViewOpen] = useState(false);
     const activeSelectedContent = selectedContent ?? getSelectedContentFromPath();
 
     const updateSelectedContent = (newSelectedContent: SelectedContent) => {
-        if (newSelectedContent.contentId !== activeSelectedContent?.contentId) {
-            setVersionViewOpen(false);
-        }
-
         setSelectedContent(newSelectedContent);
-
         const newUrl = `${xpArchiveConfig.basePath}/${newSelectedContent.contentId}/${newSelectedContent.locale}/${newSelectedContent.versionId || ''}`;
         window.history.pushState({}, '', newUrl);
     };

@@ -1,7 +1,7 @@
 .path {
-    color: var(--ax-neutral-700);
+    color: var(--a-gray-600);
 }
 
 .small {
-    font-size: var(--ax-font-size-small);
+    font-size: var(--a-font-size-small);
 }
