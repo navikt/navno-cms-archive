@@ -4,51 +4,51 @@
     gap: 0.5rem;
     text-decoration: none;
     font-weight: bold;
-    border: solid 2px var(--a-border-action);
-    border-radius: var(--a-border-radius-medium);
+    border: solid 2px var(--ax-border-accent);
+    border-radius: var(--ax-radius-4);
     padding: 0.5rem 0.75rem;
     min-height: 3rem;
-    background-color: var(--a-surface-action);
-    color: var(--a-text-on-action);
+    background-color: var(--ax-bg-accent-strong);
+    color: var(--ax-text-accent-contrast);
 
     &:hover {
-        background-color: var(--a-surface-action-hover);
+        background-color: var(--ax-bg-accent-strong-hover);
     }
 
     &:active {
         outline: none;
         box-shadow: none;
-        background-color: var(--a-surface-action-active);
+        background-color: var(--ax-bg-accent-strong-pressed);
     }
 
     &.small {
         background-color: unset;
-        color: var(--a-text-action);
+        color: var(--ax-text-accent-subtle);
         border: none;
         padding: 0.25rem 0.5rem;
 
         &:hover {
-            background-color: var(--a-surface-action-subtle-hover);
+            background-color: var(--ax-bg-accent-moderate-hover);
         }
 
         &:active {
-            background-color: var(--a-surface-action-subtle);
+            background-color: var(--ax-bg-accent-soft);
         }
     }
 
     &.disabled {
-        color: var(--a-gray-400);
-        background-color: var(--a-gray-200);
+        color: var(--ax-neutral-500);
+        background-color: var(--ax-neutral-300);
         cursor: not-allowed;
         border: none;
 
         &:hover {
-            background-color: var(--a-gray-300);
+            background-color: var(--ax-neutral-400);
         }
 
         &:active {
-            color: var(--a-gray-400);
-            background-color: var(--a-gray-400);
+            color: var(--ax-neutral-500);
+            background-color: var(--ax-neutral-500);
         }
     }
 }

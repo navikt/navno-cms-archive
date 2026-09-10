@@ -1,7 +1,13 @@
 .wrapper {
     height: 100%;
     padding: 1rem 1rem 0;
-    background-color: var(--a-surface-neutral);
+}
+
+.themeWrapper {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
 }
 
 .iframe {
@@ -13,12 +19,29 @@
 .loaderWrapper {
     position: absolute;
     margin: 1rem;
-    background-color: var(--a-surface-subtle);
+    background-color: var(--ax-bg-neutral-soft);
     opacity: 0.8;
-    border: 3px solid var(--a-border-default);
+    border: 3px solid var(--ax-border-neutral);
     padding: 0.5rem;
     border-radius: 0.5rem;
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.versionBar {
+    display: flex;
+    justify-content: space-between;
+    color: var(--ax-text-neutral-contrast);
+    margin-bottom: 1rem;
+}
+
+.versionsAndContent {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+}
+
+.content {
+    flex: 3;
 }

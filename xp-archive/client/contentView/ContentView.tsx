@@ -8,7 +8,10 @@ import { FilePreviewWrapper } from './filePreview/FilePreviewWrapper';
 
 import style from './ContentView.module.css';
 
-const getDisplayComponent = (viewVariant?: ViewVariant, data?: ContentServiceResponse | null) => {
+const getDisplayComponent = (
+    viewVariant: ViewVariant | undefined,
+    data?: ContentServiceResponse | null
+) => {
     if (!data || !viewVariant) return null;
 
     const { json: content, versions } = data;
@@ -27,10 +30,9 @@ type Props = {
     data?: ContentServiceResponse | null;
 };
 
-export const ContentView = ({ selectedView, isLoading, data }: Props) => {
-    if (isLoading) {
+export const ContentView = ({ selectedView, data, isLoading }: Props) => {
+    if (isLoading && !data) {
         return <Loader size="xlarge" />;
     }
-
     return <div className={style.main}>{getDisplayComponent(selectedView, data)}</div>;
 };
