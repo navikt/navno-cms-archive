@@ -18,8 +18,8 @@ pnpm install
 2. Bygge appene
 
 ```
-pnpm run build -C legacy-archive
-pnpm run build -C xp-archive
+pnpm -C legacy-archive build
+pnpm -C xp-archive build
 ```
 
 3. (Kun første gang) Kopiere .env-template.
@@ -39,8 +39,8 @@ Sett NODE_ENV=production i xp-archive/.env.prod-local og legacy-archive/.env.pro
    For legacy arkivet trenger du også credentials for open-search, se [Enonic CMS legacy arkiv](#enonic-cms-legacy-arkiv-2006-2019), og så må man logge på aiven-prod i naisdevice. Brukernavn og passord roterer, så disse må oppdateres med jevne mellomrom.
 
 ```
-pnpm run dev -C legacy-archive
-pnpm run dev -C xp-archive
+pnpm -C legacy-archive dev
+pnpm -C xp-archive dev
 ```
 
 5. Relaterte applikasjoner
@@ -53,7 +53,7 @@ pnpm run dev -C xp-archive
 Hvis du har problemer med at css og js ikke laster ved første oppstart i dev-modus, prøv å start appen i prod-modus en gang og se om det løser problemet.
 
 ```
-pnpm run start-local -C xp-archive
+pnpm -C xp-archive start-local
 ```
 
 Hvis iframes ikke vises, sjekk om du får cors-issues i srcdoc. Disse vil oppstå hvis du kjører nav-enonicxp-frontend i dev-modus og ikke i prod-modus.
@@ -78,37 +78,27 @@ Logger for migreringsjobbene finnes i Opensearch-databasen, under index'ene `cms
 
 ### Oppsett for utvikling
 
-Credentials for opensearch må legges inn i .env filer lokalt. Disse kan hentes ut fra kubernetes secret `aiven-navno-cms-archive-*`.
+Dette gjelder kun for `legacy-archive`. Credentials for opensearch må legges inn i .env filer lokalt. Disse hentes enklest ut med `nais`-CLIet.
 
-Sett context til prod-gcp:
+Du trenger også tilgang til `aiven-prod` i naisdevice for selve OpenSearch-tilkoblingen når appen kjører.
 
-```
-kubectl config use-context prod-gcp
-```
+Installer `nais`-CLIet hvis du ikke har det: https://doc.nais.io/services/secrets/how-to/get-platform-secret/
 
-List ut secrets:
+Finn navnet på secreten (id-en i navnet kan endre seg over tid):
 
 ```
-kubectl get secret -n navno
+nais app env navno-cms-archive --environment prod-gcp --team navno
 ```
 
-Be om tilgang til aiven-prod i naisdevice.
+Se på `Source`-kolonnen for `OPEN_SEARCH_URI` (eller en av de andre `OPEN_SEARCH_*`-variablene) i output — den viser `Secret/aiven-opensearch-navno-cms-archive-<id>`. Bruk delen etter `Secret/` som secret-navn i neste kommando.
 
-Åpne secret:
-
-```
-kubectl edit secret -n navno aiven-opensearch-navno-cms-archive-<id> //Bytt ut <id> med id fra lista
-```
-
-Dekod OPEN_SEARCH_URI, OPEN_SEARCH_USERNAME og OPEN_SEARCH_PASSWORD fra base64:
+Hent ut verdiene (ett kall gir alle nøklene i secreten samlet, inkludert `OPEN_SEARCH_URI`, `OPEN_SEARCH_USERNAME` og `OPEN_SEARCH_PASSWORD`):
 
 ```
-echo <OPEN_SEARCH_URI> | base64 --decode
+nais secret get <aiven-secret-navn> --environment prod-gcp --team navno --with-values --reason "lokal utvikling"
 ```
 
-Fjern eventuelt trailing prosent-tegn.
-
-Erstatt disse feltene med dekodede verdier fra secrets i .env.prod-local og .env.development: (IKKE i .env-template)
+Erstatt disse tre feltene med verdiene fra secreten i `legacy-archive/.env.prod-local` og `legacy-archive/.env.development`: (IKKE i `legacy-archive/.env-template`)
 
 ```
 OPEN_SEARCH_URI=http://my-opensearch-instance
