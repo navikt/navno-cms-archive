@@ -1,15 +1,3 @@
-export const getTimestring = (date: Date) => {
-    const time = date
-        .toLocaleString('no', {
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: false,
-        })
-        .replace(':', '.');
-
-    return `kl. ${time}`;
-};
-
 export const formatTimestamp = (timestamp: string, excludeTime?: boolean) => {
     const date = new Date(timestamp);
     const dateString = date.toLocaleString('no', {
@@ -22,9 +10,15 @@ export const formatTimestamp = (timestamp: string, excludeTime?: boolean) => {
         return dateString;
     }
 
-    const timeString = getTimestring(date);
+    const timeString = date
+        .toLocaleString('no', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false,
+        })
+        .replace(':', '.');
 
-    return `${dateString}, ${timeString}`;
+    return `${dateString}, kl. ${timeString}`;
 };
 
 export const formatTimestampForPDF = (timestamp: string) => {
