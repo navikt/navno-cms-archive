@@ -75,13 +75,13 @@ export const VersionSelector = ({ versions }: Props) => {
                 />
             </div>
             <div className={style.versionList}>
-                {filteredVersions.map((version, index) => (
+                {filteredVersions.map((version) => (
                     <VersionButton
                         key={version.versionId}
                         version={version}
                         isSelected={version.versionId === versionSelected}
                         onClick={() => selectVersion(version.versionId)}
-                        isLatest={index === 0}
+                        isLatest={version.versionId === versions[0]?.versionId}
                     />
                 ))}
             </div>
