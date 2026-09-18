@@ -13,7 +13,7 @@ export const pixelWidthToA4Scale = (pxWidth: number) =>
     Math.max(MIN_SCALE, Math.min(MAX_SCALE, (1 / pxWidth) * SCALE_FACTOR));
 
 export const generatePdfInfo = (content: ContentServiceResponse) => {
-    const unpublishedTime = content?.json?.unpublishedTime ?? content?.json.archivedTime;
+    const unpublishedTime = content?.json?.unpublishedTime;
 
     return `
     <div style="font-size: 10px; margin-top:-16px; padding: 4px; width: 100%; display: flex; justify-content: space-between; white-space: nowrap">
