@@ -61,7 +61,7 @@ export const PdfExport = ({ versions, locale }: Props) => {
                 <DataGrid
                     columns={columns}
                     data={versions}
-                    getRowId={(v) => v.versionId}
+                    getRowId={(v) => `${v.nodeId}:${v.versionId}`}
                     selection={{ mode: 'multiple', onSelectedRowIdsChange: updateVersionsSelected }}
                 >
                     <DataGrid.Table layout="auto" />
