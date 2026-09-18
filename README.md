@@ -106,4 +106,4 @@ OPEN_SEARCH_USERNAME=username
 OPEN_SEARCH_PASSWORD=password
 ```
 
-Husk å ikke commit secrets! 👿
+Husk å ikke commit secrets 👿
