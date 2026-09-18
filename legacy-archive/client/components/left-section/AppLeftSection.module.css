@@ -59,6 +59,6 @@
         right: 0;
         visibility: visible;
         opacity: 1;
-        background-color: var(--a-white);
+        background-color: white;
     }
 }
