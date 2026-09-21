@@ -39,7 +39,7 @@ type Props = {
 export const VersionSelector = ({ versions }: Props) => {
     const [searchQuery, setSearchQuery] = useState('');
     const { selectedVersion, updateSelectedContent } = useAppState();
-    const versionSelected = selectedVersion || versions[0].versionId;
+    const versionSelected = selectedVersion || versions[0]?.versionId;
 
     const selectVersion = (versionId: string) => {
         const node = versions.find((v) => v.versionId === versionId);
