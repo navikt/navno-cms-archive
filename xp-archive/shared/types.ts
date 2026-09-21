@@ -42,6 +42,8 @@ export type VersionReference = {
     locale: string;
     displayName: string;
     type: ContentType;
+    publishFromTime?: string;
+    unpublishedTime?: string;
 };
 
 export type Attachment = {
@@ -78,7 +80,6 @@ export type Content = {
     originalContentTypeName?: string;
     expandAll?: boolean;
     unpublishedTime?: string;
-    archivedTime?: string;
 };
 
 export type SearchResponse = {

@@ -1,7 +1,0 @@
-.datatheme {
-    /* Has to be here for the data-theme to work */
-}
-
-[data-theme='viewSelector'] {
-    --ac-toggle-group-bg: var(--a-white);
-}
