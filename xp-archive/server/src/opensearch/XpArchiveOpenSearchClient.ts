@@ -7,8 +7,8 @@ import { getPathName } from '../utils/paths';
 // v3: ny indeks trengs for hver mapping-endring (kan ikke endre mapping på en
 // eksisterende indeks, og app-brukeren har ikke tilgang til å slette indekser).
 // v3 legger til parentPath (eksakt sti til direkte forelder) for å kunne bygge et
-// innholdstre fra OpenSearch i stedet for å være avhengig av XP live (se
-// docs/arkiv-durabilitet.md). html forblir index: false fra v2.
+// innholdstre fra OpenSearch i stedet for å være avhengig av XP live.
+// html forblir index: false fra v2.
 export const XP_ARCHIVE_INDEX = 'xp-archive-content-v3';
 
 // Eksplisitt mapping. json-bloben lagres men indekseres ikke (enabled: false),
@@ -216,7 +216,7 @@ export class XpArchiveOpenSearchClient {
             type: doc.type,
             locale: doc.locale,
             numChildren,
-            // XP-lag-konsepter vi ikke lagrer i dag (se docs/arkiv-durabilitet.md) – forenklet
+            // XP-lag-konsepter vi ikke lagrer i dag – forenklet
             // bevisst i stedet for å late som vi vet svaret.
             isLocalized: true,
             hasLocalizedDescendants: false,
@@ -248,9 +248,9 @@ export class XpArchiveOpenSearchClient {
         };
     }
 
-    // Bygger et nivå av innholdstreet direkte fra OpenSearch (uten å spørre XP). Se docs/arkiv-durabilitet.md
-    // for design/forbehold (rekkefølge på barn er alfabetisk på sti, ikke XP sin authored
-    // childOrder).
+    // Bygger et nivå av innholdstreet direkte fra OpenSearch (uten å spørre XP).
+    // Forbehold: rekkefølge på barn er alfabetisk på sti, ikke XP sin authored
+    // childOrder.
     //
     // current og children hentes parallelt (uavhengige spørringer). Hvis current mangler
     // et eget dokument MEN har barn (typisk rot-nivå), bygges en syntetisk "tom" node i

@@ -31,7 +31,7 @@ export class ContentTreeService {
     };
 
     // Midlertidig test-endepunkt: bygger samme respons-form fra OpenSearch i stedet for
-    // å spørre XP live (se docs/arkiv-durabilitet.md). Erstatter IKKE getContentTreeHandler
+    // å spørre XP live. Erstatter IKKE getContentTreeHandler
     // – det er en bevisst separat rute til vi har validert dette skikkelig.
     public getContentTreeFromIndexHandler: RequestHandler = async (req, res) => {
         if (!this.openSearchClient) {

@@ -2,7 +2,7 @@ import { fetchJson } from '@common/shared/fetchUtils';
 import useSWRImmutable from 'swr/immutable';
 import { XPContentTreeServiceResponse } from '../../shared/types';
 
-// Henter innholdstre fra OpenSearch i stedet for XP live (se docs/arkiv-durabilitet.md).
+// Henter innholdstre fra OpenSearch i stedet for XP live.
 // Kjent åpent punkt: kun verifisert mot locale=no – ARCHIVE_ROOT_PREFIX i
 // server/src/utils/paths.ts er ikke bekreftet for en/nn/se ennå.
 const CONTENT_TREE_API = `${import.meta.env.VITE_APP_ORIGIN}/xp/api/contentTreeFromIndex`;
