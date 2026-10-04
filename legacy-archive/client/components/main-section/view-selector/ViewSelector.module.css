@@ -1,4 +1,4 @@
 .disabled {
-    color: var(--a-gray-400);
+    color: var(--ax-neutral-500);
     cursor: not-allowed;
 }
