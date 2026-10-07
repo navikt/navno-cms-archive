@@ -50,14 +50,14 @@ export class CmsArchiveOpenSearchClient {
 
                 const hits = result.body.hits.hits.reduce<DocumentWithScore<Document>[]>(
                     (acc, hit) => {
-                        const { _source } = hit;
+                        const source: unknown = hit._source;
                         const rawScore = '_score' in hit ? hit._score : undefined;
                         const _score =
                             typeof rawScore === 'number' || typeof rawScore === 'string'
                                 ? rawScore
                                 : undefined;
-                        if (_source) {
-                            acc.push({ ...(_source as Document), _score });
+                        if (source) {
+                            acc.push({ ...(source as Document), _score });
                         }
 
                         return acc;
