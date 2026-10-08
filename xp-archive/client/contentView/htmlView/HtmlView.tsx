@@ -5,7 +5,11 @@ import { Content, VersionReference } from '../../../shared/types';
 import { formatTimestamp } from '../../../../common/src/shared/timestamp';
 import { VersionSelector } from '../../versionSelector/VersionSelector';
 import { useAppState } from '../../context/appState/useAppState';
-import { ChevronLeftIcon, ChevronRightIcon, ExternalLinkIcon } from '@navikt/aksel-icons';
+import {
+    ChevronRightDoubleIcon,
+    ChevronLeftDoubleIcon,
+    ExternalLinkIcon,
+} from '@navikt/aksel-icons';
 
 import style from './HtmlView.module.css';
 
@@ -67,9 +71,9 @@ export const HtmlView = ({ content, versions }: Props) => {
                         data-color={'neutral'}
                         icon={
                             versionViewOpen ? (
-                                <ChevronLeftIcon aria-hidden />
+                                <ChevronLeftDoubleIcon aria-hidden />
                             ) : (
-                                <ChevronRightIcon aria-hidden />
+                                <ChevronRightDoubleIcon aria-hidden />
                             )
                         }
                         aria-expanded={versionViewOpen}
