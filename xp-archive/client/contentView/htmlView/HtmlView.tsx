@@ -7,7 +7,7 @@ import { VersionSelector } from '../../versionSelector/VersionSelector';
 import { useAppState } from '../../context/appState/useAppState';
 import {
     ChevronRightDoubleIcon,
-    ChevronLeftDoubleIcon,
+    ChevronDownDoubleIcon,
     ExternalLinkIcon,
 } from '@navikt/aksel-icons';
 
@@ -71,7 +71,7 @@ export const HtmlView = ({ content, versions }: Props) => {
                         data-color={'neutral'}
                         icon={
                             versionViewOpen ? (
-                                <ChevronLeftDoubleIcon aria-hidden />
+                                <ChevronDownDoubleIcon aria-hidden />
                             ) : (
                                 <ChevronRightDoubleIcon aria-hidden />
                             )
