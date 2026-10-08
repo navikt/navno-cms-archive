@@ -8,9 +8,9 @@ packages:
 catalog:
   '@mui/material': '7.3.11'
   '@mui/x-tree-view': '8.29.2'
-  '@types/archiver': '7.0.0'
+  '@types/archiver': '8.0.0'
   '@types/compression': '1.8.1'
-  archiver: '7.0.1'
+  archiver: '8.0.0'
   compression: '1.8.2'
   concurrently: '9.2.4'
   dotenv: '18.0.3'
