@@ -37,10 +37,6 @@ export const AppStateProvider = ({ children }: Props) => {
     const activeSelectedContent = selectedContent ?? getSelectedContentFromPath();
 
     const updateSelectedContent = (newSelectedContent: SelectedContent) => {
-        if (newSelectedContent.contentId !== activeSelectedContent?.contentId) {
-            setVersionViewOpen(false);
-        }
-
         setSelectedContent(newSelectedContent);
 
         const newUrl = `${xpArchiveConfig.basePath}/${newSelectedContent.contentId}/${newSelectedContent.locale}/${newSelectedContent.versionId || ''}`;
