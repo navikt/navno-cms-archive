@@ -13,7 +13,7 @@ catalog:
   archiver: '7.0.1'
   compression: '1.8.2'
   concurrently: '10.0.5'
-  dotenv: '18.0.3'
+  dotenv: '18.0.5'
   escape-html: '1.0.3'
   express: '5.2.1'
   http-terminator: '3.2.0'
