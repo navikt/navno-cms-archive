@@ -6,8 +6,8 @@
     "scripts": {
         "build": "node build.mjs",
         "build-and-watch": "WATCH=true node build.mjs",
-        "start": "node -r dotenv/config ./dist/server/server.cjs dotenv_config_path=../.env",
-        "nodemon-start": "nodemon -r dotenv/config -w ./dist/server -w ../.env ./dist/server/server.cjs dotenv_config_path=../.env",
+        "start": "DOTENV_CONFIG_PATH=../.env node -r dotenv/config ./dist/server/server.cjs",
+        "nodemon-start": "DOTENV_CONFIG_PATH=../.env nodemon -r dotenv/config -w ./dist/server -w ../.env ./dist/server/server.cjs",
         "dev": "concurrently \"pnpm run build-and-watch\" \"pnpm run nodemon-start\""
     },
     "dependencies": {
