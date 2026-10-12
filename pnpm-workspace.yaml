@@ -6,8 +6,8 @@ packages:
   - xp-archive/server
 
 catalog:
-  '@mui/material': '7.3.11'
-  '@mui/x-tree-view': '8.29.2'
+  '@mui/material': '9.4.0'
+  '@mui/x-tree-view': '9.15.0'
   '@types/archiver': '7.0.0'
   '@types/compression': '1.8.1'
   archiver: '7.0.1'

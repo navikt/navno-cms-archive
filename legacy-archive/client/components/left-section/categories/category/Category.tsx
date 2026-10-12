@@ -13,7 +13,6 @@ import style from './Category.module.css';
 const classesOverride: Partial<TreeItemClasses> = {
     content: style.content,
     label: style.label,
-    disabled: style.disabled,
     root: style.root,
     iconContainer: style.iconContainer,
 } as const;

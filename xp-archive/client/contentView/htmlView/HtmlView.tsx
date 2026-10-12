@@ -4,9 +4,12 @@ import { Alert, Loader, Button, Link, Box, Theme } from '@navikt/ds-react';
 import { Content, VersionReference } from '../../../shared/types';
 import { formatTimestamp } from '../../../../common/src/shared/timestamp';
 import { VersionSelector } from '../../versionSelector/VersionSelector';
-import { VersionIcon } from '../../versionSelector/VersionIcon';
 import { useAppState } from '../../context/appState/useAppState';
-import { ExternalLinkIcon } from '@navikt/aksel-icons';
+import {
+    ChevronRightDoubleIcon,
+    ChevronDownDoubleIcon,
+    ExternalLinkIcon,
+} from '@navikt/aksel-icons';
 
 import style from './HtmlView.module.css';
 
@@ -50,11 +53,12 @@ export const HtmlView = ({ content, versions }: Props) => {
 
     const getVersionDisplay = () => {
         if (versions.length === 0 || !content) return 'Ingen versjoner';
-        if (!selectedVersion) return formatTimestamp(versions[0].timestamp);
 
-        return formatTimestamp(
-            versions.find((v) => v.versionId === selectedVersion)?.timestamp ?? ''
-        );
+        const version = selectedVersion
+            ? versions.find((v) => v.versionId === selectedVersion)
+            : versions[0];
+
+        return `Viser versjon for ${formatTimestamp(version?.timestamp ?? '')}`;
     };
 
     return (
@@ -63,9 +67,16 @@ export const HtmlView = ({ content, versions }: Props) => {
                 <div className={style.versionBar}>
                     <Button
                         size={'small'}
-                        variant={'tertiary'}
+                        variant={'secondary'}
                         data-color={'neutral'}
-                        icon={<VersionIcon isOpen={versionViewOpen} />}
+                        icon={
+                            versionViewOpen ? (
+                                <ChevronDownDoubleIcon aria-hidden />
+                            ) : (
+                                <ChevronRightDoubleIcon aria-hidden />
+                            )
+                        }
+                        aria-expanded={versionViewOpen}
                         onClick={() => setVersionViewOpen(!versionViewOpen)}
                     >
                         {getVersionDisplay()}
