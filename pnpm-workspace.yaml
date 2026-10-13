@@ -15,7 +15,7 @@ catalog:
   concurrently: '10.0.5'
   dotenv: '18.0.5'
   escape-html: '1.0.3'
-  express: '5.2.1'
+  express: '5.3.0'
   http-terminator: '3.2.0'
   js-cookie: '3.0.8'
   nodemon: '3.1.14'
