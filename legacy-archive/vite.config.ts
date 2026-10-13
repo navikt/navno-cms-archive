@@ -1,10 +1,10 @@
-import { defineConfig, loadEnv } from 'vite';
+import { defineConfig, esmExternalRequirePlugin, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import visualizer from 'rollup-plugin-visualizer';
 
 // https://vitejs.dev/config/
-export default defineConfig(({ mode }) => {
+export default defineConfig(({ mode, isSsrBuild }) => {
     process.env = { ...process.env, ...loadEnv(mode, process.cwd(), '') };
     process.env.NODE_ENV = process.env.NODE_ENV || 'production';
 
@@ -12,6 +12,8 @@ export default defineConfig(({ mode }) => {
         plugins: [
             react(),
             tsconfigPaths(),
+            // Keep SSR output compatible with the CommonJS server bundle.
+            ...(isSsrBuild ? [esmExternalRequirePlugin({ external: ['react'] })] : []),
             ...(process.env.ANALYZE
                 ? [visualizer({ gzipSize: true, open: true, sourcemap: true })]
                 : []),
