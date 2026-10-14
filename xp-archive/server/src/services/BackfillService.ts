@@ -1,4 +1,3 @@
-import { RequestHandler } from 'express';
 import { fetchJson } from '@common/shared/fetchUtils';
 import { xpServiceUrl } from '../utils/urls';
 import { IndexingService } from './IndexingService';
@@ -21,8 +20,7 @@ type NodeListResult = {
 const PAGE_SIZE = 1000;
 
 // Backfill: enumererer publisert innhold via enonic-xp sitt nodeList-endepunkt og
-// indekserer alle versjoner per node. Kjerne-driveren (runBackfill) er gjenbrukbar –
-// trigger-endepunktet under er en midlertidig innpakning som en Naisjob erstatter senere.
+// indekserer alle versjoner per node. Kjøres kun fra naisjob-en (backfillJob.ts).
 //
 // Pacing: indexAllVersions kjøres SEKVENSIELT (await per node), så vi aldri får N
 // samtidige Puppeteer-renders. Cursor-paginering (after/nextAfter) konsumeres slik
@@ -30,7 +28,6 @@ const PAGE_SIZE = 1000;
 export class BackfillService {
     private readonly indexingService: IndexingService;
     private readonly openSearchClient?: XpArchiveOpenSearchClient;
-    private running = false;
 
     constructor(indexingService: IndexingService, openSearchClient?: XpArchiveOpenSearchClient) {
         this.indexingService = indexingService;
@@ -119,7 +116,6 @@ export class BackfillService {
 
         const elapsed = Math.round((Date.now() - startTime) / 1000);
         console.log(`Backfill ferdig: ${indexed} noder indeksert, ${failed} feilet – ${elapsed}s`);
-        this.running = false;
     }
 
     // Kjøres som naisjob-entrypoint: henter locales, kjører backfill til ferdig, og
@@ -135,38 +131,4 @@ export class BackfillService {
         console.log('Backfill fullført – avslutter.');
         process.exit(0);
     }
-
-    // Trigger-endepunkt: starter driveren og svarer 202 med en gang. Driveren kjører
-    // videre i prosessen og awaiter hver node sekvensielt. Én kjøring om gangen.
-    public backfillHandler: RequestHandler = async (req, res) => {
-        if (this.running) {
-            res.status(409).json({ message: 'Backfill kjører allerede' });
-            return;
-        }
-
-        const localesParam = typeof req.query.locales === 'string' ? req.query.locales : '';
-        const maxNodesRaw =
-            typeof req.query.maxNodes === 'string' ? Number(req.query.maxNodes) : NaN;
-        const maxNodes = Number.isFinite(maxNodesRaw) && maxNodesRaw > 0 ? maxNodesRaw : undefined;
-
-        const locales = localesParam
-            ? localesParam
-                  .split(',')
-                  .map((s) => s.trim())
-                  .filter(Boolean)
-            : await this.fetchLocales();
-
-        if (locales.length === 0) {
-            res.status(400).json({ message: 'Ingen locales å kjøre backfill for' });
-            return;
-        }
-
-        this.running = true;
-        res.status(202).json({ started: true, locales, maxNodes: maxNodes ?? null });
-
-        this.runBackfill(locales, maxNodes).catch((e: unknown) => {
-            console.error(`Backfill krasjet: ${e instanceof Error ? e.message : String(e)}`);
-            this.running = false;
-        });
-    };
 }
