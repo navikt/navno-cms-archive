@@ -18,6 +18,11 @@ inputs:
     required: true
     description: HTML render API endpoint
 
+outputs:
+  image:
+    description: The built and pushed Docker image reference
+    value: ${{ steps.docker-push.outputs.image }}
+
 runs:
   using: composite
   steps:
