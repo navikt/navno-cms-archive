@@ -1,4 +1,3 @@
-import { Browser } from 'puppeteer';
 import { CmsArchiveContentService } from '../cms/CmsArchiveContentService';
 import {
     generateErrorFilename,
@@ -6,6 +5,7 @@ import {
     generatePdfFooter,
     pixelWidthToA4Scale,
 } from './pdf-utils';
+import { getBrowser } from '@common/server/utils/browser';
 import { CmsContent } from '../../../shared/cms-documents/content';
 import archiver from 'archiver';
 import { getErrorMessage } from '@common/shared/fetchUtils';
@@ -22,16 +22,13 @@ type PdfResult = {
 };
 
 type ConstructorProps = {
-    browser: Browser;
     contentService: CmsArchiveContentService;
 };
 
 export class PdfGenerator {
-    private readonly browser: Browser;
     private readonly contentService: CmsArchiveContentService;
 
-    constructor({ browser, contentService }: ConstructorProps) {
-        this.browser = browser;
+    constructor({ contentService }: ConstructorProps) {
         this.contentService = contentService;
     }
 
@@ -142,7 +139,7 @@ export class PdfGenerator {
         try {
             console.log(`Starting PDF generation for version ${versionKey}`);
 
-            page = await this.browser.newPage();
+            page = await (await getBrowser()).newPage();
 
             // Enable request interception to debug network issues
             await page.setRequestInterception(true);

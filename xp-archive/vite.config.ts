@@ -1,14 +1,16 @@
-import { defineConfig } from 'vite';
+import { defineConfig, esmExternalRequirePlugin } from 'vite';
 import react from '@vitejs/plugin-react';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import visualizer from 'rollup-plugin-visualizer';
 
 // https://vitejs.dev/config/
-export default defineConfig(() => {
+export default defineConfig(({ isSsrBuild }) => {
     return {
         plugins: [
             react(),
             tsconfigPaths(),
+            // Keep SSR output compatible with the CommonJS server bundle.
+            ...(isSsrBuild ? [esmExternalRequirePlugin({ external: ['react'] })] : []),
             ...(process.env.ANALYZE
                 ? [visualizer({ gzipSize: true, open: true, sourcemap: true })]
                 : []),

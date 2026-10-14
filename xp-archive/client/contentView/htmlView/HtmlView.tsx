@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
-import style from './HtmlView.module.css';
 import { xpArchiveConfig } from '@common/shared/siteConfigs';
-import { Alert, Loader, Tag } from '@navikt/ds-react';
+import { Alert, Loader, Button, Link, Box, Theme, Tag } from '@navikt/ds-react';
 import { Content, ContentSource, VersionReference } from '../../../shared/types';
 import { formatTimestamp } from '../../../../common/src/shared/timestamp';
+import { VersionSelector } from '../../versionSelector/VersionSelector';
+import { useAppState } from '../../context/appState/useAppState';
+import {
+    ChevronRightDoubleIcon,
+    ChevronDownDoubleIcon,
+    ExternalLinkIcon,
+} from '@navikt/aksel-icons';
 
-type Props = {
-    content: Content;
-    source: ContentSource;
-    versions: VersionReference[];
-};
+import style from './HtmlView.module.css';
 
 const getUnpublishedWarningText = (content: Content, versions: VersionReference[]) => {
     if (content.originalContentTypeName && content.type === 'no.nav.navno:internal-link') {
@@ -37,41 +39,95 @@ const localeNames: Record<string, string> = {
     se: 'samisk',
 };
 
+type Props = {
+    content: Content;
+    source: ContentSource;
+    versions: VersionReference[];
+};
+
 export const HtmlView = ({ content, source, versions }: Props) => {
-    const [isLoading, setIsLoading] = useState(true);
+    const [loadedPath, setLoadedPath] = useState<string | null>(null);
     const htmlPath = `${xpArchiveConfig.basePath}/html/${content._id}/${content.locale}/${content._versionKey}`;
+    const isLoading = loadedPath !== htmlPath;
+
+    const { selectedVersion, versionViewOpen, setVersionViewOpen } = useAppState();
+
+    const getVersionDisplay = () => {
+        if (versions.length === 0 || !content) return 'Ingen versjoner';
+
+        const version = selectedVersion
+            ? versions.find((v) => v.versionId === selectedVersion)
+            : versions[0];
+
+        return `Viser versjon for ${formatTimestamp(version?.timestamp ?? '')}`;
+    };
 
     return (
-        <div className={style.wrapper}>
-            {/* TODO: fjern tag før prod? */}
-            <div className={style.sourceLabel}>
-                {source === 'opensearch' ? (
-                    <Tag variant="success">Arkivert snapshot (OpenSearch)</Tag>
-                ) : (
-                    <Tag variant="warning">Live fra XP – ikke arkivert ennå</Tag>
-                )}
-            </div>
-            {content.originalContentTypeName ? (
-                <Alert variant="warning">{`Obs! Denne siden var opprinnelig en "${content.originalContentTypeName}" og inneholder versjonshistorikken. ${getUnpublishedWarningText(content, versions)}`}</Alert>
-            ) : null}
-            {content.x?.['no-nav-navno']?.redirectToLayer?.locale ? (
-                <Alert variant="warning">{`Obs! Denne siden er satt som redirect til språkversjonen for "${localeNames[content.x['no-nav-navno'].redirectToLayer.locale]}". Husk å velge riktig språkversjon for å se korrekt historikk.`}</Alert>
-            ) : null}
-            {isLoading && (
-                <div className={style.loaderWrapper}>
-                    <Loader size="xlarge" />
+        <Box className={style.wrapper} background={'neutral-strong'}>
+            <Theme theme={'dark'} hasBackground={false} className={style.themeWrapper}>
+                <div className={style.versionBar}>
+                    <Button
+                        size={'small'}
+                        variant={'secondary'}
+                        data-color={'neutral'}
+                        icon={
+                            versionViewOpen ? (
+                                <ChevronDownDoubleIcon aria-hidden />
+                            ) : (
+                                <ChevronRightDoubleIcon aria-hidden />
+                            )
+                        }
+                        aria-expanded={versionViewOpen}
+                        onClick={() => setVersionViewOpen(!versionViewOpen)}
+                    >
+                        {getVersionDisplay()}
+                    </Button>
+                    <Link
+                        href={htmlPath}
+                        data-color={'neutral'}
+                        onClick={(e) => {
+                            e.preventDefault();
+                            window.open(htmlPath, '_blank');
+                        }}
+                    >
+                        {'Åpne i nytt vindu'}
+                        <ExternalLinkIcon />
+                    </Link>
                 </div>
-            )}
-            <iframe
-                title={'HTML-visning'}
-                src={htmlPath}
-                className={style.iframe}
-                onLoad={(e) => {
-                    setIsLoading(false);
-                    disableLinksScriptsAndEventListeners(e.currentTarget);
-                }}
-            />
-        </div>
+                <div className={style.versionsAndContent}>
+                    {versionViewOpen && <VersionSelector versions={versions} />}
+                    <div className={style.content}>
+                        <div className={style.sourceLabel}>
+                            {source === 'opensearch' ? (
+                                <Tag variant="success">Arkivert snapshot (OpenSearch)</Tag>
+                            ) : (
+                                <Tag variant="warning">Live fra XP – ikke arkivert ennå</Tag>
+                            )}
+                        </div>
+                        {content.originalContentTypeName ? (
+                            <Alert variant="warning">{`Obs! Denne siden var opprinnelig en "${content.originalContentTypeName}" og inneholder versjonshistorikken. ${getUnpublishedWarningText(content, versions)}`}</Alert>
+                        ) : null}
+                        {content.x?.['no-nav-navno']?.redirectToLayer?.locale ? (
+                            <Alert variant="warning">{`Obs! Denne siden er satt som redirect til språkversjonen for "${localeNames[content.x['no-nav-navno'].redirectToLayer.locale]}". Husk å velge riktig språkversjon for å se korrekt historikk.`}</Alert>
+                        ) : null}
+                        {isLoading && (
+                            <div className={style.loaderWrapper}>
+                                <Loader size="xlarge" />
+                            </div>
+                        )}
+                        <iframe
+                            title={'HTML-visning'}
+                            src={htmlPath}
+                            className={style.iframe}
+                            onLoad={(e) => {
+                                setLoadedPath(htmlPath);
+                                disableLinksScriptsAndEventListeners(e.currentTarget);
+                            }}
+                        />
+                    </div>
+                </div>
+            </Theme>
+        </Box>
     );
 };
 

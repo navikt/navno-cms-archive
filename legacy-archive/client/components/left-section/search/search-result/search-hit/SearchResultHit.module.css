@@ -2,8 +2,8 @@
     display: flex;
     flex-direction: column;
     padding: 0.125rem;
-    background-color: var(--a-deepblue-50);
-    border-radius: var(--a-border-radius-medium);
+    background-color: var(--ax-brand-blue-100);
+    border-radius: var(--ax-radius-4);
 
     &:not(:last-child) {
         margin-bottom: 0.25rem;

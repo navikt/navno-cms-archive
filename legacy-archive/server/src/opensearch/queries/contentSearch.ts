@@ -19,7 +19,7 @@ const isValidSort = (sort: string): sort is ContentSearchSort =>
 const isValidType = (type: string): type is ContentSearchType =>
     typeParamsSet.has(type as ContentSearchType);
 
-const sortParams: Record<ContentSearchSort, Types.Common.SortOptions> = {
+const sortParams: Record<ContentSearchSort, Types.Common.Sort> = {
     score: {
         _score: 'desc',
     },

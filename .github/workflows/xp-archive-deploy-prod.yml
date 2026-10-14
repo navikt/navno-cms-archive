@@ -19,6 +19,7 @@ jobs:
         uses: ./.github/actions/build-and-deploy-xp-archive
         with:
           naisEnv: prod
+          varsFile: prod.yml
           VITE_APP_ORIGIN: https://cms-arkiv.ansatt.nav.no
           XP_ORIGIN: https://www.nav.no
           HTML_RENDER_API: http://nav-enonicxp-frontend/render-from-props

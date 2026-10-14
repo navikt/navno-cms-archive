@@ -24,7 +24,7 @@
 }
 
 .unpublished {
-    background-color: var(--a-gray-300);
+    background-color: var(--ax-neutral-400);
     white-space: nowrap;
     padding: 0.25rem 0.75rem;
     border-radius: 10rem;

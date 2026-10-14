@@ -1,0 +1,5 @@
+appOrigin: https://cms-arkiv-dev3.ansatt.dev.nav.no
+xpHost: trial-navpoc.enonic.cloud
+xpFrontendApp: nav-enonicxp-frontend-dev3
+secret: nav-enonicxp-dev3
+appName: navno-xp-archive-dev3

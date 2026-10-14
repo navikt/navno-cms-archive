@@ -12,6 +12,6 @@ export type AppState = {
 
 export const AppStateContext = createContext<AppState>({
     updateSelectedContent: () => ({}),
-    versionViewOpen: false,
+    versionViewOpen: true,
     setVersionViewOpen: () => ({}),
 });

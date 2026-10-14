@@ -1,6 +1,5 @@
 import React from 'react';
 import { ToggleGroup } from '@navikt/ds-react';
-import style from './ViewSelector.module.css';
 
 export type ViewVariant = 'html' | 'pdf' | 'filepreview';
 
@@ -48,7 +47,6 @@ export const ViewSelector = ({
 
     return (
         <ToggleGroup
-            className={style.datatheme}
             data-theme="viewSelector"
             size={'small'}
             value={selectedView}
