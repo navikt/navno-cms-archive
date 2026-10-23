@@ -91,7 +91,7 @@ Services are classes; public methods are Express `RequestHandler`s, private meth
 Each app has its own `.env-template`. Key vars:
 
 - **legacy-archive**: `OPEN_SEARCH_URI`, `OPEN_SEARCH_USERNAME`, `OPEN_SEARCH_PASSWORD`, `APP_PORT=3399`
-- **xp-archive**: `XP_ORIGIN`, `SERVICE_SECRET`, `HTML_RENDER_API`, `APP_PORT=3499`
+- **xp-archive**: `XP_ORIGIN`, `SERVICE_SECRET`, `HTML_RENDER_API`, `APP_PORT=3499`, `READ_FROM_INDEX`, `OPEN_SEARCH_URI`, `OPEN_SEARCH_USERNAME`, `OPEN_SEARCH_PASSWORD`
 
 ### Styling
 
@@ -114,4 +114,5 @@ Each app has its own `.env-template`. Key vars:
 
 - Data fetched from `nav-enonicxp` proxy (URL: `XP_ORIGIN` env var) using `SERVICE_SECRET` header
 - `HTML_RENDER_API` used to render XP content components server-side via a separate render service
+- `READ_FROM_INDEX=true` serves documents, versions, the content tree and search from the OpenSearch index. Otherwise (the default) they come from XP live. Indexing always fetches from XP and writes to the index. Requires the `OPEN_SEARCH_*` vars
 - PDF export uses Puppeteer (launched once per server process)

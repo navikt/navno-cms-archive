@@ -1,5 +1,8 @@
 import { RequestHandler } from 'express';
+import { fetchJson } from '@common/shared/fetchUtils';
 import { validateQuery } from 'utils/params';
+import { xpServiceUrl } from 'utils/urls';
+import { readFromIndex } from 'utils/readFromIndex';
 import { SearchResponse } from '../../../shared/types';
 import { Locale } from '../../../client/contentTree/NavigationBar';
 import {
@@ -8,6 +11,7 @@ import {
 } from '../opensearch/XpArchiveOpenSearchClient';
 
 export class SearchService {
+    private readonly SEARCH_API = xpServiceUrl('externalArchive/search');
     private readonly openSearchClient: XpArchiveOpenSearchClient;
 
     constructor(openSearchClient: XpArchiveOpenSearchClient) {
@@ -26,8 +30,21 @@ export class SearchService {
         res.status(200).json(searchResponse);
     };
 
+    private async search(query: string, searchType?: string): Promise<SearchResponse | null> {
+        return readFromIndex()
+            ? this.searchIndex(query, searchType)
+            : this.searchXp(query, searchType);
+    }
+
+    private async searchXp(query: string, searchType?: string): Promise<SearchResponse | null> {
+        return fetchJson<SearchResponse>(this.SEARCH_API, {
+            headers: { secret: process.env.SERVICE_SECRET },
+            params: { query, searchType },
+        });
+    }
+
     //TODO: test søket mer når mer er indeksert. Test treff på mer enn 50
-    private async search(query: string, searchType?: string): Promise<SearchResponse> {
+    private async searchIndex(query: string, searchType?: string): Promise<SearchResponse> {
         const { total, hits } = await this.openSearchClient.searchDocuments(
             XP_ARCHIVE_INDEX,
             query,

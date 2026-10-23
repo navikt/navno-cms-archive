@@ -13,6 +13,7 @@ import {
     XpArchiveOpenSearchClient,
 } from '../opensearch/XpArchiveOpenSearchClient';
 import { XpArchiveDocument } from '../opensearch/types';
+import { readFromIndex } from '../utils/readFromIndex';
 
 export class ContentService {
     private readonly CONTENT_PROPS_API = xpServiceUrl('externalArchive/content');
@@ -41,7 +42,7 @@ export class ContentService {
         expandAll?: boolean,
         skipCache?: boolean
     ): Promise<ContentServiceResponse | null> {
-        if (this.openSearchClient && !skipCache) {
+        if (this.openSearchClient && !skipCache && readFromIndex()) {
             const openSearchDocument = versionId
                 ? await this.openSearchClient.getDocument<XpArchiveDocument>(
                       XP_ARCHIVE_INDEX,

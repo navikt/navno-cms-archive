@@ -5,3 +5,4 @@ xpFrontendApp: nav-enonicxp-frontend-dev1
 secret: nav-enonicxp-dev1
 openSearchInstance: xp-cms-archive
 appName: navno-xp-archive
+readFromIndex: 'true'

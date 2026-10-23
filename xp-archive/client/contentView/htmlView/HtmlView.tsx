@@ -101,7 +101,7 @@ export const HtmlView = ({ content, source, versions }: Props) => {
                             {source === 'opensearch' ? (
                                 <Tag variant="success">Arkivert snapshot (OpenSearch)</Tag>
                             ) : (
-                                <Tag variant="warning">Live fra XP – ikke arkivert ennå</Tag>
+                                <Tag variant="warning">Live fra XP</Tag>
                             )}
                         </div>
                         {content.originalContentTypeName ? (

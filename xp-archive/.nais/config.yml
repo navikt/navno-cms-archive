@@ -32,6 +32,9 @@ spec:
       external:
         - host: {{ xpHost }}
         - host: cdn.nav.no
+  env:
+    - name: READ_FROM_INDEX
+      value: "{{ readFromIndex }}"
   envFrom:
     - secret: {{ secret }}
   replicas:
