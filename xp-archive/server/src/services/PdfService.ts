@@ -1,4 +1,4 @@
-import { Page } from 'puppeteer';
+import { BrowserManager } from './BrowserManager';
 import { ContentService } from './ContentService';
 import {
     contentDispositionHeader,
@@ -7,12 +7,12 @@ import {
     generatePdfInfo,
     pixelWidthToA4Scale,
 } from 'utils/pdf-utils';
-import { getBrowser } from '@common/server/utils/browser';
 import { RequestHandler, Response } from 'express';
 import { validateQuery } from 'utils/params';
 import archiver from 'archiver';
 import { ContentServiceResponse } from '../../../shared/types';
 import { getErrorMessage } from '@common/shared/fetchUtils';
+import { Page } from 'puppeteer';
 
 const DEFAULT_WIDTH_PX = 1024;
 const MIN_WIDTH_PX = 400;
@@ -25,13 +25,16 @@ type PdfResult = {
 };
 
 type PdfServiceProps = {
+    browserManager: BrowserManager;
     contentService: ContentService;
 };
 
 export class PdfService {
+    private readonly browserManager: BrowserManager;
     private readonly contentService: ContentService;
 
-    constructor({ contentService }: PdfServiceProps) {
+    constructor({ browserManager, contentService }: PdfServiceProps) {
+        this.browserManager = browserManager;
         this.contentService = contentService;
     }
 
@@ -122,9 +125,8 @@ export class PdfService {
         const widthActual = width >= MIN_WIDTH_PX ? width : DEFAULT_WIDTH_PX;
 
         let page: Page | undefined;
-
         try {
-            const browser = await getBrowser();
+            const browser = await this.browserManager.getBrowser();
             page = await browser.newPage();
 
             // Log Page events for debugging should generation fail

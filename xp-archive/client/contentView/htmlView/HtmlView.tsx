@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { xpArchiveConfig } from '@common/shared/siteConfigs';
-import { Alert, Loader, Button, Link, Box, Theme } from '@navikt/ds-react';
-import { Content, VersionReference } from '../../../shared/types';
+import { Alert, Loader, Button, Link, Box, Theme, Tag } from '@navikt/ds-react';
+import { Content, ContentSource, VersionReference } from '../../../shared/types';
 import { formatTimestamp } from '../../../../common/src/shared/timestamp';
 import { VersionSelector } from '../../versionSelector/VersionSelector';
 import { useAppState } from '../../context/appState/useAppState';
@@ -41,10 +41,11 @@ const localeNames: Record<string, string> = {
 
 type Props = {
     content: Content;
+    source: ContentSource;
     versions: VersionReference[];
 };
 
-export const HtmlView = ({ content, versions }: Props) => {
+export const HtmlView = ({ content, source, versions }: Props) => {
     const [loadedPath, setLoadedPath] = useState<string | null>(null);
     const htmlPath = `${xpArchiveConfig.basePath}/html/${content._id}/${content.locale}/${content._versionKey}`;
     const isLoading = loadedPath !== htmlPath;
@@ -96,6 +97,13 @@ export const HtmlView = ({ content, versions }: Props) => {
                 <div className={style.versionsAndContent}>
                     {versionViewOpen && <VersionSelector versions={versions} />}
                     <div className={style.content}>
+                        <div className={style.sourceLabel}>
+                            {source === 'opensearch' ? (
+                                <Tag variant="success">Arkivert snapshot (OpenSearch)</Tag>
+                            ) : (
+                                <Tag variant="warning">Live fra XP</Tag>
+                            )}
+                        </div>
                         {content.originalContentTypeName ? (
                             <Alert variant="warning">{`Obs! Denne siden var opprinnelig en "${content.originalContentTypeName}" og inneholder versjonshistorikken. ${getUnpublishedWarningText(content, versions)}`}</Alert>
                         ) : null}
