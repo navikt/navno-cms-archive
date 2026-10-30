@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { xpArchiveConfig } from '@common/shared/siteConfigs';
 import { Alert, Loader, Button, Link, Box, Theme } from '@navikt/ds-react';
 import { Content, VersionReference } from '../../../shared/types';
+import { getVersionVisibleTime } from 'shared/versionTime';
 import { formatTimestamp } from '../../../../common/src/shared/timestamp';
 import { VersionSelector } from '../../versionSelector/VersionSelector';
 import { useAppState } from '../../context/appState/useAppState';
@@ -25,7 +26,7 @@ const getUnpublishedWarningText = (content: Content, versions: VersionReference[
         });
 
         return v
-            ? `Siden ble endret til en intern lenke med videresending til nytt innhold den ${formatTimestamp(v.timestamp)}. Fra dette tidspunktet var innholdet ikke lenger tilgjengelig på nav.no.`
+            ? `Siden ble endret til en intern lenke med videresending til nytt innhold den ${formatTimestamp(getVersionVisibleTime(v))}. Fra dette tidspunktet var innholdet ikke lenger tilgjengelig på nav.no.`
             : '';
     }
 
@@ -58,7 +59,7 @@ export const HtmlView = ({ content, versions }: Props) => {
             ? versions.find((v) => v.versionId === selectedVersion)
             : versions[0];
 
-        return `Viser versjon for ${formatTimestamp(version?.timestamp ?? '')}`;
+        return `Viser versjon for ${formatTimestamp(version ? getVersionVisibleTime(version) : '')}`;
     };
 
     return (
