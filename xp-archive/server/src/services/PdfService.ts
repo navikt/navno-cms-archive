@@ -150,9 +150,9 @@ export class PdfService {
                 console.error(`Puppeteer: Page error:`, error);
             });
 
-            // Remove decorator-code in print
+            // Remove the decorator header and footer in print, including scripts and menus
             const htmlWithoutDecorator = html.replaceAll(
-                /(<decorator-header([^;]*)<\/decorator-header>|<decorator-footer([^;]*)<\/decorator-footer>|<decorator-footer([^;]*)<\/decorator-footer>)/g,
+                /<decorator-(header|footer)>.*?<\/decorator-\1>/gs,
                 ''
             );
 
