@@ -1,0 +1,42 @@
+# Builds main and deploys the XP archive to prod - shared by xp-archive-deploy-prod.yml and base-image-refresh.yml
+# Callers need `permissions: { contents: read, id-token: write }` and `secrets: inherit`.
+name: Build and deploy XP archive to prod
+on:
+  workflow_call:
+    outputs:
+      image:
+        description: The deployed image, digest-pinned.
+        value: ${{ jobs.build.outputs.image }}
+
+jobs:
+  build:
+    uses: navikt/navno-ci/.github/workflows/node-build.yml@v1
+    permissions: { contents: read, id-token: write }
+    with:
+      github-environment: prod-xp
+      image-suffix: prod
+      dockerfile: Dockerfile_xp
+      # The root package.json has no build script, so the app is built here
+      post-build-commands: pnpm --dir xp-archive run build
+      # pnpm-deploy installs production dependencies into nonsymlink/, so no prune
+      prune-remove: ''
+      pnpm-deploy: ./xp-archive/server nonsymlink/xp-server
+      env-file-path: xp-archive/.env
+      env-file: |
+        NODE_ENV=production
+        APP_PORT=3499
+        APP_BASEPATH=/xp
+        VITE_APP_ORIGIN=https://cms-arkiv.ansatt.nav.no
+        XP_ORIGIN=https://www.nav.no
+        HTML_RENDER_API=http://nav-enonicxp-frontend/render-from-props
+    secrets: inherit
+
+  deploy:
+    needs: build
+    uses: navikt/navno-ci/.github/workflows/nais-deploy.yml@v1
+    permissions: { contents: read, id-token: write }
+    with:
+      cluster: prod-gcp
+      resource: xp-archive/.nais/config.yml
+      vars: xp-archive/.nais/vars/prod.yml
+      var: image=${{ needs.build.outputs.image }}
