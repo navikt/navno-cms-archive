@@ -7,7 +7,7 @@ import { formatTimestamp } from '@common/shared/timestamp';
 import { EmptyState } from '@common/shared/EmptyState/EmptyState';
 
 import style from './Content.module.css';
-import { useFetchContent } from '../hooks/useFetchContent';
+import { useCacheContent, useFetchContent } from '../hooks/useFetchContent';
 
 const getDefaultView = (isWebpage: boolean, hasAttachment: boolean): ViewVariant | undefined => {
     if (isWebpage) return 'html';
@@ -16,7 +16,9 @@ const getDefaultView = (isWebpage: boolean, hasAttachment: boolean): ViewVariant
 };
 
 export const Content = () => {
-    const { selectedContentId, selectedLocale, selectedVersion } = useAppState();
+    const { selectedContentId, selectedLocale, selectedVersion, updateSelectedContent } =
+        useAppState();
+    const cacheContent = useCacheContent();
 
     const { data, isLoading } = useFetchContent({
         id: selectedContentId ?? '',
@@ -34,6 +36,35 @@ export const Content = () => {
         // eslint-disable-next-line react-hooks/set-state-in-effect
         setSelectedView(getDefaultView(isWebpage, hasAttachment));
     }, [isWebpage, hasAttachment, selectedContentId]);
+
+    // With no version selected, the newest version in the list is shown as selected. Put its
+    // versionId in the url. The list leaves out versions without changes, so the rendered version
+    // can be missing from it. Reuse the response only when it is the same version
+    useEffect(() => {
+        if (selectedVersion || !data) return;
+        if (!selectedContentId || !selectedLocale) return;
+
+        const { _id, locale, _versionKey } = data.json;
+        if (_id !== selectedContentId || locale !== selectedLocale) return;
+
+        const newestVersionId = data.versions?.[0]?.versionId;
+        if (!newestVersionId) return;
+
+        if (newestVersionId === _versionKey) {
+            void cacheContent({ id: _id, locale, versionId: _versionKey }, data);
+        }
+        updateSelectedContent(
+            { contentId: _id, locale, versionId: newestVersionId },
+            { replaceUrl: true }
+        );
+    }, [
+        data,
+        selectedVersion,
+        selectedContentId,
+        selectedLocale,
+        cacheContent,
+        updateSelectedContent,
+    ]);
 
     if (!selectedContentId) {
         return <EmptyState />;

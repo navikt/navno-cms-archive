@@ -1,5 +1,5 @@
 import { fetchJson } from '@common/shared/fetchUtils';
-import useSWR from 'swr';
+import useSWR, { useSWRConfig } from 'swr';
 import { ContentServiceResponse } from '../../shared/types';
 
 const CONTENT_API = `${import.meta.env.VITE_APP_ORIGIN}/xp/api/content`;
@@ -11,6 +11,15 @@ const fetchContent = async (params: FetchContentParams) => {
     return fetchJson<ContentServiceResponse>(CONTENT_API, {
         params,
     });
+};
+
+export const useCacheContent = () => {
+    const { mutate } = useSWRConfig();
+
+    return (params: FetchContentParams, data: ContentServiceResponse) =>
+        mutate({ id: params.id, locale: params.locale, versionId: params.versionId }, data, {
+            revalidate: false,
+        });
 };
 
 export const useFetchContent = ({ id, locale, versionId }: FetchContentParams) => {
