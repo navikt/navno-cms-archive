@@ -3,6 +3,7 @@ import { DownloadIcon } from '@navikt/aksel-icons';
 import { Button, Heading, LocalAlert } from '@navikt/ds-react';
 import { DataGrid } from '@navikt/ds-react/PREVIEW';
 import { VersionReference } from 'shared/types';
+import { getVersionVisibleTime } from 'shared/versionTime';
 import { formatTimestamp, getTimestring } from '@common/shared/timestamp';
 import style from './PdfExport.module.css';
 
@@ -16,12 +17,12 @@ const columns: DataGrid.Columns<VersionReference> = [
     {
         id: 'date',
         header: 'Publisertdato',
-        bodyCell: ({ timestamp }) => formatTimestamp(timestamp, true),
+        bodyCell: (version) => formatTimestamp(getVersionVisibleTime(version), true),
     },
     {
         id: 'time',
         header: 'Publisert klokkeslett',
-        bodyCell: ({ timestamp }) => getTimestring(new Date(timestamp)),
+        bodyCell: (version) => getTimestring(new Date(getVersionVisibleTime(version))),
     },
     {
         id: 'name',
