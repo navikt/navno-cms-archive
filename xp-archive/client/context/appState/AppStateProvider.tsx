@@ -36,11 +36,18 @@ export const AppStateProvider = ({ children }: Props) => {
     const [versionViewOpen, setVersionViewOpen] = useState(true);
     const activeSelectedContent = selectedContent ?? getSelectedContentFromPath();
 
-    const updateSelectedContent = (newSelectedContent: SelectedContent) => {
+    const updateSelectedContent = (
+        newSelectedContent: SelectedContent,
+        options?: { replaceUrl?: boolean }
+    ) => {
         setSelectedContent(newSelectedContent);
 
         const newUrl = `${xpArchiveConfig.basePath}/${newSelectedContent.contentId}/${newSelectedContent.locale}/${newSelectedContent.versionId || ''}`;
-        window.history.pushState({}, '', newUrl);
+        if (options?.replaceUrl) {
+            window.history.replaceState({}, '', newUrl);
+        } else {
+            window.history.pushState({}, '', newUrl);
+        }
     };
 
     return (

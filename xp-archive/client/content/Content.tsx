@@ -7,7 +7,7 @@ import { formatTimestamp } from '@common/shared/timestamp';
 import { EmptyState } from '@common/shared/EmptyState/EmptyState';
 
 import style from './Content.module.css';
-import { useFetchContent } from '../hooks/useFetchContent';
+import { useCacheContent, useFetchContent } from '../hooks/useFetchContent';
 
 const getDefaultView = (isWebpage: boolean, hasAttachment: boolean): ViewVariant | undefined => {
     if (isWebpage) return 'html';
@@ -16,7 +16,9 @@ const getDefaultView = (isWebpage: boolean, hasAttachment: boolean): ViewVariant
 };
 
 export const Content = () => {
-    const { selectedContentId, selectedLocale, selectedVersion } = useAppState();
+    const { selectedContentId, selectedLocale, selectedVersion, updateSelectedContent } =
+        useAppState();
+    const cacheContent = useCacheContent();
 
     const { data, isLoading } = useFetchContent({
         id: selectedContentId ?? '',
@@ -34,6 +36,31 @@ export const Content = () => {
         // eslint-disable-next-line react-hooks/set-state-in-effect
         setSelectedView(getDefaultView(isWebpage, hasAttachment));
     }, [isWebpage, hasAttachment, selectedContentId]);
+
+    // XP renders the latest published version when no version is selected. Put its versionId in
+    // the url, and reuse the response instead of fetching it again
+    useEffect(() => {
+        if (selectedVersion || !data) return;
+        if (!selectedContentId || !selectedLocale) return;
+
+        const { _id, locale, _versionKey } = data.json;
+        if (_id !== selectedContentId || locale !== selectedLocale) return;
+        if (!data.versions?.some((version) => version.versionId === _versionKey)) return;
+
+        const params = { id: _id, locale, versionId: _versionKey };
+        void cacheContent(params, data);
+        updateSelectedContent(
+            { contentId: _id, locale, versionId: _versionKey },
+            { replaceUrl: true }
+        );
+    }, [
+        data,
+        selectedVersion,
+        selectedContentId,
+        selectedLocale,
+        cacheContent,
+        updateSelectedContent,
+    ]);
 
     if (!selectedContentId) {
         return <EmptyState />;
