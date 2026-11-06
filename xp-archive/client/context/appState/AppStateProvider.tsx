@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AppStateContext } from './AppStateContext';
 import { xpArchiveConfig } from '../../../../common/src/shared/siteConfigs';
 
@@ -35,6 +35,13 @@ export const AppStateProvider = ({ children }: Props) => {
     const [selectedContent, setSelectedContent] = useState<SelectedContent>();
     const [versionViewOpen, setVersionViewOpen] = useState(true);
     const activeSelectedContent = selectedContent ?? getSelectedContentFromPath();
+
+    useEffect(() => {
+        const handlePopState = () => setSelectedContent(getSelectedContentFromPath());
+
+        window.addEventListener('popstate', handlePopState);
+        return () => window.removeEventListener('popstate', handlePopState);
+    }, []);
 
     const updateSelectedContent = (
         newSelectedContent: SelectedContent,
