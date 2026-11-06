@@ -37,20 +37,24 @@ export const Content = () => {
         setSelectedView(getDefaultView(isWebpage, hasAttachment));
     }, [isWebpage, hasAttachment, selectedContentId]);
 
-    // XP renders the latest published version when no version is selected. Put its versionId in
-    // the url, and reuse the response instead of fetching it again
+    // With no version selected, the newest version in the list is shown as selected. Put its
+    // versionId in the url. The list leaves out versions without changes, so the rendered version
+    // can be missing from it. Reuse the response only when it is the same version
     useEffect(() => {
         if (selectedVersion || !data) return;
         if (!selectedContentId || !selectedLocale) return;
 
         const { _id, locale, _versionKey } = data.json;
         if (_id !== selectedContentId || locale !== selectedLocale) return;
-        if (!data.versions?.some((version) => version.versionId === _versionKey)) return;
 
-        const params = { id: _id, locale, versionId: _versionKey };
-        void cacheContent(params, data);
+        const newestVersionId = data.versions?.[0]?.versionId;
+        if (!newestVersionId) return;
+
+        if (newestVersionId === _versionKey) {
+            void cacheContent({ id: _id, locale, versionId: _versionKey }, data);
+        }
         updateSelectedContent(
-            { contentId: _id, locale, versionId: _versionKey },
+            { contentId: _id, locale, versionId: newestVersionId },
             { replaceUrl: true }
         );
     }, [
