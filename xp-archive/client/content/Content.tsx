@@ -37,24 +37,33 @@ export const Content = () => {
         setSelectedView(getDefaultView(isWebpage, hasAttachment));
     }, [isWebpage, hasAttachment, selectedContentId]);
 
-    // Put the newest version in the url. XP can render a version the list leaves out
+    // Put the version XP rendered in the url, if the list shows it
     useEffect(() => {
         if (selectedVersion || !data) return;
         if (!selectedContentId || !selectedLocale) return;
 
-        const { _id, locale, _versionKey } = data.json;
+        const { _id, locale, _versionKey, modifiedTime } = data.json;
         if (_id !== selectedContentId || locale !== selectedLocale) return;
 
-        const newestVersionId = data.versions?.[0]?.versionId;
-        if (!newestVersionId) return;
+        const newestVersion = data.versions?.[0];
+        if (!newestVersion) return;
 
-        if (newestVersionId === _versionKey) {
+        if (newestVersion.versionId === _versionKey) {
             void cacheContent({ id: _id, locale, versionId: _versionKey }, data);
+            updateSelectedContent(
+                { contentId: _id, locale, versionId: _versionKey },
+                { replaceUrl: true }
+            );
+            return;
         }
-        updateSelectedContent(
-            { contentId: _id, locale, versionId: newestVersionId },
-            { replaceUrl: true }
-        );
+
+        // The list hides a newer save without changes. Use the version it shows
+        if (newestVersion.nodeId === _id && newestVersion.modifiedTime === modifiedTime) {
+            updateSelectedContent(
+                { contentId: _id, locale, versionId: newestVersion.versionId },
+                { replaceUrl: true }
+            );
+        }
     }, [
         data,
         selectedVersion,

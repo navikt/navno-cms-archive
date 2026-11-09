@@ -39,6 +39,7 @@ export type VersionReference = {
     nodeId: string;
     nodePath: string;
     timestamp: string;
+    modifiedTime: string;
     locale: string;
     displayName: string;
     type: ContentType;
