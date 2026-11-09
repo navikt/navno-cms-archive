@@ -37,7 +37,7 @@ export const Content = () => {
         setSelectedView(getDefaultView(isWebpage, hasAttachment));
     }, [isWebpage, hasAttachment, selectedContentId]);
 
-    // Put the version XP rendered in the url, if the list shows it
+    // Put the newest version in the list in the url, if it is what XP rendered
     useEffect(() => {
         if (selectedVersion || isLoading || !data) return;
         if (!selectedContentId || !selectedLocale) return;
