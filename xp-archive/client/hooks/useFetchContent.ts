@@ -1,4 +1,5 @@
 import { fetchJson } from '@common/shared/fetchUtils';
+import { useCallback } from 'react';
 import useSWR, { useSWRConfig } from 'swr';
 import { ContentServiceResponse } from '../../shared/types';
 
@@ -13,17 +14,24 @@ const fetchContent = async (params: FetchContentParams) => {
     });
 };
 
+const getContentKey = ({ id, locale, versionId }: FetchContentParams) => ({
+    id,
+    locale,
+    versionId,
+});
+
 export const useCacheContent = () => {
     const { mutate } = useSWRConfig();
 
-    return (params: FetchContentParams, data: ContentServiceResponse) =>
-        mutate({ id: params.id, locale: params.locale, versionId: params.versionId }, data, {
-            revalidate: false,
-        });
+    return useCallback(
+        (params: FetchContentParams, data: ContentServiceResponse) =>
+            mutate(getContentKey(params), data, { revalidate: false }),
+        [mutate]
+    );
 };
 
-export const useFetchContent = ({ id, locale, versionId }: FetchContentParams) => {
-    return useSWR({ id, locale, versionId }, fetchContent, {
+export const useFetchContent = (params: FetchContentParams) => {
+    return useSWR(getContentKey(params), fetchContent, {
         revalidateOnFocus: false,
         revalidateOnReconnect: false,
         revalidateIfStale: false,

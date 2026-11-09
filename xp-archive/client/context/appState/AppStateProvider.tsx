@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { AppStateContext } from './AppStateContext';
 import { xpArchiveConfig } from '../../../../common/src/shared/siteConfigs';
 
@@ -43,19 +43,19 @@ export const AppStateProvider = ({ children }: Props) => {
         return () => window.removeEventListener('popstate', handlePopState);
     }, []);
 
-    const updateSelectedContent = (
-        newSelectedContent: SelectedContent,
-        options?: { replaceUrl?: boolean }
-    ) => {
-        setSelectedContent(newSelectedContent);
+    const updateSelectedContent = useCallback(
+        (newSelectedContent: SelectedContent, options?: { replaceUrl?: boolean }) => {
+            setSelectedContent(newSelectedContent);
 
-        const newUrl = `${xpArchiveConfig.basePath}/${newSelectedContent.contentId}/${newSelectedContent.locale}/${newSelectedContent.versionId || ''}`;
-        if (options?.replaceUrl) {
-            window.history.replaceState({}, '', newUrl);
-        } else {
-            window.history.pushState({}, '', newUrl);
-        }
-    };
+            const newUrl = `${xpArchiveConfig.basePath}/${newSelectedContent.contentId}/${newSelectedContent.locale}/${newSelectedContent.versionId || ''}`;
+            if (options?.replaceUrl) {
+                window.history.replaceState({}, '', newUrl);
+            } else {
+                window.history.pushState({}, '', newUrl);
+            }
+        },
+        []
+    );
 
     return (
         <AppStateContext.Provider

@@ -108,7 +108,7 @@ export const HtmlView = ({ content, versions }: Props) => {
                                 <Loader size="xlarge" />
                             </div>
                         )}
-                        {/* Ny src på en lastet iframe gir et eget punkt i historikken */}
+                        {/* A new src on a loaded iframe adds its own history entry */}
                         <iframe
                             key={htmlPath}
                             title={'HTML-visning'}

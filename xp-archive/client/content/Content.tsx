@@ -37,9 +37,7 @@ export const Content = () => {
         setSelectedView(getDefaultView(isWebpage, hasAttachment));
     }, [isWebpage, hasAttachment, selectedContentId]);
 
-    // With no version selected, the newest version in the list is shown as selected. Put its
-    // versionId in the url. The list leaves out versions without changes, so the rendered version
-    // can be missing from it. Reuse the response only when it is the same version
+    // Put the newest version in the url. XP can render a version the list leaves out
     useEffect(() => {
         if (selectedVersion || !data) return;
         if (!selectedContentId || !selectedLocale) return;
