@@ -6,19 +6,20 @@ import { ContentServiceResponse } from '../../shared/types';
 const CONTENT_API = `${import.meta.env.VITE_APP_ORIGIN}/xp/api/content`;
 
 type FetchContentParams = { id: string; locale: string; versionId?: string };
+type ContentKey = [url: string, params: FetchContentParams];
 
-const fetchContent = async (params: FetchContentParams) => {
+const fetchContent = async ([url, params]: ContentKey) => {
     if (!params.id) return;
-    return fetchJson<ContentServiceResponse>(CONTENT_API, {
+    return fetchJson<ContentServiceResponse>(url, {
         params,
     });
 };
 
-const getContentKey = ({ id, locale, versionId }: FetchContentParams) => ({
-    id,
-    locale,
-    versionId,
-});
+// The url keeps the key apart from attachments with the same params
+const getContentKey = ({ id, locale, versionId }: FetchContentParams): ContentKey => [
+    CONTENT_API,
+    { id, locale, versionId },
+];
 
 export const useCacheContent = () => {
     const { mutate } = useSWRConfig();

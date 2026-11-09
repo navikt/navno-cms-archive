@@ -39,7 +39,7 @@ export const Content = () => {
 
     // Put the version XP rendered in the url, if the list shows it
     useEffect(() => {
-        if (selectedVersion || !data) return;
+        if (selectedVersion || isLoading || !data) return;
         if (!selectedContentId || !selectedLocale) return;
 
         const { _id, locale, _versionKey, modifiedTime } = data.json;
@@ -66,6 +66,7 @@ export const Content = () => {
         }
     }, [
         data,
+        isLoading,
         selectedVersion,
         selectedContentId,
         selectedLocale,
