@@ -2,8 +2,7 @@ name: Deploy legacy archive
 on:
   workflow_dispatch:
   push:
-    branches:
-      - main
+    branches: [main]
     paths:
       - package*.json
       - pnpm-lock.yaml
@@ -12,25 +11,7 @@ on:
       - common/**/*
 
 jobs:
-  build-and-deploy:
-    name: Build and deploy
-    runs-on: ubuntu-latest
-    environment: prod-legacy
-    permissions:
-      contents: 'read'
-      id-token: 'write'
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v7
-
-      - name: Build and deploy legacy archive
-        uses: ./.github/actions/build-and-deploy-legacy-archive
-        with:
-          naisEnv: dev
-          VITE_APP_ORIGIN: https://cms-arkiv.ansatt.dev.nav.no
-          XP_ORIGIN: https://www.dev.nav.no
-          HTML_RENDER_API: http://nav-enonicxp-frontend-dev1/render-from-props
-        env:
-          READER_TOKEN: ${{ secrets.READER_TOKEN }}
-          NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
-          NAIS_MANAGEMENT_PROJECT_ID: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
+  deploy:
+    uses: ./.github/workflows/legacy-archive-build-deploy.yml
+    permissions: { contents: read, id-token: write }
+    secrets: inherit

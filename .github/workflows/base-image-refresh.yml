@@ -1,0 +1,22 @@
+# Rebuilds and redeploys both prod apps weekly so the images get the newest base image.
+name: Refresh base image
+on:
+  schedule:
+    - cron: '17 23 * * 0' # Sunday 23:17, off the hour due to quirks with GitHub scheduling
+      timezone: Europe/Oslo
+  workflow_dispatch:
+
+jobs:
+  # "Run workflow" lets you pick a branch. Skip unless it's main, so a manual
+  # run can't put a feature branch in prod.
+  xp-archive:
+    if: ${{ github.ref == 'refs/heads/main' }}
+    uses: ./.github/workflows/xp-archive-build-deploy-prod.yml
+    permissions: { contents: read, id-token: write }
+    secrets: inherit
+
+  legacy-archive:
+    if: ${{ github.ref == 'refs/heads/main' }}
+    uses: ./.github/workflows/legacy-archive-build-deploy.yml
+    permissions: { contents: read, id-token: write }
+    secrets: inherit

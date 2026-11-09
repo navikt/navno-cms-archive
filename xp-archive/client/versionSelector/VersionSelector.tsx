@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { CheckmarkIcon } from '@navikt/aksel-icons';
 import { Heading, Button, TextField, Detail } from '@navikt/ds-react';
 import { VersionReference } from 'shared/types';
+import { getVersionVisibleTime } from 'shared/versionTime';
 import { formatTimestamp } from '@common/shared/timestamp';
 import { useAppState } from 'client/context/appState/useAppState';
 import style from './VersionSelector.module.css';
@@ -23,7 +24,7 @@ const VersionButton = ({ version, isSelected, isLatest, onClick }: VersionButton
             icon={isSelected && <CheckmarkIcon />}
             iconPosition="left"
         >
-            {formatTimestamp(version.timestamp)}
+            {formatTimestamp(getVersionVisibleTime(version))}
             {isLatest ? <span style={{ fontWeight: 'normal' }}> (Siste versjon)</span> : null}
             {version.unpublishedTime ? (
                 <Detail className={style.unpublished}>Avpublisert</Detail>
@@ -53,7 +54,9 @@ export const VersionSelector = ({ versions }: Props) => {
     };
 
     const filteredVersions = versions.filter((version) =>
-        formatTimestamp(version.timestamp).toLowerCase().includes(searchQuery.toLowerCase())
+        formatTimestamp(getVersionVisibleTime(version))
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase())
     );
 
     return (

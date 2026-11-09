@@ -1,27 +1,33 @@
 name: Deploy XP archive to dev3 for Enonic XP Cloud PoC
-on:
-  workflow_dispatch:
+on: workflow_dispatch
 
 jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
-    environment: dev-xp
-    permissions:
-      contents: read
-      id-token: write
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v7
+  build:
+    uses: navikt/navno-ci/.github/workflows/node-build.yml@v1
+    permissions: { contents: read, id-token: write }
+    with:
+      github-environment: dev-xp
+      image-suffix: dev
+      dockerfile: Dockerfile_xp
+      post-build-commands: pnpm --dir xp-archive run build
+      prune-remove: ''
+      pnpm-deploy: ./xp-archive/server nonsymlink/xp-server
+      env-file-path: xp-archive/.env
+      env-file: |
+        NODE_ENV=production
+        APP_PORT=3499
+        APP_BASEPATH=/xp
+        VITE_APP_ORIGIN=https://cms-arkiv-dev3.ansatt.dev.nav.no
+        XP_ORIGIN=https://trial-navpoc.enonic.cloud
+        HTML_RENDER_API=http://nav-enonicxp-frontend-dev3/render-from-props
+    secrets: inherit
 
-      - name: Build and deploy dev3
-        uses: ./.github/actions/build-and-deploy-xp-archive
-        with:
-          naisEnv: dev
-          varsFile: dev3.yml
-          VITE_APP_ORIGIN: https://cms-arkiv-dev3.ansatt.dev.nav.no
-          XP_ORIGIN: https://www-navpoc.enonic.cloud
-          HTML_RENDER_API: http://nav-enonicxp-frontend-dev3/render-from-props
-        env:
-          READER_TOKEN: ${{ secrets.READER_TOKEN }}
-          NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
-          NAIS_MANAGEMENT_PROJECT_ID: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
+  deploy:
+    needs: build
+    uses: navikt/navno-ci/.github/workflows/nais-deploy.yml@v1
+    permissions: { contents: read, id-token: write }
+    with:
+      cluster: dev-gcp
+      resource: xp-archive/.nais/config.yml
+      vars: xp-archive/.nais/vars/dev3.yml
+      var: image=${{ needs.build.outputs.image }}
