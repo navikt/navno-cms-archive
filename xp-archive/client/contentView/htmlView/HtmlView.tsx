@@ -108,7 +108,9 @@ export const HtmlView = ({ content, versions }: Props) => {
                                 <Loader size="xlarge" />
                             </div>
                         )}
+                        {/* Remount on a new path, since a new src adds a history entry */}
                         <iframe
+                            key={htmlPath}
                             title={'HTML-visning'}
                             src={htmlPath}
                             className={style.iframe}

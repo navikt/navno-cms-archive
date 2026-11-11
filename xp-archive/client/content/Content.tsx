@@ -7,7 +7,7 @@ import { formatTimestamp } from '@common/shared/timestamp';
 import { EmptyState } from '@common/shared/EmptyState/EmptyState';
 
 import style from './Content.module.css';
-import { useFetchContent } from '../hooks/useFetchContent';
+import { useCacheContent, useFetchContent } from '../hooks/useFetchContent';
 
 const getDefaultView = (isWebpage: boolean, hasAttachment: boolean): ViewVariant | undefined => {
     if (isWebpage) return 'html';
@@ -16,7 +16,9 @@ const getDefaultView = (isWebpage: boolean, hasAttachment: boolean): ViewVariant
 };
 
 export const Content = () => {
-    const { selectedContentId, selectedLocale, selectedVersion } = useAppState();
+    const { selectedContentId, selectedLocale, selectedVersion, updateSelectedContent } =
+        useAppState();
+    const cacheContent = useCacheContent();
 
     const { data, isLoading } = useFetchContent({
         id: selectedContentId ?? '',
@@ -34,6 +36,43 @@ export const Content = () => {
         // eslint-disable-next-line react-hooks/set-state-in-effect
         setSelectedView(getDefaultView(isWebpage, hasAttachment));
     }, [isWebpage, hasAttachment, selectedContentId]);
+
+    // Put the newest version in the list in the url, if it is what XP rendered
+    useEffect(() => {
+        if (selectedVersion || isLoading || !data) return;
+        if (!selectedContentId || !selectedLocale) return;
+
+        const { _id, locale, _versionKey, modifiedTime } = data.json;
+        if (_id !== selectedContentId || locale !== selectedLocale) return;
+
+        const newestVersion = data.versions?.[0];
+        if (!newestVersion) return;
+
+        if (newestVersion.versionId === _versionKey) {
+            void cacheContent({ id: _id, locale, versionId: _versionKey }, data);
+            updateSelectedContent(
+                { contentId: _id, locale, versionId: _versionKey },
+                { replaceUrl: true }
+            );
+            return;
+        }
+
+        // The list hides a newer save without changes. Use the version it shows
+        if (newestVersion.nodeId === _id && newestVersion.modifiedTime === modifiedTime) {
+            updateSelectedContent(
+                { contentId: _id, locale, versionId: newestVersion.versionId },
+                { replaceUrl: true }
+            );
+        }
+    }, [
+        data,
+        isLoading,
+        selectedVersion,
+        selectedContentId,
+        selectedLocale,
+        cacheContent,
+        updateSelectedContent,
+    ]);
 
     if (!selectedContentId) {
         return <EmptyState />;
