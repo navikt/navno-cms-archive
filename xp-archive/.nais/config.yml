@@ -18,6 +18,10 @@ spec:
     path: /xp/internal/isReady
     initialDelay: 10
   observability:
+    logging:
+      destinations:
+        - id: elastic
+        - id: loki
     autoInstrumentation:
       enabled: true
       runtime: nodejs
