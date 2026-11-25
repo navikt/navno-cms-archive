@@ -1,0 +1,4 @@
+openSearchInstance: xp-cms-archive
+xpHost: www.nav.no
+xpFrontendApp: nav-enonicxp-frontend
+secret: nav-enonicxp

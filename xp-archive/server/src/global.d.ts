@@ -8,6 +8,7 @@ declare global {
             SERVICE_SECRET: string;
             XP_ORIGIN: string;
             HTML_RENDER_API: string;
+            READ_FROM_INDEX?: string;
         }
     }
 }

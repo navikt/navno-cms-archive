@@ -7,3 +7,11 @@ await buildServer({
     platform: 'node',
     packages: 'external',
 });
+
+await buildServer({
+    entryPoints: ['src/backfillJob.ts'],
+    outfile: 'dist/server/backfillJob.cjs',
+    bundle: true,
+    platform: 'node',
+    packages: 'external',
+});

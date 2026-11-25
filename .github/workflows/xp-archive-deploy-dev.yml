@@ -1,5 +1,14 @@
 name: Deploy XP archive to dev
-on: workflow_dispatch
+on:
+  # Epic-branch for v2. Fjernes når v2 merges til main.
+  push:
+    branches: [xp-arkiv-v2]
+  workflow_dispatch:
+    inputs:
+      startBackfill:
+        description: 'Start backfill-jobben etter deploy (full reindeksering)'
+        type: boolean
+        default: false
 
 jobs:
   build:
@@ -30,4 +39,17 @@ jobs:
       cluster: dev-gcp
       resource: xp-archive/.nais/config.yml
       vars: xp-archive/.nais/vars/dev.yml
+      var: image=${{ needs.build.outputs.image }}
+
+  # En NaisJob uten schedule starter i det den applies, så denne jobben ER
+  # å kjøre backfillen. Derfor avslått som standard.
+  backfill:
+    needs: build
+    if: ${{ inputs.startBackfill }}
+    uses: navikt/navno-ci/.github/workflows/nais-deploy.yml@v1
+    permissions: { contents: read, id-token: write }
+    with:
+      cluster: dev-gcp
+      resource: xp-archive/.nais/backfill-job.yml
+      vars: xp-archive/.nais/vars/backfill-job-dev.yml
       var: image=${{ needs.build.outputs.image }}
