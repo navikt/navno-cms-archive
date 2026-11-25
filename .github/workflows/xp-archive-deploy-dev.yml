@@ -1,5 +1,8 @@
 name: Deploy XP archive to dev
 on:
+  # Epic-branch for v2. Fjernes når v2 merges til main.
+  push:
+    branches: [xp-arkiv-v2]
   workflow_dispatch:
     inputs:
       startBackfill:
