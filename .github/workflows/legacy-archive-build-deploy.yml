@@ -1,0 +1,32 @@
+# Builds and deploys the legacy archive to prod - shared by legacy-archive-deploy.yml and base-image-refresh.yml
+# Callers need `permissions: { contents: read, id-token: write }` and `secrets: inherit`.
+name: Build and deploy legacy archive
+on: workflow_call
+
+jobs:
+  build:
+    uses: navikt/navno-ci/.github/workflows/node-build.yml@v1
+    permissions: { contents: read, id-token: write }
+    with:
+      github-environment: prod-legacy
+      dockerfile: Dockerfile_legacy
+      # The root package.json has no build script, so the app is built here
+      post-build-commands: pnpm --dir legacy-archive run build
+      # pnpm-deploy installs production dependencies into nonsymlink/, so no prune
+      prune-remove: ''
+      pnpm-deploy: ./legacy-archive/server nonsymlink/legacy-server
+      env-file-path: legacy-archive/.env
+      env-file: |
+        NODE_ENV=production
+        APP_PORT=3499
+        VITE_APP_ORIGIN=https://cms-arkiv.ansatt.nav.no
+    secrets: inherit
+
+  deploy:
+    needs: build
+    uses: navikt/navno-ci/.github/workflows/nais-deploy.yml@v1
+    permissions: { contents: read, id-token: write }
+    with:
+      cluster: prod-gcp
+      resource: legacy-archive/.nais/config.yml
+      var: image=${{ needs.build.outputs.image }}

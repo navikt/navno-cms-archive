@@ -1,33 +1,15 @@
 name: PR Checks
-permissions:
-  contents: read
 on:
   pull_request:
-    branches:
-      - main
+    branches: [main]
+
+permissions:
+  contents: read
+  id-token: write
 
 jobs:
-  lint:
-    name: Run linters
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v7
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v6
-
-      - name: Setup node.js
-        uses: actions/setup-node@v7
-        with:
-          node-version: '24'
-          registry-url: 'https://npm.pkg.github.com'
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
-
-      - name: Run lint
-        run: pnpm run lint
+  check:
+    uses: navikt/navno-ci/.github/workflows/node-build.yml@v1
+    with:
+      push-image: false
+    secrets: inherit
