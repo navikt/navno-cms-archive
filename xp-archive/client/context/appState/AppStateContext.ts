@@ -5,7 +5,10 @@ export type AppState = {
     selectedContentId?: string;
     selectedLocale?: string;
     selectedVersion?: string;
-    updateSelectedContent: (selectedContent: SelectedContent) => void;
+    updateSelectedContent: (
+        selectedContent: SelectedContent,
+        options?: { replaceUrl?: boolean }
+    ) => void;
     versionViewOpen: boolean;
     setVersionViewOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
