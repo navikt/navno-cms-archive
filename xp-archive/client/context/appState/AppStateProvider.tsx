@@ -17,7 +17,7 @@ const getSelectedContentFromPath = (): SelectedContent | undefined => {
         return undefined;
     }
 
-    const matches = /\/xp\/([^/]+)\/([^/]+)\/([^/]+)?/.exec(window.location.pathname);
+    const matches = /\/xp\/([^/]+)\/([^/]+)(?:\/([^/]+))?/.exec(window.location.pathname);
 
     if (!matches) {
         return undefined;
